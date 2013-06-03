@@ -1,0 +1,236 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_app"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joypuls.tvhelper">
+    <LinearLayout android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="3">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="26">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="15">
+	        
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="80">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="0dp"
+	            android:paddingLeft="20dp"
+	            android:orientation="horizontal"
+	            android:layout_weight="1">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:src="@drawable/main_title_icon"/>
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:layout_marginLeft="5dp"
+	                android:src="@drawable/main_title_1"/>
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:layout_marginLeft="20dp"
+	                android:src="@drawable/main_title_2"/>
+	            <TextView android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"/>
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:src="@drawable/logo"/>
+	        </LinearLayout>
+	        <RelativeLayout 
+	            android:layout_width="fill_parent"
+		            android:layout_height="0dp"
+		            android:layout_weight="9">
+	            <LinearLayout 
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+		            android:orientation="horizontal">
+		            <TextView android:layout_width="20dp"
+		                android:layout_height="fill_parent">
+		            </TextView>
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:paddingTop="20dp"
+	                    android:paddingBottom="20dp"
+	                    android:id="@+id/main_layout1"
+	                    android:layout_weight="1">
+	                    <RelativeLayout android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:id="@+id/main_content_1"
+	                        android:background="@drawable/bg_main_manage"
+	                        android:paddingBottom="30dp">
+	                        <LinearLayout android:layout_width="fill_parent"
+	                            android:layout_height="fill_parent"
+	                            android:gravity="center">
+	                            <ImageView android:layout_width="wrap_content"
+	                                android:src="@drawable/icon_main_manage"
+	                                android:layout_height="wrap_content"/>
+	                        </LinearLayout>
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="35sp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:text="软件管理"/>
+	                    </RelativeLayout>
+	                </LinearLayout>
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:paddingTop="20dp"
+	                    android:paddingBottom="20dp"
+	                    android:id="@+id/main_layout2"
+	                    android:layout_weight="1">
+	                     <RelativeLayout android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:id="@+id/main_content_2"
+	                        android:background="@drawable/bg_main_push"
+	                        android:paddingBottom="30dp">
+	                        <LinearLayout android:layout_width="fill_parent"
+	                            android:layout_height="fill_parent"
+	                            android:orientation="vertical"
+	                            android:gravity="center">
+	                            <LinearLayout android:layout_width="fill_parent"
+	                                android:layout_height="fill_parent"
+	                                android:layout_weight="1"
+	                                android:orientation="vertical"
+	                                android:paddingBottom="6dp">
+	                                <LinearLayout android:layout_width="fill_parent"
+	                                    android:layout_height="fill_parent"
+	                                    android:gravity="center"
+	                                    android:orientation="vertical"
+	                                    android:layout_weight="1">
+	                                    <TextView android:layout_width="fill_parent"
+	                                        android:layout_height="wrap_content"
+	                                        android:gravity="center_horizontal"
+	                                        android:textColor="#000000"
+	                                    	android:textSize="20sp"
+	                                        android:text="PC端访问网址 "/>
+	                                    <TextView android:layout_width="fill_parent"
+	                                        android:layout_height="wrap_content"
+	                                        android:gravity="center_horizontal"
+	                                        android:textColor="#000000"
+	                                        android:textStyle="bold"
+	                                    	android:textSize="30sp"
+	                                        android:text="tt.showkey.tv"/>
+	                                </LinearLayout>
+	                                <TextView android:layout_width="fill_parent"
+	                                    android:layout_height="wrap_content"
+	                                    android:gravity="center"
+	                                    android:textColor="#000000"
+	                                    android:textSize="20sp"
+	                                    android:text="请输入PIN"/>
+	                            </LinearLayout>
+	                            <TextView android:layout_width="wrap_content"
+	                                android:layout_height="wrap_content"
+	                                android:background="@drawable/bg_main_pin"
+	                                android:paddingLeft="5dp"
+	                                android:paddingRight="5dp"
+	                                android:textColor="#000000"
+	                                android:textStyle="bold"
+	                                android:gravity="center"
+	                                android:textSize="30sp"
+	                                android:paddingBottom="5dp"
+	                                android:id="@+id/pincodeText"/>
+	                            <LinearLayout android:layout_width="fill_parent"
+	                                android:layout_height="fill_parent"
+	                                android:gravity="center_horizontal"
+	                                android:layout_weight="1">
+	                                <ImageView android:layout_width="wrap_content"
+		                                android:src="@drawable/icon_main_push"
+		                                android:layout_marginTop="10dp"
+		                                android:layout_height="wrap_content"/>
+	                            </LinearLayout>
+	                        </LinearLayout>
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="35sp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:text="Show推"/>
+	                    </RelativeLayout>
+	                </LinearLayout>
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:paddingTop="20dp"
+	                    android:paddingBottom="20dp"
+	                    android:id="@+id/main_layout3"
+	                    android:layout_weight="1">
+	                    <RelativeLayout android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:id="@+id/main_content_3"
+	                        android:background="@drawable/bg_main_setting"
+	                        android:paddingBottom="30dp">
+	                        <LinearLayout android:layout_width="fill_parent"
+	                            android:layout_height="fill_parent"
+	                            android:gravity="center">
+	                            <ImageView android:layout_width="wrap_content"
+	                                android:src="@drawable/icon_main_setting"
+	                                android:layout_height="wrap_content"/>
+	                        </LinearLayout>
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="35sp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:text="助手设置"/>
+	                    </RelativeLayout>
+	                </LinearLayout>
+	                <TextView android:layout_width="20dp"
+		                android:layout_height="fill_parent">
+		            </TextView>
+	            </LinearLayout>
+	            <ImageView android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:id="@+id/test1"
+	                        android:scaleType="fitXY"/>
+	            <ImageView android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:id="@+id/test2"
+	                        android:scaleType="fitXY"/>
+	            <ImageView android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:id="@+id/test3"
+	                        android:scaleType="fitXY"/>
+	        </RelativeLayout>
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:paddingLeft="20dp"
+	        android:layout_weight="11">
+	        <com.joypuls.tvhelper.ui.NotificationView 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18sp"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joypuls.tvhelper.ui.NotificationView>
+	        <!-- <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#f0f0f0"
+            android:gravity="left"
+            android:textSize="18sp"
+            android:text="今天已有推推    123 次"/> -->
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="3">
+    </LinearLayout>
+</LinearLayout>

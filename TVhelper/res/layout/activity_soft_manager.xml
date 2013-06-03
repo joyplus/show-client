@@ -1,0 +1,228 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_app"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joypuls.tvhelper">
+    <LinearLayout android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="3">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="26">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="15">
+	        
+	    </LinearLayout>
+	    <RelativeLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="80">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:orientation="vertical">
+	            <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="0dp"
+	            android:gravity="right"
+	            android:layout_weight="1">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:src="@drawable/logo"/>
+	       	 	</LinearLayout>
+	       		<LinearLayout android:layout_width="fill_parent"
+	                android:layout_height="0dp"
+	                android:layout_weight="9">
+	            </LinearLayout>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:paddingLeft="20dp"
+	            android:paddingRight="20dp"
+	            android:paddingBottom="20dp"
+	            android:orientation="vertical">
+	            <LinearLayout android:layout_width="fill_parent"
+	                android:layout_height="0dp"
+	                android:layout_weight="13"
+	                android:orientation="vertical"
+	                android:background="@drawable/titile_blue"
+	                >
+	                <TextView android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="软件管理"
+	                    android:layout_marginTop="10dp"
+	                    android:layout_marginLeft="30dp"
+	                    android:textColor="#f0f0f0"
+	                    android:textSize="30sp"/>
+	                <LinearLayout android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:paddingLeft="30dp"
+	                    android:paddingTop="10dp"
+	                    android:orientation="horizontal">
+	                    <LinearLayout android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:background="@drawable/bg_round_progressbar">
+	                        <com.joypuls.tvhelper.ui.RoundProgressBar android:layout_width="85dp"
+	                            android:layout_height="85dp"
+	                            android:id="@+id/progressbar"
+	                            app:max="100"
+	                            app:Inside_Interval="5"
+	                            app:fill="false"
+	                            app:Paint_Color="#fffb940f"
+	                            app:Paint_Width="7">
+	                        </com.joypuls.tvhelper.ui.RoundProgressBar>
+	                    </LinearLayout>
+	                    <LinearLayout android:layout_width="0dp"
+	                        android:layout_height="fill_parent"
+	                        android:orientation="vertical"
+	                        android:paddingLeft="20dp"
+	                        android:paddingBottom="10dp"
+	                        android:gravity="center_vertical"
+	                        android:layout_weight="1">
+	                        <TextView android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:id="@+id/text_usedSize"
+	                            android:textSize="24sp"/>
+	                        <TextView android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#d89026"
+	                            android:id="@+id/text_unusedSize"
+	                            android:textSize="30sp"/>
+	                    </LinearLayout>
+	                    <Button android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:text="返  回"
+	                        android:textSize="20sp"
+	                        android:textColor="#f0f0f0"
+	                        android:paddingBottom="15dp"
+	                        android:layout_marginTop="5dp"
+	                        android:paddingLeft="20dp"
+	                        android:layout_marginRight="30dp"
+	                        android:layout_gravity="center_vertical"
+	                        android:id="@+id/back_Button"
+	                        android:background="@drawable/bg_button_back_selector"/>
+	                </LinearLayout>
+	            </LinearLayout>
+	            <LinearLayout android:layout_width="fill_parent"
+	                android:layout_height="0dp"
+	                android:layout_weight="30"
+	                android:background="#ffffff"
+	                android:gravity="center"
+	                android:orientation="horizontal"
+	                >
+	                <LinearLayout android:layout_width="284dp"
+	                    android:layout_height="284dp"
+	                    android:padding="25dp"
+	                    android:focusable="true"
+	                    android:id="@+id/layout1"
+	                    android:background="@drawable/bg_soft_manager_menu_selector">
+	                    <RelativeLayout android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:background="@drawable/bg_managersoft_item">
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="18sp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:layout_marginBottom="10dp"
+	                            android:id="@+id/content_item1"
+	                            android:text="简单管理已安装软件"/>
+
+	                        <TextView
+	                            android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:layout_above="@id/content_item1"
+	                            android:layout_marginBottom="10dp"
+	                            android:gravity="center_horizontal"
+	                            android:text="卸载"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="30sp" />
+	                    </RelativeLayout>
+	                </LinearLayout>
+	                <LinearLayout android:layout_width="284dp"
+	                    android:layout_height="284dp"
+	                    android:layout_marginLeft="20dp"
+	                    android:padding="25dp"
+	                    android:focusable="true"
+						android:gravity="center"
+						android:id="@+id/layout2"
+	                    android:background="@drawable/bg_soft_manager_menu_selector">
+	                    <RelativeLayout android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:background="@drawable/bg_managersoft_item">
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="18sp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:layout_marginBottom="10dp"
+	                            android:id="@+id/content_item2"
+	                            android:text="快捷管理安装包"/>
+
+	                        <TextView
+	                            android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:layout_above="@id/content_item2"
+	                            android:layout_marginBottom="10dp"
+	                            android:gravity="center_horizontal"
+	                            android:text="安装包管理"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="30sp" />
+	                    </RelativeLayout>
+	                </LinearLayout>
+	            </LinearLayout>
+	        </LinearLayout>
+	    </RelativeLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:paddingLeft="20dp"
+	        android:layout_marginTop="-20dp"
+	        android:orientation="horizontal"
+	        android:layout_weight="11">
+	        <com.joypuls.tvhelper.ui.NotificationView 
+	            android:layout_width="700dp"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18sp"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joypuls.tvhelper.ui.NotificationView>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="right|center_vertical"
+	            android:paddingRight="20dp"
+	            android:orientation="horizontal">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/icon_notice"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20sp"
+	            	android:layout_marginLeft="10dp"
+	                android:text="遥控器按"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	            	android:textSize="25sp"
+	            	android:textColor="#d89026"
+	                android:text="\t返回\t"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20sp"
+	                android:text="离开"/>
+	        </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="3">
+    </LinearLayout>
+</LinearLayout>

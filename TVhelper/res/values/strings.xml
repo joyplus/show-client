@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TVhelper</string>
+    <string name="menu_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="setting_about">\n志精科技洞察消费者视频娱乐消费习惯变革的趋势，致力于成为家庭娱乐分享的引擎。
+        \n\n使命：分享生活和爱的乐趣
+        \n\n愿景：成为家庭娱乐分享引擎
+        \n\n宗旨：
+        \n\n嫁接起移动屏幕和大屏幕的娱乐应用桥梁；
+        \n体验极富乐趣的家庭互动娱乐生活；
+        \n实现多屏合一智能化高效监播体系
+        \n\n企业文化：
+        \n\n先行与恒持——行业先导与使命必达
+        \n分享与共荣——高效沟通与利益共享
+        \n激情与守信——阳光心境与信誉为先
+        \n\n口号：Enjoy sharing life</string>
+</resources>

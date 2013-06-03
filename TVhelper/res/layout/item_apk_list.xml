@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent"
+    android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+	<LinearLayout android:layout_width="fill_parent"
+	    android:background="@drawable/bg_soft_manager_menu_selector"
+	    android:layout_height="105dp" 
+	    android:gravity="center_vertical"
+	    android:paddingLeft="10dp"
+	    android:paddingRight="10dp"
+	    android:orientation="horizontal">
+	    <ImageView android:layout_width="72dp"
+	        android:layout_height="72dp"
+	        android:id="@+id/app_icon"
+	        android:src="@drawable/ic_launcher"/>
+	    <LinearLayout android:layout_width="120dp"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:orientation="vertical">
+	        <TextView android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:singleLine="true"
+	            android:textColor="#000000"
+	            android:textSize="24sp"
+	            android:id="@+id/app_name"/>
+	        <TextView android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="8dp"
+	            android:singleLine="true"
+	            android:textColor="#7a7a7a"
+	            android:textSize="18sp"
+	            android:id="@+id/app_size"/>
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:gravity="center_vertical"
+	        android:layout_marginLeft="20dp"
+	        android:orientation="vertical"
+	        android:id="@+id/progressLayout"
+	        android:layout_weight="1">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="28dp"
+	            android:orientation="horizontal">
+	            <TextView android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:singleLine="true"
+	            android:textColor="#679f3e"
+	            android:textSize="22sp"
+	            android:id="@+id/app_statue"
+	            />
+	            <TextView android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:singleLine="true"
+	            android:textColor="#000000"
+	            android:textSize="22sp"
+	            android:id="@+id/progress_value"
+	            />
+	        </LinearLayout>
+	        
+	        <ProgressBar android:layout_width="fill_parent"
+	            android:layout_height="12dp"
+	            android:layout_marginTop="15dp"
+	            android:max="100"
+				android:id="@+id/progressbar"
+	            style="@style/ProgressBar_My"/>
+	    </LinearLayout>
+	    <ImageView android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="30dp"
+	        android:layout_marginRight="30dp"
+	        android:id="@+id/app_statue_icon"
+	        android:src="@drawable/icon_continue"/>
+	</LinearLayout>
+</RelativeLayout>

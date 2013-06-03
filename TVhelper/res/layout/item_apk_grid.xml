@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="160dp" >
+    
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_soft_manager_menu_selector"
+        android:gravity="center"
+        android:orientation="vertical">
+        <RelativeLayout android:layout_width="72dp"
+            android:layout_height="72dp">
+	        <ImageView android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:id="@+id/item_apk_icon"
+	            android:scaleType="fitXY"
+	            android:src="@drawable/ic_launcher"/>
+	        <ImageView android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/icon_installed"
+	            android:layout_alignParentTop="true"
+	            android:layout_alignParentRight="true"
+	            android:src="@drawable/icon_installed"/>
+        </RelativeLayout>
+        <TextView android:layout_width="fill_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:id="@+id/item_apk_name"
+            android:singleLine="true"
+            android:text="悦视频HD"/>
+        
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content" 
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_marginTop="-5dp">
+            <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="18sp"
+            android:textColor="#7c7c7c"
+            android:id="@+id/item_apk_size"
+            android:singleLine="true"
+            android:text="3.42MB"/>
+            <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="16sp"
+            android:textColor="#7c7c7c"
+            android:singleLine="true"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/item_apk_version"
+            android:text="3.42MB"/>
+        </LinearLayout>
+    </LinearLayout>
+	<ImageView android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginRight="5dp"
+	    android:src="@drawable/item_statue_seleted"
+	    android:id="@+id/item_apk_seleted"
+	    />
+</RelativeLayout>
