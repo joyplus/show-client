@@ -15,8 +15,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" android:name="com.joyplus.app.MyApp">
         <activity
-            android:name="com.joyplus.xllx.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.joyplus.xllx.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

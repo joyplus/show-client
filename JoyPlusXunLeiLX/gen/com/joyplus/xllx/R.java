@@ -11,6 +11,7 @@ public final class R {
     public static final class attr {
     }
     public static final class dimen {
+        public static final int activity_bottom_margin=0x7f040005;
         /**  Default screen margins, per the Android Design guidelines. 
 
          Customize dimensions originally defined in res/values/dimens.xml (such as
@@ -18,16 +19,54 @@ public final class R {
     
          */
         public static final int activity_horizontal_margin=0x7f040000;
+        public static final int activity_left_margin=0x7f040002;
+        public static final int activity_right_margin=0x7f040003;
+        public static final int activity_top_margin=0x7f040004;
         public static final int activity_vertical_margin=0x7f040001;
+        public static final int list_padding_left=0x7f040008;
+        public static final int list_top_margin=0x7f040009;
+        public static final int lx_edittext_top_margin=0x7f040007;
+        public static final int lx_padding_left=0x7f040006;
+        public static final int max_low1_text_size=0x7f04000c;
+        public static final int max_text_size=0x7f04000b;
+        public static final int mid_text_size=0x7f04000d;
+        public static final int min_text_size=0x7f04000e;
+        public static final int zero_value=0x7f04000a;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
+        public static final int a_popup_dialog_loading=0x7f020000;
+        public static final int a_popup_waiting=0x7f020001;
+        public static final int a_popup_waiting_bg=0x7f020002;
+        public static final int ic_launcher=0x7f020003;
     }
     public static final class id {
-        public static final int action_settings=0x7f080000;
+        public static final int action_settings=0x7f080016;
+        public static final int bt_login=0x7f080008;
+        public static final int bt_logout=0x7f080014;
+        public static final int et_passwd=0x7f080007;
+        public static final int et_username=0x7f080005;
+        public static final int ll_lx_login_passwd_name=0x7f080006;
+        public static final int ll_lx_login_user_name=0x7f080004;
+        public static final int progressbar=0x7f080000;
+        public static final int rl_login=0x7f080001;
+        public static final int rl_logout=0x7f080009;
+        public static final int tv_list_tittle=0x7f080015;
+        public static final int tv_lx_login_title=0x7f080002;
+        public static final int tv_lx_login_vip_name=0x7f080003;
+        public static final int tv_lx_logout_nickname=0x7f08000c;
+        public static final int tv_lx_logout_nickname_content=0x7f08000d;
+        public static final int tv_lx_logout_outofdate=0x7f080012;
+        public static final int tv_lx_logout_outofdate_content=0x7f080013;
+        public static final int tv_lx_logout_rank=0x7f080010;
+        public static final int tv_lx_logout_rank_content=0x7f080011;
+        public static final int tv_lx_logout_title=0x7f08000a;
+        public static final int tv_lx_logout_userid=0x7f08000e;
+        public static final int tv_lx_logout_userid_content=0x7f08000f;
+        public static final int tv_lx_logout_welcom=0x7f08000b;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
+        public static final int a_progress_dialog_layout=0x7f030000;
+        public static final int login_main=0x7f030001;
     }
     public static final class menu {
         public static final int main=0x7f070000;
@@ -36,6 +75,18 @@ public final class R {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f050002;
+        public static final int login_list_title=0x7f050008;
+        public static final int login_xunlei_login=0x7f050007;
+        public static final int login_xunlei_passwd_hint=0x7f050006;
+        public static final int login_xunlei_title=0x7f050003;
+        public static final int login_xunlei_usrname_hint=0x7f050005;
+        public static final int login_xunlei_vipname=0x7f050004;
+        public static final int logout_logout=0x7f05000e;
+        public static final int logout_nickname=0x7f05000a;
+        public static final int logout_out_date=0x7f05000d;
+        public static final int logout_rank=0x7f05000c;
+        public static final int logout_userid=0x7f05000b;
+        public static final int logout_welcom=0x7f050009;
     }
     public static final class style {
         /** 
