@@ -2,14 +2,17 @@ package com.joyplus.adapter;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.joyplus.entity.XLLXFileInfo;
+import com.joyplus.utils.Utils;
 import com.joyplus.xllx.R;
 
 public class PlayListAdapter extends BaseAdapter {
@@ -48,8 +51,8 @@ public class PlayListAdapter extends BaseAdapter {
 		ViewHolder holder = null;
 		if(convertView == null) {
 			holder = new ViewHolder();
-			convertView = ((Activity)context).getLayoutInflater().
-					inflate(R.layout.item_play_list_layout, null);
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = inflater.inflate(R.layout.item_play_list_layout, null);
 			holder.nameTv = (TextView) convertView.findViewById(R.id.tv_movie_name);
 			holder.sizeTv = (TextView) convertView.findViewById(R.id.tv_size);
 			
@@ -59,8 +62,11 @@ public class PlayListAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
+		LayoutParams params = new AbsListView.LayoutParams(LayoutParams.FILL_PARENT, 72);
+		convertView.setLayoutParams(params);
+		
 		holder.nameTv.setText(list.get(position).file_name);
-		holder.sizeTv.setText(list.get(position).filesize);
+		holder.sizeTv.setText(Utils.byte2Mbyte(list.get(position).filesize));
 		
 		return convertView;
 	}

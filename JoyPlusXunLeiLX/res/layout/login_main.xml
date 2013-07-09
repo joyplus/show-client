@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3D3C3E"
+    android:background="@drawable/background"
     android:orientation="horizontal" >
 
     <LinearLayout
@@ -17,13 +17,13 @@
             android:layout_width="@dimen/zero_value"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#468EF4" >
+            android:background="#359CE1" >
 
             <RelativeLayout
                 android:id="@+id/rl_login"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible">
+                android:visibility="visible" >
 
                 <TextView
                     android:id="@+id/tv_lx_login_title"
@@ -46,57 +46,106 @@
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/mid_text_size" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/ll_lx_login_user_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="39dp"
                     android:layout_below="@id/tv_lx_login_vip_name"
-                    android:layout_marginTop="@dimen/lx_edittext_top_margin"
-                    android:paddingLeft="@dimen/lx_padding_left"
-                    android:paddingRight="@dimen/lx_padding_left" >
+                    android:layout_marginLeft="@dimen/lx_padding_left"
+                    android:layout_marginRight="@dimen/lx_padding_left"
+                    android:layout_marginTop="@dimen/lx_edittext_top_margin" >
 
-                    <EditText
-                        android:id="@+id/et_username"
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:focusable="false"
-                        android:hint="@string/login_xunlei_usrname_hint"
-                        android:textColorHint="#979797"
-                        android:textSize="@dimen/min_text_size"
-                        android:singleLine="true" />
-                </LinearLayout>
+                        android:layout_height="32dp"
+                        android:layout_centerVertical="true"
+                        android:background="@color/white" />
 
-                <LinearLayout
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/xunlei_edittext_bg"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true" >
+
+                        <ImageView
+                            android:id="@+id/iv_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="18dp"
+                            android:src="@drawable/icon_user" />
+
+                        <EditText
+                            android:id="@+id/et_username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/iv_username"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/login_xunlei_usrname_hint"
+                            android:singleLine="true"
+                            android:textColorHint="#979797"
+                            android:textSize="@dimen/min_text_size" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/ll_lx_login_passwd_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="39dp"
                     android:layout_below="@id/ll_lx_login_user_name"
-                    android:layout_marginTop="@dimen/lx_edittext_top_margin"
-                    android:paddingLeft="@dimen/lx_padding_left"
-                    android:paddingRight="@dimen/lx_padding_left" >
+                    android:layout_marginLeft="@dimen/lx_padding_left"
+                    android:layout_marginRight="@dimen/lx_padding_left"
+                    android:layout_marginTop="@dimen/lx_edittext_top_margin" >
 
-                    <EditText
-                        android:id="@+id/et_passwd"
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:focusable="false"
-                        android:hint="@string/login_xunlei_passwd_hint"
-                        android:textColorHint="#979797"
-                        android:textSize="@dimen/min_text_size" 
-                        android:singleLine="true"/>
-                </LinearLayout>
+                        android:layout_height="32dp"
+                        android:layout_centerVertical="true"
+                        android:background="@color/white" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/xunlei_edittext_bg"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true" >
+
+                        <ImageView
+                            android:id="@+id/iv_passwd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="18dp"
+                            android:src="@drawable/icon_passwd" />
+
+                        <EditText
+                            android:id="@+id/et_passwd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/iv_passwd"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/login_xunlei_passwd_hint"
+                            android:singleLine="true"
+                            android:textColorHint="#979797"
+                            android:textSize="@dimen/min_text_size" />
+                    </RelativeLayout>
+                </RelativeLayout>
 
                 <Button
                     android:id="@+id/bt_login"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_below="@id/ll_lx_login_passwd_name"
                     android:layout_marginLeft="@dimen/lx_padding_left"
                     android:layout_marginRight="@dimen/lx_padding_left"
                     android:layout_marginTop="46dp"
-                    android:background="#FFFFFF"
+                    android:background="@drawable/xunlei_login_btn_bg"
+                    android:textColor="@color/xunlei_login_btn_textcolor"
                     android:text="@string/login_xunlei_login"
                     android:textSize="@dimen/min_text_size" />
             </RelativeLayout>
@@ -105,7 +154,7 @@
                 android:id="@+id/rl_logout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible">
+                android:visibility="invisible" >
 
                 <TextView
                     android:id="@+id/tv_lx_logout_title"
@@ -127,7 +176,7 @@
                     android:text="@string/logout_welcom"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/max_low1_text_size" />
-                
+
                 <TextView
                     android:id="@+id/tv_lx_logout_nickname"
                     android:layout_width="wrap_content"
@@ -139,18 +188,19 @@
                     android:text="@string/logout_nickname"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
-                
+
                 <TextView
                     android:id="@+id/tv_lx_logout_nickname_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_lx_logout_welcom"
-                    android:layout_toRightOf="@id/tv_lx_logout_nickname"
                     android:layout_marginTop="17dp"
+                    android:layout_toRightOf="@id/tv_lx_logout_nickname"
                     android:paddingLeft="@dimen/lx_padding_left"
                     android:text="某某"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
+
                 <TextView
                     android:id="@+id/tv_lx_logout_userid"
                     android:layout_width="wrap_content"
@@ -162,18 +212,19 @@
                     android:text="@string/logout_userid"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
-                
+
                 <TextView
                     android:id="@+id/tv_lx_logout_userid_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_lx_logout_nickname"
-                    android:layout_toRightOf="@id/tv_lx_logout_userid"
                     android:layout_marginTop="13dp"
+                    android:layout_toRightOf="@id/tv_lx_logout_userid"
                     android:paddingLeft="@dimen/lx_padding_left"
                     android:text="800180013"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
+
                 <TextView
                     android:id="@+id/tv_lx_logout_rank"
                     android:layout_width="wrap_content"
@@ -185,18 +236,19 @@
                     android:text="@string/logout_rank"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
-                
+
                 <TextView
                     android:id="@+id/tv_lx_logout_rank_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_lx_logout_userid"
-                    android:layout_toRightOf="@id/tv_lx_logout_rank"
                     android:layout_marginTop="13dp"
+                    android:layout_toRightOf="@id/tv_lx_logout_rank"
                     android:paddingLeft="@dimen/lx_padding_left"
                     android:text="VIP3"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
+
                 <TextView
                     android:id="@+id/tv_lx_logout_outofdate"
                     android:layout_width="wrap_content"
@@ -208,27 +260,28 @@
                     android:text="@string/logout_out_date"
                     android:textColor="#FFFBF2"
                     android:textSize="@dimen/min_text_size" />
-                
+
                 <TextView
                     android:id="@+id/tv_lx_logout_outofdate_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_lx_logout_rank_content"
-                    android:layout_toRightOf="@id/tv_lx_logout_outofdate"
                     android:layout_marginTop="16dp"
+                    android:layout_toRightOf="@id/tv_lx_logout_outofdate"
                     android:paddingLeft="@dimen/lx_padding_left"
                     android:textColor="#FFFBF2"
-                    android:textSize="16dp"/>
+                    android:textSize="16dp" />
 
                 <Button
                     android:id="@+id/bt_logout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_below="@id/tv_lx_logout_outofdate"
                     android:layout_marginLeft="@dimen/lx_padding_left"
                     android:layout_marginRight="@dimen/lx_padding_left"
                     android:layout_marginTop="51dp"
-                    android:background="#FFFFFF"
+                    android:background="@drawable/xunlei_login_btn_bg"
+                    android:textColor="@color/xunlei_login_btn_textcolor"
                     android:text="@string/logout_logout"
                     android:textSize="@dimen/min_text_size" />
             </RelativeLayout>
@@ -239,22 +292,42 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/list_top_margin"
             android:layout_weight="4.3"
-            android:background="#F2F2F2" >
+            android:background="@color/light_white" >
 
             <TextView
                 android:id="@+id/tv_list_tittle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="95dp"
                 android:gravity="left|center_vertical"
                 android:paddingLeft="@dimen/list_padding_left"
                 android:text="@string/login_list_title"
                 android:textColor="#414850"
                 android:textSize="@dimen/max_text_size" />
-            <ListView 
+            <Button 
+                android:id="@+id/bt_back"
+                android:layout_width="135dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="44dp"
+                android:textColor="@color/light_white"
+                android:background="@color/light_black"
+                android:textSize="@dimen/max_low1_text_size"
+                android:text="@string/return_back"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"/>
+
+            <TextView 
+                android:id="@+id/tv_bg_line"
+                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:background="@drawable/divider_line"
+                android:layout_below="@id/tv_list_tittle"/>
+            <ListView
                 android:id="@+id/lv_movie"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/tv_list_tittle"/>
+                android:layout_below="@id/tv_bg_line"
+                android:divider="@color/light_white"/>
         </RelativeLayout>
     </LinearLayout>
 

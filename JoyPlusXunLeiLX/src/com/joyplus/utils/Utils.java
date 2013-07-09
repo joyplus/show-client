@@ -37,5 +37,37 @@ public class Utils {
 			bitmap = null;
 		}
 	}
+	
+	//把字节换算成M
+	public static String byte2Mbyte(String byteStr) {
+		
+		if(byteStr != null && !byteStr.equals("")
+				&&!byteStr.equals("null")) {
+			
+			long fileSize = -1l;
+			try {
+				fileSize = Long.valueOf(byteStr);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(fileSize > 0) {
+				
+				float tempLong = fileSize/(1024 * 1024 * 1.0f);
+				if(tempLong < 1000) {
+					
+					return String.format("%.2f", tempLong) + "M";
+				} else {
+					
+					float tempFloat = tempLong/(1024 * 1.0f);
+					
+					return String.format("%.2f", tempFloat) + "G";
+				}
+			}
+		}
+		
+		return "未知";
+	}
 
 }

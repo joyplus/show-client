@@ -60,4 +60,9 @@
     <!-- Yu -->
 
 	<color name="bright_foreground_dark">#ffffffff</color>  
+	
+	<color name="light_white">#F2F2F2</color>
+	<color name="light_black">#3E454D</color>
+	
+	<color name="item_list_text_black">#878787</color>
 </resources>
