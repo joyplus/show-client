@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.webkit.URLUtil;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.joyplus.adapter.PlayListAdapter;
 import com.joyplus.app.MyApp;
+import com.joyplus.entity.CurrentPlayDetailData;
 import com.joyplus.entity.XLLXFileInfo;
 import com.joyplus.entity.XLLXUserInfo;
 import com.joyplus.utils.Utils;
@@ -50,11 +52,15 @@ public class LoginActivity extends Activity {
 	private int pageIndex = 1;
 	
 	private List<XLLXFileInfo> playerList = new ArrayList<XLLXFileInfo>();
+	
+	private MyApp app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_main);
+		
+		app = (MyApp) getApplication();
 
 		initView();
 
@@ -135,6 +141,57 @@ public class LoginActivity extends Activity {
 				setLogin(false);
 				pageIndex = 1;
 				isFirstLogin = true;
+			}
+		});
+		
+		playerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				Log.i(TAG, "onItemClick--->");
+				
+				if(playerList != null && playerList.size() > 0) {
+					
+					if(playerList.get(position) != null) {
+						
+						XLLXFileInfo xllxFileInfo = playerList.get(position);
+						Log.i(TAG, "onItemClick--->xllxFileInfo:" + xllxFileInfo.toString());
+						if(xllxFileInfo.src_url != null) {
+							
+							//如果url不为空，直接传给播放器
+							CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
+							currentPlayDetailData.prod_src = xllxFileInfo.src_url;
+							currentPlayDetailData.prod_type = -1;
+							
+							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
+								
+								currentPlayDetailData.prod_name = xllxFileInfo.file_name;
+							}
+							
+							if(xllxFileInfo.duration != null && !xllxFileInfo.file_name.equals("")
+									&& !xllxFileInfo.file_name.equals("0")) {
+								
+								long tempDuration = 0l;
+								try {
+									tempDuration = Long.valueOf(xllxFileInfo.duration);
+								} catch (NumberFormatException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+								if(tempDuration > 0) {
+									
+									currentPlayDetailData.prod_time = tempDuration;
+								}
+							}
+							
+							app.setmCurrentPlayDetailData(currentPlayDetailData);
+							startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
+						}
+					}
+				}
 			}
 		});
 	}
