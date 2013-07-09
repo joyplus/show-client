@@ -250,6 +250,11 @@
                 android:text="@string/login_list_title"
                 android:textColor="#414850"
                 android:textSize="@dimen/max_text_size" />
+            <ListView 
+                android:id="@+id/lv_movie"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tv_list_tittle"/>
         </RelativeLayout>
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.joyplus.xllx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -10,10 +11,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.joyplus.adapter.PlayListAdapter;
 import com.joyplus.app.MyApp;
 import com.joyplus.entity.XLLXFileInfo;
 import com.joyplus.entity.XLLXUserInfo;
@@ -38,10 +42,14 @@ public class LoginActivity extends Activity {
 	private Button loginBt,logoutBt;
 	
 	private TextView nickNameTv,userIdTv,vipRankTv,outDateTv;
+	
+	private ListView playerListView;
 
 	private boolean isFirstLogin = true;
 	
 	private int pageIndex = 1;
+	
+	private List<XLLXFileInfo> playerList = new ArrayList<XLLXFileInfo>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,8 @@ public class LoginActivity extends Activity {
 		userIdTv = (TextView) findViewById(R.id.tv_lx_logout_userid_content);
 		vipRankTv = (TextView) findViewById(R.id.tv_lx_logout_rank_content);
 		outDateTv = (TextView) findViewById(R.id.tv_lx_logout_outofdate_content);
+		
+		playerListView = (ListView) findViewById(R.id.lv_movie);
 		
 		loginBt.setOnClickListener(new View.OnClickListener() {
 			
@@ -197,6 +207,13 @@ public class LoginActivity extends Activity {
 				break;
 			case REFRESH_LIST://刷新用户信息成功
 //				removeDialog(DIALOG_WAITING);
+				
+				List<XLLXFileInfo> list =  (List<XLLXFileInfo>) msg.obj;
+
+				if(list != null && list.size() >0) {
+					playerList = list;
+					playerListView.setAdapter(new PlayListAdapter(LoginActivity.this,playerList ));
+				}
 				break;
 			case START_LOGIN://直接进入用户界面
 				MyApp.pool.execute(getUsrInfoRunnable);
