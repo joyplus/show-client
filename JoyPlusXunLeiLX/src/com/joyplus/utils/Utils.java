@@ -1,5 +1,7 @@
 package com.joyplus.utils;
 
+import java.text.DecimalFormat;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.widget.Toast;
@@ -54,20 +56,70 @@ public class Utils {
 			
 			if(fileSize > 0) {
 				
-				float tempLong = fileSize/(1024 * 1024 * 1.0f);
-				if(tempLong < 1000) {
+				float tempLong = fileSize/(1024 * 1.0f);
+				if(tempLong < 1024) {
 					
-					return String.format("%.2f", tempLong) + "M";
+					return String.format("%.2f", tempLong) + "KB";
 				} else {
 					
-					float tempFloat = tempLong/(1024 * 1.0f);
+					tempLong = tempLong/(1024 * 1.0f);
 					
-					return String.format("%.2f", tempFloat) + "G";
+					if(tempLong < 1024) {
+						
+						return String.format("%.2f", tempLong) + "M";
+					} else {
+						
+						float tempFloat = tempLong/(1024 * 1.0f);
+						
+						return String.format("%.2f", tempFloat) + "G";
+					}
 				}
 			}
 		}
 		
 		return "δ֪";
+	}
+	
+	public static String setFileSize(long paramLong) {
+		DecimalFormat localDecimalFormat = new DecimalFormat("###.##");
+		float f = (float) paramLong / 1048576.0F;
+		
+		if (f < 1.0D)
+			return localDecimalFormat.format(new Float(
+					(float) paramLong / 1024.0F).doubleValue()) + "KB";
+		
+		if ((f >= 1.0D) && (f < 1024.0D))
+			return localDecimalFormat.format(new Float(f).doubleValue()) + "M";
+		
+		return localDecimalFormat.format(new Float(f / 1024.0F).doubleValue())
+				+ "G";
+	}
+	
+	public  static boolean isSame4Str(String str1, String str2){
+		if(str1==null||str2==null){
+			return false;
+		}
+		if(str1.equalsIgnoreCase(str2)){
+			return true;
+		}else{
+			if(str1.trim().equalsIgnoreCase(str2.trim())){
+				return true;
+			}else{
+				if(str1.length()>=str2.length()){
+					if(str1.startsWith(str2)){
+						return true;
+					}else{
+						return false;
+					}
+				}else{
+					if(str2.startsWith(str1)){
+						return true;
+					}else{
+						return false;
+					}
+				}
+			}
+		}
 	}
 
 }

@@ -22,5 +22,7 @@
     <string name="logout_logout">注销</string>
     
     <string name="return_back">返回</string>
+    
+    <string name=" networknotwork">你的网络好像有问题，请重试！</string>
 
 </resources>

@@ -162,7 +162,7 @@ public class LoginActivity extends Activity {
 							
 							//如果url不为空，直接传给播放器
 							CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
-							currentPlayDetailData.prod_src = xllxFileInfo.src_url;
+							currentPlayDetailData.prod_url = xllxFileInfo.src_url;
 							currentPlayDetailData.prod_type = -1;
 							
 							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
@@ -188,6 +188,8 @@ public class LoginActivity extends Activity {
 							}
 							
 							app.setmCurrentPlayDetailData(currentPlayDetailData);
+							
+//							if(currentPlayDetailData.prod_src != null )
 							startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
 						}
 					}

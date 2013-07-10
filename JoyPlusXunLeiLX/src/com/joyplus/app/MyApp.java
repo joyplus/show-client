@@ -1,5 +1,6 @@
 package com.joyplus.app;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.joyplus.entity.CurrentPlayDetailData;
+import com.joyplus.entity.service.ReturnProgramView;
 
 public class MyApp extends Application {
 	
@@ -18,6 +20,9 @@ public class MyApp extends Application {
 	private static MyApp instance;
 	
 	private CurrentPlayDetailData mCurrentPlayDetailData;
+	private ReturnProgramView m_ReturnProgramView = null;
+	
+	private Map<String, String> headers;
 	
 	@Override
 	public void onCreate() {
@@ -56,6 +61,22 @@ public class MyApp extends Application {
 	public void setmCurrentPlayDetailData(
 			CurrentPlayDetailData mCurrentPlayDetailData) {
 		this.mCurrentPlayDetailData = mCurrentPlayDetailData;
+	}
+	
+	public ReturnProgramView get_ReturnProgramView() {
+		return m_ReturnProgramView;
+	}
+
+	public void set_ReturnProgramView(ReturnProgramView m_ReturnProgramView) {
+		this.m_ReturnProgramView = m_ReturnProgramView;
+	}
+	
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
 	}
 
 }

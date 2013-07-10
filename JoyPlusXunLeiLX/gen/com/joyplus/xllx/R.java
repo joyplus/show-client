@@ -147,17 +147,23 @@ public final class R {
         public static final int player_btn_pre_normal=0x7f02002a;
         public static final int player_btn_pre_press=0x7f02002b;
         public static final int player_btn_pre_unuse=0x7f02002c;
-        public static final int player_mask_bottom=0x7f02002d;
-        public static final int player_mask_top=0x7f02002e;
-        public static final int player_progress_thumb=0x7f02002f;
-        public static final int player_seekbar_img=0x7f020030;
-        public static final int player_time=0x7f020031;
-        public static final int player_time_jindu=0x7f020032;
-        public static final int player_time_jindu_x=0x7f020033;
-        public static final int player_volume=0x7f020034;
-        public static final int player_volume_mute=0x7f020035;
-        public static final int xunlei_edittext_bg=0x7f020036;
-        public static final int xunlei_login_btn_bg=0x7f020037;
+        public static final int player_btn_unfav=0x7f02002d;
+        public static final int player_btn_unfav_active=0x7f02002e;
+        public static final int player_btn_unfav_normal=0x7f02002f;
+        public static final int player_btn_unfav_press=0x7f020030;
+        public static final int player_btn_unfav_unuse=0x7f020031;
+        public static final int player_btn_unfav_unuse_active=0x7f020032;
+        public static final int player_mask_bottom=0x7f020033;
+        public static final int player_mask_top=0x7f020034;
+        public static final int player_progress_thumb=0x7f020035;
+        public static final int player_seekbar_img=0x7f020036;
+        public static final int player_time=0x7f020037;
+        public static final int player_time_jindu=0x7f020038;
+        public static final int player_time_jindu_x=0x7f020039;
+        public static final int player_volume=0x7f02003a;
+        public static final int player_volume_mute=0x7f02003b;
+        public static final int xunlei_edittext_bg=0x7f02003c;
+        public static final int xunlei_login_btn_bg=0x7f02003d;
     }
     public static final class id {
         public static final int LayoutBottomTime1=0x7f0a0030;
@@ -235,6 +241,7 @@ public final class R {
         public static final int main=0x7f090000;
     }
     public static final class string {
+        public static final int  networknotwork=0x7f070010;
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
         public static final int hello_world=0x7f070002;
