@@ -1,38 +1,38 @@
 package com.joyplus.xllx;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.joyplus.adapter.PlayExpandListAdapter;
-import com.joyplus.adapter.PlayListAdapter;
 import com.joyplus.app.MyApp;
 import com.joyplus.entity.CurrentPlayDetailData;
 import com.joyplus.entity.XLLXFileInfo;
 import com.joyplus.entity.XLLXUserInfo;
+import com.joyplus.ui.WaitingDialog;
 import com.joyplus.utils.Utils;
 import com.joyplus.utils.XunLeiLiXianUtil;
 
-public class LoginActivity extends Activity {
+public class XunLeiLXActivity extends Activity {
 
-	private static final String TAG = "LoginActivity";
+	private static final String TAG = "XunLeiLXActivity";
 	
-//	private static final int DIALOG_WAITING = 0;
+	private static final int DIALOG_WAITING = 0;
 
 	private static final int LOGIN_ERROR = 2;
 	private static final int LOGIN_SUCESS = 1;
@@ -41,30 +41,26 @@ public class LoginActivity extends Activity {
 	private static final int START_LOGIN = 5;
 
 	private View loginLayout, logoutLayout;
+	private View userNameLayout,passwdLayout;
 	private EditText userNameEdit,passwdEdit;
-	
 	private Button loginBt,logoutBt;
-	
 	private TextView nickNameTv,userIdTv,vipRankTv,outDateTv;
-	
 	private ExpandableListView playerListView;
-
-	private boolean isFirstLogin = true;
-	
-	private int pageIndex = 1;
-	
-	private ArrayList<XLLXFileInfo> playerList = new ArrayList<XLLXFileInfo>();
-	
-	private MyApp app;
 	
 	private PlayExpandListAdapter playExpandListAdapter;
 	
+	private MyApp app;
+
+	private ArrayList<XLLXFileInfo> playerList = new ArrayList<XLLXFileInfo>();
+	
 	private int expandFlag =-1;
+	private int pageIndex = 1;
+	private boolean isFirstLogin = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login_main);
+		setContentView(R.layout.xunlei_login_main);
 		
 		app = (MyApp) getApplication();
 
@@ -72,25 +68,21 @@ public class LoginActivity extends Activity {
 
 		loginLayout.setVisibility(View.VISIBLE);
 		logoutLayout.setVisibility(View.INVISIBLE);
+		
+		
 
-//		if (XunLeiLiXianUtil.getCookie(getApplicationContext()) != null
-//				&& !XunLeiLiXianUtil.getCookie(getApplicationContext()).equals("")) {
-//
-//			isFirstLogin = false;
-//			userNameEdit.setText(XunLeiLiXianUtil.getUsrname(getApplicationContext()));
-//			
-//			handler.sendEmptyMessage(START_LOGIN);
-//			MyApp.pool.execute(getUsrInfoRunnable);
-//		}
+		if (XunLeiLiXianUtil.getCookie(getApplicationContext()) != null
+				&& !XunLeiLiXianUtil.getCookie(getApplicationContext()).equals("")) {
+
+			isFirstLogin = false;
+			userNameEdit.setText(XunLeiLiXianUtil.getUsrname(getApplicationContext()));
+			
+			handler.sendEmptyMessage(START_LOGIN);
+			MyApp.pool.execute(getUsrInfoRunnable);
+			showDialog(DIALOG_WAITING);
+		}
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
+	
 	private void initView() {
 
 		loginLayout = findViewById(R.id.rl_login);
@@ -98,6 +90,9 @@ public class LoginActivity extends Activity {
 		
 		userNameEdit = (EditText) findViewById(R.id.et_username);
 		passwdEdit = (EditText) findViewById(R.id.et_passwd);
+		
+		userNameLayout = findViewById(R.id.rl_username);
+		passwdLayout = findViewById(R.id.rl_passwd);
 		
 		userNameEdit.setText("13918413043@163.com");
 		passwdEdit.setText("6105586");
@@ -113,6 +108,42 @@ public class LoginActivity extends Activity {
 		playerListView = (ExpandableListView) findViewById(R.id.lv_movie);
 		playerListView.setGroupIndicator(null);
 		
+		addViewListener();
+		
+	}
+	
+	private void addViewListener() {
+		
+		userNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus) {
+					
+					userNameLayout.setBackgroundResource(R.drawable.edit_focused);
+				} else {
+					
+					userNameLayout.setBackgroundDrawable(null);
+				}
+			}
+		});
+		
+		passwdEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus) {
+					
+					passwdLayout.setBackgroundResource(R.drawable.edit_focused);
+				} else {
+					
+					passwdLayout.setBackgroundDrawable(null);
+				}
+			}
+		});
+		
 		loginBt.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -121,20 +152,20 @@ public class LoginActivity extends Activity {
 				
 				if(TextUtils.isEmpty(userNameEdit.getText().toString())) {
 					
-					Utils.showToast(LoginActivity.this, "请输入用户名");
+					Utils.showToast(XunLeiLXActivity.this, "请输入用户名");
 					
 					return;
 				}
 				
 				if(TextUtils.isEmpty(passwdEdit.getText().toString())) {
 					
-					Utils.showToast(LoginActivity.this, "请输入密码");
+					Utils.showToast(XunLeiLXActivity.this, "请输入密码");
 					
 					return;
 				}
 				
 				MyApp.pool.execute(loginRunnable);
-//				showDialog(DIALOG_WAITING);
+				showDialog(DIALOG_WAITING);
 			}
 		});
 		
@@ -144,65 +175,9 @@ public class LoginActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				XunLeiLiXianUtil.Logout(getApplicationContext());
-				setLogin(false);
-				pageIndex = 1;
-				isFirstLogin = true;
+				reset2Login();
 			}
 		});
-		
-//		playerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view,
-//					int position, long id) {
-//				// TODO Auto-generated method stub
-//				Log.i(TAG, "onItemClick--->");
-//				
-//				if(playerList != null && playerList.size() > 0) {
-//					
-//					if(playerList.get(position) != null) {
-//						
-//						XLLXFileInfo xllxFileInfo = playerList.get(position);
-//						Log.i(TAG, "onItemClick--->xllxFileInfo:" + xllxFileInfo.toString());
-//						if(xllxFileInfo.src_url != null) {
-//							
-//							//如果url不为空，直接传给播放器
-//							CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
-//							currentPlayDetailData.prod_url = xllxFileInfo.src_url;
-//							currentPlayDetailData.prod_type = -1;
-//							
-//							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
-//								
-//								currentPlayDetailData.prod_name = xllxFileInfo.file_name;
-//							}
-//							
-//							if(xllxFileInfo.duration != null && !xllxFileInfo.file_name.equals("")
-//									&& !xllxFileInfo.file_name.equals("0")) {
-//								
-//								long tempDuration = 0l;
-//								try {
-//									tempDuration = Long.valueOf(xllxFileInfo.duration);
-//								} catch (NumberFormatException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								}
-//								
-//								if(tempDuration > 0) {
-//									
-//									currentPlayDetailData.prod_time = tempDuration;
-//								}
-//							}
-//							
-//							app.setmCurrentPlayDetailData(currentPlayDetailData);
-//							
-////							if(currentPlayDetailData.prod_src != null )
-//							startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
-//						}
-//					}
-//				}
-//			}
-//		});
 		
 		playerListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 			
@@ -247,7 +222,7 @@ public class LoginActivity extends Activity {
 								app.setmCurrentPlayDetailData(currentPlayDetailData);
 								
 //								if(currentPlayDetailData.prod_src != null )
-								startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
+								startActivity(new Intent(XunLeiLXActivity.this, VideoPlayerJPActivity.class));
 							}
 						} else {
 							
@@ -257,7 +232,7 @@ public class LoginActivity extends Activity {
 					              {
 					                public void run()
 					                {
-					                  if (XunLeiLiXianUtil.getSubFile(LoginActivity.this, xllxFileInfo) != null)
+					                  if (XunLeiLiXianUtil.getSubFile(XunLeiLXActivity.this, xllxFileInfo) != null)
 					                    handler.post(new Runnable()
 					                    {
 					                      public void run(){
@@ -332,7 +307,7 @@ public class LoginActivity extends Activity {
 								app.setmCurrentPlayDetailData(currentPlayDetailData);
 								
 //								if(currentPlayDetailData.prod_src != null )
-								startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
+								startActivity(new Intent(XunLeiLXActivity.this, VideoPlayerJPActivity.class));
 							}
 						}
 					}
@@ -341,6 +316,24 @@ public class LoginActivity extends Activity {
 				return false;
 			}
 		});
+		
+		playerListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+//		playerListView.setOn
 	}
 	
 	private void setLogin(boolean isLogin) {
@@ -349,6 +342,8 @@ public class LoginActivity extends Activity {
 			
 			loginLayout.setVisibility(View.VISIBLE);
 			logoutLayout.setVisibility(View.INVISIBLE);
+			
+			passwdEdit.setText("");
 		} else {
 			
 			logoutLayout.setVisibility(View.VISIBLE);
@@ -356,30 +351,42 @@ public class LoginActivity extends Activity {
 		}
 	}
 	
-//	@Override
-//	protected Dialog onCreateDialog(int id) {
-//		// TODO Auto-generated method stub
-//		
-//		switch (id) {
-//		case DIALOG_WAITING:
-//			WaitingDialog dlg = new WaitingDialog(this);
-//			dlg.show();
-//			dlg.setOnCancelListener(new OnCancelListener() {
-//
-//				@Override
-//				public void onCancel(DialogInterface dialog) {
-//					// TODO Auto-generated method stub
-//					finish();
-//				}
-//			});
-//			dlg.setDialogWindowStyle();
-//			return dlg;
-//
-//		default:
-//			break;
-//		}
-//		return super.onCreateDialog(id);
-//	}
+	private void reset2Login() {
+		
+		XunLeiLiXianUtil.Logout(getApplicationContext());
+		setLogin(false);
+		
+		playerList.clear();
+		playExpandListAdapter.notifyDataSetChanged();
+		
+		pageIndex = 1;
+		isFirstLogin = true;
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+
+		default:
+			break;
+		}
+		return super.onCreateDialog(id);
+	}
 	
 	private Handler handler = new Handler(){
 
@@ -392,11 +399,14 @@ public class LoginActivity extends Activity {
 			
 			switch (what) {
 			case LOGIN_SUCESS://登录成功
-				Utils.showToast(LoginActivity.this, "登陆成功");
+				
+				Utils.showToast(XunLeiLXActivity.this, "登陆成功");
 				MyApp.pool.execute(getUsrInfoRunnable);
 				break;
 			case REFESH_USERINFO://刷新用户信息成功
 				setLogin(true);//跳转到用户信息界面
+				
+				isFirstLogin = false;
 				
 				XLLXUserInfo xllxUserInfo = (XLLXUserInfo) msg.obj;
 				if(xllxUserInfo != null) {
@@ -408,6 +418,7 @@ public class LoginActivity extends Activity {
 				}
 				
 				MyApp.pool.execute(getVideoList);
+				removeDialog(DIALOG_WAITING);
 				break;
 			case REFRESH_LIST://刷新用户信息成功
 //				removeDialog(DIALOG_WAITING);
@@ -416,7 +427,7 @@ public class LoginActivity extends Activity {
 
 				if(list != null && list.size() >0) {
 					playerList = list;
-					playExpandListAdapter = new PlayExpandListAdapter(LoginActivity.this,playerList );
+					playExpandListAdapter = new PlayExpandListAdapter(XunLeiLXActivity.this,playerList );
 					playerListView.setAdapter(playExpandListAdapter);
 				}
 				break;
@@ -428,28 +439,32 @@ public class LoginActivity extends Activity {
 				int loginErrorFlag = msg.arg1;
 				switch (loginErrorFlag) {
 				case 1:
-					Utils.showToast(LoginActivity.this, "获取验证码失败,稍后重试");
+					Utils.showToast(XunLeiLXActivity.this, "获取验证码失败,稍后重试");
 					break;
 				case 2:
-					Utils.showToast(LoginActivity.this, "密码错误");
+					Utils.showToast(XunLeiLXActivity.this, "密码错误");
 					break;
 				case 4:
 				case 5:
-					Utils.showToast(LoginActivity.this, "账户不存在");
+					Utils.showToast(XunLeiLXActivity.this, "账户不存在");
 					break;
 				case 6:
-					Utils.showToast(LoginActivity.this, "账户被锁定");
+					Utils.showToast(XunLeiLXActivity.this, "账户被锁定");
 					break;
 				case 10:
-					Utils.showToast(LoginActivity.this, "获取用户信息失败,请重试或者重新登录");
+					Utils.showToast(XunLeiLXActivity.this, "获取用户信息失败,请重试或者重新登录");
 					break;
 				case 11:
-					Utils.showToast(LoginActivity.this, "获取列表失败");
+					Utils.showToast(XunLeiLXActivity.this, "获取列表失败");
 					break;
 				default:
-					Utils.showToast(LoginActivity.this, "网络超时，稍后重试");
+					Utils.showToast(XunLeiLXActivity.this, "网络超时，稍后重试");
 					break;
 				}
+				
+				//清空数据重新获取数据
+				reset2Login();
+				removeDialog(DIALOG_WAITING);
 				break;
 
 			default:
@@ -465,7 +480,7 @@ public class LoginActivity extends Activity {
 		public void run() {
 			// TODO Auto-generated method stub
 			
-			int loginFlag = XunLeiLiXianUtil.Login(LoginActivity.this,
+			int loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
 					userNameEdit.getText().toString(), passwdEdit.getText().toString());
 			
 			if(loginFlag == 0) {
@@ -501,8 +516,8 @@ public class LoginActivity extends Activity {
 				}
 			} else {
 				
-				xllxUserInfo = XunLeiLiXianUtil.getUser(LoginActivity.this,
-						XunLeiLiXianUtil.getCookieHeader(LoginActivity.this));
+				xllxUserInfo = XunLeiLiXianUtil.getUser(XunLeiLXActivity.this,
+						XunLeiLiXianUtil.getCookieHeader(XunLeiLXActivity.this));
 				
 				if(xllxUserInfo != null) {
 					
@@ -526,7 +541,7 @@ public class LoginActivity extends Activity {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "getVideoList--->");
 			 ArrayList<XLLXFileInfo> list = XunLeiLiXianUtil.
-					 getVideoList(LoginActivity.this, 30, pageIndex);
+					 getVideoList(XunLeiLXActivity.this, 30, pageIndex);
 			
 			 if(list != null && list.size() > 0) {
 				 
