@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: D:\\AndroidWorkSpace\\showkeyHelper\\src\\android\\content\\pm\\IPackageStatsObserver.aidl
+ * Original file: E:\\git\\show-client-helper\\showkeyHelper\\src\\android\\content\\pm\\IPackageStatsObserver.aidl
  */
 package android.content.pm;
 /***
