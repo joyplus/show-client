@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:id="@+id/title_1"
-            android:textColor="@color/common_title_selected"
+            android:textColor="@color/main_title_selected"
             android:text="云服务"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="fill_parent"
@@ -30,7 +30,7 @@
             android:layout_marginLeft="10dp"
             android:id="@+id/title_2"
             android:textSize="30dp"
-            android:textColor="@color/common_title_unselected"
+            android:textColor="@color/main_title_unselected"
             android:text="电视助手"/>
     </LinearLayout>
 <com.joyplus.tvhelper.ui.MyScrollLayout 

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
+import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnHoverListener, OnKeyListener, OnClickListener {
 
@@ -191,13 +192,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				// TODO Auto-generated method stub
 				switch (index) {
 				case 0:
-					title_text_1.setTextColor(getResources().getColor(R.color.common_title_selected));
-					title_text_2.setTextColor(getResources().getColor(R.color.common_title_unselected));
+					title_text_1.setTextColor(getResources().getColor(R.color.main_title_selected));
+					title_text_2.setTextColor(getResources().getColor(R.color.main_title_unselected));
 					updateImageView(layout_tuijian);
 					break;
 				case 1:
-					title_text_2.setTextColor(getResources().getColor(R.color.common_title_selected));
-					title_text_1.setTextColor(getResources().getColor(R.color.common_title_unselected));
+					title_text_2.setTextColor(getResources().getColor(R.color.main_title_selected));
+					title_text_1.setTextColor(getResources().getColor(R.color.main_title_unselected));
 					updateImageView(layout_jiasu);
 					break;
 				}
@@ -313,7 +314,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			
 			break;
 		case R.id.layout_xunlei:
-			
+			startActivity(new Intent(this, XunLeiLXActivity.class));
 			break;
 		case R.id.layout_zhibo:
 			
