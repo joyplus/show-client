@@ -1,7 +1,14 @@
 package com.joyplus.tvhelper;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,13 +24,22 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
+import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.PreferencesUtils;
+import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnHoverListener, OnKeyListener, OnClickListener {
 
+	private static final String TAG = "MainActivity";
+	
+	private static final int MESSAGE_GETPINCODE_SUCCESS = 0;
 	
 	private ImageView image_showtui, image_xunlei, image_yuntui, image_zhibo, image_tuijian;
 	
@@ -41,30 +57,32 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	
 	private MyScrollLayout layout;
 	
+	private TextView pincodeText;
+	
 	private Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
-			int width = layout_yuntui.getWidth();
-			int height = layout_yuntui.getHeight();
-//			FrameLayout.LayoutParams layoutParam1 = new FrameLayout.LayoutParams(width+40,height*2+40);
-//			FrameLayout.LayoutParams layoutParam2 = new FrameLayout.LayoutParams(width+40,height+40);
-//			FrameLayout.LayoutParams layoutParam3 = new FrameLayout.LayoutParams(width+40,height+40);
-//			FrameLayout.LayoutParams layoutParam4 = new FrameLayout.LayoutParams(width+40,height+40);
-//			FrameLayout.LayoutParams layoutParam5 = new FrameLayout.LayoutParams(width+40,height+40);
-			Log.d("SSS", "width--------------->" + width);
-			Log.d("SSS", "height--------------->" + height);
-			image_showtui.layout(0, 0, width+40, height*2+53);
-			image_yuntui.layout(width+13, 0, width*2+53, height+40);
-			image_xunlei.layout(width+13, height+13, width*2+53, height*2+53);
-			image_zhibo.layout(width*2+26, 0, width*3+66, height+40);
-			image_tuijian.layout(width*2+26, height+13, width*3+66, height*2+53);
+			switch (msg.what) {
+			case MESSAGE_GETPINCODE_SUCCESS:
+				displayPincode();
+				int width = layout_yuntui.getWidth();
+				int height = layout_yuntui.getHeight();
+				image_showtui.layout(0, 0, width+40, height*2+53);
+				image_yuntui.layout(width+13, 0, width*2+53, height+40);
+				image_xunlei.layout(width+13, height+13, width*2+53, height*2+53);
+				image_zhibo.layout(width*2+26, 0, width*3+66, height+40);
+				image_tuijian.layout(width*2+26, height+13, width*3+66, height*2+53);
+				image_jiasu.layout(0, 0, width+40, height*2+53);
+				image_upan.layout(width+13, 0, width*2+53, height+40);
+				image_appguanli.layout(width+13, height+13, width*2+53, height*2+53);
+				image_ceshu.layout(width*2+26, 0, width*3+66, height+40);
+				image_setting.layout(width*2+26, height+13, width*3+66, height*2+53);
+				layout_showtui.requestFocus();
+				break;
+
+			default:
+				break;
+			}
 			
-			image_jiasu.layout(0, 0, width+40, height*2+53);
-			image_upan.layout(width+13, 0, width*2+53, height+40);
-			image_appguanli.layout(width+13, height+13, width*2+53, height*2+53);
-			image_ceshu.layout(width*2+26, 0, width*3+66, height+40);
-			image_setting.layout(width*2+26, height+13, width*3+66, height*2+53);
-//			relativeLayout.invalidate();
-			layout_showtui.requestFocus();
 		};
 	};
 	@Override
@@ -73,7 +91,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		setContentView(R.layout.activity_main);
 		layout = (MyScrollLayout) findViewById(R.id.layout);
 		findViews();
-		mHandler.sendEmptyMessageDelayed(0, 200);
+		if(PreferencesUtils.getPincode(this)==null){
+			new Thread(new GetPinCodeTask()).start();
+		}else{
+			startService(new Intent(MainActivity.this, FayeService.class));
+			mHandler.sendEmptyMessageDelayed((MESSAGE_GETPINCODE_SUCCESS),200);
+		}
 	}
 
 	@Override
@@ -91,6 +114,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	}
 	
 	private void findViews(){
+		
+		pincodeText = (TextView) findViewById(R.id.pincodeText);
 		
 		image_showtui = (ImageView) findViewById(R.id.image_showtui);
 		image_yuntui = (ImageView) findViewById(R.id.image_yuntui);
@@ -308,7 +333,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.showtui:
-			
+			startActivity(new Intent(this, ManagePushApkActivity.class));
 			break;
 		case R.id.layout_yuntui:
 			
@@ -341,6 +366,60 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		default:
 			break;
 		}
+	}
+	
+	private void displayPincode(){
+		String displayString = "";
+		String pincode = PreferencesUtils.getPincode(MainActivity.this);
+		if(pincode!=null){
+			for(int i= 0; i<pincode.length(); i++){
+				if(i==pincode.length()-1){
+					displayString += pincode.substring(i);
+				}else{
+					displayString += (pincode.substring(i,i+1) + "  ");
+				}
+			}
+		}
+		Log.d(TAG, displayString);
+		pincodeText.setText(displayString);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		displayPincode();
+		super.onResume();
+	}
+	
+	
+	class GetPinCodeTask implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("app_key", "ijoyplus_android_0001bj");
+			params.put("mac_address", Utils.getMacAdd());
+			params.put("client", new Build().MODEL);
+			Log.d(TAG, "client = " + new Build().MODEL);
+			String str = HttpTools.post(MainActivity.this, Global.serverUrl+"/generatePinCode", params);
+			Log.d(TAG, str);
+			try {
+				JSONObject data = new JSONObject(str);
+				String pincode = data.getString("pinCode");
+				String channel = data.getString("channel");
+				PreferencesUtils.setPincode(MainActivity.this, pincode);
+				PreferencesUtils.setChannel(MainActivity.this, channel);
+				PreferencesUtils.changeAcceptedStatue(MainActivity.this, false);
+				mHandler.sendEmptyMessage(MESSAGE_GETPINCODE_SUCCESS);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+				e.printStackTrace();
+			}
+			  
+		}
+		
 	}
 	
 }
