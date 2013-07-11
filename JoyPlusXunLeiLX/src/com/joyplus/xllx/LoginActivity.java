@@ -15,9 +15,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.joyplus.adapter.PlayExpandListAdapter;
 import com.joyplus.adapter.PlayListAdapter;
 import com.joyplus.app.MyApp;
 import com.joyplus.entity.CurrentPlayDetailData;
@@ -45,15 +47,19 @@ public class LoginActivity extends Activity {
 	
 	private TextView nickNameTv,userIdTv,vipRankTv,outDateTv;
 	
-	private ListView playerListView;
+	private ExpandableListView playerListView;
 
 	private boolean isFirstLogin = true;
 	
 	private int pageIndex = 1;
 	
-	private List<XLLXFileInfo> playerList = new ArrayList<XLLXFileInfo>();
+	private ArrayList<XLLXFileInfo> playerList = new ArrayList<XLLXFileInfo>();
 	
 	private MyApp app;
+	
+	private PlayExpandListAdapter playExpandListAdapter;
+	
+	private int expandFlag =-1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +110,8 @@ public class LoginActivity extends Activity {
 		vipRankTv = (TextView) findViewById(R.id.tv_lx_logout_rank_content);
 		outDateTv = (TextView) findViewById(R.id.tv_lx_logout_outofdate_content);
 		
-		playerListView = (ListView) findViewById(R.id.lv_movie);
+		playerListView = (ExpandableListView) findViewById(R.id.lv_movie);
+		playerListView.setGroupIndicator(null);
 		
 		loginBt.setOnClickListener(new View.OnClickListener() {
 			
@@ -144,56 +151,194 @@ public class LoginActivity extends Activity {
 			}
 		});
 		
-		playerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+//		playerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//					int position, long id) {
+//				// TODO Auto-generated method stub
+//				Log.i(TAG, "onItemClick--->");
+//				
+//				if(playerList != null && playerList.size() > 0) {
+//					
+//					if(playerList.get(position) != null) {
+//						
+//						XLLXFileInfo xllxFileInfo = playerList.get(position);
+//						Log.i(TAG, "onItemClick--->xllxFileInfo:" + xllxFileInfo.toString());
+//						if(xllxFileInfo.src_url != null) {
+//							
+//							//如果url不为空，直接传给播放器
+//							CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
+//							currentPlayDetailData.prod_url = xllxFileInfo.src_url;
+//							currentPlayDetailData.prod_type = -1;
+//							
+//							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
+//								
+//								currentPlayDetailData.prod_name = xllxFileInfo.file_name;
+//							}
+//							
+//							if(xllxFileInfo.duration != null && !xllxFileInfo.file_name.equals("")
+//									&& !xllxFileInfo.file_name.equals("0")) {
+//								
+//								long tempDuration = 0l;
+//								try {
+//									tempDuration = Long.valueOf(xllxFileInfo.duration);
+//								} catch (NumberFormatException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//								
+//								if(tempDuration > 0) {
+//									
+//									currentPlayDetailData.prod_time = tempDuration;
+//								}
+//							}
+//							
+//							app.setmCurrentPlayDetailData(currentPlayDetailData);
+//							
+////							if(currentPlayDetailData.prod_src != null )
+//							startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
+//						}
+//					}
+//				}
+//			}
+//		});
+		
+		playerListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+			
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public boolean onGroupClick(ExpandableListView parent, View v,
+					final int groupPosition, long id) {
 				// TODO Auto-generated method stub
-				Log.i(TAG, "onItemClick--->");
 				
-				if(playerList != null && playerList.size() > 0) {
+				if(playerList.size() > groupPosition) {
 					
-					if(playerList.get(position) != null) {
+					final XLLXFileInfo xllxFileInfo = playerList.get(groupPosition);
+					if(xllxFileInfo != null) {
 						
-						XLLXFileInfo xllxFileInfo = playerList.get(position);
-						Log.i(TAG, "onItemClick--->xllxFileInfo:" + xllxFileInfo.toString());
-						if(xllxFileInfo.src_url != null) {
+						if(!xllxFileInfo.isDir) {
 							
-							//如果url不为空，直接传给播放器
-							CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
-							currentPlayDetailData.prod_url = xllxFileInfo.src_url;
-							currentPlayDetailData.prod_type = -1;
-							
+							Log.i(TAG, "onItemClick--->xllxFileInfo:" + xllxFileInfo.toString());
 							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
 								
+								//如果url不为空，直接传给播放器
+								CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
+								currentPlayDetailData.prod_url = xllxFileInfo.src_url;
+								currentPlayDetailData.prod_type = -10;
 								currentPlayDetailData.prod_name = xllxFileInfo.file_name;
-							}
-							
-							if(xllxFileInfo.duration != null && !xllxFileInfo.file_name.equals("")
-									&& !xllxFileInfo.file_name.equals("0")) {
 								
-								long tempDuration = 0l;
-								try {
-									tempDuration = Long.valueOf(xllxFileInfo.duration);
-								} catch (NumberFormatException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								
-								if(tempDuration > 0) {
+								if(xllxFileInfo.duration != null && !xllxFileInfo.duration.equals("")
+										&& !xllxFileInfo.duration.equals("0")) {
 									
-									currentPlayDetailData.prod_time = tempDuration;
+									long tempDuration = 0l;
+									try {
+										tempDuration = Long.valueOf(xllxFileInfo.duration);
+									} catch (NumberFormatException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+									if(tempDuration > 0) {
+										
+//										currentPlayDetailData.prod_time = tempDuration;
+									}
 								}
+								currentPlayDetailData.obj = xllxFileInfo;
+								app.setmCurrentPlayDetailData(currentPlayDetailData);
+								
+//								if(currentPlayDetailData.prod_src != null )
+								startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
 							}
+						} else {
 							
-							app.setmCurrentPlayDetailData(currentPlayDetailData);
-							
-//							if(currentPlayDetailData.prod_src != null )
-							startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
+							if (xllxFileInfo.btFiles == null) {
+								
+					              new Thread(new Runnable()
+					              {
+					                public void run()
+					                {
+					                  if (XunLeiLiXianUtil.getSubFile(LoginActivity.this, xllxFileInfo) != null)
+					                    handler.post(new Runnable()
+					                    {
+					                      public void run(){
+					                    	  
+					                        playExpandListAdapter.notifyDataSetChanged();
+					                        playerListView.expandGroup(groupPosition);
+					                        expandFlag = groupPosition;
+					                      }
+					                    });
+					                }
+					              }).start();
+							}
 						}
 					}
 				}
+				
+				if(expandFlag == groupPosition) {
+					
+					playerListView.collapseGroup(expandFlag);
+					expandFlag = -1;
+				} else {
+					
+					playerListView.collapseGroup(groupPosition);
+					expandFlag= groupPosition;
+				}
+				return false;
+			}
+		});
+		
+		playerListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+			
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+				// TODO Auto-generated method stub
+				
+				if(playerList.size() > groupPosition && playerList.get(groupPosition) != null) {
+					
+					if(playerList.get(groupPosition).btFiles != null 
+							&& playerList.get(groupPosition).btFiles.length > childPosition) {
+						
+						if(playerList.get(groupPosition).btFiles[childPosition] != null
+								&& !playerList.get(groupPosition).btFiles[childPosition].isDir) {
+							
+							XLLXFileInfo xllxFileInfo = playerList.get(groupPosition).btFiles[childPosition];
+							
+							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
+								
+								//如果url不为空，直接传给播放器
+								CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
+								currentPlayDetailData.prod_url = xllxFileInfo.src_url;
+								currentPlayDetailData.prod_type = -10;
+								currentPlayDetailData.prod_name = xllxFileInfo.file_name;
+								
+								if(xllxFileInfo.duration != null && !xllxFileInfo.duration.equals("")
+										&& !xllxFileInfo.duration.equals("0")) {
+									
+									long tempDuration = 0l;
+									try {
+										tempDuration = Long.valueOf(xllxFileInfo.duration);
+									} catch (NumberFormatException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+									if(tempDuration > 0) {
+										
+//										currentPlayDetailData.prod_time = tempDuration;
+									}
+								}
+								currentPlayDetailData.obj = xllxFileInfo;
+								app.setmCurrentPlayDetailData(currentPlayDetailData);
+								
+//								if(currentPlayDetailData.prod_src != null )
+								startActivity(new Intent(LoginActivity.this, VideoPlayerJPActivity.class));
+							}
+						}
+					}
+				}
+				
+				return false;
 			}
 		});
 	}
@@ -258,7 +403,7 @@ public class LoginActivity extends Activity {
 					
 					nickNameTv.setText(xllxUserInfo.nickname);
 					userIdTv.setText(xllxUserInfo.usrname);
-					vipRankTv.setText("VIP" + xllxUserInfo.isvip + "");
+					vipRankTv.setText("VIP" + xllxUserInfo.level + "");
 					outDateTv.setText(xllxUserInfo.expiredate.replaceAll("-", "."));
 				}
 				
@@ -267,11 +412,12 @@ public class LoginActivity extends Activity {
 			case REFRESH_LIST://刷新用户信息成功
 //				removeDialog(DIALOG_WAITING);
 				
-				List<XLLXFileInfo> list =  (List<XLLXFileInfo>) msg.obj;
+				ArrayList<XLLXFileInfo> list =  (ArrayList<XLLXFileInfo>) msg.obj;
 
 				if(list != null && list.size() >0) {
 					playerList = list;
-					playerListView.setAdapter(new PlayListAdapter(LoginActivity.this,playerList ));
+					playExpandListAdapter = new PlayExpandListAdapter(LoginActivity.this,playerList );
+					playerListView.setAdapter(playExpandListAdapter);
 				}
 				break;
 			case START_LOGIN://直接进入用户界面
@@ -379,7 +525,7 @@ public class LoginActivity extends Activity {
 		public void run() {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "getVideoList--->");
-			 List<XLLXFileInfo> list = XunLeiLiXianUtil.
+			 ArrayList<XLLXFileInfo> list = XunLeiLiXianUtil.
 					 getVideoList(LoginActivity.this, 30, pageIndex);
 			
 			 if(list != null && list.size() > 0) {

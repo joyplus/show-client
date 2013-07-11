@@ -322,7 +322,7 @@
                 android:layout_width="match_parent"
                 android:background="@drawable/divider_line"
                 android:layout_below="@id/tv_list_tittle"/>
-            <ListView
+            <ExpandableListView
                 android:id="@+id/lv_movie"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

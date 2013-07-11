@@ -193,10 +193,10 @@ public class XunLeiLiXianUtil {
 		return null;
 	}
 
-	public static List<XLLXFileInfo> getVideoList(Context context,
+	public static ArrayList<XLLXFileInfo> getVideoList(Context context,
 			int cacheNum, int pageIndex) {
 
-		List<XLLXFileInfo> list = new ArrayList<XLLXFileInfo>();
+		ArrayList<XLLXFileInfo> list = new ArrayList<XLLXFileInfo>();
 		try {
 
 			BasicHeader localBasicHeader = new BasicHeader("cookie",
@@ -240,7 +240,7 @@ public class XunLeiLiXianUtil {
 					xllxFileInfo.filesize = jsonObject.getString("file_size");
 					xllxFileInfo.userid = jsonObject.getString("userid");
 					xllxFileInfo.gcid = jsonObject.getString("gcid");
-					xllxFileInfo.recodenum = record_num;
+					xllxFileInfo.recordeNum = record_num;
 
 					if (xllxFileInfo.src_url.contains("bt://")) {
 
@@ -673,7 +673,7 @@ public class XunLeiLiXianUtil {
 		localXLLXUserInfo.growvalue = localSharedPreferences.getInt(
 				"growvalue", -1);
 		localXLLXUserInfo.isvip = localSharedPreferences.getInt("isvip", -1);
-		localXLLXUserInfo.isyear = localSharedPreferences.getInt("isvip", -1);
+		localXLLXUserInfo.isyear = localSharedPreferences.getInt("isyear", -1);
 		localXLLXUserInfo.level = localSharedPreferences.getInt("level", -1);
 		localXLLXUserInfo.nickname = localSharedPreferences.getString(
 				"nickname", "");

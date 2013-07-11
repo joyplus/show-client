@@ -70,6 +70,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.app.MyApp;
 import com.joyplus.entity.CurrentPlayDetailData;
 import com.joyplus.entity.URLS_INDEX;
+import com.joyplus.entity.VideoPlayUrl;
+import com.joyplus.entity.XLLXFileInfo;
 import com.joyplus.entity.service.ReturnProgramView;
 import com.joyplus.ui.ArcView;
 import com.joyplus.utils.BangDanConstant;
@@ -77,6 +79,7 @@ import com.joyplus.utils.Constant;
 import com.joyplus.utils.DefinationComparatorIndex;
 import com.joyplus.utils.SouceComparatorIndex1;
 import com.joyplus.utils.Utils;
+import com.joyplus.utils.XunLeiLiXianUtil;
 
 public class VideoPlayerJPActivity extends Activity implements
 		MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener,
@@ -354,10 +357,25 @@ public class VideoPlayerJPActivity extends Activity implements
 		updateSourceAndTime();
 		updateName();
 		Log.i(TAG, "currentPlayUrl--->" + currentPlayUrl + " mProd_type-->" + mProd_type);
-		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
-			if (mProd_type<0) {
-//				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-				new Thread(new UrlRedirectTask()).start();
+		
+		if(mProd_type != -10) {
+			
+			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
+				if (mProd_type<0) {
+//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+						
+					new Thread(new UrlRedirectTask()).start();
+					
+				} else {
+					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+
+						m_ReturnProgramView = app.get_ReturnProgramView();
+						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+					} else {// 如果为空，就重新获取
+
+						getProgramViewDetailServiceData();
+					}
+				}
 			} else {
 				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
@@ -368,16 +386,68 @@ public class VideoPlayerJPActivity extends Activity implements
 					getProgramViewDetailServiceData();
 				}
 			}
-		} else {
-			if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+		}else {//迅雷 传递-10
+			
+			//取list
+			MyApp.pool.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					
+					XLLXFileInfo xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
+					if(xllxFileInfo != null && !xllxFileInfo.isDir) {
+						
+						ArrayList<VideoPlayUrl> list = 
+								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
+						
+						if(list != null && list.size() > 0) {
+							
+							if(playUrls != null && playUrls.size() > 0) {
+								
+								playUrls.clear();
+							}
+							for(int i=0;i<list.size();i++) {
+								
+								VideoPlayUrl videoPlayUrl = list.get(i);
+								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
+									URLS_INDEX url = new URLS_INDEX();
+									url.source_from = "XUNLEI";
+									url.url = videoPlayUrl.playurl;
+									
+									if(videoPlayUrl.sharp != null) {
+										
+										int index = videoPlayUrl.sharp.getIndex();
+										switch (index) {
+										case 2:
+										case 3:
+										case 4:
+										case 5:
+											url.defination_from_server ="hd2";
+											break;
 
-				m_ReturnProgramView = app.get_ReturnProgramView();
-				mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-			} else {// 如果为空，就重新获取
-
-				getProgramViewDetailServiceData();
-			}
+										default:
+											break;
+										}
+									}
+									playUrls.add(url);
+								}
+							}
+							
+						}
+					}
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
+			});
+//			URLS_INDEX url = new URLS_INDEX();
+//			url.defination_from_server ="hd2";
+//			url.source_from = "xunlei";
+//			url.url ="";
+			
+//			playUrls = new ArrayList<URLS_INDEX>
+			
 		}
+
 		
 //		Log.d(TAG, "defination----->" + mDefination);
 //		String lastTimeStr = DBUtils.getDuartion4HistoryDB(

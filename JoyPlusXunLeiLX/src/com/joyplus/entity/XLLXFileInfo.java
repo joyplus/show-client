@@ -17,10 +17,11 @@ public class XLLXFileInfo implements Serializable {
 	public String filesize;
 	public String gcid;
 	public boolean isDir = false;
-	public int playflag;
-	public int recodenum;
 	public String src_url;
 	public String userid;
+	
+	public int playflag;
+	public int recordeNum;
 
 	public String toString() {
 		return "XLLXFileInfo [file_name=" + this.file_name + ", src_url="

@@ -12,4 +12,6 @@ public class CurrentPlayDetailData {
 	public boolean prod_favority = false;// 是否收藏
 	public int prod_type = 1;// 视频类别 1：电影，2：电视剧，3：综艺，131动漫
 	public boolean hasReturnData = false;// 是否有详情信息
+	
+	public Object obj;
 }
