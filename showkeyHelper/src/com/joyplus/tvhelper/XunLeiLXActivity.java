@@ -45,6 +45,7 @@ public class XunLeiLXActivity extends Activity {
 	private Button loginBt,logoutBt;
 	private TextView nickNameTv,userIdTv,vipRankTv,outDateTv;
 	private ExpandableListView playerListView;
+	private Button returnBt;
 	
 	private PlayExpandListAdapter playExpandListAdapter;
 	
@@ -54,6 +55,7 @@ public class XunLeiLXActivity extends Activity {
 	
 	private int expandFlag =-1;
 	private int pageIndex = 1;
+	private boolean isCanCache = false;
 	private boolean isFirstLogin = true;
 
 	@Override
@@ -104,6 +106,8 @@ public class XunLeiLXActivity extends Activity {
 		vipRankTv = (TextView) findViewById(R.id.tv_lx_logout_rank_content);
 		outDateTv = (TextView) findViewById(R.id.tv_lx_logout_outofdate_content);
 		
+		returnBt = (Button) findViewById(R.id.bt_back);
+		
 		playerListView = (ExpandableListView) findViewById(R.id.lv_movie);
 		playerListView.setGroupIndicator(null);
 		
@@ -112,6 +116,16 @@ public class XunLeiLXActivity extends Activity {
 	}
 	
 	private void addViewListener() {
+		
+		returnBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				finish();
+			}
+		});
 		
 		userNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			
@@ -227,39 +241,65 @@ public class XunLeiLXActivity extends Activity {
 							
 							if (xllxFileInfo.btFiles == null) {
 								
-					              new Thread(new Runnable()
-					              {
-					                public void run()
-					                {
-					                  if (XunLeiLiXianUtil.getSubFile(XunLeiLXActivity.this, xllxFileInfo) != null)
-					                    handler.post(new Runnable()
-					                    {
-					                      public void run(){
-					                    	  
-					                        playExpandListAdapter.notifyDataSetChanged();
-					                        playerListView.expandGroup(groupPosition);
-					                        expandFlag = groupPosition;
-					                      }
-					                    });
-					                }
-					              }).start();
+										new Thread(new Runnable() {
+
+											public void run() {
+												if (XunLeiLiXianUtil.getSubFile(
+																XunLeiLXActivity.this,xllxFileInfo) != null)
+													
+													handler.post(new Runnable() {
+														public void run() {
+
+															Log.i(TAG, "handler.post(new Runnable()--->groupPosition:" +
+																	groupPosition);
+															playExpandListAdapter
+																	.notifyDataSetChanged();
+															playerListView
+																	.expandGroup(groupPosition);
+															expandFlag = groupPosition;
+														}
+													});
+											}
+										}).start();
+							}else {
+								
+								Log.i(TAG, "handler.post(new Runnable()--->groupPosition:" +
+										groupPosition + " expandFlag--->" + expandFlag);
+								
+								if(expandFlag == groupPosition) {
+									
+									playerListView.collapseGroup(expandFlag);
+									expandFlag = -1;
+								} else {
+									playerListView.expandGroup(groupPosition);
+									expandFlag= groupPosition;
+								}
 							}
 						}
 					}
 				}
-				
-				if(expandFlag == groupPosition) {
-					
-					playerListView.collapseGroup(expandFlag);
-					expandFlag = -1;
-				} else {
-					
-					playerListView.collapseGroup(groupPosition);
-					expandFlag= groupPosition;
-				}
 				return false;
 			}
 		});
+		
+		playerListView
+				.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+					@Override
+					public void onGroupExpand(int groupPosition) {
+						// TODO Auto-generated method stub
+						
+						Log.i(TAG, "onGroupExpand--->" + groupPosition);
+
+						for (int i = 0; i < playerList.size(); i++) {
+
+							if (i != groupPosition) {
+
+								playerListView.collapseGroup(i);
+							}
+						}
+					}
+				});
 		
 		playerListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 			
@@ -322,7 +362,19 @@ public class XunLeiLXActivity extends Activity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
+				Log.i(TAG, "onItemSelected--->" + position);
 				
+				if(isCanCache) {
+					
+					if(expandFlag == -1) {
+						
+						
+					} else {
+						
+						
+					}
+				}
+
 			}
 
 			@Override
@@ -342,7 +394,6 @@ public class XunLeiLXActivity extends Activity {
 			loginLayout.setVisibility(View.VISIBLE);
 			logoutLayout.setVisibility(View.INVISIBLE);
 			
-			passwdEdit.setText("");
 		} else {
 			
 			logoutLayout.setVisibility(View.VISIBLE);
@@ -360,6 +411,8 @@ public class XunLeiLXActivity extends Activity {
 		
 		pageIndex = 1;
 		isFirstLogin = true;
+		
+		passwdEdit.setText("");
 	}
 	
 	@Override
@@ -540,20 +593,27 @@ public class XunLeiLXActivity extends Activity {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "getVideoList--->");
 			 ArrayList<XLLXFileInfo> list = XunLeiLiXianUtil.
-					 getVideoList(XunLeiLXActivity.this, 30, pageIndex);
+					 getVideoList(XunLeiLXActivity.this, XunLeiLiXianUtil.CACHE_NUM, pageIndex);
 			
 			 if(list != null && list.size() > 0) {
 				 
 				 Message message = handler.obtainMessage(REFRESH_LIST, list);
 				 handler.sendMessage(message);
 				 
-				 for(int i=0;i<list.size();i++) {
+//				 for(int i=0;i<list.size();i++) {
+//					 
+//					 XLLXFileInfo xllxFileInfo = list.get(i);
+//					 if(xllxFileInfo != null) {
+//						 
+//						 Log.d(TAG, "list xllxFileInfo--->" + xllxFileInfo);
+//					 }
+//				 }
+				 if(list.size() >= XunLeiLiXianUtil.CACHE_NUM) {
 					 
-					 XLLXFileInfo xllxFileInfo = list.get(i);
-					 if(xllxFileInfo != null) {
-						 
-						 Log.d(TAG, "list xllxFileInfo--->" + xllxFileInfo);
-					 }
+					 isCanCache = true;
+				 } else {
+					 
+					 isCanCache = false;
 				 }
 			 } else {
 				 

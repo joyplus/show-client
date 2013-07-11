@@ -52,6 +52,8 @@ public class XunLeiLiXianUtil {
 	private static final String GET_PLAY_URL_2 = "http://i.vod.xunlei.com/req_get_method_vod";
 	private static final String LOGIN_URL = "http://login.xunlei.com/sec2login/";
 	private static final String VER_CODE_URL = "http://login.xunlei.com/check";
+	
+	public static int CACHE_NUM = 30;
 
 	public static int Login(Context context, String username, String password) {
 
@@ -321,6 +323,7 @@ public class XunLeiLiXianUtil {
 		return loginFlag;
 	}
 	
+	//get 1000 data default 30
 	public static XLLXFileInfo[] getSubFile(Context context,
 			XLLXFileInfo xllxFileInfo) {
 		
@@ -332,7 +335,7 @@ public class XunLeiLiXianUtil {
 			String btStr = HttpUtils.getContent(
 					"http://i.vod.xunlei.com/req_subBT/info_hash/"
 							+ xllxFileInfo.src_url.substring(5)
-							+ "/req_num/30/req_offset/0",
+							+ "/req_num/1000/req_offset/0",
 					new Header[] { localBasicHeader }, null);
 			
 			if(btStr != null && !btStr.equals("")) {

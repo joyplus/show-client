@@ -565,6 +565,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void updateName() {
 		switch (mProd_type) {
 		case -1:
+		case -10:
 		case 1:
 			mVideoNameText.setText(mProd_name);
 			break;
@@ -1366,7 +1367,15 @@ public class VideoPlayerJPActivity extends Activity implements
 			} else if (mProd_src.equalsIgnoreCase("m1905")) {
 				strSrc = "电  影  网";
 			} else {
-				strSrc = "PPTV";
+				
+				if(mProd_src.equalsIgnoreCase("XUNLEI")) {
+					
+					strSrc = "XUNLEI";
+				} else {
+					
+					strSrc = "PPTV";
+				}
+				
 			}
 			mResourceTextView.setText(strSrc);
 		}
