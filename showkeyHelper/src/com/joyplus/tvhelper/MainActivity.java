@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				image_appguanli.layout(width+13, height+13, width*2+53, height*2+53);
 				image_ceshu.layout(width*2+26, 0, width*3+66, height+40);
 				image_setting.layout(width*2+26, height+13, width*3+66, height*2+53);
+				image_showtui.setImageBitmap(layout_showtui.getDrawingCache());
 				layout_showtui.requestFocus();
 				break;
 
