@@ -1,0 +1,239 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_app"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+    <LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="26">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="89dp">
+	        
+	    </LinearLayout>
+	    <RelativeLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="80">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:orientation="horizontal">
+	       		<LinearLayout android:layout_width="0dp"
+	       		    android:layout_height="fill_parent"
+	       		    android:background="#5e5f63"
+	       		    android:orientation="vertical"
+	       		    android:layout_weight="1">
+	       		    <TextView android:layout_width="fill_parent"
+	       		        android:layout_height="62dp"
+	       		        android:text="助手设置"
+	       		        android:paddingTop="5dp"
+	                    android:layout_marginLeft="15dp"
+	                    android:textColor="#f0f0f0"
+	                    android:textSize="30sp"/>
+	       		    <LinearLayout android:layout_width="fill_parent"
+	       		        android:layout_height="0dp"
+	       		        android:layout_marginTop="2dp"
+	       		        android:orientation="vertical"
+	       		        android:layout_weight="9">
+	       		        <Button android:layout_width="fill_parent"
+	       		            android:layout_height="44dp"
+	       		            android:gravity="center_vertical"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:textSize="24sp"
+	       		            android:paddingLeft="15dp"
+	       		            android:id="@+id/btn_setting"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="设置"/>
+	       		        <Button android:layout_width="fill_parent"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:layout_height="44dp"
+	       		            android:gravity="center_vertical"
+	       		            android:textSize="24sp"
+	       		            android:paddingLeft="15dp"
+	       		            android:id="@+id/btn_help"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="使用帮助"/>
+	       		        <!-- <Button android:layout_width="fill_parent"
+	       		            android:layout_height="wrap_content"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:textSize="24sp"
+	       		            android:paddingTop="5dp"
+	       		            android:paddingLeft="15dp"
+	       		            android:paddingBottom="5dp"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="检查更新"/> -->
+	       		        <Button android:layout_width="fill_parent"
+	       		            android:layout_height="44dp"
+	       		            android:gravity="center_vertical"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:textSize="24sp"
+	       		            android:paddingLeft="15dp"
+	       		            android:id="@+id/btn_about"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="关于"/>
+	       		    </LinearLayout>
+	       		</LinearLayout>
+	       		<LinearLayout android:layout_width="0dp"
+	       		    android:layout_height="fill_parent"
+	       		    android:layout_weight="4.3"
+	       		    android:layout_marginLeft="-1dp"
+	       		    android:orientation="vertical">
+	       		    <TextView android:layout_width="fill_parent"
+	       		        android:layout_height="62dp"/>
+	       		    <RelativeLayout android:layout_width="fill_parent"
+	       		        android:layout_height="0dp"
+	       		        android:layout_marginTop="2dp"
+	       		        android:background="#efefef"
+	       		        android:layout_weight="9">
+	       		        <LinearLayout android:layout_width="fill_parent"
+	       		            android:layout_height="fill_parent"
+	       		            android:id="@+id/layout_setting"
+	       		            android:orientation="vertical">
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="60dp"
+	       		                android:paddingLeft="20dp"
+	       		                android:paddingRight="20dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/layout_refressPin"
+	       		            	android:background="@drawable/bg_content_setting_selector"
+	       		                android:orientation="horizontal">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="25sp"
+	       		                    android:textColor="#000000"
+	       		                    android:text="点击刷新PIN码"
+	       		                    android:layout_weight="1"/>
+	       		                <TextView android:layout_width="wrap_content"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="25sp"
+	       		                    android:id="@+id/pincode_text"
+	       		                    android:textColor="#000000"
+	       		                    android:text="B 5 P 6 2 J"/>
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="60dp"
+	       		                android:paddingLeft="20dp"
+	       		                android:paddingRight="20dp"
+	       		                android:gravity="center_vertical"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/layout_deleteApk"
+	       		            	android:background="@drawable/bg_content_setting_selector"
+	       		                android:orientation="horizontal">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="25sp"
+	       		                    android:textColor="#000000"
+	       		                    android:text="安装后删除安装包"
+	       		                    android:layout_weight="1"/>
+	       		                <ImageView android:layout_width="wrap_content"
+	       		                    android:layout_height="wrap_content"
+	       		                    android:id="@+id/switch_deleteApk"
+	       		                    android:src="@drawable/swith_on"/>
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="60dp"
+	       		                android:paddingLeft="20dp"
+	       		                android:paddingRight="20dp"
+	       		                android:focusable="true"
+	       		            	
+	       		            	android:background="@drawable/bg_content_setting_selector"
+	       		                android:gravity="center_vertical"
+	       		                android:id="@+id/layout_confirm"
+	       		                android:orientation="horizontal">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="25sp"
+	       		                    android:textColor="#000000"
+	       		                    android:text="安装Show推的安装包时确认"
+	       		                    android:layout_weight="1"/>
+	       		                <ImageView android:layout_width="wrap_content"
+	       		                    android:layout_height="wrap_content"
+	       		                    android:id="@+id/switch_confirm"
+	       		                    android:src="@drawable/swith_off"/>
+	       		            </LinearLayout>
+	       		        </LinearLayout>
+       		            <ScrollView android:layout_width="fill_parent"
+			                    android:layout_height="fill_parent"
+			                    android:paddingLeft="20dp"
+	       		                android:paddingRight="20dp"
+	       		                android:visibility="gone"
+			                    android:id="@+id/layout_help">
+			                    <WebView android:layout_width="fill_parent"
+			                    android:layout_height="wrap_content"
+			                    android:layerType="software"  
+			                    android:fadingEdge="@null"
+			                    android:focusable="false"
+			                    android:focusableInTouchMode="false"
+			                    android:id="@+id/webView"/>
+                 		</ScrollView>
+	       		        <ScrollView android:layout_width="fill_parent"
+			                    android:layout_height="fill_parent"
+			                    android:paddingLeft="20dp"
+	       		                android:paddingRight="20dp"
+	       		                android:visibility="gone"
+			                    android:id="@+id/layout_about">
+			                    <TextView android:layout_width="fill_parent"
+			                    android:layout_height="wrap_content"
+			                    android:textSize="18sp"
+			                    android:textColor="#000000"
+			                    android:lineSpacingExtra="3dp"
+			                    android:text="@string/setting_about"/>
+	                 	</ScrollView>
+	       		    </RelativeLayout>
+	       		</LinearLayout>
+	        </LinearLayout>
+	    </RelativeLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="117dp"
+	        android:orientation="horizontal">
+	        <com.joyplus.tvhelper.ui.NotificationView 
+	            android:layout_width="700dp"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18sp"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joyplus.tvhelper.ui.NotificationView>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="right|center_vertical"
+	            android:paddingRight="20dp"
+	            android:orientation="horizontal">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/icon_notice"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20sp"
+	            	android:layout_marginLeft="10dp"
+	                android:text="遥控器按"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	            	android:textSize="25sp"
+	            	android:textColor="#d89026"
+	            	android:id="@+id/notice_key"
+	                android:text="\t返回"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20sp"
+	            	android:id="@+id/notice_action"
+	                android:text="\t离开"/>
+	        </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+    </LinearLayout>
+</LinearLayout>

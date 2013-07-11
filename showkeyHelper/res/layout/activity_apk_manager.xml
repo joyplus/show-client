@@ -1,66 +1,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:background="@drawable/bg_app"
     android:layout_width="match_parent"
     android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
-    <LinearLayout android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="3">
+    <LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
         
     </LinearLayout>
-	<LinearLayout android:layout_width="0dp"
+	<LinearLayout android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:orientation="vertical"
-	    android:layout_weight="26">
+	    android:layout_weight="1">
 	    <LinearLayout android:layout_width="fill_parent"
-	        android:layout_height="0dp"
-	        android:layout_weight="15">
+	        android:layout_height="89dp">
 	        
 	    </LinearLayout>
-	    <RelativeLayout android:layout_width="fill_parent"
+	    <LinearLayout android:layout_width="fill_parent"
 	        android:layout_height="0dp"
 	        android:orientation="vertical"
-	        android:layout_weight="80">
+	        android:layout_weight="1">
 	        <LinearLayout android:layout_width="fill_parent"
-	            android:layout_height="fill_parent"
-	            android:orientation="vertical">
-	            <LinearLayout android:layout_width="fill_parent"
-	            android:layout_height="0dp"
-	            android:gravity="right"
-	            android:layout_weight="1">
-	            <ImageView android:layout_width="wrap_content"
+	            android:layout_height="62dp"
+	            android:orientation="horizontal">
+	            <TextView android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:gravity="center"
+	                    android:text="软件安装"
+	                    android:textColor="#f0f0f0"
+	                    android:background="@color/app_mannage_title_background"
+	                    android:textSize="30sp"/>
+	       		<LinearLayout android:layout_width="0dp"
 	                android:layout_height="fill_parent"
-	                android:src="@drawable/logo"/>
-	       	 	</LinearLayout>
-	       		<LinearLayout android:layout_width="fill_parent"
-	                android:layout_height="0dp"
-	                android:layout_weight="9">
+	                android:layout_weight="4.3">
 	            </LinearLayout>
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="fill_parent"
 	            android:layout_height="fill_parent"
-	            android:paddingLeft="20dp"
-	            android:paddingRight="20dp"
-	            android:paddingBottom="20dp"
 	            android:orientation="vertical">
 	            <LinearLayout android:layout_width="fill_parent"
-	                android:layout_height="0dp"
-	                android:layout_weight="13"
+	                android:layout_height="95dp"
 	                android:orientation="vertical"
-	                android:background="@drawable/titile_blue"
+	                android:background="@color/app_mannage_title_background"
 	                >
-	                <TextView android:layout_width="wrap_content"
-	                    android:layout_height="wrap_content"
-	                    android:text="软件安装"
-	                    android:layout_marginTop="10dp"
-	                    android:layout_marginLeft="30dp"
-	                    android:textColor="#f0f0f0"
-	                    android:textSize="30sp"/>
 	                <LinearLayout android:layout_width="fill_parent"
 	                    android:layout_height="fill_parent"
 	                    android:paddingLeft="30dp"
-	                    android:paddingTop="10dp"
 	                    android:orientation="horizontal">
 	                    <LinearLayout android:layout_width="wrap_content"
 	                        android:layout_height="wrap_content"
@@ -175,13 +160,10 @@
 	                </GridView>
 	            </LinearLayout>
 	        </LinearLayout>
-	    </RelativeLayout>
+	    </LinearLayout>
 	    <LinearLayout android:layout_width="fill_parent"
-	        android:layout_height="0dp"
-	        android:paddingLeft="20dp"
-	        android:layout_marginTop="-20dp"
-	        android:orientation="horizontal"
-	        android:layout_weight="11">
+	        android:layout_height="117dp"
+	        android:orientation="horizontal">
 	        <com.joyplus.tvhelper.ui.NotificationView 
 	            android:layout_width="700dp"
 	            android:layout_height="wrap_content"
@@ -220,8 +202,7 @@
 	        </LinearLayout>
 	    </LinearLayout>
 	</LinearLayout>
-	<LinearLayout android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="3">
+	<LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
     </LinearLayout>
 </LinearLayout>

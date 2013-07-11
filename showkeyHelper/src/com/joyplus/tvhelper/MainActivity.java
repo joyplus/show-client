@@ -335,7 +335,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			
 			break;
 		case R.id.layout_setting:
-			
+			startActivity(new Intent(this, SettingActivity.class));
 			break;
 
 		default:

@@ -1,9 +1,16 @@
 package com.joyplus.tvhelper.utils;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.DecimalFormat;
+import java.util.Enumeration;
+
+import org.apache.http.conn.util.InetAddressUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Utils {
@@ -121,5 +128,47 @@ public class Utils {
 			}
 		}
 	}
+	
+	
+public static InetAddress getLocalIpAddress(){
+		
+		try{
+			 for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				 NetworkInterface intf = en.nextElement();  
+	                for (Enumeration<InetAddress> enumIpAddr = intf  
+	                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {  
+	                    InetAddress inetAddress = enumIpAddr.nextElement();  
+	                    if (!inetAddress.isLoopbackAddress() && InetAddressUtils.isIPv4Address(inetAddress.getHostAddress())) {  
+	                    	return inetAddress;  
+	                    }  
+	                }  
+			 }
+		}catch (SocketException e) {
+			// TODO: handle exception
+			Log.e("TAG","WifiPreference IpAddress---error-" + e.toString());
+		}
+		
+		return null; 
+	}
+  
+  public static String getMacAdd(){
+	  String  str = null;
+	  try {
+		  byte[] b = null;
+		  b = NetworkInterface.getByInetAddress(getLocalIpAddress()).getHardwareAddress();
+		  for(int i =0; i<b.length; i++){
+			  if(i!=0){
+				  str += ":";
+			  }
+			  str += Integer.toHexString(0xFF & b[i]);
+		  }
+//		  str = new String(b);
+	} catch (SocketException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
+	  return str;
+  }
 
 }
