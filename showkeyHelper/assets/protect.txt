@@ -1,0 +1,3 @@
+com.joyplus.tv
+com.joyplus.tvhelper
+com.joyplus.configuration

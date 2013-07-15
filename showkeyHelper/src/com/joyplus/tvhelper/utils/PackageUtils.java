@@ -271,6 +271,25 @@ public class PackageUtils {
         }
         return false;
     }
+	public static boolean isInstalled(Context c, String packageName) {
+		List<PackageInfo> pakageinfos = c.getPackageManager().getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES);
+		for (PackageInfo pi : pakageinfos) {
+			String pi_packageName = pi.packageName;
+//            int pi_versionCode = pi.versionCode;
+			//如果这个包名在系统已经安装过的应用中存在
+			if(packageName.endsWith(pi_packageName)){
+				return true;
+//               if(versionCode==pi_versionCode){
+//                   Log.i("test","已经安装，不用更新，可以卸载该应�?);
+//                   return INSTALLED;
+//               }else if(versionCode>pi_versionCode){
+//                   Log.i("test","已经安装，有更新");  
+//                   return INSTALLED_UPDATE;
+//               }
+			}
+		}
+		return false;
+	}
 	
 	public static void getInstalledApkSize(Context c, String packageName, IPackageStatsObserver.Stub observer) throws Exception{
 		PackageManager pm = c.getPackageManager();

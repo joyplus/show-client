@@ -349,7 +349,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			
 			break;
 		case R.id.layout_jiashu:
-			
+			startActivity(new Intent(this, ScanActivity.class));
 			break;
 		case R.id.layout_upan:
 			

@@ -178,7 +178,7 @@ public class UninstallAppActivity extends Activity implements OnItemClickListene
 		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
 				throws RemoteException {
 			// TODO Auto-generated method stub
-			Log.d("TAG", "size ------->" + pStats.codeSize);
+			Log.d("TAG", "size ------- >" + apkInfo.getPackageName() + "--" + pStats.codeSize);
 			apkInfo.setSize(pStats.codeSize+pStats.cacheSize+pStats.dataSize);
 			myHandler.sendEmptyMessage(0);
 		}
