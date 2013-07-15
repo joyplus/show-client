@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="189dp"
+    android:layout_height="187dp"
+    android:layout_marginTop="69dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6E6E6" >
+
+        <ImageView
+            android:id="@+id/iv_icon_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="22dp"
+            android:src="@drawable/icon_tv_taijie" />
+
+        <TextView
+            android:id="@+id/tv_tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_icon_tv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:text="泰西视频"
+            android:textColor="#303030"
+            android:textSize="@dimen/mid_text_size" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:layout_alignParentBottom="true" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="点击更新"
+                android:textColor="#00AEEF"
+                android:textSize="25dp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="已是最新版本"
+                android:textColor="#303030"
+                android:textSize="25dp"
+                android:visibility="invisible" />
+
+            <RelativeLayout
+                android:id="@+id/rl_recommoned_download"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00AEEF" >
+
+                <TextView
+                    android:id="@+id/tv_recommoned_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="推荐下载"
+                    android:textColor="#F0F0F0"
+                    android:textSize="25dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp" />
+                <ImageView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/white_star"
+                    android:layout_toLeftOf="@id/tv_recommoned_download"
+                    android:layout_centerInParent="true"/>
+                <ImageView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/white_star"
+                    android:layout_toRightOf="@id/tv_recommoned_download"
+                    android:layout_centerInParent="true"/>        
+            </RelativeLayout>
+        </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

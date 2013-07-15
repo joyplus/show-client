@@ -13,6 +13,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.XLLXUserInfo;
 import com.joyplus.tvhelper.ui.WaitingDialog;
+import com.joyplus.tvhelper.utils.MD5Util;
 import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
 
@@ -47,7 +50,7 @@ public class XunLeiLXActivity extends Activity {
 	private ExpandableListView playerListView;
 	private Button returnBt;
 	
-	private PlayExpandListAdapter playExpandListAdapter;
+	private PlayExpandListAdapter playerExpandListAdapter;
 	
 	private MyApp app;
 
@@ -76,7 +79,7 @@ public class XunLeiLXActivity extends Activity {
 				&& !XunLeiLiXianUtil.getCookie(getApplicationContext()).equals("")) {
 
 			isFirstLogin = false;
-			userNameEdit.setText(XunLeiLiXianUtil.getUsrname(getApplicationContext()));
+//			userNameEdit.setText(XunLeiLiXianUtil.getUsrname(getApplicationContext()));
 			
 			handler.sendEmptyMessage(START_LOGIN);
 			MyApp.pool.execute(getUsrInfoRunnable);
@@ -95,9 +98,6 @@ public class XunLeiLXActivity extends Activity {
 		userNameLayout = findViewById(R.id.rl_username);
 		passwdLayout = findViewById(R.id.rl_passwd);
 		
-		userNameEdit.setText("13918413043@163.com");
-		passwdEdit.setText("6105586");
-		
 		loginBt = (Button) findViewById(R.id.bt_login);
 		logoutBt = (Button) findViewById(R.id.bt_logout);
 		
@@ -110,6 +110,22 @@ public class XunLeiLXActivity extends Activity {
 		
 		playerListView = (ExpandableListView) findViewById(R.id.lv_movie);
 		playerListView.setGroupIndicator(null);
+		
+		if(XunLeiLiXianUtil.getLoginUserName(getApplicationContext()) != null 
+				&& !XunLeiLiXianUtil.getLoginUserName(getApplicationContext()).equals("")){
+			
+//			userNameEdit.setText("13918413043@163.com");
+			userNameEdit.setText(XunLeiLiXianUtil.getLoginUserName(getApplicationContext()));
+		}
+		
+		if(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()) != null
+				&& !XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()).equals("")){
+			
+//			passwdEdit.setText("6105586");
+			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
+		}
+//		userNameEdit.setText("13918413043@163.com");
+		
 		
 		addViewListener();
 		
@@ -252,7 +268,7 @@ public class XunLeiLXActivity extends Activity {
 
 															Log.i(TAG, "handler.post(new Runnable()--->groupPosition:" +
 																	groupPosition);
-															playExpandListAdapter
+															playerExpandListAdapter
 																	.notifyDataSetChanged();
 															playerListView
 																	.expandGroup(groupPosition);
@@ -366,12 +382,37 @@ public class XunLeiLXActivity extends Activity {
 				
 				if(isCanCache) {
 					
-					if(expandFlag == -1) {
+					int lastVisiblePosition = playerListView.getLastVisiblePosition();
+					int totalSize = playerList.size();
+					if(expandFlag != -1 && playerList.get(expandFlag) != null
+							&& playerList.get(expandFlag).btFiles != null 
+							&& playerList.get(expandFlag).btFiles.length > 0) {
 						
+						totalSize = playerList.size() + 
+								playerList.get(expandFlag).btFiles.length;
+					}
+					
+					if(totalSize - lastVisiblePosition < XunLeiLiXianUtil.CACHE_NUM){
 						
-					} else {
+						pageIndex ++;
 						
-						
+						new Thread(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								final ArrayList<XLLXFileInfo> list= XunLeiLiXianUtil.
+								   getVideoList(getApplicationContext(), XunLeiLiXianUtil.CACHE_NUM, pageIndex);
+								handler.post(new Runnable() {
+									
+									@Override
+									public void run() {
+										// TODO Auto-generated method stub
+										refreshListView(list);
+									}
+								});
+							}
+						}).start();
 					}
 				}
 
@@ -384,7 +425,101 @@ public class XunLeiLXActivity extends Activity {
 			}
 		});
 		
-//		playerListView.setOn
+		playerListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			
+			int lastVisiblePosition ;
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				switch (scrollState) {
+				case OnScrollListener.SCROLL_STATE_IDLE:
+					Log.i(TAG, "playerListView--->SCROLL_STATE_IDLE" + " tempfirstVisibleItem--->" + lastVisiblePosition);
+					
+					// 缓存
+					if (playerExpandListAdapter != null) {
+			
+						if (playerExpandListAdapter.getFiles() != null) {
+			
+							if(isCanCache) {
+								
+								int totalSize = playerList.size();
+								if(expandFlag != -1 && playerList.get(expandFlag) != null
+										&& playerList.get(expandFlag).btFiles != null 
+										&& playerList.get(expandFlag).btFiles.length > 0) {
+									
+									totalSize = playerList.size() + 
+											playerList.get(expandFlag).btFiles.length;
+								}
+								
+								if(totalSize - lastVisiblePosition < XunLeiLiXianUtil.CACHE_NUM){
+									
+									pageIndex ++;
+									
+									new Thread(new Runnable() {
+										
+										@Override
+										public void run() {
+											// TODO Auto-generated method stub
+											final ArrayList<XLLXFileInfo> list= XunLeiLiXianUtil.
+											   getVideoList(getApplicationContext(), XunLeiLiXianUtil.CACHE_NUM, pageIndex);
+											handler.post(new Runnable() {
+												
+												@Override
+												public void run() {
+													// TODO Auto-generated method stub
+													refreshListView(list);
+												}
+											});
+										}
+									}).start();
+									
+								}
+							}
+						}
+					}
+					
+					break;
+				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+					Log.i(TAG, "playGv--->SCROLL_STATE_TOUCH_SCROLL");
+							
+					break;
+				case OnScrollListener.SCROLL_STATE_FLING:
+					Log.i(TAG, "playGv--->SCROLL_STATE_FLING");
+					
+//					isDragGridView = false;
+					break;
+				default:
+					break;
+				}
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+				lastVisiblePosition = firstVisibleItem + visibleItemCount;
+			}
+		});
+	}
+	
+	private void refreshListView(ArrayList<XLLXFileInfo> list) {
+		
+		if(list != null && list.size() > 0) {
+			
+			if(list.size() >= XunLeiLiXianUtil.CACHE_NUM) {
+				
+				isCanCache = true;
+			}else {
+				
+				isCanCache = false;
+			}
+			
+			playerList.addAll(list);
+			playerExpandListAdapter.setFiles(playerList);
+			playerExpandListAdapter.notifyDataSetChanged();
+			
+		}
 	}
 	
 	private void setLogin(boolean isLogin) {
@@ -407,12 +542,18 @@ public class XunLeiLXActivity extends Activity {
 		setLogin(false);
 		
 		playerList.clear();
-		playExpandListAdapter.notifyDataSetChanged();
+		
+		if(playerExpandListAdapter != null) {
+			
+			playerExpandListAdapter.notifyDataSetChanged();
+		}
 		
 		pageIndex = 1;
 		isFirstLogin = true;
 		
 		passwdEdit.setText("");
+		
+		XunLeiLiXianUtil.saveLoginUserPasswd(getApplicationContext(), "");
 	}
 	
 	@Override
@@ -454,6 +595,24 @@ public class XunLeiLXActivity extends Activity {
 				
 				Utils.showToast(XunLeiLXActivity.this, "登陆成功");
 				MyApp.pool.execute(getUsrInfoRunnable);
+				
+				if(XunLeiLiXianUtil.getLoginUserName(getApplicationContext()) != null 
+						&& !XunLeiLiXianUtil.getLoginUserName(getApplicationContext()).equals("")) {
+					
+					if(!XunLeiLiXianUtil.getLoginUserName(getApplicationContext()).
+							equals(userNameEdit.getText().toString())) {
+						XunLeiLiXianUtil.saveLoginUserName(getApplicationContext(), userNameEdit.getText().toString());
+						XunLeiLiXianUtil.saveLoginUserPasswd(getApplicationContext(), 
+								MD5Util.getMD5String(passwdEdit.getText().toString()));
+					}
+				} else {
+					
+					XunLeiLiXianUtil.saveLoginUserName(getApplicationContext(), userNameEdit.getText().toString());
+					XunLeiLiXianUtil.saveLoginUserPasswd(getApplicationContext(), 
+							MD5Util.getMD5String(passwdEdit.getText().toString()));
+				}
+				
+				
 				break;
 			case REFESH_USERINFO://刷新用户信息成功
 				setLogin(true);//跳转到用户信息界面
@@ -479,8 +638,8 @@ public class XunLeiLXActivity extends Activity {
 
 				if(list != null && list.size() >0) {
 					playerList = list;
-					playExpandListAdapter = new PlayExpandListAdapter(XunLeiLXActivity.this,playerList );
-					playerListView.setAdapter(playExpandListAdapter);
+					playerExpandListAdapter = new PlayExpandListAdapter(XunLeiLXActivity.this,playerList );
+					playerListView.setAdapter(playerExpandListAdapter);
 				}
 				break;
 			case START_LOGIN://直接进入用户界面
@@ -532,8 +691,20 @@ public class XunLeiLXActivity extends Activity {
 		public void run() {
 			// TODO Auto-generated method stub
 			
-			int loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
-					userNameEdit.getText().toString(), passwdEdit.getText().toString());
+			int loginFlag = -10;
+			
+			if(passwdEdit.getText().toString() != null 
+					&& passwdEdit.getText().toString().
+					equals(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()))) {
+				
+				loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
+						userNameEdit.getText().toString(), passwdEdit.getText().toString(),true);
+			} else {
+				
+				loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
+						userNameEdit.getText().toString(), passwdEdit.getText().toString());
+			}
+			 
 			
 			if(loginFlag == 0) {
 				

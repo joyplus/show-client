@@ -343,7 +343,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startActivity(new Intent(this, XunLeiLXActivity.class));
 			break;
 		case R.id.layout_zhibo:
-			
+			startActivity(new Intent(this, TvLiveSrcUpdateActivity.class));
 			break;
 		case R.id.layout_tuijian:
 			
@@ -421,6 +421,14 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			  
 		}
 		
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		
+		XunLeiLiXianUtil.Logout(getApplicationContext());
 	}
 	
 }

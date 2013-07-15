@@ -28,7 +28,7 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		setFiles(files);
 	}
 	
-	private void setFiles(ArrayList<XLLXFileInfo> paramArrayList) {
+	public void setFiles(ArrayList<XLLXFileInfo> paramArrayList) {
 		
 		if (paramArrayList != null) {
 			
@@ -38,6 +38,11 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 			this.files = new ArrayList<XLLXFileInfo>();
 		}
 		
+	}
+	
+	public ArrayList<XLLXFileInfo> getFiles() {
+		
+		return files;
 	}
 
 	@Override

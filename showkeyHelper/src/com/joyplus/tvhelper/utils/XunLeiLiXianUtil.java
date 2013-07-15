@@ -53,9 +53,14 @@ public class XunLeiLiXianUtil {
 	private static final String LOGIN_URL = "http://login.xunlei.com/sec2login/";
 	private static final String VER_CODE_URL = "http://login.xunlei.com/check";
 	
-	public static int CACHE_NUM = 30;
+	public static int CACHE_NUM = 7;
+	
+	public static int Login(Context context,String username,String password) {
+		
+		return Login(context,username,password,false);
+	}
 
-	public static int Login(Context context, String username, String password) {
+	public static int Login(Context context, String username, String password,boolean isMd5) {
 
 		int i = -1;// 登陆状态
 
@@ -107,11 +112,22 @@ public class XunLeiLiXianUtil {
 									"login_enable", "1");
 							arrayOfNameValuePair2[2] = new BasicNameValuePair(
 									"login_hour", "720");
-							arrayOfNameValuePair2[3] = new BasicNameValuePair(
-									"p", MD5Util.getMD5String(MD5Util
-											.getMD5String(MD5Util
-													.getMD5String(password))
-											+ verifycode.toUpperCase()));
+							
+							if(!isMd5){
+								
+								arrayOfNameValuePair2[3] = new BasicNameValuePair(
+										"p", MD5Util.getMD5String(MD5Util
+												.getMD5String(MD5Util
+														.getMD5String(password))
+												+ verifycode.toUpperCase()));
+							}else {
+								
+								arrayOfNameValuePair2[3] = new BasicNameValuePair(
+										"p", MD5Util.getMD5String(MD5Util
+												.getMD5String(password)
+												+ verifycode.toUpperCase()));
+							}
+							
 							// Log.i(TAG, "UserPassword"+ password +
 							// " MD5 Password---->"+ arrayOfNameValuePair2[3]);
 							arrayOfNameValuePair2[4] = new BasicNameValuePair(
@@ -715,6 +731,40 @@ public class XunLeiLiXianUtil {
 		}
 
 		return header;
+	}
+	
+	//存储登陆录账号名
+	public static void saveLoginUserName(Context context,String loginUserName) {
+		
+		SharedPreferences.Editor localEditor = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE)
+				.edit();
+		localEditor.putString("loginUserName", loginUserName);
+		localEditor.commit();
+	}
+	
+	public static String getLoginUserName(Context context) {
+		
+		SharedPreferences preferences = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE);
+		return preferences.getString("loginUserName", "");
+	}
+	
+	//存储登陆录密码
+	public static void saveLoginUserPasswd(Context context,String loginUserPasswd) {
+		
+		SharedPreferences.Editor localEditor = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE)
+				.edit();
+		localEditor.putString("loginUserPasswd", loginUserPasswd);
+		localEditor.commit();
+	}
+	
+	public static String getLoginUserPasswd(Context context) {
+		
+		SharedPreferences preferences = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE);
+		return preferences.getString("loginUserPasswd", "");
 	}
 
 }

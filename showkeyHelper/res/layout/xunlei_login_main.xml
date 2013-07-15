@@ -301,10 +301,10 @@
                 android:textSize="@dimen/max_text_size" />
             <Button 
                 android:id="@+id/bt_back"
-                android:layout_width="135dp"
+                android:layout_width="133dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="25dp"
-                android:layout_marginRight="44dp"
+                android:layout_marginRight="34dp"
                 android:textColor="@color/xunlei_return_btn_textcolor"
                 android:background="@drawable/xunlei_return_btn_bg"
                 android:textSize="@dimen/max_low1_text_size"

@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="16"
+        android:minSdkVersion="14"
         android:targetSdkVersion="17" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
@@ -69,6 +69,11 @@
         </activity>
         <activity
             android:name="XunLeiLXActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="TvLiveSrcUpdateActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:screenOrientation="landscape">
         </activity>
