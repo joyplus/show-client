@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F2">
+    <ImageView 
+        android:id="@+id/iv_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_tv_longlong"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"/>
+    <TextView 
+        android:id="@+id/tv_appname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#313131"
+        android:text="龙龙直播"
+        android:layout_below="@id/iv_icon"
+        android:layout_centerHorizontal="true"
+        android:textSize="23dp"/>
+    <TextView 
+        android:id="@+id/tv_appsize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#9c9c9c"
+        android:text="11.5MB"
+        android:textSize="12dp"
+        android:layout_below="@id/tv_appname"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
+    <TextView 
+        android:id="@+id/tv_appsize"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:textColor="#F2F2F2"
+        android:background="#53CD43"
+        android:text="已安装"
+        android:textSize="14dp"
+        android:layout_below="@id/tv_appname"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"/>
+
+</RelativeLayout>

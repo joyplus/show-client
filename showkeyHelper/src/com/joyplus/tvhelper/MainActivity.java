@@ -346,7 +346,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startActivity(new Intent(this, TvLiveSrcUpdateActivity.class));
 			break;
 		case R.id.layout_tuijian:
-			
+			startActivity(new Intent(this, AppRecommendActivity.class));
 			break;
 		case R.id.layout_jiashu:
 			startActivity(new Intent(this, ScanActivity.class));

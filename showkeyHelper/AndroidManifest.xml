@@ -80,7 +80,11 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:screenOrientation="landscape">
         </activity>
-        
+        <activity
+            android:name="AppRecommendActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="landscape">
+        </activity>        
         <activity
             android:name="com.joyplus.tvhelper.SettingActivity"
             android:label="@string/app_name" >

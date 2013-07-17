@@ -3,6 +3,7 @@ package com.joyplus.tvhelper.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.location.GpsStatus.NmeaListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,14 @@ import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.service.TvLiveView;
 import com.joyplus.tvhelper.ui.GridSwitcherView;
 
-public class TvLiveSrcUpdateAdapter extends BaseAdapter {
+public class AppRecommendAdapter extends BaseAdapter {
 	
 	private Context mContext;
 	private int mNumClonumns;
 	private GridSwitcherView mGridSwitcherView;
 	private List<TvLiveView> mList;
 	
-	public TvLiveSrcUpdateAdapter(Context context,int numClonumns,GridSwitcherView gridSwitcherView,List<TvLiveView> list) {
+	public AppRecommendAdapter(Context context,int numClonumns,GridSwitcherView gridSwitcherView,List<TvLiveView> list) {
 		// TODO Auto-generated constructor stub
 		this.mContext = context;
 		this.mNumClonumns = numClonumns;
@@ -68,10 +69,12 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 		if(convertView == null) {
 			
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.item_tv_src_update_grid, null);
+			convertView = inflater.inflate(R.layout.item_app_recommend_grid, null);
 		}
 		
-		AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(187, 187);
+		int width = parent.getWidth()/mNumClonumns;
+		
+		AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(width, 150);
 		convertView.setLayoutParams(layoutParams);
 		return convertView;
 	}
