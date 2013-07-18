@@ -48,7 +48,8 @@
             android:textColor="#F0F0F0"
             android:textSize="@dimen/mid_text_size" />
 
-<!--         <Button
+        <!--
+             <Button
             android:id="@+id/bt_auto_update"
             android:layout_width="133dp"
             android:layout_height="45dp"
@@ -58,16 +59,26 @@
             android:background="@drawable/tv_update_return_btn_bg"
             android:text="自动更新"
             android:textColor="#F0F0F0"
-            android:textSize="@dimen/mid_text_size" /> -->
+            android:textSize="@dimen/mid_text_size" />
+        -->
     </RelativeLayout>
 
-    <com.joyplus.tvhelper.ui.GridSwitcherView
-        android:paddingTop="69dp"
-        android:id="@+id/gridswitcherview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_cnter"
-        android:background="#F2F2F2" >
-    </com.joyplus.tvhelper.ui.GridSwitcherView>
+        android:background="#F2F2F2"
+        android:paddingBottom="95dp"
+        android:paddingTop="69dp" >
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="4"
+            android:verticalSpacing="5dp" 
+            android:gravity="center">
+        </GridView>
+    </LinearLayout>
 
 </RelativeLayout>

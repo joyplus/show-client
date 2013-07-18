@@ -33,6 +33,7 @@
             android:layout_alignParentBottom="true" >
 
             <TextView
+                android:id="@+id/tv_update"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -42,10 +43,11 @@
                 android:visibility="invisible" />
 
             <TextView
+                android:id="@+id/tv_newssrc"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="已是最新版本"
+                android:text="已是最新源"
                 android:textColor="#303030"
                 android:textSize="25dp"
                 android:visibility="invisible" />

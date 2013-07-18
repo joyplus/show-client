@@ -6,5 +6,6 @@ public class AppRecommendView {
 	public String iconUrl;
 	public String size;
 	public String downloadUrl;
+	public String packageName;
 
 }

@@ -9,13 +9,12 @@ import android.widget.GridView;
 
 import com.joyplus.tvhelper.adapter.TvLiveSrcUpdateAdapter;
 import com.joyplus.tvhelper.entity.service.TvLiveView;
-import com.joyplus.tvhelper.ui.GridSwitcherView;
 
 public class TvLiveSrcUpdateActivity extends Activity {
 	
-	private TvLiveSrcUpdateAdapter adapter;
-	private GridSwitcherView gridSwitcherView;
 	private List<TvLiveView> list = new ArrayList<TvLiveView>();
+	private GridView gridView;
+	private TvLiveSrcUpdateAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,19 +22,16 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_tv_live_src_update);
 		
-		gridSwitcherView = (GridSwitcherView) findViewById(R.id.gridswitcherview);
+		gridView = (GridView) findViewById(R.id.gridview);
+		
 		for(int i=0;i< 10;i++) {
 			
 			TvLiveView info = new TvLiveView();
 			list.add(info);
 		}
 		
-		gridSwitcherView.setRows(GridSwitcherView.ROW_1);
-		gridSwitcherView.initGridSwitcherView(list.size(), GridSwitcherView.NUM_CLOUMNS_4);
-		
-		adapter = new TvLiveSrcUpdateAdapter(this,gridSwitcherView.getNumCloumns(),gridSwitcherView,list);
-
-		gridSwitcherView.setGridAdapter(adapter);
+		adapter = new TvLiveSrcUpdateAdapter(this, list);
+		gridView.setAdapter(adapter);
 		
 	}
 

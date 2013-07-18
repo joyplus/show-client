@@ -5,12 +5,20 @@ public class AppRecommendInfo {
 	private String appName;
 	private String iconUrl;
 	private int iconSrcId;
-
+	private String pakageName;
 
 	private String size;
 	private String downloadUrl;
 	
 	private boolean isInstalled;
+	
+	public String getPakageName() {
+		return pakageName;
+	}
+
+	public void setPakageName(String pakageName) {
+		this.pakageName = pakageName;
+	}
 	
 	public int getIconSrcId() {
 		return iconSrcId;
