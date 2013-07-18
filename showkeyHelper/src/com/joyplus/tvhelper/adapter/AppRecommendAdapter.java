@@ -3,57 +3,37 @@ package com.joyplus.tvhelper.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.location.GpsStatus.NmeaListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.entity.service.TvLiveView;
-import com.joyplus.tvhelper.ui.GridSwitcherView;
+import com.joyplus.tvhelper.entity.AppRecommendInfo;
 
 public class AppRecommendAdapter extends BaseAdapter {
 	
 	private Context mContext;
-	private int mNumClonumns;
-	private GridSwitcherView mGridSwitcherView;
-	private List<TvLiveView> mList;
+	private List<AppRecommendInfo> mList;
 	
-	public AppRecommendAdapter(Context context,int numClonumns,GridSwitcherView gridSwitcherView,List<TvLiveView> list) {
-		// TODO Auto-generated constructor stub
+	public AppRecommendAdapter(Context context,List<AppRecommendInfo> list){
+		
 		this.mContext = context;
-		this.mNumClonumns = numClonumns;
-		this.mGridSwitcherView = gridSwitcherView;
 		this.mList = list;
 	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		int currentIndex = mGridSwitcherView.getCurrentItem() + 1;
-		int listSize = mList.size();
-		
-		if(listSize < mGridSwitcherView.getRows() * mNumClonumns) {
-			
-			return listSize;
-		}
-		
-		if(listSize >= currentIndex * mGridSwitcherView.getRows() * mNumClonumns) {
-			
-			return mGridSwitcherView.getRows() * mNumClonumns;
-		} else {
-			
-			return listSize - (currentIndex - 1) * mGridSwitcherView.getRows() * mNumClonumns;
-		}
-		
+		return mList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return null;
+		return mList.get(position);
 	}
 
 	@Override
@@ -65,18 +45,31 @@ public class AppRecommendAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		
+		ViewHolder viewHolder = null;
 		if(convertView == null) {
 			
+			viewHolder = new ViewHolder();
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.item_app_recommend_grid, null);
+			viewHolder.iv = (ImageView) convertView.findViewById(R.id.imageview);
+			convertView.setTag(viewHolder);
+		} else {
+			
+			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		int width = parent.getWidth()/mNumClonumns;
+		viewHolder.iv.setBackgroundResource(mList.get(position).getIconSrcId());
 		
-		AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(width, 150);
+		AbsListView.LayoutParams layoutParams = new AbsListView.
+				LayoutParams(parent.getWidth()/4 -1*(int)mContext.getResources().getDimension(R.dimen.item_grid_padding),
+						parent.getHeight()/2 - 1 * (int)mContext.getResources().getDimension(R.dimen.item_grid_padding));
 		convertView.setLayoutParams(layoutParams);
 		return convertView;
+	}
+	
+	class ViewHolder{
+		
+		public ImageView iv;
 	}
 
 }

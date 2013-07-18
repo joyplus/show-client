@@ -23,5 +23,7 @@
     <dimen name="max_low1_text_size">27dp</dimen>
     <dimen name="mid_text_size">23dp</dimen>
     <dimen name="min_text_size">19dp</dimen>
+    
+    <dimen name="item_grid_padding">2dp</dimen>
 
 </resources>

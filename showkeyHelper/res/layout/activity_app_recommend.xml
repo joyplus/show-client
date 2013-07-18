@@ -16,16 +16,17 @@
         <TextView
             android:layout_width="@dimen/zero_value"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="#A16DE9"
             android:gravity="center"
             android:text="应用推荐"
             android:textColor="#F2F2F2"
-            android:textSize="@dimen/max_text_size" 
-            android:layout_weight="1"/>
+            android:textSize="@dimen/max_text_size" />
+
         <TextView
             android:layout_width="@dimen/zero_value"
             android:layout_height="match_parent"
-            android:layout_weight="4.3"/>
+            android:layout_weight="4.3" />
     </LinearLayout>
 
     <RelativeLayout
@@ -58,13 +59,27 @@
             android:textSize="@dimen/mid_text_size" />
     </RelativeLayout>
 
-    <com.joyplus.tvhelper.ui.GridSwitcherView
-        android:id="@+id/gridswitcherview"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_cnter"
-        android:background="#F2F2F2"
-        android:paddingTop="22dp">
-    </com.joyplus.tvhelper.ui.GridSwitcherView>
+        android:layout_below="@id/rl_cnter" >
+
+        <GridView 
+            android:id="@+id/gv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="afterDescendants"
+            android:numColumns="4"
+            android:listSelector="@drawable/item_full_selector"
+            android:scrollbars="none"
+            android:verticalSpacing="2dp"
+            android:horizontalSpacing="2dp"
+            android:background="#150a04"></GridView>
+        <TextView 
+            android:id="@+id/tv_download_bg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/start_download"/>
+    </FrameLayout>
 
 </RelativeLayout>

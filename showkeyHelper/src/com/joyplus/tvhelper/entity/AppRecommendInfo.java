@@ -4,11 +4,21 @@ public class AppRecommendInfo {
 	
 	private String appName;
 	private String iconUrl;
+	private int iconSrcId;
+
+
 	private String size;
 	private String downloadUrl;
 	
 	private boolean isInstalled;
+	
+	public int getIconSrcId() {
+		return iconSrcId;
+	}
 
+	public void setIconSrcId(int iconSrcId) {
+		this.iconSrcId = iconSrcId;
+	}
 	public String getAppName() {
 		return appName;
 	}
