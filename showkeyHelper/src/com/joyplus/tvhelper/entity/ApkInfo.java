@@ -77,4 +77,10 @@ public class ApkInfo {
 	public void setVersionCode(int versionCode) {
 		this.versionCode = versionCode;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "AppName:"+ appName+ " packageName:"+ packageName;
+	}
 }

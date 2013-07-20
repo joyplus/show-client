@@ -170,5 +170,12 @@ public static InetAddress getLocalIpAddress(){
 	  
 	  return str;
   }
+  
+	public static String getFilenameFromUrl(String url){
+		
+		String [] strs = url.split("/");
+		String filename = strs[strs.length - 1];
+		return filename;
+	}
 
 }

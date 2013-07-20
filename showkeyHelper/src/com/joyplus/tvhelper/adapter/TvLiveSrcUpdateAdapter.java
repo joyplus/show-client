@@ -12,15 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.entity.service.TvLiveView;
+import com.joyplus.tvhelper.entity.TvLiveInfo;
 
 public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 	
 	private Context mContext;
 
-	private List<TvLiveView> mList;
+	private List<TvLiveInfo> mList;
 	
-	public TvLiveSrcUpdateAdapter(Context context,List<TvLiveView> list) {
+	public TvLiveSrcUpdateAdapter(Context context,List<TvLiveInfo> list) {
 		// TODO Auto-generated constructor stub
 		this.mContext = context;
 		this.mList = list;

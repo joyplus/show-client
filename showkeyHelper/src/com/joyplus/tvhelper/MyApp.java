@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.TvLiveInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
 
 public class MyApp extends Application {

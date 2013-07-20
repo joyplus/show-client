@@ -1,62 +1,94 @@
 package com.joyplus.tvhelper.entity;
 
 public class TvLiveInfo {
+	public static final int UNKOWN = -1;
+	public static final int NEWS = 0;
+	public static final int UPDATE = 1;
+	public static final int DOWNLOAD = 2;
 	
-	private String iconUrl;
-	private String name;
-	private String packageName;
-	private String tvSourceUrl;
-	private String apkSourceUrl;
-	private boolean isCommon;
+	private String md5;
+	private String app_name;//名称
+	private String package_name;//包名
+	private String icon_url;//图片地址
+	private boolean is_specific_app;//是否是通用的视频APK，如果机器没有安装，应该推荐下载 1为特殊，0为普通
+	private String[] file_urls;//直播源下载地址
+	private String version;//版本号
+	private String apk_url;//APK资源下载地址
 	
 	private int status;//0代表已经是最新的，1代表点击更新，2推荐下载
+	
+	private String[] fileNames;//下载的文件名
 
-	public String getIconUrl() {
-		return iconUrl;
+	public String[] getFileNames() {
+		return fileNames;
 	}
 
-	public void setIconUrl(String iconUrl) {
-		this.iconUrl = iconUrl;
+	public void setFileNames(String[] fileNames) {
+		this.fileNames = fileNames;
 	}
 
-	public String getName() {
-		return name;
+	public String getMd5() {
+		return md5;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setMd5(String md5) {
+		this.md5 = md5;
 	}
 
-	public String getPackageName() {
-		return packageName;
+	public String getApp_name() {
+		return app_name;
 	}
 
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
+	public void setApp_name(String app_name) {
+		this.app_name = app_name;
 	}
 
-	public String getTvSourceUrl() {
-		return tvSourceUrl;
+	public String getPackage_name() {
+		return package_name;
 	}
 
-	public void setTvSourceUrl(String tvSourceUrl) {
-		this.tvSourceUrl = tvSourceUrl;
+	public void setPackage_name(String package_name) {
+		this.package_name = package_name;
 	}
 
-	public String getApkSourceUrl() {
-		return apkSourceUrl;
+	public String getIcon_url() {
+		return icon_url;
 	}
 
-	public void setApkSourceUrl(String apkSourceUrl) {
-		this.apkSourceUrl = apkSourceUrl;
+	public void setIcon_url(String icon_url) {
+		this.icon_url = icon_url;
 	}
 
-	public boolean isCommon() {
-		return isCommon;
+	public boolean isIs_specific_app() {
+		return is_specific_app;
 	}
 
-	public void setCommon(boolean isCommon) {
-		this.isCommon = isCommon;
+	public void setIs_specific_app(boolean is_specific_app) {
+		this.is_specific_app = is_specific_app;
+	}
+
+	public String[] getFile_urls() {
+		return file_urls;
+	}
+
+	public void setFile_urls(String[] file_urls) {
+		this.file_urls = file_urls;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getApk_url() {
+		return apk_url;
+	}
+
+	public void setApk_url(String apk_url) {
+		this.apk_url = apk_url;
 	}
 
 	public int getStatus() {
@@ -68,6 +100,4 @@ public class TvLiveInfo {
 	}
 	
 	
-	
-
 }
