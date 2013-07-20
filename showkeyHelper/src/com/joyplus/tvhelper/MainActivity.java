@@ -78,6 +78,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				image_setting.layout(width*2+26, height+13, width*3+66, height*2+53);
 				image_showtui.setImageBitmap(layout_showtui.getDrawingCache());
 				layout_showtui.requestFocus();
+				startService(new Intent(MainActivity.this, FayeService.class));
 				break;
 
 			default:
@@ -95,7 +96,6 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		if(PreferencesUtils.getPincode(this)==null){
 			new Thread(new GetPinCodeTask()).start();
 		}else{
-			startService(new Intent(MainActivity.this, FayeService.class));
 			mHandler.sendEmptyMessageDelayed((MESSAGE_GETPINCODE_SUCCESS),200);
 		}
 	}
@@ -415,7 +415,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				mHandler.sendEmptyMessage(MESSAGE_GETPINCODE_SUCCESS);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+//				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
 				e.printStackTrace();
 			}
 			  

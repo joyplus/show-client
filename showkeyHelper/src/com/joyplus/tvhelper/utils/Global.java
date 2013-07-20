@@ -4,7 +4,7 @@ public class Global {
 	
 	/** 测试环境 **/
 //	public static String serverUrl = "http://otatest.joyplus.tv";
-	public static String serverUrl = "http://tt.yue001.com";
+	public static String serverUrl = "http://tt.yue001.com:8080";
 	 
 	public static String app_key = "ijoyplus_android_0001bj";
 	

@@ -2,7 +2,6 @@ package com.joyplus.tvhelper.faye;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -16,19 +15,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.joyplus.network.filedownload.manager.DownLoadListner;
+import com.joyplus.network.filedownload.manager.DownloadManager;
+import com.joyplus.network.filedownload.model.DownloadTask;
 import com.joyplus.tvhelper.DialogActivity;
 import com.joyplus.tvhelper.db.DBServices;
-import com.joyplus.tvhelper.db.PushedApkDownLoadInfo;
-import com.joyplus.tvhelper.download.DownLoadTask;
 import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
@@ -38,9 +38,11 @@ import com.joyplus.tvhelper.utils.Utils;
 import com.lenovo.lsf.installer.PackageInstaller;
 
 
-public class FayeService extends Service implements FayeListener ,Observer{
+public class FayeService extends Service implements FayeListener ,Observer, DownLoadListner{
 
 	private static final String TAG = "FayeService";
+	
+	private static File APK_PATH = null;
 	
 	private boolean isNeedReconnect = false;
 	
@@ -58,9 +60,13 @@ public class FayeService extends Service implements FayeListener ,Observer{
 	private String channel;
 	private FayeClient myClient;
 	private DBServices services;
-	private PushedApkDownLoadInfo currentDownLoadInfo; 
-	public static List<PushedApkDownLoadInfo> infolist = new ArrayList<PushedApkDownLoadInfo>();
-	private String currentPackage = null;
+	private DownloadManager downloadManager;
+	private PackageInstaller packageInstaller;
+	private PushedApkDownLoadInfo currentUserApkInfo; 
+	private PushedApkDownLoadInfo currentNotUserApkInfo; 
+	public static List<PushedApkDownLoadInfo> userPushApkInfos;
+	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos;
+//	private String currentPackage = null;
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
@@ -88,64 +94,13 @@ public class FayeService extends Service implements FayeListener ,Observer{
 				}
 				myClient.sendMessage(json);
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
-				int push_id = intent.getIntExtra("push_id", 0);
-				Log.d(TAG, "ACTION_DOWNLOAD_PAUSE -- >push_id --->" + push_id);
-				if(currentDownLoadInfo!=null){
-					if(push_id == currentDownLoadInfo.getPush_id()){
-						Log.d(TAG, "currentDownLoadInfo --->" + currentDownLoadInfo.getPush_id());
-						Log.d(TAG, currentDownLoadInfo.getName() + "------------------pause");
-						currentDownLoadInfo.getTast().stopLoad();
-						currentDownLoadInfo.setDownload_state(2);
-						services.updatePushedApkInfo(currentDownLoadInfo);
-						startNextDownLoad(infolist.indexOf(currentDownLoadInfo));
-					}
-				}
+				currentUserApkInfo = null;
+				startNextUserApkDownLoad();
 			}else if(Global.ACTION_DOWNLOAD_CONTINUE.equals(action)){
-				int push_id = intent.getIntExtra("push_id", 0);
-				PushedApkDownLoadInfo info = null;
-				for(int i=0; i<infolist.size(); i++){
-					if(infolist.get(i).getPush_id()==push_id){
-						info = infolist.get(i);
-					}
-				}
-				if(info != null){
-					info.setDownload_state(0);
-					services.updatePushedApkInfo(info);
-					if(currentDownLoadInfo==null){
-						Log.d(TAG, "currentDownLoadInfo is null----------------app->" +info.getName()+" start down load");
-						currentDownLoadInfo = info;
-						DownLoadTask tast = new DownLoadTask(FayeService.this, info, handler); 
-						info.setTast(tast);
-						new Thread(tast).start();
-						Intent startIntent = new Intent(Global.ACTION_DOWNLOAD_START);
-						startIntent.putExtra("push_id", info.getPush_id());
-						sendBroadcast(startIntent);
-					}else{
-						infolist.remove(info);
-						int index = infolist.indexOf(currentDownLoadInfo);
-						Log.d(TAG, "currentDownLoadInfo is not null----------------index + 1 = " + (index+1));
-						infolist.add(index+1, info);
-					}
-				}
+				currentUserApkInfo = null;
+				startNextUserApkDownLoad();
 			}else if(Global.ACTION_DELETE_DOWNLOAD.equals(action)){
-				int push_id = intent.getIntExtra("push_id", 0);
-				PushedApkDownLoadInfo info = null;
-				for(int i=0; i<infolist.size(); i++){
-					if(infolist.get(i).getPush_id()==push_id){
-						info = infolist.get(i);
-					}
-				}
-				if(info != null){
-					infolist.remove(info);
-					services.deleteDownLoadInfo(info);
-					if(info.getFile_path()!=null){
-						File f = new File(info.getFile_path());
-						if(f.exists()){
-							f.delete();
-						}
-					}
-					
-				}
+				
 			}else if(Global.ACTION_PINCODE_REFRESH.equals(action)){
 				myClient.disconnectFromServer();
 				isNeedReconnect = false;
@@ -156,20 +111,19 @@ public class FayeService extends Service implements FayeListener ,Observer{
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
-			if(msg.what>100){
-				switch (msg.what) {
-				case MESSAGE_SHOW_DIALOG:
-					Intent intent = new Intent(FayeService.this,DialogActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(intent);
-					break;
-				case MESSAGE_NEW_DOWNLOAD_ADD:
-					Log.d(TAG, "MESSAGE_NEW_DOWNLOAD_ADD -- >");
-					Intent dowanlaodAddIntent = new Intent(Global.ACTION_APK_RECIVED);
-					sendBroadcast(dowanlaodAddIntent);
-					break;
-				case MESSAGE_LISTEN_APP_LOOPER:
-					Log.d(TAG, "MESSAGE_LISTEN_APP_LOOPER-----");
+			switch (msg.what) {
+			case MESSAGE_SHOW_DIALOG:
+				Intent intent = new Intent(FayeService.this,DialogActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				break;
+			case MESSAGE_NEW_DOWNLOAD_ADD:
+				Log.d(TAG, "MESSAGE_NEW_DOWNLOAD_ADD -- >");
+				Intent dowanlaodAddIntent = new Intent(Global.ACTION_APK_RECIVED);
+				sendBroadcast(dowanlaodAddIntent);
+				break;
+			case MESSAGE_LISTEN_APP_LOOPER:
+				Log.d(TAG, "MESSAGE_LISTEN_APP_LOOPER-----");
 //					try {
 //						int tagCode = EventLog.getTagCode("am_proc_start");
 //						Collection<Event> output = new ArrayList<EventLog.Event>();
@@ -200,78 +154,13 @@ public class FayeService extends Service implements FayeListener ,Observer{
 //								currentPackage = packageName;
 //							}
 //						}
-//						07-01 16:42:02.121: I/ActivityManager(314): START {flg=0x10000000 cmp=com.qihoo360.mobilesafe_tv/com.qihoo360.mobilesafe.applock.ui.TvLockWorkActivity (has extras) u=0} from pid 1307
 
 //					} catch (IOException e) {
 //						// TODO Auto-generated catch block
 //						e.printStackTrace();
 //					}
 //					handler.sendEmptyMessageDelayed(MESSAGE_LISTEN_APP_LOOPER, 500);
-					break;
-				}
-			}else{
-				int pushedId = msg.arg1;
-				PushedApkDownLoadInfo info = null;
-				if(services == null){
-					services = DBServices.getInstance(FayeService.this);
-				}
-				for(int i=0; i<infolist.size(); i++){
-					if(infolist.get(i).getPush_id()==pushedId){
-						info = infolist.get(i);
-					}
-				}
-				switch (msg.what) {
-				case MESSAGE_DOWNLOAD_CREAT_FILE_SUCCESS: 
-//					services.updatePushedApkInfo(info);
-					Log.d(TAG, "progress ---------------------" + info.getFile_path());
-					break;
-				case MESSAGE_DOWNLOAD_GET_FILESIE_SUCCESS:
-//					services.updatePushedApkInfo(info);
-					Intent fileSizeIntent = new Intent(Global.ACTION_DOWNL_GETSIZE_SUCESS);
-					fileSizeIntent.putExtra("push_id", info.getPush_id());
-					fileSizeIntent.putExtra("file_size", info.getFileSize());
-					sendBroadcast(fileSizeIntent);
-					break;
-				case MESSAGE_DOWNLOAD_PROGRESS_CHANGED:
-//					services.updatePushedApkInfo(info);
-//					Log.d(TAG, "progress ---------------------" + (msg.arg2*100)/info.getFileSize());
-					if(info.getDownload_state()==1){
-						Intent progressIntent = new Intent(Global.ACTION_DOWNLOAD_PROGRESS);
-						progressIntent.putExtra("push_id", info.getPush_id());
-						progressIntent.putExtra("progress", (info.getCompeleteSize()*100)/info.getFileSize());
-						sendBroadcast(progressIntent);
-					}
-					 
-					break;
-				case MESSAGE_DOWNLOAD_COMPLETE:
-//					services.updatePushedApkInfo(info);
-					Log.d(TAG, "down load success ---------------------");
-					Log.d(TAG, "MESSAGE_DOWNLOAD_COMPLETE ---------------------" + (info.getCompeleteSize()*100)/info.getFileSize() + "id == " + info.getPush_id());
-					PackageInstaller pi = new PackageInstaller(FayeService.this);
-				    pi.addObserver(FayeService.this);
-//				     pi.instatll("/sdcard/joyplus.apk", "com.joyplus");
-				    info.setDownload_state(3);
-				    services.updatePushedApkInfo(info);
-				    ApkInfo apkInfo = PackageUtils.getUnInstalledApkInfo(FayeService.this, currentDownLoadInfo.getFile_path());
-				    if(apkInfo!=null){
-				    	info.setIcon(apkInfo.getDrawble());
-					    info.setPackageName(apkInfo.getPackageName());
-				    }
-				    pi.instatll(info.getFile_path(), info.getPackageName());
-				    Intent downLoadCompletIntent = new Intent(Global.ACTION_DOWNLOAD_COMPLETE);
-				    downLoadCompletIntent.putExtra("push_id", info.getPush_id());
-				    sendBroadcast(downLoadCompletIntent);
-					break;
-				case MESSAGE_DOWNLOAD_FAILE:
-					int location1 = infolist.indexOf(info);
-					info.setDownload_state(2);
-					Intent downLoadfaileIntent = new Intent(Global.ACTION_DOWNLOAD_FAILE);
-					downLoadfaileIntent.putExtra("push_id", info.getPush_id());
-					sendBroadcast(downLoadfaileIntent);
-					services.saveApkInfo(info);
-					startNextDownLoad(location1);
-					break;
-				}
+				break;
 			}
 		};
 	};
@@ -292,8 +181,15 @@ public class FayeService extends Service implements FayeListener ,Observer{
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		APK_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/apk");
 		services = DBServices.getInstance(this);
 		channel = "/" + PreferencesUtils.getChannel(this);
+		downloadManager = DownloadManager.getInstance(this);
+		downloadManager.setDownLoadListner(this);
+		packageInstaller = new PackageInstaller(this);
+		packageInstaller.addObserver(this);
+		userPushApkInfos = services.queryUserApkDownLoadInfo();
+		notuserPushedApkInfos = services.queryNotUserApkDownLoadInfo();
 		Log.d(TAG, channel);
 		URI url = URI.create(Global.serverUrl+"/uploadApk");
 		Log.d(TAG, "Server----->" + Global.serverUrl+"/uploadApk");
@@ -334,8 +230,8 @@ public class FayeService extends Service implements FayeListener ,Observer{
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				infolist = services.GetPushedApklist(infolist);
-				Log.d(TAG, "infolist size" + infolist.size());
+//				infolist = services.GetPushedApklist(infolist);
+				Log.d(TAG, "infolist size" + userPushApkInfos.size());
 				String url = Global.serverUrl + "/pushMsgHistories?app_key=" + Global.app_key 
 						+ "&mac_address=" + Utils.getMacAdd() 
 						+ "&page_num=" + 1
@@ -344,36 +240,30 @@ public class FayeService extends Service implements FayeListener ,Observer{
 				String str = HttpTools.get(FayeService.this, url);
 				Log.d(TAG, "pushMsgHistories response-->" + str);
 				try {
-//					JSONObject obj = new JSONObject(str);
-//					JSONArray array = obj.getJSONArray("");
 					JSONArray array = new JSONArray(str);
 					Log.d(TAG, "miss length ---------------------------->" + array.length());
 					for(int i=0; i<array.length(); i++){
 						JSONObject item = array.getJSONObject(i);
 						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+						String file_url = item.getString("file_url");
 						info.setPush_id(item.getInt("id"));
-						info.setUrl(item.getString("file_url"));
 						info.setName(item.getString("app_name"));
-						if(!services.isHasPushedApk(info)){
-							services.saveApkInfo(info);
-							updateHistory(info.getPush_id());
-							services.updatePushedApkInfo(info);
-							infolist.add(info);
-						}
+						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+						String fileName = getApkFileNameforUrl(file_url);
+						DownloadTask tast = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
+						info.setTast(tast);
+						info.set_id((int) services.insertApkInfo(info));
+						userPushApkInfos.add(info);
+						updateHistory(info.getPush_id());
+						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				for(int i=0; i<infolist.size(); i++){
-					PushedApkDownLoadInfo nextInfo = infolist.get(i);
-					if(nextInfo.getDownload_state()<2){
-						currentDownLoadInfo = nextInfo;
-						DownLoadTask tast = new DownLoadTask(FayeService.this, nextInfo, handler);
-						nextInfo.setTast(tast);
-						new Thread(tast).start();
-						return;
-					}
+				if(currentUserApkInfo==null){
+					startNextUserApkDownLoad();
 				}
 			}
 		}).start();
@@ -428,18 +318,22 @@ public class FayeService extends Service implements FayeListener ,Observer{
 					PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
 					final int id = data.getInt("id");
 					info.setName(data.getString("app_name"));
-					info.setUrl(data.getString("file_url"));
+					String url = data.getString("file_url");
+					String file_name = getApkFileNameforUrl(url);
 					info.setPush_id(id);
-					services.saveApkInfo(info);
+					DownloadTask tast = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
+					info.setTast(tast);
+					info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+					info.set_id((int) services.insertApkInfo(info));
+					userPushApkInfos.add(info);
 					updateHistory(id);
-					infolist.add(info);
-					Log.d(TAG, "infolist size -- >" + infolist.size());
 					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-					if(currentDownLoadInfo==null){
-						currentDownLoadInfo = info;
-						DownLoadTask tast = new DownLoadTask(FayeService.this, info, handler);
-						info.setTast(tast);
-						new Thread(tast).start();
+					if(currentUserApkInfo==null){
+						currentUserApkInfo = info;
+						currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+						downloadManager.startTast(tast);
+						services.updateApkInfo(currentUserApkInfo);
 					}
 					break;
 				case 2:
@@ -449,11 +343,6 @@ public class FayeService extends Service implements FayeListener ,Observer{
 				default:
 					break;
 				}
-				
-//				String apkUrl = json.getString("file_url");
-//				Intent intent = new Intent(ACTION_APK_RECIVED);
-//				intent.putExtra("url", Uri.encode(apkUrl));
-//				sendBroadcast(intent);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -462,26 +351,29 @@ public class FayeService extends Service implements FayeListener ,Observer{
 
 	}
 	
-	private void startNextDownLoad(int currentIndex){
-		Log.d(TAG, "startNextDownLoad -- > currentIndex------------->" + currentIndex);
-		if(currentIndex<infolist.size()-1){
-			PushedApkDownLoadInfo nextInfo = infolist.get(currentIndex+1);
-			if(nextInfo.getDownload_state()==0){
-				currentDownLoadInfo = nextInfo;
-				DownLoadTask tast = new DownLoadTask(FayeService.this, nextInfo, handler); 
-				nextInfo.setTast(tast);
-				new Thread(tast).start();
-				Intent intent = new Intent(Global.ACTION_DOWNLOAD_START);
-				intent.putExtra("push_id", nextInfo.getPush_id());
-				sendBroadcast(intent);
-				Log.d(TAG, "ACTION_DOWNLOAD_START send -- > " + currentDownLoadInfo.getName());
-			}else{
-				startNextDownLoad(currentIndex+1);
+	private String getApkFileNameforUrl(String url){
+		String [] strs = url.split("/");
+		String filename = strs[strs.length - 1];
+//		if(filename.contains(".")){
+//			filename = filename.substring(0, filename.lastIndexOf("."));
+//		}
+		return System.currentTimeMillis() + filename;
+	}
+	
+	private void startNextUserApkDownLoad(){
+		Log.d(TAG, "startNextUserApkDownLoad--->");
+		for(PushedApkDownLoadInfo info :userPushApkInfos){
+			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD){
+				if(info.getTast().getState()==-1){
+					downloadManager.startTast(info.getTast());
+				}else{
+					downloadManager.resumeTask(info.getTast());
+				}
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+				currentUserApkInfo = info;
+				services.updateApkInfo(currentUserApkInfo);
+				return ;
 			}
-			
-		}else{
-			Log.d(TAG, "no one down  send -- > ");
-			currentDownLoadInfo = null;
 		}
 	}
 	
@@ -506,39 +398,137 @@ public class FayeService extends Service implements FayeListener ,Observer{
 		// TODO Auto-generated method stub
 		if (data != null && data instanceof Bundle){
 			Bundle b = (Bundle) data;
-			Log.i("TAG", "packageName=" + b.getString(PackageInstaller.KEY_PACKAGE_NAME));
-			Log.i("TAG", "resultCode=" + b.getInt(PackageInstaller.KEY_RESULT_CODE));
-			Log.i("TAG", "resultDesc=" + b.getString(PackageInstaller.KEY_RESULT_DESC));
-			Log.d(TAG, "currentDownLoadInfo package name -->" + currentDownLoadInfo.getPackageName());
-//			if(currentDownLoadInfo.getPackageName().equals(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
+			Log.i(TAG, "packageName=" + b.getString(PackageInstaller.KEY_PACKAGE_NAME));
+			Log.i(TAG, "resultCode=" + b.getInt(PackageInstaller.KEY_RESULT_CODE));
+			Log.i(TAG, "resultDesc=" + b.getString(PackageInstaller.KEY_RESULT_DESC));
+			
+			if(currentUserApkInfo!=null && currentUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
+				Log.d(TAG, currentUserApkInfo.getName() + " install " +b.getString(PackageInstaller.KEY_RESULT_DESC));
 				if("INSTALL_SUCCEEDED".equals(b.getString(PackageInstaller.KEY_RESULT_DESC))){
-					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_SUCESS);
-					intent.putExtra("push_id", currentDownLoadInfo.getPush_id());
+					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_FAILE);
+					intent.putExtra("_id", currentUserApkInfo.get_id());
+					services.deleteApkInfo(currentUserApkInfo);
+					userPushApkInfos.remove(currentUserApkInfo);
+					sendBroadcast(intent);
 					if(PreferencesUtils.isautodelete(FayeService.this)){
-						if(currentDownLoadInfo!=null&&currentDownLoadInfo.getFile_path()!=null){
-							File f = new File(currentDownLoadInfo.getFile_path());
-							if(f.exists()){
+						if(currentUserApkInfo!=null&&currentUserApkInfo.getFile_path()!=null){
+							File f = new File(currentUserApkInfo.getFile_path());
+							if(f!=null&&f.exists()){
 								f.delete();
 							}
 						}
 					}
-					currentDownLoadInfo.setDownload_state(-1);
-					sendBroadcast(intent);
 				}else{
 					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_FAILE);
-					intent.putExtra("push_id", currentDownLoadInfo.getPush_id());
-					currentDownLoadInfo.setDownload_state(4);
+					intent.putExtra("_id", currentUserApkInfo.get_id());
+					currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_INSTALL_FAILE);
+					services.updateApkInfo(currentUserApkInfo);
 					sendBroadcast(intent);
 				}
-
-				int location = infolist.indexOf(currentDownLoadInfo);
-				services.updatePushedApkInfo(currentDownLoadInfo);
-				PushedApkDownLoadInfo  info= currentDownLoadInfo;
-				currentDownLoadInfo = null;
-				startNextDownLoad(location);
-				infolist.remove(info);
-//			}
+				currentUserApkInfo = null;
+				// down load next
+				startNextUserApkDownLoad();
+			}
+			
+			if(currentNotUserApkInfo!=null && currentNotUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
+				Log.d(TAG, currentNotUserApkInfo.getName() + " install "+b.getString(PackageInstaller.KEY_RESULT_DESC));
+				if(currentNotUserApkInfo!=null&&currentNotUserApkInfo.getFile_path()!=null){
+					File f = new File(currentNotUserApkInfo.getFile_path());
+					if(f!=null&&f.exists()){
+						f.delete();
+					}
+				}
+				// down load next
+			}
 		}
+	}
+
+	@Override
+	public void onDownloadComplete(String uiid) {
+		// TODO Auto-generated method stub
+		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load complete");
+		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
+			//用户推送的apk文件下载完成
+			ApkInfo info = PackageUtils.getUnInstalledApkInfo(FayeService.this, currentUserApkInfo.getFile_path());
+			
+			if(info!=null){
+				currentUserApkInfo.setPackageName(info.getPackageName());
+				currentUserApkInfo.setIcon(info.getDrawble());
+				currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
+				services.updateApkInfo(currentUserApkInfo);
+				packageInstaller.instatll(currentUserApkInfo.getFile_path(), info.getPackageName());
+				//通知ui
+				Intent downLoadCompletIntent = new Intent(Global.ACTION_DOWNLOAD_COMPLETE);
+			    downLoadCompletIntent.putExtra("_id", currentUserApkInfo.get_id());
+			    sendBroadcast(downLoadCompletIntent);
+			}else{
+				Log.d(TAG, "unInstall apk info get fiale load next");
+				currentUserApkInfo = null;
+				startNextUserApkDownLoad();
+			}
+			
+			return ;
+		}
+		if(currentNotUserApkInfo!=null&&uiid.equalsIgnoreCase(currentNotUserApkInfo.getTast().getUUId())){
+			//。。。
+			ApkInfo info = PackageUtils.getUnInstalledApkInfo(FayeService.this, currentNotUserApkInfo.getFile_path());
+			
+			if(info!=null){
+				currentNotUserApkInfo.setName(info.getAppName());
+				currentNotUserApkInfo.setIcon(info.getDrawble());
+				currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
+				services.updateApkInfo(currentNotUserApkInfo);
+				packageInstaller.instatll(currentNotUserApkInfo.getFile_path(), info.getPackageName());
+			}else{
+				Log.d(TAG, "unInstall apk info get fiale load next");
+			}
+			return ;
+		}
+		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the complete");
+	}
+
+	@Override
+	public void onDownloadFaile(String uiid) {
+		// TODO Auto-generated method stub
+		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
+		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
+			//用户推送的apk文件下载失败
+			currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+			services.updateApkInfo(currentUserApkInfo);
+//			通知ui
+			Intent downLoadfaileIntent = new Intent(Global.ACTION_DOWNLOAD_FAILE);
+			downLoadfaileIntent.putExtra("_id", currentUserApkInfo.get_id());
+			sendBroadcast(downLoadfaileIntent);
+			currentUserApkInfo = null;
+			startNextUserApkDownLoad();
+			return ;
+		}
+		if(currentNotUserApkInfo!=null&&uiid.equalsIgnoreCase(currentNotUserApkInfo.getTast().getUUId())){
+			//。。。
+			currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+			services.updateApkInfo(currentNotUserApkInfo);
+			return ;
+		}
+		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"  not handle the Faile");
+	}
+
+	@Override
+	public void onDownloadPogressed(String uiid) {
+		// TODO Auto-generated method stub
+//		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
+			Intent progressIntent = new Intent(Global.ACTION_DOWNLOAD_PROGRESS);
+//			progressIntent.putExtra("push_id", info.getPush_id());
+//			progressIntent.putExtra("progress", (info.getCompeleteSize()*100)/info.getFileSize());
+			sendBroadcast(progressIntent);
+//			return;
+//		}
+//		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the Faile");
+	}
+
+	@Override
+	public void onFileSizeLoaded(String uiid) {
+		// TODO Auto-generated method stub
+		//判断当前文件是否能完整的存到sdcard中
 	}
 	
 	

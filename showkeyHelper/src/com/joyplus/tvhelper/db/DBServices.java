@@ -1,24 +1,32 @@
 package com.joyplus.tvhelper.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.PackageUtils;
+import com.joyplus.utils.Log;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * 
- * 涓�釜涓氬姟绫� */
+
 public class DBServices {
+	
+	private static final String TAG = "DBServices";
+	
 	private static DBServices dao = null;
 	private Context context;
+	private DownloadManager dmg;
 
 	private DBServices(Context context) {
 		this.context = context;
+		dmg = DownloadManager.getInstance(context);
 	}
 
 	public static DBServices getInstance(Context context) {
@@ -33,167 +41,296 @@ public class DBServices {
 		try {
 			sqliteDatabase = new DBHelper(context).getWritableDatabase();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		return sqliteDatabase;
 	}
 	
-	public synchronized void saveApkInfo(PushedApkDownLoadInfo info){
-		if(isHasPushedApk(info)){
-			updatePushedApkInfo(info);
-		}else{
-			SQLiteDatabase database = getConnection();
-			try {
-				String sql = "insert into apk_info(push_id, name, url, fileSize, compeleteSize, download_state, file_path) values (?,?,?,?,?,?,?)";
-				Object[] bindArgs = { info.getPush_id(), info.getName(),
-						info.getUrl(), info.getFileSize(), info.getCompeleteSize(),
-						info.getDownload_state(),info.getFile_path()};
-				database.execSQL(sql, bindArgs);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (null != database) {
-					database.close();
-				}
-			}
-		}
+	
+	public synchronized long insertApkInfo(PushedApkDownLoadInfo info){
+		SQLiteDatabase db = getConnection();
+		ContentValues values = new ContentValues();
+		values.put(DBConstant.KEY_APK_INFO_NAME, info.getName());
+		values.put(DBConstant.KEY_APK_INFO_PUSH_ID, info.getPush_id());
+		values.put(DBConstant.KEY_APK_INFO_FILE_PATH, info.getFile_path());
+		values.put(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE, info.getDownload_state());
+		values.put(DBConstant.KEY_APK_INFO_DOWNLOADUUID, info.getTast().getUUId());
+		values.put(DBConstant.KEY_APK_INFO_ISUSER, info.getIsUser());
+		long _id = db.insert(DBConstant.TABLE_APK_INFO, null, values);
+		db.close();
+        return _id;
 	}
 	
-	public synchronized boolean isHasPushedApk(PushedApkDownLoadInfo info){
-		SQLiteDatabase database = getConnection();
-		Cursor cursor = null;
-		int count = -1;
-		try {
-			String sql = "select count(*)  from apk_info where push_id = ?";
-			cursor = database.rawQuery(sql, new String[]{info.getPush_id()+""});
-			if (cursor.moveToFirst()) {
-				count = cursor.getInt(0);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (null != database) {
-				database.close();
-			}
-			if (null != cursor) {
-				cursor.close();
-			}
-		}
-		return  count != 0;
-	}
+	public synchronized void updateApkInfo(PushedApkDownLoadInfo info){
+        SQLiteDatabase db = getConnection();
+        ContentValues values = new ContentValues();
+		values.put(DBConstant.KEY_APK_INFO_NAME, info.getName());
+		values.put(DBConstant.KEY_APK_INFO_PUSH_ID, info.getPush_id());
+		values.put(DBConstant.KEY_APK_INFO_FILE_PATH, info.getFile_path());
+		values.put(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE, info.getDownload_state());
+		values.put(DBConstant.KEY_APK_INFO_DOWNLOADUUID, info.getTast().getUUId());
+		values.put(DBConstant.KEY_APK_INFO_ISUSER, info.getIsUser());
+//
+        int rows = db.update(DBConstant.TABLE_APK_INFO, values,
+        		DBConstant.KEY_ID + " = ? ", new String[] {
+        		info.get_id()+ ""
+                });
+        db.close();
+        Log.d(TAG, rows + "--->update");
+    }
 	
-	public synchronized void updatePushedApkInfo(PushedApkDownLoadInfo info){
-		if(!isHasPushedApk(info)){
-			saveApkInfo(info);
-		}else{
-			SQLiteDatabase database = getConnection();
-			Cursor cursor = null;
-			try {
-				String sql = "update apk_info set name=?, url=?, fileSize=?, compeleteSize=?, download_state=? , file_path =? where push_id=?";
-				Object[] bindArgs = {info.getName(), info.getUrl(), info.getFileSize(), info.getCompeleteSize(), info.getDownload_state(), info.getFile_path(), info.getPush_id() };
-				database.execSQL(sql, bindArgs);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (null != database) {
-					database.close();
-				}
-				if (null != cursor) {
-					cursor.close();
-				}
-			}
-		}
-	}
-	public synchronized PushedApkDownLoadInfo GetPushedApkInfo(String push_id){
-		SQLiteDatabase database = getConnection();
-		Cursor cursor = null;
-		PushedApkDownLoadInfo info = null;
-		try {
-			String sql = "select * from apk_info where push_id=?";
-			cursor = database.rawQuery(sql, new String[]{push_id+""});
-			while (cursor.moveToNext()) {
-				info = new PushedApkDownLoadInfo();
-				info.setName(cursor.getString(1));
-				info.setPush_id(cursor.getInt(2));
-				info.setUrl(cursor.getString(3));
-				info.setFileSize(cursor.getInt(4));
-				info.setCompeleteSize(cursor.getInt(5));
-				info.setDownload_state(cursor.getInt(6));
-				info.setFile_path(cursor.getString(7));
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (null != database) {
-				database.close();
-			}
-			if (null != cursor) {
-				cursor.close();
-			}
-		}
-		return info;
-	}
+	public void deleteApkInfo(PushedApkDownLoadInfo info) {
+        SQLiteDatabase db = getConnection();
+        int rows = db.delete(DBConstant.TABLE_APK_INFO,
+        		DBConstant.KEY_ID + " = ? ", new String[] {
+        		String.valueOf(info.get_id())
+                });
+        Log.i(TAG, rows + "rows deleted");
+        db.close();
+    }
 	
-	public synchronized List<PushedApkDownLoadInfo> GetPushedApklist(List<PushedApkDownLoadInfo> list){
-		SQLiteDatabase database = getConnection();
-		Cursor cursor = null;
-		PushedApkDownLoadInfo info = null;
-		list.clear();
-		try {
-			String sql = "select * from apk_info where download_state>-1";
-			cursor = database.rawQuery(sql,null);
-			while (cursor.moveToNext()) {
-				info = new PushedApkDownLoadInfo();
-				info.setName(cursor.getString(1));
-				info.setPush_id(cursor.getInt(2));
-				info.setUrl(cursor.getString(3));
-				info.setFileSize(cursor.getInt(4));
-				info.setCompeleteSize(cursor.getInt(5));
-				info.setDownload_state(cursor.getInt(6));
-				info.setFile_path(cursor.getString(7));
-				if(info.getDownload_state()==3){
-					try{
-						ApkInfo apkInfo = PackageUtils.getUnInstalledApkInfo(context, info.getFile_path());
-						if(info!=null){
-							info.setIcon(apkInfo.getDrawble());
-						    info.setPackageName(apkInfo.getPackageName());
-						}
-					}catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
-					}
-					
-				}
-				list.add(info);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (null != database) {
-				database.close();
-			}
-			if (null != cursor) {
-				cursor.close();
-			}
-		}
-		return list;
-	}
+	public ArrayList<PushedApkDownLoadInfo> queryUserApkDownLoadInfo() {
+        SQLiteDatabase db = getConnection();
+        Cursor cr = db.query(DBConstant.TABLE_APK_INFO, null,
+        		DBConstant.KEY_APK_INFO_ISUSER + " = ? ", new String[] {
+        		PushedApkDownLoadInfo.IS_USER + ""}, null, null, null);
+        ArrayList<PushedApkDownLoadInfo> taskes = new ArrayList<PushedApkDownLoadInfo>();
+        PushedApkDownLoadInfo info;
+        while (cr.moveToNext()) {
+        	
+        	int _id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID));
+        	String name = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_NAME));
+        	int push_id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_PUSH_ID));
+        	String file_path = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_FILE_PATH));
+        	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE));
+        	String download_uuid = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOADUUID));
+        	
+        	
+        	info = new PushedApkDownLoadInfo();
+        	info.set_id(_id);
+        	info.setName(name);
+        	info.setPush_id(push_id);
+        	if(download_statue == PushedApkDownLoadInfo.STATUE_DOWNLOADING){
+        		download_statue = PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE;
+        	}
+        	if(download_statue == PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE||download_statue == PushedApkDownLoadInfo.STATUE_INSTALL_FAILE){
+        		ApkInfo apkinfo = PackageUtils.getUnInstalledApkInfo(context, file_path);
+        		if(apkinfo!=null){
+        			info.setPackageName(apkinfo.getPackageName());
+            		info.setIcon(apkinfo.getDrawble());
+        		}
+        	}
+        	info.setDownload_state(download_statue);
+        	info.setFile_path(file_path);
+        	info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+        	info.setTast(dmg.findTaksByUUID(download_uuid));
+        	
+        	taskes.add(info);
+        	
+        }
+        cr.close();
+        db.close();
+        return taskes;
+    }
 	
-	public synchronized void deleteDownLoadInfo(PushedApkDownLoadInfo info){
-		SQLiteDatabase database = getConnection();
-		try {
-			database.delete("apk_info", "push_id=?",
-					new String[] { info.getPush_id()+""});
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (null != database) {
-				database.close();
-			}
-		}
-	}
+	public ArrayList<PushedApkDownLoadInfo> queryNotUserApkDownLoadInfo() {
+        SQLiteDatabase db = getConnection();
+        Cursor cr = db.query(DBConstant.TABLE_APK_INFO, null,
+        		DBConstant.KEY_APK_INFO_ISUSER + " = ? ", new String[] {
+        		PushedApkDownLoadInfo.IS_NOT_USER + ""}, null, null, null);
+        ArrayList<PushedApkDownLoadInfo> taskes = new ArrayList<PushedApkDownLoadInfo>();
+        PushedApkDownLoadInfo info;
+        while (cr.moveToNext()) {
+        	
+        	int _id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID));
+        	String name = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_NAME));
+        	int push_id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_PUSH_ID));
+        	String file_path = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_FILE_PATH));
+        	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE));
+        	String download_uuid = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOADUUID));
+        	
+        	
+        	info = new PushedApkDownLoadInfo();
+        	info.set_id(_id);
+        	info.setName(name);
+        	info.setPush_id(push_id);
+        	info.setDownload_state(download_statue);
+        	info.setFile_path(file_path);
+        	info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
+        	info.setTast(dmg.findTaksByUUID(download_uuid));
+        	if(download_statue == PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE||download_statue == PushedApkDownLoadInfo.STATUE_INSTALL_FAILE){
+        		ApkInfo apkinfo = PackageUtils.getUnInstalledApkInfo(context, file_path);
+        		if(info!=null){
+        			info.setPackageName(apkinfo.getPackageName());
+            		info.setIcon(apkinfo.getDrawble());
+        		}
+        	}
+        	
+        	taskes.add(info);
+        	
+        }
+        cr.close();
+        db.close();
+        return taskes;
+    }
+	
+	
+//	public synchronized void saveApkInfo(PushedApkDownLoadInfo info){
+//		if(isHasPushedApk(info)){
+//			updatePushedApkInfo(info);
+//		}else{
+//			SQLiteDatabase database = getConnection();
+//			try {
+//				String sql = "insert into apk_info(push_id, name, url, fileSize, compeleteSize, download_state, file_path) values (?,?,?,?,?,?,?)";
+//				Object[] bindArgs = { info.getPush_id(), info.getName(),
+//						info.getUrl(), info.getFileSize(), info.getCompeleteSize(),
+//						info.getDownload_state(),info.getFile_path()};
+//				database.execSQL(sql, bindArgs);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			} finally {
+//				if (null != database) {
+//					database.close();
+//				}
+//			}
+//		}
+//	}
+	
+//	public synchronized boolean isHasPushedApk(PushedApkDownLoadInfo info){
+//		SQLiteDatabase database = getConnection();
+//		Cursor cursor = null;
+//		int count = -1;
+//		try {
+//			String sql = "select count(*)  from apk_info where push_id = ?";
+//			cursor = database.rawQuery(sql, new String[]{info.getPush_id()+""});
+//			if (cursor.moveToFirst()) {
+//				count = cursor.getInt(0);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (null != database) {
+//				database.close();
+//			}
+//			if (null != cursor) {
+//				cursor.close();
+//			}
+//		}
+//		return  count != 0;
+//	}
+	
+//	public synchronized void updatePushedApkInfo(PushedApkDownLoadInfo info){
+//		if(!isHasPushedApk(info)){
+//			saveApkInfo(info);
+//		}else{
+//			SQLiteDatabase database = getConnection();
+//			Cursor cursor = null;
+//			try {
+//				String sql = "update apk_info set name=?, url=?, fileSize=?, compeleteSize=?, download_state=? , file_path =? where push_id=?";
+//				Object[] bindArgs = {info.getName(), info.getUrl(), info.getFileSize(), info.getCompeleteSize(), info.getDownload_state(), info.getFile_path(), info.getPush_id() };
+//				database.execSQL(sql, bindArgs);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			} finally {
+//				if (null != database) {
+//					database.close();
+//				}
+//				if (null != cursor) {
+//					cursor.close();
+//				}
+//			}
+//		}
+//	}
+//	public synchronized PushedApkDownLoadInfo GetPushedApkInfo(String push_id){
+//		SQLiteDatabase database = getConnection();
+//		Cursor cursor = null;
+//		PushedApkDownLoadInfo info = null;
+//		try {
+//			String sql = "select * from apk_info where push_id=?";
+//			cursor = database.rawQuery(sql, new String[]{push_id+""});
+//			while (cursor.moveToNext()) {
+//				info = new PushedApkDownLoadInfo();
+//				info.setName(cursor.getString(1));
+//				info.setPush_id(cursor.getInt(2));
+//				info.setUrl(cursor.getString(3));
+//				info.setFileSize(cursor.getInt(4));
+//				info.setCompeleteSize(cursor.getInt(5));
+//				info.setDownload_state(cursor.getInt(6));
+//				info.setFile_path(cursor.getString(7));
+//			}
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (null != database) {
+//				database.close();
+//			}
+//			if (null != cursor) {
+//				cursor.close();
+//			}
+//		}
+//		return info;
+//	}
+	
+//	public synchronized List<PushedApkDownLoadInfo> GetPushedApklist(List<PushedApkDownLoadInfo> list){
+//		SQLiteDatabase database = getConnection();
+//		Cursor cursor = null;
+//		PushedApkDownLoadInfo info = null;
+//		list.clear();
+//		try {
+//			String sql = "select * from apk_info where download_state>-1";
+//			cursor = database.rawQuery(sql,null);
+//			while (cursor.moveToNext()) {
+//				info = new PushedApkDownLoadInfo();
+//				info.setName(cursor.getString(1));
+//				info.setPush_id(cursor.getInt(2));
+//				info.setUrl(cursor.getString(3));
+//				info.setFileSize(cursor.getInt(4));
+//				info.setCompeleteSize(cursor.getInt(5));
+//				info.setDownload_state(cursor.getInt(6));
+//				info.setFile_path(cursor.getString(7));
+//				if(info.getDownload_state()==3){
+//					try{
+//						ApkInfo apkInfo = PackageUtils.getUnInstalledApkInfo(context, info.getFile_path());
+//						if(info!=null){
+//							info.setIcon(apkInfo.getDrawble());
+//						    info.setPackageName(apkInfo.getPackageName());
+//						}
+//					}catch (Exception e) {
+//						// TODO: handle exception
+//						e.printStackTrace();
+//					}
+//					
+//				}
+//				list.add(info);
+//			}
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (null != database) {
+//				database.close();
+//			}
+//			if (null != cursor) {
+//				cursor.close();
+//			}
+//		}
+//		return list;
+//	}
+//	
+//	public synchronized void deleteDownLoadInfo(PushedApkDownLoadInfo info){
+//		SQLiteDatabase database = getConnection();
+//		try {
+//			database.delete("apk_info", "push_id=?",
+//					new String[] { info.getPush_id()+""});
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (null != database) {
+//				database.close();
+//			}
+//		}
+//	}
 
 //	/**
 //	 * 鏌ョ湅鏁版嵁搴撲腑鏄惁鏈夋暟鎹�	 */
