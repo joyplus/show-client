@@ -26,8 +26,11 @@ import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.network.filedownload.model.DownloadTask;
 import com.joyplus.tvhelper.DialogActivity;
+import com.joyplus.tvhelper.MyApp;
+import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Global;
@@ -66,6 +69,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private PushedApkDownLoadInfo currentNotUserApkInfo; 
 	public static List<PushedApkDownLoadInfo> userPushApkInfos;
 	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos;
+	private MyApp app;
 //	private String currentPackage = null;
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
@@ -181,6 +185,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		// TODO Auto-generated method stub
 		super.onCreate();
 		APK_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/apk");
+		app = (MyApp) getApplication();
 		services = DBServices.getInstance(this);
 		channel = "/" + PreferencesUtils.getChannel(this);
 		downloadManager = DownloadManager.getInstance(this);
@@ -311,9 +316,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				Message msg = handler.obtainMessage(MESSAGE_SHOW_DIALOG);
 				msg.obj = json.toString();
 				int type =  json.getInt("msg_type");
+				JSONObject data = json.getJSONObject("body");
 				switch (type) {
 				case 1:
-					JSONObject data = json.getJSONObject("body");
 					PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
 					final int id = data.getInt("id");
 					info.setName(data.getString("app_name"));
@@ -338,7 +343,34 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				case 2:
 					handler.sendMessage(msg);
 					break;
-
+				case 5:
+//					JSONObject data_1 = json.getJSONObject("body");
+					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//					intent.putExtra("ID", json.getString("prod_id"));
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					playDate.prod_id = data.getString("id");
+//					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+					playDate.prod_type = -11;
+//					playDate.prod_name = json.getString("prod_name");
+					playDate.prod_url = data.getString("url");
+//					playDate.prod_src = json.getString("prod_src");
+//					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
+//					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+//					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//						if(json.has("prod_subname")){//旧版android 没有传递该参数
+//							playDate.prod_sub_name = json.getString("prod_subname");
+//						}else{
+//							playDate.prod_type = -1;
+//						}
+//					}
+					app.setmCurrentPlayDetailData(playDate);
+					app.set_ReturnProgramView(null);
+					startActivity(intent);
+					break;
+				case 6:
+					
+					break;
 				default:
 					break;
 				}
@@ -370,6 +402,22 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
 				currentUserApkInfo = info;
+				services.updateApkInfo(currentUserApkInfo);
+				return ;
+			}
+		}
+	}
+	private void startNextNotUserApkDownLoad(){
+		Log.d(TAG, "startNextNotUserApkDownLoad--->");
+		for(PushedApkDownLoadInfo info :notuserPushedApkInfos){
+			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD){
+				if(info.getTast().getState()==-1){
+					downloadManager.startTast(info.getTast());
+				}else{
+					downloadManager.resumeTask(info.getTast());
+				}
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+				currentNotUserApkInfo = info;
 				services.updateApkInfo(currentUserApkInfo);
 				return ;
 			}
@@ -438,6 +486,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					}
 				}
 				// down load next
+				startNextNotUserApkDownLoad();
 			}
 		}
 	}
@@ -506,6 +555,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			//。。。
 			currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 			services.updateApkInfo(currentNotUserApkInfo);
+			currentNotUserApkInfo = null;
+			startNextNotUserApkDownLoad();
 			return ;
 		}
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"  not handle the Faile");

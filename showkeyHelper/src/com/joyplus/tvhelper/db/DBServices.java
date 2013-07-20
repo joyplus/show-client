@@ -1,19 +1,17 @@
 package com.joyplus.tvhelper.db;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import com.joyplus.network.filedownload.manager.DownloadManager;
-import com.joyplus.tvhelper.entity.ApkInfo;
-import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
-import com.joyplus.tvhelper.faye.FayeService;
-import com.joyplus.tvhelper.utils.PackageUtils;
-import com.joyplus.utils.Log;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.joyplus.network.filedownload.manager.DownloadManager;
+import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
+import com.joyplus.tvhelper.utils.PackageUtils;
+import com.joyplus.utils.Log;
 
 
 public class DBServices {
