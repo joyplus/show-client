@@ -17,7 +17,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -84,8 +83,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener,
 		MediaPlayer.OnInfoListener, MediaPlayer.OnSeekCompleteListener,
 		MediaPlayer.OnVideoSizeChangedListener, OnSeekBarChangeListener,
-		OnClickListener {
-	
+		OnClickListener{
+
 	private static final String TAG = "VideoPlayerActivity";
 
 	private static final int MESSAGE_RETURN_DATE_OK = 0;
@@ -169,6 +168,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private String mProd_name;
 	private int mProd_type;
 	private String mProd_src;// 来源
+	
+	private String url_temp;//首次url备份
 	private int mDefination = 0; // 清晰度 6为尝鲜，7为普清，8为高清
 	private String mProd_sub_name = null;
 	private int mEpisodeIndex = -1; // 当前集数对应的index
@@ -222,10 +223,15 @@ public class VideoPlayerJPActivity extends Activity implements
 
 			if (action.equals(Constant.VIDEOPLAYERCMD)) {
 				int mCMD = intent.getIntExtra("cmd", 0);
+				Log.d(TAG, "onReceive------>" + mCMD);
 				String mContent = intent.getStringExtra("content");
 				String mProd_url = intent.getStringExtra("prod_url");
-				if (!mProd_url.equalsIgnoreCase(currentPlayUrl))
-					return;
+				if (!mProd_url.equalsIgnoreCase(url_temp)){
+					Log.d(TAG, "mProd_url != url_temp");
+					return ;
+				}
+				
+				
 				/*
 				 * “403”：视频推送后，手机发送播放指令。 “405”：视频推送后，手机发送暂停指令。
 				 * “407”：视频推送后，手机发送快进指令。 “409”：视频推送后，手机发送后退指令。
@@ -279,7 +285,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 		}
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -287,15 +293,13 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		Log.i(TAG, "onCreate--->");
 		setContentView(R.layout.video_player_main);
-		
 		aq = new AQuery(this);
 		app = (MyApp) getApplication();
-		
 		mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 		
 		initViews();
 		mSeekBar.setEnabled(false);
-
+		m_ReturnProgramView = app.get_ReturnProgramView();
 		initVedioDate();
 
 		Window win = getWindow();
@@ -308,8 +312,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
 
-		// 获取是否收藏
-		getIsShoucangData();
 	}
 	
 	private void dismissView(View v){
@@ -320,7 +322,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void initVedioDate() {
 		mStatue = STATUE_LOADING;
 		mSeekBar.setEnabled(false);
+		mSeekBar.setProgress(0);
+		mTotalTimeTextView.setText("--:--");
 		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
 		mControlLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
@@ -334,6 +339,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 点击某部影片播放时，会全局设置CurrentPlayData
 		CurrentPlayDetailData playDate = app.getmCurrentPlayDetailData();
 		if (playDate == null) {// 如果不设置就不播放
+			Log.e(TAG, "playDate----->null");
 			finish();
 			return;
 		}
@@ -343,10 +349,14 @@ public class VideoPlayerJPActivity extends Activity implements
 		mProd_name = playDate.prod_name;
 		mProd_sub_name = playDate.prod_sub_name;
 		currentPlayUrl = playDate.prod_url;
+		url_temp = playDate.prod_url;
 		mDefination = playDate.prod_qua;
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
 
+		Log.d(TAG, "name ----->" + mProd_name);
+		Log.d(TAG, "currentPlayUrl ----->" + currentPlayUrl);
+		
 		if(mDefination == 0){
 			mDefination = 8;
 		}
@@ -354,8 +364,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
-		Log.i(TAG, "currentPlayUrl--->" + currentPlayUrl + " mProd_type-->" + mProd_type);
-		
 		if(mProd_type != -10) {
 			
 			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
@@ -445,29 +453,6 @@ public class VideoPlayerJPActivity extends Activity implements
 //			playUrls = new ArrayList<URLS_INDEX>
 			
 		}
-
-		
-//		Log.d(TAG, "defination----->" + mDefination);
-//		String lastTimeStr = DBUtils.getDuartion4HistoryDB(
-//				getApplicationContext(),
-//				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
-//		Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
-//
-//		if (lastTimeStr != null && !lastTimeStr.equals("")) {
-//
-//			try {
-//				long tempTime = Integer.valueOf(lastTimeStr);
-//				Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
-//				if (tempTime != 0) {
-//
-//					lastTime = tempTime * 1000;
-//				}
-//			} catch (NumberFormatException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//		}
 	}
 
 	private Handler mHandler = new Handler() {
@@ -527,11 +512,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							showDialog(0);
 							
 							//所有url不能播放，向服务器传递-1
-							if(mProd_type > 0) {
-								
-								saveToServer(-1, 0);
-							}
-							
+							saveToServer(-1, 0);
 						}
 					}
 				}
@@ -565,7 +546,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void updateName() {
 		switch (mProd_type) {
 		case -1:
-		case -10:
 		case 1:
 			mVideoNameText.setText(mProd_name);
 			break;
@@ -703,7 +683,6 @@ public class VideoPlayerJPActivity extends Activity implements
 					return true;
 				} else {
 					// mVideoView.stopPlayback();
-
 					finish();
 				}
 				break;
@@ -867,6 +846,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void showControlLayout() {
 		// 判断上下集能不能用
+		Log.d(TAG, "mEpisodeIndex----->" + mEpisodeIndex);
 		if (mProd_type == 3) {
 			if (mEpisodeIndex > 0&&m_ReturnProgramView.show.episodes[mEpisodeIndex-1].down_urls!=null) {
 				mNextButton.setEnabled(true);
@@ -983,7 +963,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(mEpisodeIndex<m_ReturnProgramView.tv.episodes.length-1){
 				playNext();
 			}else{
-
+				
 				finish();
 			}
 			break;
@@ -1011,13 +991,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
 		mSeekBar.setProgress((int) lastTime);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
-//		mHandler.postDelayed(new Runnable() {
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		}, 500);
+
 	}
 
 	@Override
@@ -1049,7 +1023,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		case STATUE_LOADING:
 			long current = mVideoView.getCurrentPosition();// 当前进度
 			long lastProgress = mSeekBar.getProgress();
-			Log.d(TAG, "loading --->" + current);
+//			Log.d(TAG, "loading --->" + current);
 			// updateTimeNoticeView(mSeekBar.getProgress());
 			if(current>lastProgress){
 				hidePreLoad(); 
@@ -1185,10 +1159,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
+			
 			break;
 		case R.id.ib_control_center:
 			// mVideoView.stopPlayback();
-
 			finish();
 			break;
 		case R.id.ib_control_left:
@@ -1249,10 +1223,13 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void playNext() {
 		// TODO Auto-generated method stub
+		url_temp = null;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-		mHandler.removeCallbacksAndMessages(this);
+//		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mTotalTimeTextView.setText("--:--");
+		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
 		mVideoView.stopPlayback();
@@ -1267,10 +1244,13 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void playPrevious() {
 		// TODO Auto-generated method stub
+		url_temp = null;
 		mStatue = STATUE_LOADING;
 		mSeekBar.setProgress(0);
 		mSeekBar.setEnabled(false);
-		mHandler.removeCallbacksAndMessages(this);
+//		mTotalTimeTextView.setText(UtilTools.formatDuration(0));
+		mTotalTimeTextView.setText("--:--");
+		mHandler.removeCallbacksAndMessages(null);
 		mControlLayout.setVisibility(View.GONE);
 		lastTime = 0;
 		mVideoView.stopPlayback();
@@ -1308,7 +1288,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	public void initMovieDate(String url, JSONObject json, AjaxStatus status) {
 
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
-			Utils.showToast(this,
+			Utils.showToast(aq.getContext(),
 					getResources().getString(R.string.networknotwork));
 
 			return;
@@ -1367,15 +1347,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			} else if (mProd_src.equalsIgnoreCase("m1905")) {
 				strSrc = "电  影  网";
 			} else {
-				
-				if(mProd_src.equalsIgnoreCase("XUNLEI")) {
-					
-					strSrc = "XUNLEI";
-				} else {
-					
-					strSrc = "PPTV";
-				}
-				
+				strSrc = "PPTV";
 			}
 			mResourceTextView.setText(strSrc);
 		}
@@ -1743,7 +1715,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		
+//		MobclickAgent.onResume(this);
 		super.onResume();
 	}
 
@@ -1753,7 +1725,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.i(TAG, "onPause--->");
 		
 		// TODO Auto-generated method stub
-
+//		MobclickAgent.onPause(this);
 		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
 			// SaveToServer(mVideoView.getDuration(),
 			// mVideoView.getCurrentPosition());
@@ -1761,10 +1733,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			saveToServer(duration / 1000, curretnPosition / 1000);
-		}
-		if(!isFinishing()){
-			finish();
+			if(duration-curretnPosition<10*1000){
+				saveToServer(duration / 1000, (duration / 1000) -10);
+			}else{
+				saveToServer(duration / 1000, curretnPosition / 1000);
+			}
 		}
 		super.onPause();
 	}
@@ -1784,6 +1757,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		// Log.d(TAG, "curretnPosition ->" + curretnPosition);
 		// SaveToServer(duration/1000, curretnPosition/1000);
 		// }
+		if(!isFinishing()){
+			finish();
+		}
 		super.onStop();
 	}
 
@@ -1808,23 +1784,23 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 	}
 
-	public void CallProgramPlayResult(String url, JSONObject json,
-			AjaxStatus status) {
-		if (json != null) {
-			Log.d(TAG, json.toString());
-		}
-	}
-
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "--------on new Intent--------------");
 		super.onNewIntent(intent);
-		mHandler.removeCallbacksAndMessages(this);
-		if (mVideoView.isPlaying()) {
+		mHandler.removeCallbacksAndMessages(null);
+		m_ReturnProgramView = null;
+		if (mVideoView!=null) { 
 			mVideoView.stopPlayback();
-			// mVideoView.resume();
+			mVideoView.resume();
 		}
+		lastTime = 0;
+		rxByteslast = 0;
+		mLoadingPreparedPercent = 0;
+		mEpisodeIndex = -1;
+		mPercentTextView.setText(", 已完成"
+				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 		initVedioDate();
 	}
 
@@ -1839,115 +1815,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			mVideoView.stopPlayback();
 		}
 		
-		Utils.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+		if(mPreLoadLayout.getBackground() != null) {
+			
+			Utils.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
+		}
 		
 		super.onDestroy();
-	}
-
-	private void getIsShoucangData() {
-		String url = Constant.BASE_URL + "program/is_favority";
-		// +"?prod_id=" + prod_id;
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("prod_id", mProd_id);
-		cb.params(params).url(url).type(JSONObject.class)
-				.weakHandler(this, "initIsShoucangData");
-		cb.SetHeader(app.getHeaders());
-		aq.ajax(cb);
-	}
-
-	public void initIsShoucangData(String url, JSONObject json,
-			AjaxStatus status) {
-
-		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
-			Utils.showToast(aq.getContext(),
-					getResources().getString(R.string.networknotwork));
-			return;
-		}
-
-		if (json == null || json.equals(""))
-			return;
-
-		Log.d(TAG, "data = " + json.toString());
-
-		String flag = json.toString();
-
-		if (!flag.equals("")) {
-
-			if (flag.contains("true")) {
-
-				isShoucang = true;
-			} else {
-
-				isShoucang = false;
-			}
-		} else {
-
-			isShoucang = true;
-		}
-	}
-
-	public void favorityResult(String url, JSONObject json,
-			AjaxStatus status) {
-
-		if (json != null) {
-			try {
-				// woof is "00000",now "20024",by yyc
-				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
-					Utils.showToast(this, "收藏成功!");
-					
-					isShoucang = true;
-					mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
-					
-					
-				} else {
-					
-					isShoucang = true;
-					mBottomButton.setBackgroundResource(R.drawable.player_btn_unfav);
-					Utils.showToast(this, "已收藏!");
-				}
-					
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			// ajax error, show error code
-			if (status.getCode() == AjaxStatus.NETWORK_ERROR)
-				Utils.showToast(aq.getContext(),
-						getResources().getString(R.string.networknotwork));
-		}
-
-	}
-
-	public void unfavorityResult(String url, JSONObject json, AjaxStatus status) {
-		if (json != null) {
-			try {
-				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
-					Utils.showToast(this, "取消收藏成功!");
-
-					mBottomButton
-					.setBackgroundResource(R.drawable.player_btn_fav);
-					isShoucang = false;
-//					setResult(JieMianConstant.SHOUCANG_CANCEL);
-				} else {
-					
-					Utils.showToast(this, "取消收藏失败!");
-					isShoucang = true;
-				}
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} else {
-
-			// ajax error, show error code
-			if (status.getCode() == AjaxStatus.NETWORK_ERROR)
-				Utils.showToast(this,
-						getResources().getString(R.string.networknotwork));
-		}
 	}
 	
 	@Override

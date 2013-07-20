@@ -50,13 +50,14 @@
                 android:text="已是最新源"
                 android:textColor="#303030"
                 android:textSize="25dp"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/rl_recommoned_download"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00AEEF" >
+                android:background="#00AEEF"
+                android:visibility="invisible" >
 
                 <TextView
                     android:id="@+id/tv_recommoned_download"

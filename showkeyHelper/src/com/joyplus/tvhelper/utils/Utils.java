@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper.utils;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -177,5 +178,25 @@ public static InetAddress getLocalIpAddress(){
 		String filename = strs[strs.length - 1];
 		return filename;
 	}
+	
+	public static long getTotalSize4File(String fileName){
+		
+		File dir = new File(fileName);
+		if(dir.exists() && dir.isDirectory()){
+			
+			File[] files = dir.listFiles();
+			long filesSize = 0;
+			for(int k=0;k<files.length;k++){
+				
+				filesSize= files[k].length() + filesSize;
+			}
+			
+			return filesSize;
+		}
+		
+		return dir.length();
+	}
+	
+	
 
 }

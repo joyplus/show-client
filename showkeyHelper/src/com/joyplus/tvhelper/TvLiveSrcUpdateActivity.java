@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -41,6 +42,9 @@ public class TvLiveSrcUpdateActivity extends Activity {
 	public static final int STRAT_DOWNLOAD_FILE = 0;
 	public static final int DOWNLOAD_FILES_SUCESS = STRAT_DOWNLOAD_FILE+1;
 	
+	public static final String ROOT_DIRECTORY = Environment.getExternalStorageDirectory()+"/";
+	public static final String HAIMEIDI_Q_FILE = "Diytvlist";
+	
 	private List<TvLiveInfo> list = new ArrayList<TvLiveInfo>();
 	private List<TvLiveInfo> serviceList = new ArrayList<TvLiveInfo>();
 	private List<String> downloadFileUrls = new ArrayList<String>();
@@ -52,6 +56,8 @@ public class TvLiveSrcUpdateActivity extends Activity {
 	private MyApp app;
 	private AQuery aq;
 	
+	private File tempStoreTvLivingFileDir;
+	
 	private Handler handler = new Handler(){
 
 		@Override
@@ -60,8 +66,9 @@ public class TvLiveSrcUpdateActivity extends Activity {
 //			super.handleMessage(msg);
 			
 			switch (msg.arg1) {
-			case DOWNLOAD_FILES_SUCESS:
-				
+			case DOWNLOAD_FILES_SUCESS://下载完成
+				//对比文件
+				setTvLivingStaus();
 				break;
 
 			default:
@@ -81,6 +88,12 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		app = (MyApp) getApplication();
 		aq = new AQuery(this);
 		
+		tempStoreTvLivingFileDir = new File(Constant.TV_LIVING_FILE_PATH);
+		if(!tempStoreTvLivingFileDir.exists()){
+			
+			tempStoreTvLivingFileDir.mkdirs();
+		}
+		
 		gridView = (GridView) findViewById(R.id.gridview);
 		
 		for(int i=0;i< 10;i++) {
@@ -95,6 +108,56 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		apkLists = PackageUtils.getInstalledApkInfos(this);
 		getTvLivingServiceData();
 		
+	}
+	
+	private void setTvLivingStaus(){
+		
+		for(int i=0;i<list.size();i++){
+			
+			TvLiveInfo tvLiveInfo = list.get(i);
+			String[] fileNames = tvLiveInfo.getFileNames();
+			if(fileNames != null && fileNames.length>0){
+				
+				boolean isExist = true;
+				List<File> fileList = new ArrayList<File>();
+				for(int j=0;j<fileNames.length;j++){
+					
+					String fileName = fileNames[j];
+					if(fileName != null && !fileName.equals("")){
+						
+						File file = new File(tempStoreTvLivingFileDir, fileName);
+						if(!file.exists()){
+							
+							isExist = false;
+						}else {
+							
+							fileList.add(file);
+						}
+					}
+				}
+				if(!isExist){//如果文件不全，或者不存在，就认为是已更新至最新
+					
+					tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+				}else {//如果文件存在
+					
+					if(fileList.size() < fileNames.length){//文件不全,认为更新至最新
+						
+						tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+					}else{
+						
+						//获取fileList中所有文件大小总和
+						
+						if(!tvLiveInfo.getPackage_name().equals("dfdf")){//海美迪Q播放器包名
+							
+							long fileTotalSize = Utils.getTotalSize4File(ROOT_DIRECTORY + HAIMEIDI_Q_FILE);
+						}else {
+							
+							
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private void getLivingUpdateList(){
@@ -136,11 +199,25 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					
 					tvLiveInfo.setStatus(TvLiveInfo.DOWNLOAD);
 					list.add(tvLiveInfo);
+					
+					if(tvLiveInfo.getFile_urls() != null){
+						for(int i=0;i<tvLiveInfo.getFile_urls().length;i++){
+							
+							if(tvLiveInfo.getFile_urls()[i] != null 
+									&& URLUtil.isNetworkUrl(tvLiveInfo.getFile_urls()[i])){
+								downloadFileUrls.add(tvLiveInfo.getFile_urls()[i]);
+							}
+						}
+						
+					}
 				}
 			}
 
 		}
 		
+		//list 完成加载 可以setAdapter
+		
+		//下载直播源文件
 		if(downloadFileUrls.size() > 0){
 			
 			MyApp.pool.execute(new TvLivingDownloadTask(downloadFileUrls));
@@ -220,7 +297,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					info.setMd5(tvLiveViews.resources[i].md5);
 					info.setPackage_name(tvLiveViews.resources[i].package_name);
 					info.setVersion(tvLiveViews.resources[i].version);
-					info.setStatus(TvLiveInfo.UNKOWN);
+					info.setStatus(TvLiveInfo.NEWS);
 					
 					serviceList.add(info);
 				}
@@ -254,12 +331,6 @@ public class TvLiveSrcUpdateActivity extends Activity {
 			InputStream is = null;
 			FileOutputStream fos = null;
 			
-			File dir = new File(Constant.TV_LIVING_FILE_PATH);
-			if(!dir.exists()){
-				
-				dir.mkdirs();
-			}
-			
 			if(list != null && list.size() > 0){
 				
 				for(int i=0;i<list.size();i++){
@@ -269,7 +340,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					
 					if(urlStr != null && URLUtil.isNetworkUrl(urlStr)){
 						
-						File file = new File(dir, filename);
+						File file = new File(tempStoreTvLivingFileDir, filename);
 						if(!file.exists()){
 							
 							try {
@@ -309,6 +380,12 @@ public class TvLiveSrcUpdateActivity extends Activity {
 						}
 						
 					}
+				}
+				
+				File[] files = tempStoreTvLivingFileDir.listFiles();
+				for(int i=0;i<files.length;i++){
+					
+					Log.i(TAG, "files--->" + files[i].getAbsolutePath());
 				}
 				handler.sendEmptyMessage(DOWNLOAD_FILES_SUCESS);
 			}
