@@ -152,7 +152,7 @@ public static InetAddress getLocalIpAddress(){
 	}
   
   public static String getMacAdd(){
-	  String  str = null;
+	  String  str = "";
 	  try {
 		  byte[] b = null;
 		  b = NetworkInterface.getByInetAddress(getLocalIpAddress()).getHardwareAddress();

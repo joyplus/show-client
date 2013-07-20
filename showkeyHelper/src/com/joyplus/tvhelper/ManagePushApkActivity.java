@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +23,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.adapter.PushedApkAdapter;
-import com.joyplus.tvhelper.db.PushedApkDownLoadInfo;
-import com.joyplus.tvhelper.entity.PushedApkInfo;
+import com.joyplus.tvhelper.db.DBServices;
+import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.faye.Log;
 import com.joyplus.tvhelper.utils.Global;
@@ -40,9 +42,8 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 	private LinearLayout layout1, layout2;
 	private ListView list;
 	private TextView pincodeTextView;
-	
-	private List<PushedApkInfo> app_list = new ArrayList<PushedApkInfo>();
-	
+	private DownloadManager downloadManager;
+	private DBServices dbService;
 	private PushedApkAdapter adpter;
 	
 	private Handler handler = new Handler(){
@@ -58,33 +59,10 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
 			if(Global.ACTION_DOWNLOAD_PROGRESS.equals(action)){
-				int push_id = intent.getIntExtra("push_id", 0);
-				int progress = intent.getIntExtra("progress", 0);
-				PushedApkInfo info = null;
-				for(int i=0;i<app_list.size();i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						info = app_list.get(i);
-					}
-				}
-				if(info!=null&&info.getStatue()==1){
-					LinearLayout layout = (LinearLayout) list.findViewWithTag(push_id);
-					if(layout!=null){
-						ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
-						TextView valueText = (TextView) layout.findViewById(R.id.progress_value);
-						if(bar!=null){
-							bar.setProgress((80*progress)/100);
-						}
-						if(valueText!=null){
-							valueText.setText((80*progress)/100+"%");
-						}
-					}
-				}
-				
+				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_APK_RECIVED.equals(action)){
 				Log.d(TAG, "receve --- > " + Global.ACTION_APK_RECIVED);
-				initListDate();
-				Log.d(TAG, "app size -- >" + app_list.size());
-				if(app_list.size() == 0){
+				if(FayeService.userPushApkInfos.size() == 0){
 					editeButton.setEnabled(false);
 				}else{
 					editeButton.setEnabled(true);
@@ -95,51 +73,18 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNL_GETSIZE_SUCESS.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				int push_id = intent.getIntExtra("push_id", 0);
-				int size = intent.getIntExtra("file_size", 0);
-				for(int i = 0; i<app_list.size(); i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						app_list.get(i).setSize(size);
-						app_list.get(i).setStatue(1);
-					}
-				}
 				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNLOAD_COMPLETE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				int push_id = intent.getIntExtra("push_id", 0);
-				Log.d(TAG, "push_id---->"+push_id);
-				initListDate();
-				PushedApkInfo info = null;
-				for(int i=0;i<app_list.size();i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						info = app_list.get(i);
-					}
-				}
-				if(app_list.size() == 0){
-					editeButton.setEnabled(false);
-				}else if(info!=null){
-					editeButton.setEnabled(false);
-				}else{
-					editeButton.setEnabled(true);
-				}
+				int _id = intent.getIntExtra("_id", 0);
+				editeButton.setEnabled(false);
 				layout2.setVisibility(View.GONE);
 				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
-				updateInstallProgress(push_id);
+				updateInstallProgress(_id);
 			}else if(Global.ACTION_DOWNLOAD_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				int push_id = intent.getIntExtra("push_id", 0);
-				Log.d(TAG, "push_id---->"+push_id);
-				initListDate();
-				PushedApkInfo info = null;
-				for(int i=0;i<app_list.size();i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						info = app_list.get(i);
-					}
-				}
-				if(app_list.size() == 0){
-					editeButton.setEnabled(false);
-				}else if(info!=null){
+				if(FayeService.userPushApkInfos.size() == 0){
 					editeButton.setEnabled(false);
 				}else{
 					editeButton.setEnabled(true);
@@ -149,60 +94,33 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNL_INSTALL_SUCESS.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				int push_id = intent.getIntExtra("push_id", 0);
+				int _id = intent.getIntExtra("_id", 0);
 				handler.removeMessages(MESSAGE_UPDATE_INSTALLE_PROGRESS);
-				PushedApkInfo info = null;
-				for(int i=0;i<app_list.size();i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						info = app_list.get(i);
+				LinearLayout layout = (LinearLayout) list.findViewWithTag(_id);
+				if(layout!=null){
+					ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
+					TextView valueText = (TextView) layout.findViewById(R.id.progress_value);
+					if(bar!=null){
+						bar.setProgress(100);
+					}
+					if(valueText!=null){
+						valueText.setText(100+"%");
 					}
 				}
-				if(info!=null&&info.getStatue()==3){
-					LinearLayout layout = (LinearLayout) list.findViewWithTag(push_id);
-					if(layout!=null){
-						ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
-						TextView valueText = (TextView) layout.findViewById(R.id.progress_value);
-						if(bar!=null){
-							bar.setProgress(100);
-						}
-						if(valueText!=null){
-							valueText.setText(100+"%");
-						}
-					}
-					app_list.remove(info);
-					if(app_list.size() == 0){
-						editeButton.setEnabled(false);
-					}else{
-						editeButton.setEnabled(true);
-					}
-					layout2.setVisibility(View.GONE);
-					layout1.setVisibility(View.VISIBLE);
-					adpter.notifyDataSetChanged();
-					Toast.makeText(context, info.getAppName() + "已安装成功", Toast.LENGTH_LONG).show();
+				if(FayeService.userPushApkInfos.size() == 0){
+					editeButton.setEnabled(false);
+				}else{
+					editeButton.setEnabled(true);
 				}
+				layout2.setVisibility(View.GONE);
+				layout1.setVisibility(View.VISIBLE);
+				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNLOAD_START.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				int push_id = intent.getIntExtra("push_id", 0);
-				Log.d(TAG, "start id ---------->" + push_id);
-				PushedApkInfo info = null;
-				for(int i=0;i<app_list.size();i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						info = app_list.get(i);
-					}
-				}
-				info.setStatue(1);
 				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNL_INSTALL_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				int push_id = intent.getIntExtra("push_id", 0);
-				PushedApkInfo info = null;
-				for(int i=0;i<app_list.size();i++){
-					if(app_list.get(i).getPush_id() == push_id){
-						info = app_list.get(i);
-					}
-				}
-				info.setStatue(4);
-				Toast.makeText(context, info.getAppName() + "安装失败", Toast.LENGTH_LONG).show();
+				handler.removeMessages(MESSAGE_UPDATE_INSTALLE_PROGRESS);
 				adpter.notifyDataSetChanged();
 			}
 		}
@@ -224,19 +142,23 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		list = (ListView) findViewById(R.id.listView);
 		pincodeTextView = (TextView) findViewById(R.id.pincode_text);
 		displayPincode();
-		initListDate();
-		if(app_list.size() == 0){
+		if(FayeService.userPushApkInfos.size() == 0){
 			editeButton.setEnabled(false);
 		}else{
 			editeButton.setEnabled(true);
 		}
-		adpter = new PushedApkAdapter(ManagePushApkActivity.this,app_list);
+		layout2.setVisibility(View.GONE);
+		layout1.setVisibility(View.VISIBLE);
+		adpter = new PushedApkAdapter(ManagePushApkActivity.this,FayeService.userPushApkInfos);
 		list.setAdapter(adpter);
 		list.setOnItemClickListener(this);
 		backButton.setOnClickListener(this);
 		deleteButton.setOnClickListener(this);
 		cancleButton.setOnClickListener(this);
 		editeButton.setOnClickListener(this);
+		
+		downloadManager = DownloadManager.getInstance(this);
+		dbService = DBServices.getInstance(this);
 		IntentFilter filter = new IntentFilter(Global.ACTION_DOWNLOAD_PROGRESS);
 		filter.addAction(Global.ACTION_DOWNL_GETSIZE_SUCESS);
 		filter.addAction(Global.ACTION_APK_RECIVED);
@@ -255,53 +177,31 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			finish();
 			break;
 		case R.id.del_Button:
-			List<PushedApkInfo> lists = new ArrayList<PushedApkInfo>();
-			for(int i=0; i<app_list.size(); i++){
-				if(app_list.get(i).getEdite_statue()==2){
-					Intent deleteIntent = new Intent(Global.ACTION_DELETE_DOWNLOAD);
-					deleteIntent.putExtra("push_id", app_list.get(i).getPush_id());
-					sendBroadcast(deleteIntent);
-//					app_list.remove(app_list.get(i));
-				}else{
-					lists.add(app_list.get(i));
+			for(int i=0; i<FayeService.userPushApkInfos.size(); i++){
+				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
+				if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED){
+					FayeService.userPushApkInfos.remove(info);
+					File f = new File(info.getFile_path());
+					if(f!=null&&f.exists()){
+						f.delete();
+					}
+					dbService.deleteApkInfo(info);
 				}
 			}
-			app_list = lists;
-			for(int i=0;i<app_list.size(); i++){
-				app_list.get(i).setEdite_statue(0);
-			}
-			adpter = new PushedApkAdapter(ManagePushApkActivity.this,app_list);
-			list.setAdapter(adpter);
-//			adpter.notifyDataSetChanged();
-			if(app_list.size()==0){
-				editeButton.setEnabled(false);
-			}else{
-				editeButton.setEnabled(true);
-			}
+			adpter.notifyDataSetChanged();
 			layout2.setVisibility(View.GONE);
 			layout1.setVisibility(View.VISIBLE);
 			break;
 		case R.id.edit_Button:
 			layout1.setVisibility(View.GONE);
 			layout2.setVisibility(View.VISIBLE);
-			for(int i=0; i<app_list.size(); i++){
-				PushedApkInfo info = app_list.get(i);
-				if(info.getStatue()==1){
-					info.setStatue(2);
-					Intent intent = new Intent(Global.ACTION_DOWNLOAD_PAUSE);
-					intent.putExtra("push_id", info.getPush_id());
-					sendBroadcast(intent);
-					LinearLayout layout = (LinearLayout) list.findViewWithTag(info.getPush_id());
-					if(layout!=null){
-						ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
-						if(bar!=null){
-							info.setProgress(bar.getProgress());
-							bar.setProgress(0);
-							bar.setSecondaryProgress(info.getProgress());
-						}
-					}
+			for(int i=0; i<FayeService.userPushApkInfos.size(); i++){
+				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
+				if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING){
+					downloadManager.pauseTask(info.getTast());
 				}
-				info.setEdite_statue(1);
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+				info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_EDIT);
 			}
 			adpter.notifyDataSetChanged();
 			cancleButton.requestFocus();
@@ -309,87 +209,50 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		case R.id.cancel_Button:
 			layout1.setVisibility(View.VISIBLE);
 			layout2.setVisibility(View.GONE);
-			for(int i=0; i<app_list.size(); i++){
-				PushedApkInfo info = app_list.get(i);
-				info.setEdite_statue(0);
+			for(int i=0; i<FayeService.userPushApkInfos.size(); i++){
+				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
+				info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_NOMAL);
 			}
 			adpter.notifyDataSetChanged();
 			break;
 		}
 	}
 	
-	private void initListDate(){
-		app_list.clear();
-		for(int i=0; i<FayeService.infolist.size(); i++){
-			PushedApkInfo info = new PushedApkInfo();
-			PushedApkDownLoadInfo downloadInfo = FayeService.infolist.get(i);
-			info.setPush_id(downloadInfo.getPush_id());
-			info.setAppName(downloadInfo.getName());
-			info.setStatue(downloadInfo.getDownload_state());
-			info.setIcon(downloadInfo.getIcon());
-			int progress = 0;
-			if(downloadInfo.getFileSize()!=0){
-				progress = ((downloadInfo.getCompeleteSize()*80)/downloadInfo.getFileSize());
-				info.setProgress(progress);
-				info.setSize(downloadInfo.getFileSize());
-			}
-			app_list.add(info); 
-		}
-	}
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		PushedApkInfo info = app_list.get(position);
+		PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(position);
 		
-		switch (info.getEdite_statue()) {
-		case 0:
-			switch (info.getStatue()) {
-			case 1:
-				info.setStatue(2);
-				Intent intent = new Intent(Global.ACTION_DOWNLOAD_PAUSE);
-				intent.putExtra("push_id", info.getPush_id());
-				sendBroadcast(intent);
-				LinearLayout layout = (LinearLayout) list.findViewWithTag(info.getPush_id());
-				if(layout!=null){
-					ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
-					if(bar!=null){
-						info.setProgress(bar.getProgress());
-						bar.setProgress(0);
-						bar.setSecondaryProgress(info.getProgress());
-					}
-				}
+		switch (info.getEdite_state()) {
+		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
+			switch (info.getDownload_state()) {
+			case PushedApkDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				downloadManager.pauseTask(info.getTast());
+				dbService.updateApkInfo(info);
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+				Intent intentContinue = new Intent(Global.ACTION_DOWNLOAD_PAUSE);
+				sendBroadcast(intentContinue);
 				adpter.notifyDataSetChanged();
 				break;
-			case 2:
-				info.setStatue(0);
-				Intent intentContinue = new Intent(Global.ACTION_DOWNLOAD_CONTINUE);
-				intentContinue.putExtra("push_id", info.getPush_id());
-				sendBroadcast(intentContinue);
-				LinearLayout layout1 = (LinearLayout) list.findViewWithTag(info.getPush_id());
-				if(layout1!=null){
-					ProgressBar bar = (ProgressBar) layout1.findViewById(R.id.progressbar);
-					if(bar!=null){
-						bar.setProgress(info.getProgress());
-						bar.setSecondaryProgress(0);
-					}
-				}
-//				initListDate();
+			case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+				dbService.updateApkInfo(info);
+				Intent intentpause = new Intent(Global.ACTION_DOWNLOAD_CONTINUE);
+				sendBroadcast(intentpause);
 				adpter.notifyDataSetChanged();
 				break;
 			}
 			break;
-		case 1:
-			info.setEdite_statue(2);
+		case PushedApkDownLoadInfo.EDITE_STATUE_EDIT:
+			info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_SELETED);
 			adpter.notifyDataSetChanged();
 			break;
-		case 2:
-			info.setEdite_statue(1);
+		case PushedApkDownLoadInfo.EDITE_STATUE_SELETED:
+			info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_EDIT);
 			adpter.notifyDataSetChanged();
 			break;
 		}
-		
-		
 	}
 	
 	@Override
@@ -405,36 +268,27 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		super.onResume();
 	}
 	
-	private void updateInstallProgress(int push_id){
-		PushedApkInfo info = null;
-		for(int i=0;i<app_list.size();i++){
-			if(app_list.get(i).getPush_id() == push_id){
-				info = app_list.get(i);
+	private void updateInstallProgress(int _id){
+		LinearLayout layout = (LinearLayout) list.findViewWithTag(_id);
+		if(layout!=null){
+			ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
+			TextView valueText = (TextView) layout.findViewById(R.id.progress_value);
+			int progress = bar.getProgress();
+			progress += 3;
+			if(progress>=100){
+				progress = 99;
 			}
-		}
-		Log.d(TAG, "updateInstallProgress---->");
-		if(info!=null&&info.getStatue()==3){
-			LinearLayout layout = (LinearLayout) list.findViewWithTag(push_id);
-			if(layout!=null){
-				ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressbar);
-				TextView valueText = (TextView) layout.findViewById(R.id.progress_value);
-				int progress = bar.getProgress();
-				progress += 3;
-				if(progress>=100){
-					progress = 99;
-				}
-				if(bar!=null){
-					bar.setProgress(progress);
-				}
-				if(valueText!=null){
-					valueText.setText(progress+"%");
-				}
-				Message msg =  new Message();
-				msg.what = MESSAGE_UPDATE_INSTALLE_PROGRESS;
-				msg.arg1 = push_id;
-				handler.sendMessageDelayed(msg, 500);
-				Log.d(TAG, "updateInstallProgress!!!!!!!!!!!!!!!!!!!!>");
+			if(bar!=null){
+				bar.setProgress(progress);
 			}
+			if(valueText!=null){
+				valueText.setText(progress+"%");
+			}
+			Message msg =  new Message();
+			msg.what = MESSAGE_UPDATE_INSTALLE_PROGRESS;
+			msg.arg1 = _id;
+			handler.sendMessageDelayed(msg, 500);
+			Log.d(TAG, "updateInstallProgress!!!!!!!!!!!!!!!!!!!!>");
 		}
 	}
 	

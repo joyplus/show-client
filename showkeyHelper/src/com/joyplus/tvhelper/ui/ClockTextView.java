@@ -48,6 +48,8 @@ public class ClockTextView extends TextView {
 	}
 	
 	private void start(){
+		Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "font/Roboto-Thin.ttf");
+		setTypeface(tf);
 		updateTime();
 	}
 	
@@ -56,8 +58,6 @@ public class ClockTextView extends TextView {
 		SimpleDateFormat format = new SimpleDateFormat("H:mm");
 		setText(format.format(date));
 //		Typeface tf = Typeface.create("serif",Typeface.NORMAL);//The font family for this typeface. Examples include "monospace", "serif", and "sans-serif". 
-		Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "font/Roboto-Thin.ttf");
-		setTypeface(tf);
 		hadler.sendEmptyMessageDelayed(MESSAGE_UPDATE,500);
 	}
 }
