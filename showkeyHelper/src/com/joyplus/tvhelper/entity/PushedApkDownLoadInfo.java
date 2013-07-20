@@ -9,7 +9,8 @@ public class PushedApkDownLoadInfo {
 	
 	public static final int STATUE_WAITING_DOWNLOAD 	= 0;
 	public static final int STATUE_DOWNLOAD_PAUSE 		= STATUE_WAITING_DOWNLOAD + 1;
-	public static final int STATUE_DOWNLOADING 			= STATUE_DOWNLOAD_PAUSE + 1;
+	public static final int STATUE_DOWNLOAD_PAUSEING 	= STATUE_DOWNLOAD_PAUSE + 1;
+	public static final int STATUE_DOWNLOADING 			= STATUE_DOWNLOAD_PAUSEING + 1;
 	public static final int STATUE_DOWNLOAD_COMPLETE 	= STATUE_DOWNLOADING + 1;
 	public static final int STATUE_INSTALL_FAILE 		= STATUE_DOWNLOAD_COMPLETE + 1;
 	

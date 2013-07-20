@@ -230,9 +230,9 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			case PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD:
 				downloadManager.pauseTask(info.getTast());
 				dbService.updateApkInfo(info);
-				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-				Intent intentContinue = new Intent(Global.ACTION_DOWNLOAD_PAUSE);
-				sendBroadcast(intentContinue);
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
+//				Intent intentContinue = new Intent(Global.ACTION_DOWNLOAD_PAUSE);
+//				sendBroadcast(intentContinue);
 				adpter.notifyDataSetChanged();
 				break;
 			case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE:

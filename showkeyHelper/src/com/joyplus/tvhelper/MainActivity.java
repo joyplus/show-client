@@ -337,7 +337,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startActivity(new Intent(this, ManagePushApkActivity.class));
 			break;
 		case R.id.layout_yuntui:
-			
+			startActivity(new Intent(this, CloudDataDisplayActivity.class));
 			break;
 		case R.id.layout_xunlei:
 			startActivity(new Intent(this, XunLeiLXActivity.class));
@@ -352,13 +352,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startActivity(new Intent(this, ScanActivity.class));
 			break;
 		case R.id.layout_upan:
-			
+			Log.d(TAG, "敬请期待");
 			break;
 		case R.id.layout_appguanli:
 			startActivity(new Intent(this, ManageAppActivity.class));
 			break;
 		case R.id.layout_ceshu:
-			
+			Log.d(TAG, "敬请期待");
 			break;
 		case R.id.layout_setting:
 			startActivity(new Intent(this, SettingActivity.class));

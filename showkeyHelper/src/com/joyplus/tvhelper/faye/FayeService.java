@@ -94,8 +94,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 				myClient.sendMessage(json);
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
-				currentUserApkInfo = null;
-				startNextUserApkDownLoad();
+				
 			}else if(Global.ACTION_DOWNLOAD_CONTINUE.equals(action)){
 				currentUserApkInfo = null;
 				startNextUserApkDownLoad();
@@ -529,6 +528,12 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void onFileSizeLoaded(String uiid) {
 		// TODO Auto-generated method stub
 		//判断当前文件是否能完整的存到sdcard中
+	}
+
+	@Override
+	public void onPused(String uiid) {
+		// TODO Auto-generated method stub
+		onDownloadFaile(uiid);
 	}
 	
 	

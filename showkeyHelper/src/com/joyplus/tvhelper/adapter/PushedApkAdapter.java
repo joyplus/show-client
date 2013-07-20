@@ -106,7 +106,14 @@ public class PushedApkAdapter extends BaseAdapter {
 			holder.progressLayout.setTag(info.get_id());
 //			holder.progressText.setText(info.getProgress()+"%");
 			break;
-		case 4://安装失败
+		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSEING://下载完成
+			holder.statue.setText("正在暂停");
+			holder.progress.setProgress(0);
+			holder.progress.setSecondaryProgress(progress);
+			holder.progressLayout.setTag(info.get_id());
+			holder.progressText.setText(progress+"%");
+			break;
+		case PushedApkDownLoadInfo.STATUE_INSTALL_FAILE://安装失败
 			holder.statue.setText("安装失败");
 			holder.progress.setProgress(progress);
 			holder.progress.setVisibility(View.INVISIBLE);
