@@ -3,13 +3,10 @@ package com.joyplus.tvhelper.utils;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.joyplus.tvhelper.entity.ApkInfo;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,17 +15,18 @@ import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.PackageStats;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Environment;
-import android.os.RemoteException;
 import android.os.storage.StorageManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.joyplus.tvhelper.entity.ApkInfo;
+
 public class PackageUtils {
+	
+	public static final String TAG = "PackageUtils";
 	
 	
 	public static ApplicationInfo getApplicationInfo(Context c, String apkPath){
@@ -157,6 +155,32 @@ public class PackageUtils {
 		} 
 		return apps; 
 	} 
+	
+	public static List<ApkInfo> getInstalledApkInfos(Context context) {
+
+		List<ApkInfo> apps = new ArrayList<ApkInfo>();
+		PackageManager pManager = context.getPackageManager();
+		List<PackageInfo> paklist = pManager.getInstalledPackages(0);
+		for (int i = 0; i < paklist.size(); i++) {
+			PackageInfo pak = (PackageInfo) paklist.get(i);
+
+			// customs applications
+			ApkInfo apkInfo = new ApkInfo();
+			apkInfo.setAppName(pManager.getApplicationLabel(pak.applicationInfo).toString());
+			apkInfo.setPackageName(pak.packageName);
+			apkInfo.setVision(pak.versionName);
+			try {
+				apkInfo.setDrawble(pManager.getApplicationIcon(pak.packageName));
+			} catch (NameNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// apkInfo.setSize(size)
+//			Log.d(TAG, "getInstalledApkInfos--->" + apkInfo.toString());
+			apps.add(apkInfo);
+		}
+		return apps;
+	}
 	
 	
 	public static ApkInfo getUnInstalledApkInfo(Context c, String apkPath) {

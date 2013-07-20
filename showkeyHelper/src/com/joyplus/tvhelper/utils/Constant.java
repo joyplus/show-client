@@ -13,6 +13,7 @@ public class Constant {
 //	public static  String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
 //	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
 //	public static String APPKEY = "ijoyplus_android_0001";
+//	public static final String TV_LIVING_BASE_URL = "tt.showkey.tv";//视频直播源
 //	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
 //	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
 	
@@ -48,6 +49,7 @@ public class Constant {
 	 "http://comettest.joyplus.tv:8000/bindtv";//测试
 	 public static final String FAYESERVERURL_CHECKBAND =
 	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
+	 public static final String TV_LIVING_BASE_URL = "tt.yue001.com:8080";//视频直播源
 
 	
 	// 我们的sina账号
@@ -105,5 +107,7 @@ public class Constant {
 	+ "/Android/data/com.joyplus.tv/bg_image_cache";
 	public static String PATH_HEAD = Environment.getExternalStorageDirectory()
 			+ "/joy/admin/";
+	public static String TV_LIVING_FILE_PATH = Environment.getExternalStorageDirectory()
+	+ "/Android/data/com.joyplus.tvhelper/tv_living_file_temp";
 
 }

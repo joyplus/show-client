@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -86,10 +87,16 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			
 		};
 	};
+	
+	private MyApp app;
+	private Map<String, String> headers;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		app = (MyApp) getApplication();
+		
 		layout = (MyScrollLayout) findViewById(R.id.layout);
 		findViews();
 		if(PreferencesUtils.getPincode(this)==null){
@@ -98,6 +105,10 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startService(new Intent(MainActivity.this, FayeService.class));
 			mHandler.sendEmptyMessageDelayed((MESSAGE_GETPINCODE_SUCCESS),200);
 		}
+		
+		headers = new HashMap<String, String>();
+		headers.put("app_key", Constant.APPKEY);
+		app.setHeaders(headers);
 	}
 
 	@Override
