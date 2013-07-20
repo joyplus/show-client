@@ -7,24 +7,34 @@
     android:paddingRight="@dimen/activity_right_margin"
     android:paddingTop="@dimen/activity_top_margin" >
 
-    <TextView
-        android:id="@+id/tv_live_src_update_title"
-        android:layout_width="240dp"
-        android:layout_height="@dimen/list_top_margin"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#D76C6A"
-        android:gravity="center"
-        android:text="直播视频源"
-        android:textColor="#F2F2F2"
-        android:textSize="@dimen/max_text_size" />
+    <LinearLayout
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/zero_value"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#A16DE9"
+            android:gravity="center"
+            android:text="应用推荐"
+            android:textColor="#F2F2F2"
+            android:textSize="@dimen/max_text_size" />
+
+        <TextView
+            android:layout_width="@dimen/zero_value"
+            android:layout_height="match_parent"
+            android:layout_weight="4.3" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_cnter"
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        android:layout_below="@id/tv_live_src_update_title"
-        android:background="#D76C6A" >
+        android:layout_below="@id/ll_title"
+        android:background="#A16DE9" >
 
         <TextView
             android:id="@+id/tv_live_src_update_supports"
@@ -32,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="37dp"
-            android:text="支持主流直播电视源更新"
+            android:text="火热应用推荐下载"
             android:textColor="#F2F2F2"
             android:textSize="@dimen/max_text_size" />
 
@@ -47,38 +57,29 @@
             android:text="返回"
             android:textColor="#F0F0F0"
             android:textSize="@dimen/mid_text_size" />
-
-        <!--
-             <Button
-            android:id="@+id/bt_auto_update"
-            android:layout_width="133dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="27dp"
-            android:layout_toLeftOf="@id/bt_back"
-            android:background="@drawable/tv_update_return_btn_bg"
-            android:text="自动更新"
-            android:textColor="#F0F0F0"
-            android:textSize="@dimen/mid_text_size" />
-        -->
     </RelativeLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_cnter"
-        android:background="#F2F2F2"
-        android:paddingBottom="95dp"
-        android:paddingTop="69dp" >
+        android:layout_below="@id/rl_cnter" >
 
-        <GridView
-            android:id="@+id/gridview"
+        <GridView 
+            android:id="@+id/gv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:descendantFocusability="afterDescendants"
             android:numColumns="4"
-            android:verticalSpacing="5dp" 
-            android:gravity="center">
-        </GridView>
-    </LinearLayout>
+            android:listSelector="@drawable/item_full_selector"
+            android:scrollbars="none"
+            android:verticalSpacing="2dp"
+            android:horizontalSpacing="2dp"
+            android:background="#150a04"></GridView>
+        <TextView 
+            android:id="@+id/tv_download_bg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/start_download"/>
+    </FrameLayout>
 
 </RelativeLayout>

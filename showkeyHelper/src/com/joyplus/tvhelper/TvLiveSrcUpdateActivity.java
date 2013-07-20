@@ -1,15 +1,20 @@
 package com.joyplus.tvhelper;
 
-import com.joyplus.tvhelper.adapter.TvLiveSrcUpdateAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.GridView;
 
+import com.joyplus.tvhelper.adapter.TvLiveSrcUpdateAdapter;
+import com.joyplus.tvhelper.entity.service.TvLiveView;
+
 public class TvLiveSrcUpdateActivity extends Activity {
 	
+	private List<TvLiveView> list = new ArrayList<TvLiveView>();
+	private GridView gridView;
 	private TvLiveSrcUpdateAdapter adapter;
-	private GridView gv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -17,10 +22,17 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_tv_live_src_update);
 		
-		gv = (GridView) findViewById(R.id.gv_live_src);
+		gridView = (GridView) findViewById(R.id.gridview);
 		
-		adapter = new TvLiveSrcUpdateAdapter(this);
-		gv.setAdapter(adapter);
+		for(int i=0;i< 10;i++) {
+			
+			TvLiveView info = new TvLiveView();
+			list.add(info);
+		}
+		
+		adapter = new TvLiveSrcUpdateAdapter(this, list);
+		gridView.setAdapter(adapter);
+		
 	}
 
 }

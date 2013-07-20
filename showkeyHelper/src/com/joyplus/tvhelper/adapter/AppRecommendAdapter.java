@@ -9,19 +9,17 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.entity.service.TvLiveView;
+import com.joyplus.tvhelper.entity.AppRecommendInfo;
 
-public class TvLiveSrcUpdateAdapter extends BaseAdapter {
+public class AppRecommendAdapter extends BaseAdapter {
 	
 	private Context mContext;
-
-	private List<TvLiveView> mList;
+	private List<AppRecommendInfo> mList;
 	
-	public TvLiveSrcUpdateAdapter(Context context,List<TvLiveView> list) {
-		// TODO Auto-generated constructor stub
+	public AppRecommendAdapter(Context context,List<AppRecommendInfo> list){
+		
 		this.mContext = context;
 		this.mList = list;
 	}
@@ -29,7 +27,6 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		
 		return mList.size();
 	}
 
@@ -48,27 +45,24 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		
 		ViewHolder viewHolder = null;
 		if(convertView == null) {
 			
 			viewHolder = new ViewHolder();
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.item_tv_src_update_grid, null);
-			
-			viewHolder.iv = (ImageView) convertView.findViewById(R.id.iv_icon_tv);
-			viewHolder.nameTv = (TextView) convertView.findViewById(R.id.tv_tv_name);
-			viewHolder.updateTv = (TextView) convertView.findViewById(R.id.tv_update);
-			viewHolder.newestTv = (TextView) convertView.findViewById(R.id.tv_newssrc);
-			viewHolder.rlLayout = convertView.findViewById(R.id.rl_recommoned_download);
-			
+			convertView = inflater.inflate(R.layout.item_app_recommend_grid, null);
+			viewHolder.iv = (ImageView) convertView.findViewById(R.id.imageview);
 			convertView.setTag(viewHolder);
 		} else {
 			
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(parent.getHeight()-10, parent.getHeight()-10);
+		viewHolder.iv.setBackgroundResource(mList.get(position).getIconSrcId());
+		
+		AbsListView.LayoutParams layoutParams = new AbsListView.
+				LayoutParams(parent.getWidth()/4 -1*(int)mContext.getResources().getDimension(R.dimen.item_grid_padding),
+						parent.getHeight()/2 - 1 * (int)mContext.getResources().getDimension(R.dimen.item_grid_padding));
 		convertView.setLayoutParams(layoutParams);
 		return convertView;
 	}
@@ -76,11 +70,6 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 	class ViewHolder{
 		
 		public ImageView iv;
-		public TextView nameTv;
-		public TextView updateTv;
-		public TextView newestTv;
-		public View rlLayout;
-		
 	}
 
 }
