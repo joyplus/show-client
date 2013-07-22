@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import com.joyplus.tvhelper.faye.WebSocketClient.Listener;
 import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.Log;
 
 import android.os.Handler;
 

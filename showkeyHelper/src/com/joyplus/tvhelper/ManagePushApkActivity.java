@@ -28,8 +28,8 @@ import com.joyplus.tvhelper.adapter.PushedApkAdapter;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
-import com.joyplus.tvhelper.faye.Log;
 import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 
 public class ManagePushApkActivity extends Activity implements OnClickListener,
@@ -74,7 +74,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			}else if(Global.ACTION_DOWNL_GETSIZE_SUCESS.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
 				adpter.notifyDataSetChanged();
-			}else if(Global.ACTION_DOWNLOAD_COMPLETE.equals(action)){
+			}else if(Global.ACTION_APK_DOWNLOAD_COMPLETE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
 				int _id = intent.getIntExtra("_id", 0);
 				editeButton.setEnabled(false);
@@ -82,7 +82,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
 				updateInstallProgress(_id);
-			}else if(Global.ACTION_DOWNLOAD_FAILE.equals(action)){
+			}else if(Global.ACTION_APK_DOWNLOAD_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
 				if(FayeService.userPushApkInfos.size() == 0){
 					editeButton.setEnabled(false);
@@ -162,7 +162,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		IntentFilter filter = new IntentFilter(Global.ACTION_DOWNLOAD_PROGRESS);
 		filter.addAction(Global.ACTION_DOWNL_GETSIZE_SUCESS);
 		filter.addAction(Global.ACTION_APK_RECIVED);
-		filter.addAction(Global.ACTION_DOWNLOAD_COMPLETE);
+		filter.addAction(Global.ACTION_APK_DOWNLOAD_COMPLETE);
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_SUCESS);
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_FAILE);
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
@@ -238,7 +238,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
 				info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 				dbService.updateApkInfo(info);
-				Intent intentpause = new Intent(Global.ACTION_DOWNLOAD_CONTINUE);
+				Intent intentpause = new Intent(Global.ACTION_APK_DOWNLOAD_CONTINUE);
 				sendBroadcast(intentpause);
 				adpter.notifyDataSetChanged();
 				break;

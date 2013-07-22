@@ -50,21 +50,37 @@ public class Global {
 	 */
 	public static final String ACTION_DOWNLOAD_START = "action_download_start";
 	/**
-	 * 下载继续
+	 * APK下载继续
 	 */
-	public static final String ACTION_DOWNLOAD_CONTINUE = "action_download_continue";
+	public static final String ACTION_APK_DOWNLOAD_CONTINUE = "action_download_continue";
 	/**
-	 * 下载完成
+	 * APK下载完成
 	 */
-	public static final String ACTION_DOWNLOAD_COMPLETE = "action_download_complete";
+	public static final String ACTION_APK_DOWNLOAD_COMPLETE = "action_download_complete";
 	/**
-	 * 下载完成
+	 * APK下载完成
 	 */
-	public static final String ACTION_DOWNLOAD_FAILE = "action_download_faile";
+	public static final String ACTION_APK_DOWNLOAD_FAILE = "action_download_faile";
 	/**
-	 * 删除
+	 * APK删除
 	 */
-	public static final String ACTION_DELETE_DOWNLOAD = "action_delete_download";
+	public static final String ACTION_APK_DELETE_DOWNLOAD = "action_delete_download";
+	/**
+	 * MOVIE下载继续
+	 */
+	public static final String ACTION_MOVIE_DOWNLOAD_CONTINUE = "action_download_continue";
+	/**
+	 * MOVIE下载完成
+	 */
+	public static final String ACTION_MOVIE_DOWNLOAD_COMPLETE = "action_download_complete";
+	/**
+	 * MOVIE下载完成
+	 */
+	public static final String ACTION_MOVIE_DOWNLOAD_FAILE = "action_download_faile";
+	/**
+	 * MOVIE删除
+	 */
+	public static final String ACTION_MOVIE_DELETE_DOWNLOAD = "action_delete_download";
 	/**
 	 * 刷新pincode
 	 */

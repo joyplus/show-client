@@ -10,7 +10,6 @@ public class PushedMovieDownLoadInfo {
 	public static final int STATUE_DOWNLOAD_PAUSEING 	= STATUE_DOWNLOAD_PAUSE + 1;
 	public static final int STATUE_DOWNLOADING 			= STATUE_DOWNLOAD_PAUSEING + 1;
 	public static final int STATUE_DOWNLOAD_COMPLETE 	= STATUE_DOWNLOADING + 1;
-	public static final int STATUE_INSTALL_FAILE 		= STATUE_DOWNLOAD_COMPLETE + 1;
 	
 	
 	public static final int EDITE_STATUE_NOMAL 			= 0;

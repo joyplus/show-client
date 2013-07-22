@@ -38,6 +38,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.joyplus.tvhelper.utils.Log;
+
 
 public class HybiParser {
 

@@ -60,4 +60,11 @@ public class ClockTextView extends TextView {
 //		Typeface tf = Typeface.create("serif",Typeface.NORMAL);//The font family for this typeface. Examples include "monospace", "serif", and "sans-serif". 
 		hadler.sendEmptyMessageDelayed(MESSAGE_UPDATE,500);
 	}
+	
+	@Override
+	protected void onDetachedFromWindow() {
+		// TODO Auto-generated method stub
+		super.onDetachedFromWindow();
+		hadler.removeCallbacksAndMessages(null);
+	}
 }

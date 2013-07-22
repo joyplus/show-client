@@ -26,6 +26,8 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.message.BasicLineParser;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.joyplus.tvhelper.utils.Log;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
