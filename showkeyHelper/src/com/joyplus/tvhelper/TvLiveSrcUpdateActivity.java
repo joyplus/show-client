@@ -34,10 +34,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tvhelper.adapter.TvLiveSrcUpdateAdapter;
+import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.TvLiveInfo;
 import com.joyplus.tvhelper.entity.service.TvLiveViews;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.Utils;
 
@@ -205,7 +207,16 @@ public class TvLiveSrcUpdateActivity extends Activity {
 
 						break;
 					case 2://进入下载
-						
+						ApkDownloadInfoParcel infoParcel = new ApkDownloadInfoParcel();
+						infoParcel.setApk_url(info.getApk_url());
+						infoParcel.setApp_name(info.getApp_name());
+						infoParcel.setIcon_url(info.getIcon_url());
+						infoParcel.setMd5(info.getMd5());
+						infoParcel.setVersion(info.getVersion());
+						infoParcel.setPackage_name(info.getPackage_name());
+						Intent downloadApkIntent  = new Intent(Global.ACTION_NEW_APK_DWONLOAD);
+						downloadApkIntent.putExtra("new_apk_download", infoParcel);
+						sendBroadcast(downloadApkIntent);
 						break;
 
 					default:
