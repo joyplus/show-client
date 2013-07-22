@@ -55,6 +55,7 @@ public class DBServices {
 		values.put(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE, info.getDownload_state());
 		values.put(DBConstant.KEY_APK_INFO_DOWNLOADUUID, info.getTast().getUUId());
 		values.put(DBConstant.KEY_APK_INFO_ISUSER, info.getIsUser());
+		values.put(DBConstant.KEY_SYN_C1, info.getIcon_url());
 		long _id = db.insert(DBConstant.TABLE_APK_INFO, null, values);
 		db.close();
         return _id;
@@ -69,6 +70,7 @@ public class DBServices {
 		values.put(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE, info.getDownload_state());
 		values.put(DBConstant.KEY_APK_INFO_DOWNLOADUUID, info.getTast().getUUId());
 		values.put(DBConstant.KEY_APK_INFO_ISUSER, info.getIsUser());
+		values.put(DBConstant.KEY_SYN_C1, info.getIcon_url());
 //
         int rows = db.update(DBConstant.TABLE_APK_INFO, values,
         		DBConstant.KEY_ID + " = ? ", new String[] {
@@ -103,9 +105,10 @@ public class DBServices {
         	String file_path = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_FILE_PATH));
         	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE));
         	String download_uuid = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOADUUID));
-        	
+        	String icon_url = cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1));
         	
         	info = new PushedApkDownLoadInfo();
+        	info.setIcon_url(icon_url);
         	info.set_id(_id);
         	info.setName(name);
         	info.setPush_id(push_id);
@@ -185,6 +188,16 @@ public class DBServices {
         return _id;
 	}
 	
+	public synchronized void deleteMovieDownLoadInfo(PushedMovieDownLoadInfo info) {
+		SQLiteDatabase db = getConnection();
+		int rows = db.delete(DBConstant.TABLE_MOVIE_INFO,
+				DBConstant.KEY_ID + " = ? ", new String[] {
+				String.valueOf(info.get_id())
+		});
+		Log.i(TAG, rows + "rows deleted");
+		db.close();
+	}
+	
 	public synchronized void updateMovieDownLoadInfo(PushedMovieDownLoadInfo info){
         SQLiteDatabase db = getConnection();
         ContentValues values = new ContentValues();
@@ -204,7 +217,7 @@ public class DBServices {
     }
 	
 	
-	public synchronized ArrayList<PushedMovieDownLoadInfo> queryMovieDownLoadInf() {
+	public synchronized ArrayList<PushedMovieDownLoadInfo> queryMovieDownLoadInfos() {
         SQLiteDatabase db = getConnection();
         Cursor cr = db.query(DBConstant.TABLE_MOVIE_INFO, null,
         		DBConstant.KEY_MOVIE_DOWNLOAD_INFO_DOWNLOAD_STATE + " <? ", new String[] {
@@ -226,6 +239,38 @@ public class DBServices {
         	info.setName(name);
         	info.setPush_id(push_id);
         	download_statue = PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE;
+        	info.setDownload_state(download_statue);
+        	info.setFile_path(file_path);
+        	info.setPush_url(push_url);
+        	info.setTast(dmg.findTaksByUUID(download_uuid));
+        	taskes.add(info);
+        }
+        cr.close();
+        db.close();
+        return taskes;
+    }
+	
+	public synchronized ArrayList<PushedMovieDownLoadInfo> queryMovieDownLoadedInfos() {
+        SQLiteDatabase db = getConnection();
+        Cursor cr = db.query(DBConstant.TABLE_MOVIE_INFO, null,
+        		DBConstant.KEY_MOVIE_DOWNLOAD_INFO_DOWNLOAD_STATE + " =? ", new String[] {
+        		PushedMovieDownLoadInfo.STATUE_DOWNLOAD_COMPLETE + ""}, null, null, null);
+        ArrayList<PushedMovieDownLoadInfo> taskes = new ArrayList<PushedMovieDownLoadInfo>();
+        PushedMovieDownLoadInfo info;
+        while (cr.moveToNext()) {
+        	
+        	int _id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID));
+        	String name = cr.getString(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_NAME));
+        	int push_id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_PUSH_ID));
+        	String file_path = cr.getString(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_FILE_PATH));
+        	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_DOWNLOAD_STATE));
+        	String download_uuid = cr.getString(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_DOWNLOADUUID));
+        	String push_url = cr.getString(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_PUSH_URL));
+        	
+        	info = new PushedMovieDownLoadInfo();
+        	info.set_id(_id);
+        	info.setName(name);
+        	info.setPush_id(push_id);
         	info.setDownload_state(download_statue);
         	info.setFile_path(file_path);
         	info.setPush_url(push_url);

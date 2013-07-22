@@ -29,6 +29,7 @@ import com.joyplus.tvhelper.DialogActivity;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.db.DBServices;
+import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
@@ -118,6 +119,27 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 			}else if(Global.ACTION_MOVIE_DELETE_DOWNLOAD.equals(action)){
 				
+			}else if(Global.ACTION_NEW_APK_DWONLOAD.equals(action)){
+				ApkDownloadInfoParcel apkInfo = intent.getParcelableExtra("new_apk_download");
+				PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+				info.setName(apkInfo.getApp_name());
+				info.setIcon_url(apkInfo.getIcon_url());
+				String url = apkInfo.getApk_url();
+				String file_name = getFileNameforUrl(url);
+				DownloadTask tast = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+				info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
+				info.setTast(tast);
+				info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+				info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+				info.set_id((int) services.insertApkInfo(info));
+				userPushApkInfos.add(info);
+				handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+				if(currentUserApkInfo==null){
+					currentUserApkInfo = info;
+					currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+					downloadManager.startTast(tast);
+					services.updateApkInfo(currentUserApkInfo);
+				}
 			}
 		}
 	};
@@ -205,7 +227,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		packageInstaller.addObserver(this);
 		userPushApkInfos = services.queryUserApkDownLoadInfo();
 		notuserPushedApkInfos = services.queryNotUserApkDownLoadInfo();
-		movieDownLoadInfos = services.queryMovieDownLoadInf();
+		movieDownLoadInfos = services.queryMovieDownLoadInfos();
 		Log.d(TAG, channel);
 		URI url = URI.create(Global.serverUrl+"/uploadApk");
 		Log.d(TAG, "Server----->" + Global.serverUrl+"/uploadApk");
@@ -221,6 +243,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		filter.addAction(Global.ACTION_PINCODE_REFRESH);
 		filter.addAction(Global.ACTION_MOVIE_DELETE_DOWNLOAD);
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
+		filter.addAction(Global.ACTION_NEW_APK_DWONLOAD);
 		registerReceiver(receiver, filter);
 //		handler.sendEmptyMessageDelayed(MESSAGE_LISTEN_APP_LOOPER, 500);
 	}
@@ -344,6 +367,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 					info.setTast(tast);
 					info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+					info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					info.set_id((int) services.insertApkInfo(info));
 					userPushApkInfos.add(info);
 					updateHistory(id);
@@ -394,7 +418,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					String movie_file_name = getFileNameforUrl(downLoad_url);
 					movieDownLoadInfo.setName(movie_file_name);
 					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
-					DownloadTask movieTast = new DownloadTask(downLoad_url, APK_PATH.getAbsolutePath(), movie_file_name, 3);
+					DownloadTask movieTast = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
 					movieDownLoadInfo.setTast(movieTast);
 					movieDownLoadInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					movieDownLoadInfo.set_id((int) services.insertMovieDownLoadInfo(movieDownLoadInfo));
@@ -624,7 +648,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	}
 
 	@Override
-	public void onDownloadFaile(String uiid) {
+	public synchronized void onDownloadFaile(String uiid) {
 		// TODO Auto-generated method stub
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
 		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){

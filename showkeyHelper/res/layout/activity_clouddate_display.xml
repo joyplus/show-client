@@ -29,7 +29,7 @@
 	       		    android:layout_weight="1">
 	       		    <TextView android:layout_width="fill_parent"
 	       		        android:layout_height="62dp"
-	       		        android:text="助手设置"
+	       		        android:text="视频云推送"
 	       		        android:gravity="center"
 	                    android:textColor="#f0f0f0"
 	                    android:textSize="30sp"/>
@@ -44,18 +44,18 @@
 	       		            android:textColor="@color/setting_title_selector"
 	       		            android:textSize="24sp"
 	       		            android:paddingLeft="15dp"
-	       		            android:id="@+id/btn_setting"
+	       		            android:id="@+id/title_play_history"
 	       		            android:background="@drawable/bg_title_setting_selector"
-	       		            android:text="设置"/>
+	       		            android:text="已观看"/>
 	       		        <Button android:layout_width="fill_parent"
 	       		            android:textColor="@color/setting_title_selector"
 	       		            android:layout_height="44dp"
 	       		            android:gravity="center_vertical"
 	       		            android:textSize="24sp"
 	       		            android:paddingLeft="15dp"
-	       		            android:id="@+id/btn_help"
+	       		            android:id="@+id/title_downloading"
 	       		            android:background="@drawable/bg_title_setting_selector"
-	       		            android:text="使用帮助"/>
+	       		            android:text="正在下载"/>
 	       		        <!-- <Button android:layout_width="fill_parent"
 	       		            android:layout_height="wrap_content"
 	       		            android:textColor="@color/setting_title_selector"
@@ -71,9 +71,9 @@
 	       		            android:textColor="@color/setting_title_selector"
 	       		            android:textSize="24sp"
 	       		            android:paddingLeft="15dp"
-	       		            android:id="@+id/btn_about"
+	       		            android:id="@+id/title_downloaded"
 	       		            android:background="@drawable/bg_title_setting_selector"
-	       		            android:text="关于"/>
+	       		            android:text="已下载"/>
 	       		    </LinearLayout>
 	       		</LinearLayout>
 	       		<LinearLayout android:layout_width="0dp"

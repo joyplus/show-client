@@ -180,7 +180,12 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 			File[] files = file.listFiles();
 			if (files != null && files.length > 0) {
 				for (File file_str : files) {
-					FindAllAPKFile(file_str);
+					if("/mnt/asec".equalsIgnoreCase(file_str.getAbsolutePath())
+							||"/mnt/secure".equalsIgnoreCase(file_str.getAbsolutePath())){
+					
+					}else{
+						FindAllAPKFile(file_str);
+					}
 				}
 			}
 		}

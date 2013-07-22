@@ -2,6 +2,7 @@ package com.joyplus.tvhelper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -121,6 +122,13 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			}else if(Global.ACTION_DOWNL_INSTALL_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
 				handler.removeMessages(MESSAGE_UPDATE_INSTALLE_PROGRESS);
+				if(FayeService.userPushApkInfos.size() == 0){
+					editeButton.setEnabled(false);
+				}else{
+					editeButton.setEnabled(true);
+				}
+				layout2.setVisibility(View.GONE);
+				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
 			}
 		}
@@ -177,17 +185,31 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			finish();
 			break;
 		case R.id.del_Button:
-			for(int i=0; i<FayeService.userPushApkInfos.size(); i++){
-				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
-				if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED){
-					FayeService.userPushApkInfos.remove(info);
-					File f = new File(info.getFile_path());
-					if(f!=null&&f.exists()){
-						f.delete();
-					}
-					dbService.deleteApkInfo(info);
-				}
-			}
+//			for(int i=0; i<FayeService.userPushApkInfos.size(); i++){
+//				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
+//				if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED){
+//					FayeService.userPushApkInfos.remove(info);
+//					File f = new File(info.getFile_path());
+//					if(f!=null&&f.exists()){
+//						f.delete();
+//					}
+//					dbService.deleteApkInfo(info);
+//				}
+//			}
+//			
+			Iterator<PushedApkDownLoadInfo> iterator = FayeService.userPushApkInfos.iterator();  
+	         while(iterator.hasNext()) {  
+	        	 PushedApkDownLoadInfo info = iterator.next();  
+	             if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED) {  
+						File f = new File(info.getFile_path());
+						if(f!=null&&f.exists()){
+							f.delete();
+						}
+						dbService.deleteApkInfo(info);
+						iterator.remove();  
+	             }  
+	               
+	         }  
 			adpter.notifyDataSetChanged();
 			layout2.setVisibility(View.GONE);
 			layout1.setVisibility(View.VISIBLE);
@@ -199,8 +221,8 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
 				if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING){
 					downloadManager.pauseTask(info.getTast());
+					info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 				}
-				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 				info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_EDIT);
 			}
 			adpter.notifyDataSetChanged();

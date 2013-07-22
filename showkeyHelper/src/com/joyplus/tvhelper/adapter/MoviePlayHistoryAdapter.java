@@ -12,21 +12,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
+import com.joyplus.network.filedownload.model.DownloadTask;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
+import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.utils.PackageUtils;
+import com.joyplus.utils.FileUtil;
 
-public class PushedApkAdapter extends BaseAdapter {
+public class MoviePlayHistoryAdapter extends BaseAdapter {
 
 	private Context mContext;
-	private List<PushedApkDownLoadInfo> data;
-	private AQuery aq;
+	private List<PushedMovieDownLoadInfo> data;
 	
-	public PushedApkAdapter(Context c, List<PushedApkDownLoadInfo> data){
+	public MoviePlayHistoryAdapter(Context c, List<PushedMovieDownLoadInfo> data){
 		this.data = data;
 		this.mContext = c;
-		aq = new AQuery(c);
 	}
 	
 	@Override
@@ -52,9 +52,9 @@ public class PushedApkAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		ViewHolder holder = null;
-		PushedApkDownLoadInfo info = data.get(position);
+		PushedMovieDownLoadInfo info = data.get(position);
 		if(convertView == null){
-			convertView = LayoutInflater.from(mContext).inflate(R.layout.item_apk_list, null);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.item_download_movie, null);
 			holder = new ViewHolder();
 			holder.icon = (ImageView) convertView.findViewById(R.id.app_icon);
 			holder.name = (TextView) convertView.findViewById(R.id.app_name);
@@ -68,32 +68,33 @@ public class PushedApkAdapter extends BaseAdapter {
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-		if(info.getIcon()!=null){
-			holder.icon.setImageDrawable(info.getIcon());
-		}else if(info.getIcon_url()!=null&&info.getIcon_url().length()>0){
-			aq.id(holder.icon).image(info.getIcon_url(),true,false,0,R.drawable.ic_launcher);
-		}else{
-			holder.icon.setImageResource(R.drawable.ic_launcher);
-		}
-		holder.progress.setVisibility(View.VISIBLE);
-		holder.progressText.setVisibility(View.VISIBLE);
+//		if(info.getIcon()!=null){
+//			holder.icon.setImageDrawable(info.getIcon());
+//		}else{
+//			holder.icon.setImageResource(R.drawable.ic_launcher);
+//		}
 		holder.name.setText(info.getName());
-		holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 		int progress = 0;
 		if(info.getTast().getSize()>0){
-			progress = (int) ((info.getTast().getCurLength()*80d) / info.getTast().getSize());
+			holder.progress.setMax(info.getTast().getSize());
+			progress = (int) ((info.getTast().getCurLength()*100d) / info.getTast().getSize());
+		}else{
+			holder.progress.setMax(100);
 		}
 		switch (info.getDownload_state()) {
 		case PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
 			holder.statue.setText("等待下载");
-			holder.progress.setProgress(progress);
+//			holder.progress.setProgress(progress);
+			holder.progress.setProgress(info.getTast().getCurLength());
 			holder.progress.setSecondaryProgress(0);
 			holder.progressLayout.setTag(info.get_id());
+			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressText.setText(progress+"%");
 			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOADING://正在下载
 			holder.statue.setText("正在下载");
-			holder.progress.setProgress(progress);
+			holder.progress.setProgress(info.getTast().getCurLength());
+			holder.size.setText(getRTInfo(info.getTast()));
 			holder.progress.setSecondaryProgress(0);
 			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");
@@ -101,32 +102,35 @@ public class PushedApkAdapter extends BaseAdapter {
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE://暂停下载
 			holder.statue.setText("已暂停下载");
 			holder.progress.setProgress(0);
-			holder.progress.setSecondaryProgress(progress);
+//			holder.progress.setSecondaryProgress(progress);
+			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
+			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");
 			break;
-		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE://下载完成
-			holder.statue.setText("正在安装");
-			holder.progress.setProgress(progress);
-//				holder.progress.setSecondaryProgress(info.getProgress());
-//			holder.progress.setSecondaryProgress(0);
-			holder.progressLayout.setTag(info.get_id());
-			holder.progressText.setText(progress+"%");
-			break;
+//		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE://下载完成
+//			holder.statue.setText("正在安装");
+////			holder.progress.setProgress(info.getProgress());
+////				holder.progress.setSecondaryProgress(info.getProgress());
+////			holder.progress.setSecondaryProgress(0);
+//			holder.progressLayout.setTag(info.get_id());
+////			holder.progressText.setText(info.getProgress()+"%");
+//			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSEING://下载完成
 			holder.statue.setText("正在暂停");
 			holder.progress.setProgress(0);
-			holder.progress.setSecondaryProgress(progress);
+//			holder.progress.setSecondaryProgress(progress);
+			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
+			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");
 			break;
-		case PushedApkDownLoadInfo.STATUE_INSTALL_FAILE://安装失败
-			holder.statue.setText("安装失败");
-			holder.progress.setProgress(progress);
-			holder.progress.setVisibility(View.INVISIBLE);
-			holder.progressText.setVisibility(View.INVISIBLE);
-			holder.progressLayout.setTag(info.get_id());
-			break;
+//		case PushedApkDownLoadInfo.STATUE_INSTALL_FAILE://安装失败
+//			holder.statue.setText("安装失败");
+//			holder.progress.setProgress(progress);
+//			holder.progress.setVisibility(View.INVISIBLE);
+//			holder.progressLayout.setTag(info.get_id());
+//			break;
 		}
 		switch (info.getEdite_state()) {
 		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
@@ -145,6 +149,25 @@ public class PushedApkAdapter extends BaseAdapter {
 		}
 		return convertView;
 	}
+	
+	/**
+     * 实时任务信息
+     * @return
+     */
+    private String getRTInfo(DownloadTask task) {
+        StringBuffer buffer = new StringBuffer();
+        if (task.getSize() > 0) {
+            buffer.append(PackageUtils.fomartSize(task.getSize()));
+        } else {
+            buffer.append("未知大小");
+        }
+        if (task.getState() != DownloadTask.STATE_DOWNLOADING) {
+            return buffer.toString();
+        }
+        buffer.append("/").append(task.getSpeed()).append("k/s");
+
+        return buffer.toString();
+    }
 	
 	class ViewHolder{
 		ImageView icon;
