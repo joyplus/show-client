@@ -1,11 +1,18 @@
 package com.joyplus.tvhelper.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
@@ -197,6 +204,87 @@ public static InetAddress getLocalIpAddress(){
 		return dir.length();
 	}
 	
+	public static long getTotalSize4ListFiles(List<File> list){
+		
+		
+		if(list != null && list.size() > 0){
+			
+			long filesSize = 0;
+			for(File file:list){
+				
+				filesSize += file.length();
+			}
+			
+			return filesSize;
+		}
+		return 0;
+	}
 	
+	public static long getTotalSize4FileNames(String[] fileNames){
+		
+		if(fileNames != null && fileNames.length > 0){
+			
+			long fileSizes = 0;
+			for(int i=0;i<fileNames.length;i++){
+				
+				String fileName = fileNames[i];
+				if(fileName != null && !fileName.equals("")){
+					
+					fileSizes += getTotalSize4File(fileName);
+				}
+			}
+			return fileSizes;
+		}
+		return 0;
+	}
+	
+	public static List<File> getListFile4FileNames(File dir,String[] fileNames){
+		
+		List<File> list = new ArrayList<File>();
+		if(fileNames != null && fileNames.length > 0){
+			
+			for(int i=0;i<fileNames.length;i++){
+				
+				String fileName = fileNames[i];
+				if(fileName != null && !fileName.equals("")){
+					
+					File file = new File(dir,fileName);
+					list.add(file);
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	public static void copyFile(File srcFile, File dstFile) {
+		FileChannel src = null, dest = null;
+		try {
+			src = new FileInputStream(srcFile).getChannel();
+			dest = new FileOutputStream(dstFile).getChannel();
+			dest.transferFrom(src, 0, src.size());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+			try {
+				if (src != null) {
+					src.close();
+				}
+				if(dest != null){
+					
+					dest.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 }

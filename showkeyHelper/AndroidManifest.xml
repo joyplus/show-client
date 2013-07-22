@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joyplus.tvhelper"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="0"
+    android:versionName="0.9.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.DELETE_CACHE_FILES" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name="com.joyplus.tvhelper.MyApp"
         android:allowBackup="true"
@@ -133,6 +134,14 @@
         </activity>
         <service android:name="com.joyplus.tvhelper.faye.FayeService" >
         </service>
+		<meta-data android:value="51e75b5956240ba99502e874" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="j001" android:name="UMENG_CHANNEL"/>
+        <service
+            android:name="com.umeng.common.net.DownloadingService"
+            android:exported="true"
+            android:process=":DownloadingService" >
+        </service>
+
     </application>
 
 </manifest>

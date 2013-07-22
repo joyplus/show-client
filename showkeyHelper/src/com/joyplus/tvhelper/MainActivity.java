@@ -24,7 +24,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
@@ -35,6 +34,7 @@ import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
+import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnHoverListener, OnKeyListener, OnClickListener {
 
@@ -95,6 +95,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		UmengUpdateAgent.update(this);
 		
 		app = (MyApp) getApplication();
 		

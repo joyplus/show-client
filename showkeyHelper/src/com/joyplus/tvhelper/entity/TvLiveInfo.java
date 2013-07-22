@@ -1,5 +1,8 @@
 package com.joyplus.tvhelper.entity;
 
+import java.io.File;
+import java.util.List;
+
 public class TvLiveInfo {
 	public static final int UNKOWN = -1;
 	public static final int NEWS = 0;
@@ -18,6 +21,27 @@ public class TvLiveInfo {
 	private int status;//0代表已经是最新的，1代表点击更新，2推荐下载
 	
 	private String[] fileNames;//下载的文件名
+	
+	private List<File> srcFileLists;//下载的临时文件
+	
+	public List<File> getSrcFileLists() {
+		return srcFileLists;
+	}
+
+	public void setSrcFileLists(List<File> srcFileLists) {
+		this.srcFileLists = srcFileLists;
+	}
+
+	public List<File> getDstFileLists() {
+		return dstFileLists;
+	}
+
+	public void setDstFileLists(List<File> dstFileLists) {
+		this.dstFileLists = dstFileLists;
+	}
+
+	private List<File> dstFileLists;//有效目录文件
+
 
 	public String[] getFileNames() {
 		return fileNames;

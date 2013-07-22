@@ -172,7 +172,6 @@
                 android:id="@+id/rl_popup_time_fast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/LayoutBottomTime1"
                 android:layout_alignParentLeft="true"
                 android:layout_marginBottom="19dp"
                 android:layout_marginLeft="126dp"
