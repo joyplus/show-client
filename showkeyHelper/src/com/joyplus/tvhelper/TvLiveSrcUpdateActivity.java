@@ -18,7 +18,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.androidquery.AQuery;
@@ -42,8 +44,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 	public static final int STRAT_DOWNLOAD_FILE = 0;
 	public static final int DOWNLOAD_FILES_SUCESS = STRAT_DOWNLOAD_FILE+1;
 	
-	public static final String ROOT_DIRECTORY = Environment.getExternalStorageDirectory()+"/";
-	public static final String HAIMEIDI_Q_FILE = "Diytvlist";
+	public static final String HAIMEIDI_Q_FILE = "/Diytvlist";
 	
 	private List<TvLiveInfo> list = new ArrayList<TvLiveInfo>();
 	private List<TvLiveInfo> serviceList = new ArrayList<TvLiveInfo>();
@@ -102,58 +103,108 @@ public class TvLiveSrcUpdateActivity extends Activity {
 			list.add(info);
 		}
 		
-		adapter = new TvLiveSrcUpdateAdapter(this, list);
+		adapter = new TvLiveSrcUpdateAdapter(this, list,aq);
 		gridView.setAdapter(adapter);
+		
+		initListener();
 		
 		apkLists = PackageUtils.getInstalledApkInfos(this);
 		getTvLivingServiceData();
 		
 	}
 	
-	private void setTvLivingStaus(){
+	private void initListener(){
 		
-		for(int i=0;i<list.size();i++){
-			
+		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				
+				List<TvLiveInfo> list = adapter.getList();
+				if(list != null && list.size() > 0){
+					
+					TvLiveInfo info = list.get(position);
+					switch (info.getStatus()) {
+					case 0:
+						
+						break;
+					case 1://点击更新
+						
+						
+						break;
+					case 2://进入下载
+						
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+		});
+	}
+	
+	private void setTvLivingStaus() {
+
+		for (int i = 0; i < list.size(); i++) {
+
 			TvLiveInfo tvLiveInfo = list.get(i);
 			String[] fileNames = tvLiveInfo.getFileNames();
-			if(fileNames != null && fileNames.length>0){
-				
-				boolean isExist = true;
-				List<File> fileList = new ArrayList<File>();
-				for(int j=0;j<fileNames.length;j++){
-					
+			if (fileNames != null && fileNames.length > 0) {
+
+				List<File> srcFileList = new ArrayList<File>();
+				for (int j = 0; j < fileNames.length; j++) {
+
 					String fileName = fileNames[j];
-					if(fileName != null && !fileName.equals("")){
-						
+					if (fileName != null && !fileName.equals("")) {
+
 						File file = new File(tempStoreTvLivingFileDir, fileName);
-						if(!file.exists()){
-							
-							isExist = false;
-						}else {
-							
-							fileList.add(file);
+						if (file.exists()) {
+
+							srcFileList.add(file);
 						}
 					}
 				}
-				if(!isExist){//如果文件不全，或者不存在，就认为是已更新至最新
-					
+				tvLiveInfo.setSrcFileLists(srcFileList);//保存临时文件
+				if (srcFileList.size() < fileNames.length) {
+
 					tvLiveInfo.setStatus(TvLiveInfo.NEWS);
-				}else {//如果文件存在
-					
-					if(fileList.size() < fileNames.length){//文件不全,认为更新至最新
-						
-						tvLiveInfo.setStatus(TvLiveInfo.NEWS);
-					}else{
-						
-						//获取fileList中所有文件大小总和
-						
-						if(!tvLiveInfo.getPackage_name().equals("dfdf")){//海美迪Q播放器包名
-							
-							long fileTotalSize = Utils.getTotalSize4File(ROOT_DIRECTORY + HAIMEIDI_Q_FILE);
-						}else {
-							
-							
+				} else {
+
+					// 获取fileList中所有文件大小总和
+					long listFileTotalSize = Utils
+							.getTotalSize4ListFiles(srcFileList);
+					File dstDir;
+					if (tvLiveInfo.getPackage_name().equals("dfdf")) {// 海美迪Q播放器包名
+
+						dstDir = new File(
+								Environment.getExternalStorageDirectory()
+										+ HAIMEIDI_Q_FILE);
+					} else {
+
+						dstDir = Environment.getExternalStorageDirectory();
+
+					}
+
+					if (dstDir.exists() && dstDir.isDirectory()) {
+
+						List<File> dstFileList = Utils.getListFile4FileNames(
+								dstDir, fileNames);
+						tvLiveInfo.setDstFileLists(dstFileList);//存储目的文件
+						long fileTotalSize = Utils
+								.getTotalSize4ListFiles(dstFileList);
+						if (listFileTotalSize > fileTotalSize) {
+
+							tvLiveInfo.setStatus(TvLiveInfo.UPDATE);
+						} else {
+
+							tvLiveInfo.setStatus(TvLiveInfo.NEWS);
 						}
+					} else {
+
+						tvLiveInfo.setStatus(TvLiveInfo.NEWS);
 					}
 				}
 			}
