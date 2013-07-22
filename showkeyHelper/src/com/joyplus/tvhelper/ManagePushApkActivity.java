@@ -60,8 +60,8 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			String action = intent.getAction();
 			if(Global.ACTION_DOWNLOAD_PROGRESS.equals(action)){
 				adpter.notifyDataSetChanged();
-			}else if(Global.ACTION_APK_RECIVED.equals(action)){
-				Log.d(TAG, "receve --- > " + Global.ACTION_APK_RECIVED);
+			}else if(Global.ACTION_DOWNLOAD_RECIVED.equals(action)){
+				Log.d(TAG, "receve --- > " + Global.ACTION_DOWNLOAD_RECIVED);
 				if(FayeService.userPushApkInfos.size() == 0){
 					editeButton.setEnabled(false);
 				}else{
@@ -161,7 +161,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		dbService = DBServices.getInstance(this);
 		IntentFilter filter = new IntentFilter(Global.ACTION_DOWNLOAD_PROGRESS);
 		filter.addAction(Global.ACTION_DOWNL_GETSIZE_SUCESS);
-		filter.addAction(Global.ACTION_APK_RECIVED);
+		filter.addAction(Global.ACTION_DOWNLOAD_RECIVED);
 		filter.addAction(Global.ACTION_APK_DOWNLOAD_COMPLETE);
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_SUCESS);
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_FAILE);

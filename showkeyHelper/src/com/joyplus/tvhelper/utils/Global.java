@@ -22,7 +22,7 @@ public class Global {
 	/**
 	 * 推送apk的请求
 	 */
-	public static final String ACTION_APK_RECIVED = "action_apk_recived"; 
+	public static final String ACTION_DOWNLOAD_RECIVED = "action_download_recived"; 
 	
 	/**
 	 * 下载进度更新
@@ -68,19 +68,19 @@ public class Global {
 	/**
 	 * MOVIE下载继续
 	 */
-	public static final String ACTION_MOVIE_DOWNLOAD_CONTINUE = "action_download_continue";
+	public static final String ACTION_MOVIE_DOWNLOAD_CONTINUE = "action_movie_download_continue";
 	/**
 	 * MOVIE下载完成
 	 */
-	public static final String ACTION_MOVIE_DOWNLOAD_COMPLETE = "action_download_complete";
+	public static final String ACTION_MOVIE_DOWNLOAD_COMPLETE = "action_movie_download_complete";
 	/**
 	 * MOVIE下载完成
 	 */
-	public static final String ACTION_MOVIE_DOWNLOAD_FAILE = "action_download_faile";
+	public static final String ACTION_MOVIE_DOWNLOAD_FAILE = "action_movie_download_faile";
 	/**
 	 * MOVIE删除
 	 */
-	public static final String ACTION_MOVIE_DELETE_DOWNLOAD = "action_delete_download";
+	public static final String ACTION_MOVIE_DELETE_DOWNLOAD = "action_movie_delete_download";
 	/**
 	 * 刷新pincode
 	 */
