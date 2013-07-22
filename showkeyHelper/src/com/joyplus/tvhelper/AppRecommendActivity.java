@@ -1,20 +1,44 @@
 package com.joyplus.tvhelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tvhelper.adapter.AppRecommendAdapter;
+import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
+import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.AppRecommendInfo;
+import com.joyplus.tvhelper.entity.TvLiveInfo;
+import com.joyplus.tvhelper.entity.service.AppRecommendView;
+import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.PackageUtils;
+import com.joyplus.tvhelper.utils.Utils;
 
 public class AppRecommendActivity extends Activity {
+	
+	public static final String TAG = "AppRecommendActivity";
 	
 	private List<AppRecommendInfo> list = new ArrayList<AppRecommendInfo>();
 	
@@ -29,11 +53,20 @@ public class AppRecommendActivity extends Activity {
 	private SparseArray<View> sparseArrayView = new SparseArray<View>();
 	private int preSelectedIndex = -1;
 	
+	private List<ApkInfo> apkLists = new ArrayList<ApkInfo>();
+	private List<AppRecommendInfo> serviceList = new ArrayList<AppRecommendInfo>();
+	
+	private MyApp app;
+	private AQuery aq;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_app_recommend);
+		
+		app = (MyApp) getApplication();
+		aq = new AQuery(this);
 		
 		gridView = (GridView) findViewById(R.id.gv);
 		downloadTv = (TextView) findViewById(R.id.tv_download_bg);
@@ -50,6 +83,8 @@ public class AppRecommendActivity extends Activity {
 			list.add(info);
 		}
 		
+		apkLists = PackageUtils.getInstalledApkInfos(this);
+		
 		adapter = new AppRecommendAdapter(this, list);
 		gridView.setAdapter(adapter);
 		
@@ -57,6 +92,56 @@ public class AppRecommendActivity extends Activity {
 		
 		initListener();
 		
+		getAppRecommendServiceData();
+		
+		IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+		filter.addDataScheme("package");
+		this.registerReceiver(reciver, filter);
+	}
+	
+	private BroadcastReceiver reciver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			
+			Log.d("TAG", "--------------------------> app installed");
+			 String packageName = intent.getData().getEncodedSchemeSpecificPart();
+			 for(int i=0;i<serviceList.size();i++){
+				 
+				 if(packageName.equals(serviceList.get(i).getPackage_name())){
+					 
+					 serviceList.get(i).setInstalled(true);
+					 adapter.notifyDataSetChanged();
+					 return;
+				 }
+			 }
+			
+		}
+		
+	};
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		unregisterReceiver(reciver);
+		super.onDestroy();
+	}
+	
+	private void updateList(){
+		
+		for(int i=0;i<serviceList.size();i++){
+			
+			String servicePackageName = serviceList.get(i).getPackage_name();
+			for(ApkInfo apkInfo:apkLists){
+				
+				String localPackageName = apkInfo.getPackageName();
+				if(servicePackageName.equals(localPackageName)){
+					
+					serviceList.get(i).setInstalled(true);
+				}
+			}
+		}
 	}
 	
 	private void initListener(){
@@ -76,7 +161,10 @@ public class AppRecommendActivity extends Activity {
 					sparseArrayView.put(position, view);
 				}
 				
-				setStartDownLoadVisible(view, true);
+				AppRecommendInfo info = serviceList.get(position);
+				
+				
+				setStartDownLoadVisible(view, true,info.isInstalled());
 				
 				preSelectedIndex = position;
 			}
@@ -101,20 +189,53 @@ public class AppRecommendActivity extends Activity {
 						View view = sparseArrayView.get(preSelectedIndex);
 						if(view != null) {
 							
-							setStartDownLoadVisible(v, false);
+							setStartDownLoadVisible(v, false,false);
 						}
 					}
 					
 				}
 			}
 		});
+		
+		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				
+				AppRecommendInfo info = serviceList.get(position);
+				if(!info.isInstalled()){
+					
+					//进行下载
+					ApkDownloadInfoParcel infoParcel = new ApkDownloadInfoParcel();
+					infoParcel.setApk_url(info.getApk_url());
+					infoParcel.setApp_name(info.getApp_name());
+					infoParcel.setIcon_url(info.getIcon_url());
+					infoParcel.setMd5(info.getMd5());
+					infoParcel.setVersion(info.getVersion());
+					infoParcel.setPackage_name(info.getPackage_name());
+					Intent downloadApkIntent  = new Intent(Global.ACTION_NEW_APK_DWONLOAD);
+					downloadApkIntent.putExtra("new_apk_download", infoParcel);
+					sendBroadcast(downloadApkIntent);
+				}
+			}
+		});
 	}
 	
-	private void setStartDownLoadVisible(View v,boolean isVisible) {
+	private void setStartDownLoadVisible(View v,boolean isVisible,boolean isInstall) {
 		
 		if( v == null) {
 			
 			return;
+		}
+		
+		if(isInstall){
+			
+			downloadTv.setText("已安装");
+		}else{
+			
+			downloadTv.setText("立即下载");
 		}
 		
 		if(isVisible) {
@@ -124,6 +245,77 @@ public class AppRecommendActivity extends Activity {
 		}else {
 			
 			downloadTv.setVisibility(View.INVISIBLE);
+		}
+	}
+	
+	protected void getServiceData(String url, String interfaceName) {
+		// TODO Auto-generated method stub
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
+
+		Log.d(TAG, url);
+		Log.d(TAG, "header appkey" + app.getHeaders().get("app_key"));
+
+		aq.ajax(cb);
+	}
+	
+	private void getAppRecommendServiceData(){
+		
+		String url = Constant.TV_LIVING_BASE_URL + "/top_app";
+		getServiceData(url, "initAppRecommendServiceData");
+	}
+	
+	public void initAppRecommendServiceData(String url, JSONObject json, AjaxStatus status) {
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR || json == null) {
+			Utils.showToast(this,
+					getResources().getString(R.string.networknotwork));
+
+			return;
+		}
+
+		if (json == null || json.equals(""))
+			return;
+
+		Log.d(TAG, "initTvLivingServiceData = " + json.toString());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			AppRecommendView appRecommendView = mapper.readValue(json.toString(),
+					AppRecommendView.class);
+
+			if(serviceList != null ){
+				
+				serviceList.clear();
+			}
+			if(appRecommendView != null && appRecommendView.resources != null) {
+				
+				for(int i=0;i<appRecommendView.resources.length;i++){
+					
+					AppRecommendInfo info = new AppRecommendInfo();
+					info.setApk_url(appRecommendView.resources[i].apk_url);
+					info.setApp_name(appRecommendView.resources[i].app_name);
+					
+					info.setIcon_url(appRecommendView.resources[i].icon_url);
+					info.setMd5(appRecommendView.resources[i].md5);
+					info.setPackage_name(appRecommendView.resources[i].package_name);
+					info.setVersion(appRecommendView.resources[i].version);
+					info.setApk_size(appRecommendView.resources[i].apk_size);
+					Log.d(TAG, "info--->" + info.toString());
+					serviceList.add(info);
+				}
+			}
+			updateList();
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

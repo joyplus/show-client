@@ -2,24 +2,19 @@ package com.joyplus.tvhelper.entity;
 
 public class AppRecommendInfo {
 	
-	private String appName;
-	private String iconUrl;
-	private int iconSrcId;
-	private String pakageName;
-
-	private String size;
-	private String downloadUrl;
+	private String md5;
+	private String app_name;
+	private String package_name;
+	private String icon_url;
+	private String apk_size;
+	private String version;
+	private String apk_url;
 	
 	private boolean isInstalled;
 	
-	public String getPakageName() {
-		return pakageName;
-	}
-
-	public void setPakageName(String pakageName) {
-		this.pakageName = pakageName;
-	}
+	private int iconSrcId;
 	
+
 	public int getIconSrcId() {
 		return iconSrcId;
 	}
@@ -27,36 +22,61 @@ public class AppRecommendInfo {
 	public void setIconSrcId(int iconSrcId) {
 		this.iconSrcId = iconSrcId;
 	}
-	public String getAppName() {
-		return appName;
+
+	public String getMd5() {
+		return md5;
 	}
 
-	public void setAppName(String appName) {
-		this.appName = appName;
+	public void setMd5(String md5) {
+		this.md5 = md5;
 	}
 
-	public String getIconUrl() {
-		return iconUrl;
+	public String getApp_name() {
+		return app_name;
 	}
 
-	public void setIconUrl(String iconUrl) {
-		this.iconUrl = iconUrl;
+	public void setApp_name(String app_name) {
+		this.app_name = app_name;
 	}
 
-	public String getSize() {
-		return size;
+	public String getPackage_name() {
+		return package_name;
 	}
 
-	public void setSize(String size) {
-		this.size = size;
+	public void setPackage_name(String package_name) {
+		this.package_name = package_name;
 	}
 
-	public String getDownloadUrl() {
-		return downloadUrl;
+	public String getIcon_url() {
+		return icon_url;
 	}
 
-	public void setDownloadUrl(String downloadUrl) {
-		this.downloadUrl = downloadUrl;
+	public void setIcon_url(String icon_url) {
+		this.icon_url = icon_url;
+	}
+
+	public String getApk_size() {
+		return apk_size;
+	}
+
+	public void setApk_size(String apk_size) {
+		this.apk_size = apk_size;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getApk_url() {
+		return apk_url;
+	}
+
+	public void setApk_url(String apk_url) {
+		this.apk_url = apk_url;
 	}
 
 	public boolean isInstalled() {
