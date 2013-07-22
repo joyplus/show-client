@@ -123,5 +123,9 @@ public class TvLiveInfo {
 		this.status = status;
 	}
 	
-	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "app_name:" + app_name+ " package_name:" + package_name;
+	}
 }

@@ -12,6 +12,10 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -66,7 +70,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 			// TODO Auto-generated method stub
 //			super.handleMessage(msg);
 			
-			switch (msg.arg1) {
+			switch (msg.what) {
 			case DOWNLOAD_FILES_SUCESS://下载完成
 				//对比文件
 				setTvLivingStaus();
@@ -97,20 +101,51 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		
 		gridView = (GridView) findViewById(R.id.gridview);
 		
-		for(int i=0;i< 10;i++) {
-			
-			TvLiveInfo info = new TvLiveInfo();
-			list.add(info);
-		}
-		
-		adapter = new TvLiveSrcUpdateAdapter(this, list,aq);
-		gridView.setAdapter(adapter);
+//		for(int i=0;i< 10;i++) {
+//			
+//			TvLiveInfo info = new TvLiveInfo();
+//			list.add(info);
+//		}
 		
 		initListener();
 		
 		apkLists = PackageUtils.getInstalledApkInfos(this);
 		getTvLivingServiceData();
 		
+		IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+		filter.addDataScheme("package");
+		this.registerReceiver(reciver, filter);
+		
+	}
+	
+	private BroadcastReceiver reciver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			
+			Log.d("TAG", "--------------------------> app installed");
+			 String packageName = intent.getData().getEncodedSchemeSpecificPart();
+			 for(int i=0;i<serviceList.size();i++){
+				 
+				 if(packageName.equals(serviceList.get(i).getPackage_name())){
+					 
+					 list.add(serviceList.get(i));
+					 setTvLivingStaus();
+					 adapter.notifyDataSetChanged();
+					 return;
+				 }
+			 }
+			
+		}
+		
+	};
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		unregisterReceiver(reciver);
+		super.onDestroy();
 	}
 	
 	private void initListener(){
@@ -122,7 +157,6 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				
-				List<TvLiveInfo> list = adapter.getList();
 				if(list != null && list.size() > 0){
 					
 					TvLiveInfo info = list.get(position);
@@ -131,8 +165,44 @@ public class TvLiveSrcUpdateActivity extends Activity {
 						
 						break;
 					case 1://点击更新
+						List<File> dstListFile = info.getDstFileLists();
+						List<File> srcListFile = info.getSrcFileLists();
 						
+						if(dstListFile.size() == srcListFile.size()){
+							
+							for(int i=0;i<dstListFile.size();i++){
+								
+								File file = dstListFile.get(i);
+								if(file != null && srcListFile.get(i)!= null
+										&& srcListFile.get(i).exists()){
+									
+									File parentFile = file.getParentFile();
+									if(parentFile != null){
+										
+										if(!parentFile.exists()){
+											
+											parentFile.mkdirs();
+										}
+									}
+									
+									if(!file.exists()){
+										
+										try {
+											file.createNewFile();
+											
+											Utils.copyFile(srcListFile.get(i),file );
+											info.setStatus(TvLiveInfo.NEWS);
+											adapter.notifyDataSetChanged();
+										} catch (IOException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}
+								}
+							}
+						}
 						
+
 						break;
 					case 2://进入下载
 						
@@ -209,6 +279,9 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				}
 			}
 		}
+		Log.i(TAG, "list.size-->"+ list.size());
+		adapter = new TvLiveSrcUpdateAdapter(this, list,aq);
+		gridView.setAdapter(adapter);
 	}
 	
 	private void getLivingUpdateList(){
@@ -279,9 +352,8 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		// TODO Auto-generated method stub
 
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
-
 		cb.SetHeader(app.getHeaders());
+		cb.url(url).type(JSONObject.class).weakHandler(this, interfaceName);
 
 		Log.d(TAG, url);
 		Log.d(TAG, "header appkey" + app.getHeaders().get("app_key"));
@@ -349,7 +421,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					info.setPackage_name(tvLiveViews.resources[i].package_name);
 					info.setVersion(tvLiveViews.resources[i].version);
 					info.setStatus(TvLiveInfo.NEWS);
-					
+					Log.d(TAG, "info--->" + info.toString());
 					serviceList.add(info);
 				}
 			}

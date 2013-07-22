@@ -49,7 +49,7 @@ public class Constant {
 	 "http://comettest.joyplus.tv:8000/bindtv";//测试
 	 public static final String FAYESERVERURL_CHECKBAND =
 	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
-	 public static final String TV_LIVING_BASE_URL = "tt.yue001.com:8080";//视频直播源
+	 public static final String TV_LIVING_BASE_URL = "http://tt.yue001.com:8080";//视频直播源
 
 	
 	// 我们的sina账号
