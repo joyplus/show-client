@@ -42,6 +42,7 @@ public class ApkDownloadInfoParcel implements Parcelable {
 			ApkDownloadInfoParcel info = new ApkDownloadInfoParcel();
 			info.md5 = source.readString();
 			info.app_name = source.readString();
+			info.package_name = source.readString();
 			info.icon_url = source.readString();
 			info.version = source.readString();
 			info.apk_url = source.readString();

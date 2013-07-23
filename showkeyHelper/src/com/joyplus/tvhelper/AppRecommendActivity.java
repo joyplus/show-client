@@ -161,7 +161,7 @@ public class AppRecommendActivity extends Activity {
 					sparseArrayView.put(position, view);
 				}
 				
-				AppRecommendInfo info = serviceList.get(position);
+				AppRecommendInfo info = list.get(position);
 				
 				
 				setStartDownLoadVisible(view, true,info.isInstalled());
@@ -204,17 +204,24 @@ public class AppRecommendActivity extends Activity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				
-				AppRecommendInfo info = serviceList.get(position);
+				AppRecommendInfo info = list.get(position);
 				if(!info.isInstalled()){
 					
 					//进行下载
 					ApkDownloadInfoParcel infoParcel = new ApkDownloadInfoParcel();
-					infoParcel.setApk_url(info.getApk_url());
-					infoParcel.setApp_name(info.getApp_name());
-					infoParcel.setIcon_url(info.getIcon_url());
-					infoParcel.setMd5(info.getMd5());
-					infoParcel.setVersion(info.getVersion());
-					infoParcel.setPackage_name(info.getPackage_name());
+//					infoParcel.setApk_url(info.getApk_url());
+//					infoParcel.setApp_name(info.getApp_name());
+//					infoParcel.setIcon_url(info.getIcon_url());
+//					infoParcel.setMd5(info.getMd5());
+//					infoParcel.setVersion(info.getVersion());
+//					infoParcel.setPackage_name(info.getPackage_name());
+					
+					infoParcel.setApk_url("http://upgrade.joyplus.tv/joyplustv/joyplustv.apk");
+					infoParcel.setApp_name("悦视频");
+					infoParcel.setIcon_url("");
+					infoParcel.setMd5("");
+					infoParcel.setVersion("");
+					infoParcel.setPackage_name("");
 					Intent downloadApkIntent  = new Intent(Global.ACTION_NEW_APK_DWONLOAD);
 					downloadApkIntent.putExtra("new_apk_download", infoParcel);
 					sendBroadcast(downloadApkIntent);
