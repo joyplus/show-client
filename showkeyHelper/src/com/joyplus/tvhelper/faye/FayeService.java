@@ -2,6 +2,8 @@ package com.joyplus.tvhelper.faye;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -34,7 +36,9 @@ import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
+import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
+import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PackageUtils;
@@ -56,6 +60,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public static final int MESSAGE_DOWNLOAD_PROGRESS_CHANGED = 2;
 	public static final int MESSAGE_DOWNLOAD_COMPLETE = 3;
 	public static final int MESSAGE_DOWNLOAD_FAILE = 4;
+	
+	
 	public static final int MESSAGE_SHOW_DIALOG = 101;
 	public static final int MESSAGE_NEW_DOWNLOAD_ADD = 102;
 	public static final int MESSAGE_APK_INSTALLED_PROGRESS = 102;
@@ -196,6 +202,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					}
 //					handler.sendEmptyMessageDelayed(MESSAGE_LISTEN_APP_LOOPER, 500);
 				break;
+			case MESSAGE_DOWNLOAD_COMPLETE:
+				String uuid = (String) msg.obj;
+				handleDownLoadCompelte(uuid);
+				break;
+			case MESSAGE_DOWNLOAD_FAILE:
+				String uuid_1 = (String) msg.obj;
+				handleDownLoadFile(uuid_1);
+				break;
 			}
 		};
 	};
@@ -234,7 +248,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		Log.d(TAG, "channel----->" + channel);
 		myClient = new FayeClient(handler, url, channel);
 		myClient.setFayeListener(this);
-		myClient.connectToServer(null); 
 		IntentFilter filter = new IntentFilter(Global.ACTION_CONFIRM_ACCEPT);
 		filter.addAction(Global.ACTION_CONFIRM_REFUSE);
 		filter.addAction(Global.ACTION_DOWNLOAD_PAUSE);
@@ -259,13 +272,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		
+		com.joyplus.utils.Log.mbLoggable = false;
 	}
 
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
+		myClient.connectToServer(null); 
 		isNeedReconnect = true;
 		new Thread(new Runnable() {	
 			@Override
@@ -291,6 +305,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setName(item.getString("app_name"));
 						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
 						String fileName = getFileNameforUrl(file_url);
+//						info.set
 						DownloadTask tast = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
 						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
 						info.setTast(tast);
@@ -304,7 +319,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					e.printStackTrace();
 				}
 				if(currentUserApkInfo==null){
-					startNextUserApkDownLoad();
+					startNextUserApkDownLoad(); 
 				}
 			}
 		}).start();
@@ -393,7 +408,12 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 					playDate.prod_type = -11;
 //					playDate.prod_name = json.getString("prod_name");
-					playDate.prod_url = data.getString("url");
+					String movie_play_url = getUrl(data.getString("url"));
+					if(movie_play_url == null){
+						Log.e(TAG, "movie_play_url error !");
+						return ;
+					}
+					playDate.prod_url = movie_play_url;
 //					playDate.prod_src = json.getString("prod_src");
 //					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
 //					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
@@ -411,11 +431,19 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				case 6:
 					data = json.getJSONObject("body");
 					PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
-					String push_url = data.getString("url");
+					String push_url = getUrl(data.getString("url"));
+					if(push_url == null){
+						Log.e(TAG, "push download url error");
+						return ;
+					}
 					movieDownLoadInfo.setPush_url(push_url);
 					movieDownLoadInfo.setPush_id(data.getInt("id"));
 					String downLoad_url = Utils.getRedirectUrl(push_url);
 					String movie_file_name = getFileNameforUrl(downLoad_url);
+					if(downLoad_url.contains(".m3u8")){
+						Log.e(TAG, "not support down load m3u8 !");
+						return ; 
+					}
 					movieDownLoadInfo.setName(movie_file_name);
 					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
 					DownloadTask movieTast = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
@@ -592,6 +620,84 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	@Override
 	public void onDownloadComplete(String uiid) {
 		// TODO Auto-generated method stub
+		Message msg = handler.obtainMessage(MESSAGE_DOWNLOAD_COMPLETE);
+		msg.obj = uiid;
+		handler.sendMessage(msg);
+	}
+
+	@Override
+	public synchronized void onDownloadFaile(String uiid) {
+		// TODO Auto-generated method stub
+		Message msg = handler.obtainMessage(MESSAGE_DOWNLOAD_FAILE);
+		msg.obj = uiid;
+		handler.sendMessage(msg);
+	}
+
+	@Override
+	public void onDownloadPogressed(String uiid) {
+		// TODO Auto-generated method stub
+//		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
+			Intent progressIntent = new Intent(Global.ACTION_DOWNLOAD_PROGRESS);
+//			progressIntent.putExtra("push_id", info.getPush_id());
+//			progressIntent.putExtra("progress", (info.getCompeleteSize()*100)/info.getFileSize());
+			sendBroadcast(progressIntent);
+//			return;
+//		}
+//		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the Faile");
+	}
+
+	@Override
+	public void onFileSizeLoaded(String uiid) {
+		// TODO Auto-generated method stub
+		//判断当前文件是否能完整的存到sdcard中
+	}
+
+	@Override
+	public void onPused(String uiid) {
+		// TODO Auto-generated method stub
+		onDownloadFaile(uiid);
+	}
+	
+	
+	private void handleDownLoadFile(String uiid){
+		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
+		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
+			//用户推送的apk文件下载失败
+			currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//			通知ui
+			Intent downLoadfaileIntent = new Intent(Global.ACTION_APK_DOWNLOAD_FAILE);
+			downLoadfaileIntent.putExtra("_id", currentUserApkInfo.get_id());
+			sendBroadcast(downLoadfaileIntent);
+			services.updateApkInfo(currentUserApkInfo);
+			currentUserApkInfo = null;
+			startNextUserApkDownLoad();
+			return ;
+		}
+		if(currentNotUserApkInfo!=null&&uiid.equalsIgnoreCase(currentNotUserApkInfo.getTast().getUUId())){
+			//。。。
+			currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+			services.updateApkInfo(currentNotUserApkInfo);
+			currentNotUserApkInfo = null;
+			startNextNotUserApkDownLoad();
+			return ;
+		}
+		if(currentMovieInfo!=null &&uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())){
+			//下载完成
+			currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+			//通知ui
+			Intent downLoadCompletIntent = new Intent(Global.ACTION_MOVIE_DOWNLOAD_FAILE);
+		    downLoadCompletIntent.putExtra("_id", currentMovieInfo.get_id());
+		    sendBroadcast(downLoadCompletIntent);
+		    services.updateMovieDownLoadInfo(currentMovieInfo);
+			//开始下一个
+			currentMovieInfo = null;
+			startNextMovieDownLoad();
+			return ;
+		}
+		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"  not handle the Faile");
+	}
+	
+	private void handleDownLoadCompelte(String uiid){
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load complete");
 		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
 			//用户推送的apk文件下载完成
@@ -646,71 +752,41 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		}
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the complete");
 	}
-
-	@Override
-	public synchronized void onDownloadFaile(String uiid) {
-		// TODO Auto-generated method stub
-		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
-		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
-			//用户推送的apk文件下载失败
-			currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-			services.updateApkInfo(currentUserApkInfo);
-//			通知ui
-			Intent downLoadfaileIntent = new Intent(Global.ACTION_APK_DOWNLOAD_FAILE);
-			downLoadfaileIntent.putExtra("_id", currentUserApkInfo.get_id());
-			sendBroadcast(downLoadfaileIntent);
-			currentUserApkInfo = null;
-			startNextUserApkDownLoad();
-			return ;
-		}
-		if(currentNotUserApkInfo!=null&&uiid.equalsIgnoreCase(currentNotUserApkInfo.getTast().getUUId())){
-			//。。。
-			currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-			services.updateApkInfo(currentNotUserApkInfo);
-			currentNotUserApkInfo = null;
-			startNextNotUserApkDownLoad();
-			return ;
-		}
-		if(currentMovieInfo!=null &&uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())){
-			//下载完成
-			currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-			services.updateMovieDownLoadInfo(currentMovieInfo);
-			//通知ui
-			Intent downLoadCompletIntent = new Intent(Global.ACTION_MOVIE_DOWNLOAD_FAILE);
-		    downLoadCompletIntent.putExtra("_id", currentMovieInfo.get_id());
-		    sendBroadcast(downLoadCompletIntent);
-			//开始下一个
-			currentMovieInfo = null;
-			startNextMovieDownLoad();
-			return ;
-		}
-		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"  not handle the Faile");
-	}
-
-	@Override
-	public void onDownloadPogressed(String uiid) {
-		// TODO Auto-generated method stub
-//		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
-			Intent progressIntent = new Intent(Global.ACTION_DOWNLOAD_PROGRESS);
-//			progressIntent.putExtra("push_id", info.getPush_id());
-//			progressIntent.putExtra("progress", (info.getCompeleteSize()*100)/info.getFileSize());
-			sendBroadcast(progressIntent);
-//			return;
-//		}
-//		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the Faile");
-	}
-
-	@Override
-	public void onFileSizeLoaded(String uiid) {
-		// TODO Auto-generated method stub
-		//判断当前文件是否能完整的存到sdcard中
-	}
-
-	@Override
-	public void onPused(String uiid) {
-		// TODO Auto-generated method stub
-		onDownloadFaile(uiid);
-	}
 	
 	
+//	mp4{m}http://hot.vrs.sohu.com/ipad1244506_4585881117442_4455827.m3u8?plat=0{mType}hd2{m}http://hot.vrs.sohu.com/ipad1244507_4585881117442_4455828.m3u8?plat=0 
+
+	
+	private String getUrl(String push_urls){
+		String[] urls = push_urls.split("\\{mType\\}");
+		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+		for(String str : urls){
+			URLS_INDEX url_index_info = new URLS_INDEX();
+			String[] p = str.split("\\{m\\}");
+			if("hd2".equalsIgnoreCase(p[0])){
+				url_index_info.defination = 0;
+			}else if("mp4".equalsIgnoreCase(p[0])){
+				url_index_info.defination = 1;
+			}else if("3gp".equalsIgnoreCase(p[0])){
+				url_index_info.defination = 2;
+			}else{
+				url_index_info.defination = 3;
+			}
+			url_index_info.url = p[1];
+			list.add(url_index_info);
+		}
+		if(list.size()>1){
+			Collections.sort(list, new DefinationComparatorIndex());
+		}
+		if(list.size()<=0){
+			return  null;
+		}else{
+			return list.get(0).url;
+		}
+	}
+	
+	class PUSH_URL_INDEX{
+		int defination;
+		String url;
+	}
 }

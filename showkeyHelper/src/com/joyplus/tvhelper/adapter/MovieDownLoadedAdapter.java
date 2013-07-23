@@ -56,9 +56,9 @@ public class MovieDownLoadedAdapter extends BaseAdapter {
 		if(convertView == null){
 			convertView = LayoutInflater.from(mContext).inflate(R.layout.item_downloaded_movie, null);
 			holder = new ViewHolder();
-			holder.name = (TextView) convertView.findViewById(R.id.app_name);
-			holder.size = (TextView) convertView.findViewById(R.id.app_size);
-			holder.statue_icon = (ImageView) convertView.findViewById(R.id.app_statue_icon);
+			holder.name = (TextView) convertView.findViewById(R.id.movie_name);
+			holder.size = (TextView) convertView.findViewById(R.id.movie_size);
+			holder.statue_icon = (ImageView) convertView.findViewById(R.id.movie_statue_icon);
 			convertView.setTag(holder);
 		}else{
 			holder = (ViewHolder) convertView.getTag();
@@ -67,11 +67,7 @@ public class MovieDownLoadedAdapter extends BaseAdapter {
 		holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 		switch (info.getEdite_state()) {
 		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
-			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING){
-				holder.statue_icon.setImageResource(R.drawable.icon_continue);
-			}else{
-				holder.statue_icon.setImageResource(R.drawable.icon_puse);
-			}
+			holder.statue_icon.setImageDrawable(null);
 			break;
 		case PushedApkDownLoadInfo.EDITE_STATUE_EDIT:
 			holder.statue_icon.setImageResource(R.drawable.item_statue_selete);

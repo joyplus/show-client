@@ -174,6 +174,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_SUCESS);
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_FAILE);
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
+		filter.addAction(Global.ACTION_APK_DOWNLOAD_FAILE);
 		registerReceiver(receiver, filter);
 	}
 

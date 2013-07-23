@@ -11,16 +11,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.adapter.MovieDownLoadedAdapter;
 import com.joyplus.tvhelper.adapter.MoviePlayHistoryAdapter;
 import com.joyplus.tvhelper.adapter.PushedMovieDownLoadAdapter;
 import com.joyplus.tvhelper.db.DBServices;
+import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.Global;
@@ -40,6 +41,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private Button title_playHistory, title_downloading, title_downloaded;
 	
 	private List<PushedMovieDownLoadInfo> downloadedMovies;
+	private List<MoviePlayHistoryInfo> playinfos;
+	private MyApp app;
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
@@ -97,10 +100,13 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		adpter_downloading = new PushedMovieDownLoadAdapter(this, FayeService.movieDownLoadInfos);
 		dbService = DBServices.getInstance(this);
 		downloadedMovies = dbService.queryMovieDownLoadedInfos();
+		playinfos = dbService.queryMoviePlayHistoryList();
 		adpter_downloaded = new MovieDownLoadedAdapter(this, downloadedMovies);
+		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		listView.setAdapter(adpter_downloading);
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
+		app = (MyApp) getApplication();
 		IntentFilter filter = new IntentFilter(Global.ACTION_DOWNLOAD_PROGRESS);
 		filter.addAction(Global.ACTION_DOWNL_GETSIZE_SUCESS);
 		filter.addAction(Global.ACTION_DOWNLOAD_RECIVED);
@@ -112,38 +118,74 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(position);
-		
-		switch (info.getEdite_state()) {
-		case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
-			switch (info.getDownload_state()) {
-			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
-			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
-				downloadManager.pauseTask(info.getTast());
-				dbService.updateMovieDownLoadInfo(info);
-				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
-//				Intent intentContinue = new Intent(Global.ACTION_DOWNLOAD_PAUSE);
-//				sendBroadcast(intentContinue);
+		Log.d(TAG, "selectedIndex -- >" + selectedIndex);
+		switch (selectedIndex) {
+		case 0:
+			
+			break;
+		case 1:
+			PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(position);
+			Log.d(TAG, "info  --getEdite_state() >" + info.getEdite_state());
+			switch (info.getEdite_state()) {
+			case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
+				Log.d(TAG, "info  --getDownload_state() >" + info.getDownload_state());
+				switch (info.getDownload_state()) {
+				case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+				case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+					downloadManager.pauseTask(info.getTast());
+					dbService.updateMovieDownLoadInfo(info);
+					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
+					adpter_downloading.notifyDataSetChanged();
+					break;
+				case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					dbService.updateMovieDownLoadInfo(info);
+					Intent intentpause = new Intent(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
+					sendBroadcast(intentpause);
+					adpter_downloading.notifyDataSetChanged();
+					break;
+				}
+				break;
+			case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
+				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
 				adpter_downloading.notifyDataSetChanged();
 				break;
-			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
-				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-				dbService.updateMovieDownLoadInfo(info);
-				Intent intentpause = new Intent(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
-				sendBroadcast(intentpause);
+			case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
+				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
 				adpter_downloading.notifyDataSetChanged();
 				break;
 			}
 			break;
-		case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
-			info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
-			adpter_downloading.notifyDataSetChanged();
+		case 2:
+			PushedMovieDownLoadInfo info_complete = downloadedMovies.get(position);
+			Log.d(TAG, info_complete.getFile_path());
+			
+			CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+			Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//			intent.putExtra("ID", json.getString("prod_id"));
+//			playDate.prod_id = data.getString("id");
+//			playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+			playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+//			playDate.prod_name = json.getString("prod_name");
+			playDate.prod_url = info_complete.getFile_path();
+//			playDate.prod_src = json.getString("prod_src");
+//			playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
+//			playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+//			if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//				if(json.has("prod_subname")){//旧版android 没有传递该参数
+//					playDate.prod_sub_name = json.getString("prod_subname");
+//				}else{
+//					playDate.prod_type = -1;
+//				}
+//			}
+			app.setmCurrentPlayDetailData(playDate);
+			app.set_ReturnProgramView(null);
+			startActivity(intent);
 			break;
-		case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
-			info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
-			adpter_downloading.notifyDataSetChanged();
+		default:
 			break;
 		}
+		
 	}
 	
 	@Override
@@ -158,12 +200,16 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.title_downloaded:
+			selectedIndex = 2;
 			listView.setAdapter(adpter_downloaded);
 			break;
 		case R.id.title_downloading:
+			selectedIndex = 1;
 			listView.setAdapter(adpter_downloading);
 			break;
-
+		case R.id.title_play_history:
+			selectedIndex = 0;
+			listView.setAdapter(adpter_play_history);
 		default:
 			break;
 		}

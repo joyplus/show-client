@@ -65,7 +65,9 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
@@ -94,6 +96,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_UPDATE_PROGRESS = MESSAGE_URL_NEXT + 1;
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
+	
+	public static final int TYPE_XUNLEI = -10;
+	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
+	public static final int TYPE_LOCAL = TYPE_PUSH -1;
 
 	/**
 	 * 数据加载
@@ -364,12 +370,17 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
-		if(mProd_type != -10) {
+		if(mProd_type != TYPE_XUNLEI) {
 			
+			if(mProd_type == TYPE_LOCAL){
+				if(currentPlayUrl!=null){
+					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+				}
+				return;
+			}
 			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 				if (mProd_type<0) {
 //					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-						
 					new Thread(new UrlRedirectTask()).start();
 					
 				} else {
@@ -490,6 +501,8 @@ public class VideoPlayerJPActivity extends Activity implements
 						if (mProd_type > 0 && !"-1".equals(mProd_id)
 								&& mProd_id != null) {
 							getProgramViewDetailServiceData();
+						}else if(mProd_type==-11||mProd_type==-12){
+							showDialog(0);
 						}
 					}
 				} else {
@@ -512,7 +525,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							showDialog(0);
 							
 							//所有url不能播放，向服务器传递-1
-							saveToServer(-1, 0);
+//							saveToServer(-1, 0);
 						}
 					}
 				}
@@ -1726,7 +1739,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		// TODO Auto-generated method stub
 //		MobclickAgent.onPause(this);
-		if (mProd_type > 0&&mStatue!=STATUE_LOADING) {
+//		if (mProd_type < 0&&mStatue!=STATUE_LOADING) {
 			// SaveToServer(mVideoView.getDuration(),
 			// mVideoView.getCurrentPosition());
 			long duration = mVideoView.getDuration();
@@ -1734,14 +1747,33 @@ public class VideoPlayerJPActivity extends Activity implements
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
 			if(duration-curretnPosition<10*1000){
-				saveToServer(duration / 1000, (duration / 1000) -10);
+				saveToDB(duration / 1000, (duration / 1000) -10);
 			}else{
-				saveToServer(duration / 1000, curretnPosition / 1000);
+				saveToDB(duration / 1000, curretnPosition / 1000);
 			}
-		}
+//		}
 		super.onPause();
 	}
 
+	private void saveToDB(long duration, long playBackTime) {
+		//save play date
+		MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
+		info.setDuration((int) duration);
+		info.setPlayback_time((int) playBackTime);
+		info.setName(mProd_name);
+		DBServices services = DBServices.getInstance(this);
+		Log.d(TAG, "mProd_type---------------->" + mProd_type);
+		if(mProd_type == TYPE_PUSH){
+			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+			info.setPush_url(currentPlayUrl);
+			services.insertMoviePlayHistory(info);
+		}else if(mProd_type == TYPE_LOCAL){
+			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
+			info.setPush_url(currentPlayUrl);
+			services.insertMoviePlayHistory(info);
+		}
+	}
+	
 	@Override
 	protected void onStop() {
 		
@@ -1763,26 +1795,26 @@ public class VideoPlayerJPActivity extends Activity implements
 		super.onStop();
 	}
 
-	public void saveToServer(long duration, long playBackTime) {
-		String url = Constant.BASE_URL + "program/play";
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("app_key", Constant.APPKEY);// required string
-		params.put("prod_id", mProd_id);
-		params.put("prod_name", mProd_name);// required
-		params.put("prod_subname", mProd_sub_name);
-		params.put("prod_type", mProd_type);// required int 视频类别
-		params.put("play_type", "1");
-		params.put("playback_time", playBackTime);// _time required int
-		params.put("duration", duration);// required int 视频时长， 单位：秒
-		params.put("video_url", currentPlayUrl);// required
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.SetHeader(app.getHeaders());
-		cb.params(params).url(url).type(JSONObject.class)
-				.weakHandler(this, "CallProgramPlayResult");
-		aq.ajax(cb);
-		
-	}
+//	public void saveToServer(long duration, long playBackTime) {
+//		String url = Constant.BASE_URL + "program/play";
+//
+//		Map<String, Object> params = new HashMap<String, Object>();
+//		params.put("app_key", Constant.APPKEY);// required string
+//		params.put("prod_id", mProd_id);
+//		params.put("prod_name", mProd_name);// required
+//		params.put("prod_subname", mProd_sub_name);
+//		params.put("prod_type", mProd_type);// required int 视频类别
+//		params.put("play_type", "1");
+//		params.put("playback_time", playBackTime);// _time required int
+//		params.put("duration", duration);// required int 视频时长， 单位：秒
+//		params.put("video_url", currentPlayUrl);// required
+//		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//		cb.SetHeader(app.getHeaders());
+//		cb.params(params).url(url).type(JSONObject.class)
+//				.weakHandler(this, "CallProgramPlayResult");
+//		aq.ajax(cb);
+//		
+//	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {

@@ -11,9 +11,10 @@
 	    <ImageView android:layout_width="72dp"
 	        android:layout_height="72dp"
 	        android:src="@drawable/icon_movie"/>
-	    <LinearLayout android:layout_width="120dp"
-	        android:layout_height="wrap_content"
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
 	        android:layout_marginLeft="10dp"
+	        android:layout_weight="1"
 	        android:orientation="vertical">
 	        <TextView android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
@@ -29,11 +30,11 @@
 	            android:textSize="12sp"
 	            android:id="@+id/movie_size"/>
 	    </LinearLayout>
-	    <ImageView android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	    <ImageView android:layout_width="25dp"
+	        android:layout_height="25dp"
 	        android:layout_marginLeft="30dp"
 	        android:layout_marginRight="30dp"
-	        android:id="@+id/app_statue_icon"
+	        android:id="@+id/movie_statue_icon"
 	        android:src="@drawable/icon_continue"/>
 	</LinearLayout>
 </RelativeLayout>
