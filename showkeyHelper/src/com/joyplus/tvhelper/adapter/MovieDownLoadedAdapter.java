@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper.adapter;
 
+import java.io.File;
 import java.util.List;
 
 import android.content.Context;
@@ -63,7 +64,9 @@ public class MovieDownLoadedAdapter extends BaseAdapter {
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.name.setText(info.getName());
+//		holder.name.setText(info.getName());
+		File f = new File(info.getFile_path());
+		holder.name.setText(f.getName());
 		holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 		switch (info.getEdite_state()) {
 		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:

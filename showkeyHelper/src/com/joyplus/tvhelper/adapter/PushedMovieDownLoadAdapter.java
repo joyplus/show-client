@@ -3,6 +3,7 @@ package com.joyplus.tvhelper.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 
 	private Context mContext;
 	private List<PushedMovieDownLoadInfo> data;
+	private java.text.DecimalFormat   df = new   java.text.DecimalFormat("#.##");   
 	
 	public PushedMovieDownLoadAdapter(Context c, List<PushedMovieDownLoadInfo> data){
 		this.data = data;
@@ -61,18 +63,12 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 			holder.size = (TextView) convertView.findViewById(R.id.app_size);
 			holder.progress = (ProgressBar) convertView.findViewById(R.id.progressbar);
 			holder.progressText = (TextView) convertView.findViewById(R.id.progress_value);
-			holder.progressLayout = (LinearLayout) convertView.findViewById(R.id.progressLayout);
 			holder.statue = (TextView) convertView.findViewById(R.id.app_statue);
 			holder.statue_icon = (ImageView) convertView.findViewById(R.id.app_statue_icon);
 			convertView.setTag(holder);
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-//		if(info.getIcon()!=null){
-//			holder.icon.setImageDrawable(info.getIcon());
-//		}else{
-//			holder.icon.setImageResource(R.drawable.ic_launcher);
-//		}
 		holder.name.setText(info.getName());
 		int progress = 0;
 		if(info.getTast().getSize()>0){
@@ -81,31 +77,30 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 		}else{
 			holder.progress.setMax(100);
 		}
+		holder.statue.setTextColor(Color.GRAY);
 		switch (info.getDownload_state()) {
 		case PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
 			holder.statue.setText("等待下载");
 //			holder.progress.setProgress(progress);
 			holder.progress.setProgress(info.getTast().getCurLength());
 			holder.progress.setSecondaryProgress(0);
-			holder.progressLayout.setTag(info.get_id());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressText.setText(progress+"%");
 			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOADING://正在下载
-			holder.statue.setText("正在下载");
+			holder.statue.setText(getSpeed(info.getTast()));
 			holder.progress.setProgress(info.getTast().getCurLength());
-			holder.size.setText(getRTInfo(info.getTast()));
+			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progress.setSecondaryProgress(0);
-			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");
 			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE://暂停下载
+			holder.statue.setTextColor(Color.RED);
 			holder.statue.setText("已暂停下载");
 			holder.progress.setProgress(0);
 //			holder.progress.setSecondaryProgress(progress);
 			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
-			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");
 			break;
 //		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE://下载完成
@@ -118,11 +113,11 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 //			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSEING://下载完成
 			holder.statue.setText("正在暂停");
+			holder.statue.setTextColor(Color.RED);
 			holder.progress.setProgress(0);
 //			holder.progress.setSecondaryProgress(progress);
 			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
-			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");
 			break;
 //		case PushedApkDownLoadInfo.STATUE_INSTALL_FAILE://安装失败
@@ -154,18 +149,14 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
      * 实时任务信息
      * @return
      */
-    private String getRTInfo(DownloadTask task) {
+    private String getSpeed(DownloadTask task) {
         StringBuffer buffer = new StringBuffer();
-        if (task.getSize() > 0) {
-            buffer.append(PackageUtils.fomartSize(task.getSize()));
-        } else {
-            buffer.append("未知大小");
+        
+        if(task.getSpeed()>=1024){
+        	buffer.append(df.format(task.getSpeed()/1024d)).append("M/s");
+        }else{
+        	buffer.append(task.getSpeed()).append("k/s");
         }
-        if (task.getState() != DownloadTask.STATE_DOWNLOADING) {
-            return buffer.toString();
-        }
-        buffer.append("/").append(task.getSpeed()).append("k/s");
-
         return buffer.toString();
     }
 	
@@ -175,7 +166,6 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 		TextView size;
 		ProgressBar progress;
 		TextView progressText;
-		LinearLayout progressLayout;
 		TextView statue;
 		ImageView statue_icon;
 	}

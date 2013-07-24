@@ -131,7 +131,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				info.setName(apkInfo.getApp_name());
 				info.setIcon_url(apkInfo.getIcon_url());
 				String url = apkInfo.getApk_url();
-				String file_name = getFileNameforUrl(url);
+				String file_name = Utils.getFileNameforUrl(url);
 				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
 				info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 				downloadManager.addTast(task);
@@ -306,7 +306,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setPush_id(item.getInt("id"));
 						info.setName(item.getString("app_name"));
 						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-						String fileName = getFileNameforUrl(file_url);
+						String fileName = Utils.getFileNameforUrl(file_url);
 						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
 						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
@@ -379,7 +379,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					final int id = data.getInt("id");
 					info.setName(data.getString("app_name"));
 					String url = data.getString("file_url");
-					String file_name = getFileNameforUrl(url);
+					String file_name = Utils.getFileNameforUrl(url);
 					info.setPush_id(id);
 					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
 					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
@@ -443,7 +443,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					movieDownLoadInfo.setPush_url(push_url);
 					movieDownLoadInfo.setPush_id(data.getInt("id"));
 					String downLoad_url = Utils.getRedirectUrl(push_url);
-					String movie_file_name = getFileNameforUrl(downLoad_url);
+					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
 					if(downLoad_url.contains(".m3u8")){
 						Log.e(TAG, "not support down load m3u8 !");
 						return ; 
@@ -476,18 +476,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 
 	}
 	
-	private String getFileNameforUrl(String url){
-//		http://117.34.9.33/videos/movie/20130401/2999e19efdca9c59ad739d76f7d99a36.mp4?key=cdd56211bc343c9f&uuid=dfa39496afec44e3b142329c7047f665
-//		07-22 13:55:35.118: W/FayeClient(6283): java.util.regex.PatternSyntaxException: Syntax error in regexp pattern near index 1:
-		String [] urls = url.split("\\?");
-		url = urls[0];
-		String [] strs = url.split("/");
-		String filename = strs[strs.length - 1];
-//		if(filename.contains(".")){
-//			filename = filename.substring(0, filename.lastIndexOf("."));
-//		}
-		return System.currentTimeMillis() + filename;
-	}
 	
 	private void startNextUserApkDownLoad(){
 		Log.d(TAG, "startNextUserApkDownLoad--->");
@@ -574,7 +562,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	@Override
 	public void update(Observable observable, Object data) {
 		// TODO Auto-generated method stub
-		if (data != null && data instanceof Bundle){
+		if (data != null && data instanceof Bundle){ 
 			Bundle b = (Bundle) data;
 			Log.i(TAG, "packageName=" + b.getString(PackageInstaller.KEY_PACKAGE_NAME));
 			Log.i(TAG, "resultCode=" + b.getInt(PackageInstaller.KEY_RESULT_CODE));

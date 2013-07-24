@@ -59,7 +59,12 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.name.setText(info.getName());
+//		holder.name.setText(info.getName());
+		if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+			holder.name.setText(Utils.getDisPlayFileNameforUrl(info.getLocal_url()));
+		}else{
+			holder.name.setText(Utils.getDisPlayFileNameforUrl(info.getPush_url()));
+		}
 		if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>0){
 			holder.size.setText("已看完");
 		}else{

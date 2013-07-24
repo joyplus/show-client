@@ -149,13 +149,14 @@
 	                        </LinearLayout>
 	                    </RelativeLayout>
 	       		        </LinearLayout>
+	       		        </LinearLayout>
 	       		        <TextView android:layout_width="fill_parent"
 	       		                android:layout_height="1px"
 	       		                android:background="@drawable/divider_line"
 	       		                />
-	       		        </LinearLayout>
 	       		        <ListView android:layout_width="fill_parent"
 	       		            android:layout_height="fill_parent"
+	       		            android:layout_marginTop="2dp"
 	       		            android:id="@+id/movieList">
 	       		            
 	       		        </ListView>

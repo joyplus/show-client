@@ -312,10 +312,19 @@ public class DBServices {
 		values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
 		values.put(DBConstant.KEY_SYN1, info.getDuration());
 //
-        int rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
-        		DBConstant.KEY_ID + " = ? ", new String[] {
-        		info.getId()+ ""
-                });
+		int rows;
+		if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
+		        		DBConstant.KEY_PLAY_INFO_FILE_PATH + " = ? ", new String[] {
+		        		info.getLocal_url()+ ""
+		                });
+		}else{
+			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
+	        		DBConstant.KEY_PLAY_INFO_PUSH_URL + " = ? ", new String[] {
+	        		info.getLocal_url()+ ""
+	                });
+		}
+       
         db.close();
         Log.d(TAG, rows + "--->update");
     }
@@ -356,10 +365,28 @@ public class DBServices {
         return taskes;
 	}
 	
-//	public synchronized boolean hasMoviePlayHistory(MoviePlayHistoryInfo info){
-//		SQLiteDatabase db = getConnection();
-//		Cursor cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
-//				DBConstant.KEY_ + " =? ", new String[] {
-//        		PushedMovieDownLoadInfo.STATUE_DOWNLOAD_COMPLETE + ""}, null, null, null);
-//	}
+	public synchronized boolean hasMoviePlayHistory(MoviePlayHistoryInfo info){
+		SQLiteDatabase db = getConnection();
+		Cursor cr;
+		if(info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+			cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
+					DBConstant.KEY_PLAY_INFO_FILE_PATH + " =? ", new String[] {
+	        		 info.getLocal_url()}, null, null, null);
+		}else{
+			cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
+					DBConstant.KEY_PLAY_INFO_PUSH_URL + " =? ", new String[] {
+	        		 info.getPush_url()}, null, null, null);
+		}
+		
+		if(cr!=null){
+			if(cr.moveToNext()){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+		
+	}
 }

@@ -1746,7 +1746,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			if(duration-curretnPosition<10*1000){
+			if(duration-curretnPosition<10*1000&&duration>0){
 				saveToDB(duration / 1000, (duration / 1000) -10);
 			}else{
 				saveToDB(duration / 1000, curretnPosition / 1000);
@@ -1766,10 +1766,17 @@ public class VideoPlayerJPActivity extends Activity implements
 		if(mProd_type == TYPE_PUSH){
 			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 			info.setPush_url(currentPlayUrl);
-			services.insertMoviePlayHistory(info);
+//			services.insertMoviePlayHistory(info);
 		}else if(mProd_type == TYPE_LOCAL){
 			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
-			info.setPush_url(currentPlayUrl);
+			info.setLocal_url(currentPlayUrl);
+//			services.insertMoviePlayHistory(info);
+		}
+		if(services.hasMoviePlayHistory(info)){
+			Log.d(TAG, "updateMoviePlayHistory");
+			services.updateMoviePlayHistory(info);
+		}else{
+			Log.d(TAG, "insertMoviePlayHistory");
 			services.insertMoviePlayHistory(info);
 		}
 	}

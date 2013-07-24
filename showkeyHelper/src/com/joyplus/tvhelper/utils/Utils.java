@@ -406,4 +406,25 @@ public static InetAddress getLocalIpAddress(){
 
 	}
 
+	public static String getFileNameforUrl(String url){
+		String [] urls = url.split("\\?");
+		url = urls[0];
+		String [] strs = url.split("/");
+		String filename = strs[strs.length - 1];
+//		if(filename.contains(".")){
+//			filename = filename.substring(0, filename.lastIndexOf("."));
+//		}
+		return System.currentTimeMillis() + filename;
+	}
+	
+	public static String getDisPlayFileNameforUrl(String url){
+		String [] urls = url.split("\\?");
+		url = urls[0];
+		String [] strs = url.split("/");
+		String filename = strs[strs.length - 1];
+//		if(filename.contains(".")){
+//			filename = filename.substring(0, filename.lastIndexOf("."));
+//		}
+		return filename;
+	}
 }
