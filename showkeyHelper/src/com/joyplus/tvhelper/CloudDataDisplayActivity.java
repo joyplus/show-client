@@ -104,6 +104,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		adpter_downloaded = new MovieDownLoadedAdapter(this, downloadedMovies);
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		listView.setAdapter(adpter_downloading);
+		selectedIndex = 1;
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
 		app = (MyApp) getApplication();

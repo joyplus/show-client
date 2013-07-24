@@ -86,16 +86,15 @@
 	                                android:text="建议立即加速，让电视运行如飞"/>
 	                        </RelativeLayout>
 	                    </LinearLayout>
-	                    <Button android:layout_width="134dp"
-	                        android:layout_height="47dp"
-	                        android:text="返  回"
-	                        android:textSize="22dp"
-	                        android:textColor="#f0f0f0"
-	                        android:layout_marginTop="5dp"
-	                        android:layout_marginRight="30dp"
-	                        android:layout_gravity="center_vertical"
-	                        android:id="@+id/back_Button"
-	                        android:background="@color/btn_background_nomarl"/>
+	                    <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="返  回"
+		                        android:id="@+id/back_Button"
+		                        android:textSize="20sp"
+		                        android:textColor="#f0f0f0"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
 	                    <Button android:layout_width="134dp"
 	                        android:layout_height="47dp"
 	                        android:text="一键加速"
@@ -106,7 +105,7 @@
 	                        android:layout_gravity="center_vertical"
 	                        android:id="@+id/jiasu_Button"
 	                        android:visibility="gone"
-	                        android:background="@color/btn_background_nomarl"/>
+	                        android:background="@drawable/xunlei_return_btn_bg"/>
 	                </LinearLayout>
 	            </LinearLayout>
 	            <LinearLayout android:layout_width="fill_parent"
