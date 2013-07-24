@@ -132,9 +132,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				info.setIcon_url(apkInfo.getIcon_url());
 				String url = apkInfo.getApk_url();
 				String file_name = getFileNameforUrl(url);
-				DownloadTask tast = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
 				info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
-				info.setTast(tast);
+				downloadManager.addTast(task);
+				info.setTast(task);
 				info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 				info.setIsUser(PushedApkDownLoadInfo.IS_USER);
 				info.set_id((int) services.insertApkInfo(info));
@@ -143,7 +144,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				if(currentUserApkInfo==null){
 					currentUserApkInfo = info;
 					currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-					downloadManager.startTast(tast);
+					downloadManager.startTast(task);
 					services.updateApkInfo(currentUserApkInfo);
 				}
 			}
@@ -230,6 +231,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+//		com.joyplus.utils.Log.mbLoggable = true;
 		APK_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/apk");
 		MOVIE_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/movie");
 		app = (MyApp) getApplication();
@@ -305,10 +307,11 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setName(item.getString("app_name"));
 						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
 						String fileName = getFileNameforUrl(file_url);
-//						info.set
-						DownloadTask tast = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
 						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
-						info.setTast(tast);
+						info.setTast(task);
+						downloadManager.addTast(task);
 						info.set_id((int) services.insertApkInfo(info));
 						userPushApkInfos.add(info);
 						updateHistory(info.getPush_id());
@@ -378,9 +381,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					String url = data.getString("file_url");
 					String file_name = getFileNameforUrl(url);
 					info.setPush_id(id);
-					DownloadTask tast = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
 					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
-					info.setTast(tast);
+					downloadManager.addTast(task);
+					info.setTast(task);
 					info.setIsUser(PushedApkDownLoadInfo.IS_USER);
 					info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					info.set_id((int) services.insertApkInfo(info));
@@ -390,7 +394,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					if(currentUserApkInfo==null){
 						currentUserApkInfo = info;
 						currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-						downloadManager.startTast(tast);
+						downloadManager.startTast(task);
 						services.updateApkInfo(currentUserApkInfo);
 					}
 					break;
@@ -446,8 +450,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					}
 					movieDownLoadInfo.setName(movie_file_name);
 					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
-					DownloadTask movieTast = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
-					movieDownLoadInfo.setTast(movieTast);
+					DownloadTask movieTask = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
+					movieDownLoadInfo.setTast(movieTask);
+					downloadManager.addTast(movieTask);
 					movieDownLoadInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					movieDownLoadInfo.set_id((int) services.insertMovieDownLoadInfo(movieDownLoadInfo));
 					movieDownLoadInfos.add(movieDownLoadInfo);
@@ -456,7 +461,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					if(currentMovieInfo==null){
 						currentMovieInfo = movieDownLoadInfo;
 						currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-						downloadManager.startTast(movieTast);
+						downloadManager.startTast(movieTask);
 						services.updateMovieDownLoadInfo(currentMovieInfo);
 					}
 					break;

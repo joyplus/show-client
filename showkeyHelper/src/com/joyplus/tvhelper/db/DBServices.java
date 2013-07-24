@@ -103,6 +103,7 @@ public class DBServices {
         	
         	int _id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID));
         	String name = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_NAME));
+        	Log.d(TAG, "PushedApkDownLoadInfo----------->" + name);
         	int push_id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_PUSH_ID));
         	String file_path = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_FILE_PATH));
         	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE));
@@ -145,9 +146,9 @@ public class DBServices {
         ArrayList<PushedApkDownLoadInfo> taskes = new ArrayList<PushedApkDownLoadInfo>();
         PushedApkDownLoadInfo info;
         while (cr.moveToNext()) {
-        	
         	int _id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID));
         	String name = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_NAME));
+        	Log.d(TAG, "not user PushedApkDownLoadInfo----------->" + name);
         	int push_id = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_PUSH_ID));
         	String file_path = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_FILE_PATH));
         	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE));
@@ -235,6 +236,7 @@ public class DBServices {
         	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_DOWNLOAD_STATE));
         	String download_uuid = cr.getString(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_DOWNLOADUUID));
         	String push_url = cr.getString(cr.getColumnIndex(DBConstant.KEY_MOVIE_DOWNLOAD_INFO_PUSH_URL));
+        	Log.d(TAG, "PushedMovieDownLoadInfo---url-------->" + push_url);
         	
         	info = new PushedMovieDownLoadInfo();
         	info.set_id(_id);
@@ -353,4 +355,11 @@ public class DBServices {
         db.close();
         return taskes;
 	}
+	
+//	public synchronized boolean hasMoviePlayHistory(MoviePlayHistoryInfo info){
+//		SQLiteDatabase db = getConnection();
+//		Cursor cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
+//				DBConstant.KEY_ + " =? ", new String[] {
+//        		PushedMovieDownLoadInfo.STATUE_DOWNLOAD_COMPLETE + ""}, null, null, null);
+//	}
 }
