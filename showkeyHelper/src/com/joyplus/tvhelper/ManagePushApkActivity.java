@@ -214,7 +214,9 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 						}
 						dbService.deleteApkInfo(info);
 						iterator.remove();  
-	             }  
+	             }else{
+	            	 info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_NOMAL);
+	             }
 	               
 	         }  
 			adpter.notifyDataSetChanged();

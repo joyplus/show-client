@@ -2,6 +2,7 @@ package com.joyplus.tvhelper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -30,6 +31,8 @@ import android.widget.TextView;
 
 import com.joyplus.tvhelper.adapter.ApkAdapter;
 import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
+import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.ui.RoundProgressBar;
 import com.joyplus.tvhelper.utils.PackageUtils;
 
@@ -45,7 +48,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 	private LinearLayout layout1, layout2;
 
 	private TextView notice_key, notice_action;
-	private boolean isEdite = false;
+//	private boolean isEdite = false;
 
 	private Handler myHandler = new Handler() {
 
@@ -200,16 +203,26 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 			finish();
 			break;
 		case R.id.del_Button:
-			for(int i=0; i<apks.size(); i++){
-				ApkInfo info = apks.get(i);
-				if(info.getStatue() == 2){
-					File f = new File(info.getFilePath());
-					if(f.exists()){
-						f.delete();
-					}
-					apks.remove(info);
-				}
-			}
+			
+			Iterator<ApkInfo> iterator = null;
+			iterator = apks.iterator();  
+	         while(iterator.hasNext()) {  
+	        	 ApkInfo info = iterator.next();  
+	             if(info.getStatue()==2) { 
+		            	File f = new File(info.getFilePath());
+						if(f.exists()){
+							f.delete();
+						}
+						iterator.remove();  
+	             }else{
+	            	 info.setStatue(0);
+	             }
+	               
+	         }
+	        layout1.setVisibility(View.VISIBLE);
+			layout2.setVisibility(View.GONE);
+			notice_key.setText("\t返回");
+			notice_action.setText("\t离开");
 			adapter.notifyDataSetChanged();
 			break;
 		case R.id.edit_Button:
@@ -220,7 +233,6 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 			for (int i = 0; i < apks.size(); i++) {
 				apks.get(i).setStatue(1);
 			}
-			isEdite = true;
 			adapter.notifyDataSetChanged();
 			cancleButton.requestFocus();
 			break;
@@ -233,7 +245,6 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 				apks.get(i).setStatue(0);
 			}
 			adapter.notifyDataSetChanged();
-			isEdite = false;
 			break;
 		}
 	}
@@ -242,18 +253,21 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		if (isEdite) {
-			if (apks.get(position).getStatue() == 1) {
-				apks.get(position).setStatue(2);
-			} else {
-				apks.get(position).setStatue(1);
-			}
-			adapter.notifyDataSetChanged();
-		} else {
-			// 。。。
+		switch (apks.get(position).getStatue()) {
+		case 0:
 			Uri packageURI =Uri.parse("file://"+apks.get(position).getFilePath());
 			Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, packageURI);
 			startActivity(intent);
+			break;
+		case 1:
+			apks.get(position).setStatue(2);
+			break;
+		case 2:
+			apks.get(position).setStatue(1);
+			break;
+
+		default:
+			break;
 		}
 	}
 

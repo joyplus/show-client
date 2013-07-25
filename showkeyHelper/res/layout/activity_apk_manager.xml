@@ -26,7 +26,7 @@
 	                    android:layout_height="fill_parent"
 	                    android:layout_weight="1"
 	                    android:gravity="center"
-	                    android:text="软件安装"
+	                    android:text="安装包管理"
 	                    android:textColor="#f0f0f0"
 	                    android:background="@color/app_mannage_title_background"
 	                    android:textSize="30sp"/>

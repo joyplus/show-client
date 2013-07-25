@@ -296,10 +296,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				iterator = playinfos.iterator();  
 		         while(iterator.hasNext()) {  
 		        	 MoviePlayHistoryInfo info = iterator.next();  
-		             if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED) {  
+		             if(info.getEdite_state()==PushedMovieDownLoadInfo.EDITE_STATUE_SELETED) {  
 							dbService.deleteMoviePlayHistory(info);
 							iterator.remove();  
-		             }  
+		             }else{
+		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+		             }
 		               
 		         }
 				break;
@@ -314,6 +316,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 							}
 							dbService.deleteMovieDownLoadInfo(info);
 							iterator_1.remove();  
+		             }else{
+		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
 		             }  
 		               
 		         }
@@ -329,7 +333,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 							}
 							dbService.deleteMovieDownLoadInfo(info);
 							iterator_2.remove();  
-		             }  
+		             } else{
+		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+		             } 
 		               
 		         }
 				break;
