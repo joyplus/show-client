@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +19,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -50,6 +53,10 @@ import com.lenovo.lsf.installer.PackageInstaller;
 public class FayeService extends Service implements FayeListener ,Observer, DownLoadListner{
 
 	private static final String TAG = "FayeService";
+	
+	public static boolean isSystemApp;
+	
+	private ExecutorService pool = Executors.newFixedThreadPool(5); 
 	
 	private static File APK_PATH = null;
 	private static File MOVIE_PATH = null;
@@ -244,6 +251,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		userPushApkInfos = services.queryUserApkDownLoadInfo();
 		notuserPushedApkInfos = services.queryNotUserApkDownLoadInfo();
 		movieDownLoadInfos = services.queryMovieDownLoadInfos();
+		isSystemApp = isSystemApp();
 		Log.d(TAG, channel);
 		URI url = URI.create(Global.serverUrl+"/uploadApk");
 		Log.d(TAG, "Server----->" + Global.serverUrl+"/uploadApk");
@@ -283,7 +291,109 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		// TODO Auto-generated method stub
 		myClient.connectToServer(null); 
 		isNeedReconnect = true;
-		new Thread(new Runnable() {	
+		getLostUserPushApk();
+		getLostUserPushMovie();
+		getNotUsrPushApk();
+		return super.onStartCommand(intent, START_STICKY, startId); 
+	}
+	
+	private void getNotUsrPushApk(){
+//		pool.execute(new Runnable() {	
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+////				infolist = services.GetPushedApklist(infolist);
+//				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
+//				String url = Global.serverUrl + "/pushMsgHistories?app_key=" + Global.app_key 
+//						+ "&mac_address=" + Utils.getMacAdd() 
+//						+ "&page_num=" + 1
+//						+ "&page_size=" + 50;
+//				Log.d(TAG, url);
+//				String str = HttpTools.get(FayeService.this, url);
+//				Log.d(TAG, "pushMsgHistories response-->" + str);
+//				try {
+//					JSONArray array = new JSONArray(str);
+//					Log.d(TAG, "miss length ---------------------------->" + array.length());
+//					for(int i=0; i<array.length(); i++){
+//						JSONObject item = array.getJSONObject(i);
+//						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+//						String file_url = item.getString("file_url");
+//						info.setPush_id(item.getInt("id"));
+//						info.setName(item.getString("app_name"));
+//						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+//						String fileName = Utils.getFileNameforUrl(file_url);
+//						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+//						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
+//						info.setTast(task);
+//						downloadManager.addTast(task);
+//						info.set_id((int) services.insertApkInfo(info));
+//						userPushApkInfos.add(info);
+//						updateHistory(info.getPush_id());
+//						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+//					}
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				if(currentUserApkInfo==null){
+//					startNextUserApkDownLoad(); 
+//				}
+//			}
+//		});
+	}
+	
+	private void getLostUserPushMovie(){
+		pool.execute(new Runnable() {	
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+//				infolist = services.GetPushedApklist(infolist);
+				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
+				String url = Global.serverUrl + "/pushVodHistories?app_key=" + Global.app_key 
+						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&page_num=" + 1
+						+ "&page_size=" + 50;
+				Log.d(TAG, url);
+				String str = HttpTools.get(FayeService.this, url);
+				Log.d(TAG, "pushMsgHistories response-->" + str);
+				try {
+					JSONArray array = new JSONArray(str);
+					Log.d(TAG, "miss length ---------------------------->" + array.length());
+					for(int i=0; i<array.length(); i++){
+						JSONObject item = array.getJSONObject(i);
+						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
+						String file_url = getUrl(item.getString("file_url"));
+						if(file_url.contains(".m3u8")){
+							Log.e(TAG, "file_url is m3u8 file " + file_url);
+							continue;
+						}
+						info.setPush_id(item.getInt("id"));
+						info.setName(item.getString("name"));
+						String fileName = Utils.getFileNameforUrl(file_url);
+						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+						DownloadTask task = new DownloadTask(file_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
+						info.setFile_path(MOVIE_PATH.getAbsolutePath() + File.separator + fileName);
+						info.setTast(task);
+						downloadManager.addTast(task);
+						info.set_id((int) services.insertMovieDownLoadInfo(info));
+						movieDownLoadInfos.add(info);
+						updateMovieHistory(info.getPush_id());
+						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(currentUserApkInfo==null){
+					startNextUserApkDownLoad(); 
+				}
+			}
+		});
+	}
+
+	private void getLostUserPushApk(){
+		pool.execute(new Runnable() {	
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
@@ -325,10 +435,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					startNextUserApkDownLoad(); 
 				}
 			}
-		}).start();
-		return super.onStartCommand(intent, START_STICKY, startId); 
+		});
 	}
-
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
@@ -528,7 +637,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	}
 	
 	private void updateHistory(final int id){
-		new Thread(new Runnable() {
+		pool.execute(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -540,11 +649,12 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				String str = HttpTools.get(FayeService.this, url);
 				Log.d(TAG, "updateHistory response-->" + str);
 			}
-		}).start();
+		});
 	}
 	
 	private void updateMovieHistory(final int id){
-		new Thread(new Runnable() {
+		
+		pool.execute(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -556,7 +666,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				String str = HttpTools.get(FayeService.this, url);
 				Log.d(TAG, "updateHistory response-->" + str);
 			}
-		}).start();
+		});
 	}
 
 	@Override
@@ -701,11 +811,16 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				currentUserApkInfo.setIcon(info.getDrawble());
 				currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
 				services.updateApkInfo(currentUserApkInfo);
-				packageInstaller.instatll(currentUserApkInfo.getFile_path(), info.getPackageName());
 				//通知ui
 				Intent downLoadCompletIntent = new Intent(Global.ACTION_APK_DOWNLOAD_COMPLETE);
 			    downLoadCompletIntent.putExtra("_id", currentUserApkInfo.get_id());
 			    sendBroadcast(downLoadCompletIntent);
+				if(isSystemApp){
+					packageInstaller.instatll(currentUserApkInfo.getFile_path(), info.getPackageName());
+				}else{
+					currentUserApkInfo = null;
+					startNextUserApkDownLoad();
+				}
 			}else{
 				Log.d(TAG, "unInstall apk info get fiale load next");
 				currentUserApkInfo = null;
@@ -746,6 +861,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the complete");
 	}
 	
+	private boolean isSystemApp(){
+		if ((getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
 	
 //	mp4{m}http://hot.vrs.sohu.com/ipad1244506_4585881117442_4455827.m3u8?plat=0{mType}hd2{m}http://hot.vrs.sohu.com/ipad1244507_4585881117442_4455828.m3u8?plat=0 
 

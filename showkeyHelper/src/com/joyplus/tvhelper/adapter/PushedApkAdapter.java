@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
+import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.PackageUtils;
 
 public class PushedApkAdapter extends BaseAdapter {
@@ -81,7 +82,12 @@ public class PushedApkAdapter extends BaseAdapter {
 		holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 		int progress = 0;
 		if(info.getTast().getSize()>0){
-			progress = (int) ((info.getTast().getCurLength()*80d) / info.getTast().getSize());
+			if(FayeService.isSystemApp){
+				progress = (int) ((info.getTast().getCurLength()*80d) / info.getTast().getSize());
+			}else{
+				progress = (int) ((info.getTast().getCurLength()*100d) / info.getTast().getSize());
+			}
+			
 		}
 		switch (info.getDownload_state()) {
 		case PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
@@ -106,9 +112,14 @@ public class PushedApkAdapter extends BaseAdapter {
 			holder.progressText.setText(progress+"%");
 			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE://下载完成
-			holder.statue.setText("正在安装");
+			if(FayeService.isSystemApp){
+				holder.statue.setText("正在安装");
+			}else{
+				holder.statue.setText("下载完成");
+			}
+			
 			holder.progress.setProgress(progress);
-//				holder.progress.setSecondaryProgress(info.getProgress());
+//			holder.progress.setSecondaryProgress(info.getProgress());
 //			holder.progress.setSecondaryProgress(0);
 			holder.progressLayout.setTag(info.get_id());
 			holder.progressText.setText(progress+"%");

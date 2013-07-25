@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -82,7 +83,12 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				layout2.setVisibility(View.GONE);
 				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
-				updateInstallProgress(_id);
+				if(FayeService.isSystemApp){
+					updateInstallProgress(_id);
+				}else{
+					
+				}
+				
 			}else if(Global.ACTION_APK_DOWNLOAD_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
 				if(FayeService.userPushApkInfos.size() == 0){
@@ -264,6 +270,15 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				Intent intentpause = new Intent(Global.ACTION_APK_DOWNLOAD_CONTINUE);
 				sendBroadcast(intentpause);
 				adpter.notifyDataSetChanged();
+				break;
+			case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE:
+				if(info.getPackageName()!=null){
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+			     	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			     	//filePath为文件路径
+			     	intent.setDataAndType(Uri.parse("file://"+info.getFile_path()), info.getPackageName());
+			     	startActivity(intent);
+				}
 				break;
 			}
 			break;

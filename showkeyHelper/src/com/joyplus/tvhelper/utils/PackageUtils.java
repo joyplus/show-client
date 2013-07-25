@@ -137,7 +137,7 @@ public class PackageUtils {
 		for (int i = 0; i < paklist.size(); i++) { 
 			PackageInfo pak = (PackageInfo) paklist.get(i); 
 			//判断是否为非系统预装的应用程�?
-			if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) { 
+			if ((pak.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) { 
 			// customs applications 
 				ApkInfo apkInfo = new ApkInfo();
 				apkInfo.setAppName(pManager.getApplicationLabel(pak.applicationInfo).toString());
