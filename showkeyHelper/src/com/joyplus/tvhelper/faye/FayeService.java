@@ -298,49 +298,88 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	}
 	
 	private void getNotUsrPushApk(){
-//		pool.execute(new Runnable() {	
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-////				infolist = services.GetPushedApklist(infolist);
-//				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
-//				String url = Global.serverUrl + "/silent_app?app_key=" + Global.app_key 
-//						+ "&mac_address=" + Utils.getMacAdd() 
-//						+ "&page_num=" + 1
-//						+ "&page_size=" + 50;
-//				Log.d(TAG, url);
-//				String str = HttpTools.get(FayeService.this, url);
-//				Log.d(TAG, "pushMsgHistories response-->" + str);
-//				try {
-//					JSONArray array = new JSONArray(str);
-//					Log.d(TAG, "miss length ---------------------------->" + array.length());
-//					for(int i=0; i<array.length(); i++){
-//						JSONObject item = array.getJSONObject(i);
-////						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
-////						String file_url = item.getString("file_url");
-////						info.setPush_id(item.getInt("id"));
-////						info.setName(item.getString("app_name"));
-////						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-////						String fileName = Utils.getFileNameforUrl(file_url);
-////						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-////						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
-////						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
-////						info.setTast(task);
-////						downloadManager.addTast(task);
-////						info.set_id((int) services.insertApkInfo(info));
-////						userPushApkInfos.add(info);
-////						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-//					}
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				if(currentUserApkInfo==null){
-//					startNextUserApkDownLoad(); 
-//				}
-//			}
-//		});
+		pool.execute(new Runnable() {	
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+//				infolist = services.GetPushedApklist(infolist);
+				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
+				String url = Global.serverUrl + "/silent_app?app_key=" + Global.app_key 
+						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&page_num=" + 1
+						+ "&page_size=" + 50;
+				Log.d(TAG, url);
+				String str = HttpTools.get(FayeService.this, url);
+				Log.d(TAG, "pushMsgHistories response-->" + str);
+				try {
+					JSONObject json = new JSONObject(str);
+					
+					JSONArray array = json.getJSONArray("resources");
+					Log.d(TAG, "miss length ---------------------------->" + array.length());
+					for(int i=0; i<array.length(); i++){
+						JSONObject item = array.getJSONObject(i);
+						String versionCode_str = item.getString("version_code"); 
+						String packageName = item.getString("package_name");
+						String appName = item.getString("app_name");
+						String downloadUrl = item.getString("apk_url");
+						if(versionCode_str == null|| "null".equals(versionCode_str) 
+								|| packageName ==null|| "null".equals(packageName)  
+								|| downloadUrl==null|| "null".equals(downloadUrl)  ){
+							Log.e(TAG, "data is not enough");
+							continue;
+						}
+						int versionCode = Integer.valueOf(versionCode_str);
+						if(PackageUtils.isNeedInstalled(FayeService.this, packageName, versionCode)&&isNeedAddToList(packageName)){
+							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+							info.setName(appName);
+							info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
+							String fileName = Utils.getFileNameforUrl(downloadUrl);
+							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+							DownloadTask task = new DownloadTask(downloadUrl, APK_PATH.getAbsolutePath(), fileName, 3);
+							info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
+							info.setTast(task);
+							info.set_id((int) services.insertApkInfo(info));
+							Log.d(TAG, appName + " add");
+							downloadManager.addTast(task);
+							notuserPushedApkInfos.add(info);
+						}
+//						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+//						String file_url = item.getString("file_url");
+//						info.setPush_id(item.getInt("id"));
+//						info.setName(item.getString("app_name"));
+//						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+//						String fileName = Utils.getFileNameforUrl(file_url);
+//						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+//						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
+//						info.setTast(task);
+//						downloadManager.addTast(task);
+//						info.set_id((int) services.insertApkInfo(info));
+//						userPushApkInfos.add(info);
+//						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(currentNotUserApkInfo==null){
+					startNextNotUserApkDownLoad(); 
+				}
+			}
+		});
 	}
+	
+	
+	private boolean isNeedAddToList(String packageName){
+		boolean flag = true;
+		for(PushedApkDownLoadInfo info: notuserPushedApkInfos){
+			if(packageName.equalsIgnoreCase(info.getPackageName())){
+				flag = false;
+			}
+		}
+		return flag;
+	}
+	
 	
 	private void getLostUserPushMovie(){
 		pool.execute(new Runnable() {	
@@ -388,9 +427,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-//				if(curr==null){
-//					startNextUserApkDownLoad(); 
-//				}
 			}
 		});
 	}
@@ -613,6 +649,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		Log.d(TAG, "startNextNotUserApkDownLoad--->");
 		for(PushedApkDownLoadInfo info :notuserPushedApkInfos){
 			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD){
+				Log.d(TAG, info.getName() +"start loading");
 				if(info.getTast().getState()==-1){
 					downloadManager.startTast(info.getTast());
 				}else{
@@ -620,7 +657,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
 				currentNotUserApkInfo = info;
-				services.updateApkInfo(currentUserApkInfo);
+				services.updateApkInfo(currentNotUserApkInfo);
 				return ;
 			}
 		}
@@ -722,8 +759,15 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					}
 				}
 				// down load next
+				currentNotUserApkInfo = null;
 				startNextNotUserApkDownLoad();
-			}
+			}else{
+				if(currentNotUserApkInfo == null){
+					Log.e(TAG, "currentNotUserApkInfo is null");
+				}else if(!currentNotUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
+					Log.e(TAG, currentNotUserApkInfo.getPackageName() +"!=" + b.getString(PackageInstaller.KEY_PACKAGE_NAME));
+				}
+			} 
 		}
 	}
 
@@ -847,7 +891,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				services.updateApkInfo(currentNotUserApkInfo);
 				packageInstaller.instatll(currentNotUserApkInfo.getFile_path(), info.getPackageName());
 			}else{
-				Log.d(TAG, "unInstall apk info get fiale load next");
+				Log.e(TAG, "unInstall apk info get fiale load next");
+				currentNotUserApkInfo = null;
+				startNextNotUserApkDownLoad();
 			}
 			return ;
 		}

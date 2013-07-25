@@ -164,11 +164,10 @@ public class DBServices {
         	info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
         	info.setTast(dmg.findTaksByUUID(download_uuid));
         	if(download_statue == PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE||download_statue == PushedApkDownLoadInfo.STATUE_INSTALL_FAILE){
-        		ApkInfo apkinfo = PackageUtils.getUnInstalledApkInfo(context, file_path);
-        		if(info!=null){
-        			info.setPackageName(apkinfo.getPackageName());
-            		info.setIcon(apkinfo.getDrawble());
-        		}
+        		//。。。
+        		deleteApkInfo(info);
+        	}else{
+        		info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
         	}
         	taskes.add(info);
         }
@@ -322,7 +321,7 @@ public class DBServices {
 			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
 	        		DBConstant.KEY_PLAY_INFO_PUSH_URL + " = ? ", new String[] {
 	        		info.getLocal_url()+ ""
-	                });
+	                }); 
 		}
        
         db.close();

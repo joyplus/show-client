@@ -269,6 +269,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 		default:
 			break;
 		}
+		adapter.notifyDataSetChanged();
 	}
 
 	private void getSize() {
