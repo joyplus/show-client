@@ -16,6 +16,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -40,11 +41,11 @@ public class AppRecommendActivity extends Activity {
 	
 	public static final String TAG = "AppRecommendActivity";
 	
-	private List<AppRecommendInfo> list = new ArrayList<AppRecommendInfo>();
+//	private List<AppRecommendInfo> list = new ArrayList<AppRecommendInfo>();
 	
-	private int[] egAppIds = {R.drawable.app_bg_1,R.drawable.app_bg_2,R.drawable.app_bg_3,
-							   R.drawable.app_bg_4,R.drawable.app_bg_5,R.drawable.app_bg_6,
-			                   R.drawable.app_bg_7,R.drawable.app_bg_8};
+//	private int[] egAppIds = {R.drawable.app_bg_1,R.drawable.app_bg_2,R.drawable.app_bg_3,
+//							   R.drawable.app_bg_4,R.drawable.app_bg_5,R.drawable.app_bg_6,
+//			                   R.drawable.app_bg_7,R.drawable.app_bg_8};
 	
 	private GridView gridView;
 	private TextView downloadTv;
@@ -59,6 +60,8 @@ public class AppRecommendActivity extends Activity {
 	private MyApp app;
 	private AQuery aq;
 	
+	private FrameLayout flGv;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -71,26 +74,15 @@ public class AppRecommendActivity extends Activity {
 		gridView = (GridView) findViewById(R.id.gv);
 		downloadTv = (TextView) findViewById(R.id.tv_download_bg);
 		
-		for(int i=0,j=0;i< 25;i++,j++) {
-			
-			AppRecommendInfo info = new AppRecommendInfo();
-			
-			if(j >=egAppIds.length){
-				
-				j = 0;
-			}
-			info.setIconSrcId(egAppIds[j]);
-			list.add(info);
-		}
-		
 		apkLists = PackageUtils.getInstalledApkInfos(this);
 		
-		adapter = new AppRecommendAdapter(this, list);
-		gridView.setAdapter(adapter);
-		
 		gridView.setNextFocusUpId(R.id.bt_back);
+		flGv = (FrameLayout) findViewById(R.id.fl_gv);
 		
 		initListener();
+		
+		adapter = new AppRecommendAdapter(this,aq, serviceList);
+		gridView.setAdapter(adapter);
 		
 		getAppRecommendServiceData();
 		
@@ -142,6 +134,8 @@ public class AppRecommendActivity extends Activity {
 				}
 			}
 		}
+		
+		adapter.notifyDataSetChanged();
 	}
 	
 	private void initListener(){
@@ -161,10 +155,10 @@ public class AppRecommendActivity extends Activity {
 					sparseArrayView.put(position, view);
 				}
 				
-				AppRecommendInfo info = list.get(position);
+				AppRecommendInfo info = serviceList.get(position);
 				
 				
-				setStartDownLoadVisible(view, true,info.isInstalled());
+//				setStartDownLoadVisible(view, true,info.isInstalled());
 				
 				preSelectedIndex = position;
 			}
@@ -189,7 +183,7 @@ public class AppRecommendActivity extends Activity {
 						View view = sparseArrayView.get(preSelectedIndex);
 						if(view != null) {
 							
-							setStartDownLoadVisible(v, false,false);
+//							setStartDownLoadVisible(v, false,false);
 						}
 					}
 					
@@ -204,27 +198,31 @@ public class AppRecommendActivity extends Activity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				
-				AppRecommendInfo info = list.get(position);
+				AppRecommendInfo info = serviceList.get(position);
 				if(!info.isInstalled()){
 					
 					//进行下载
 					ApkDownloadInfoParcel infoParcel = new ApkDownloadInfoParcel();
-//					infoParcel.setApk_url(info.getApk_url());
-//					infoParcel.setApp_name(info.getApp_name());
-//					infoParcel.setIcon_url(info.getIcon_url());
-//					infoParcel.setMd5(info.getMd5());
-//					infoParcel.setVersion(info.getVersion());
-//					infoParcel.setPackage_name(info.getPackage_name());
+					infoParcel.setApk_url(info.getApk_url());
+					infoParcel.setApp_name(info.getApp_name());
+					infoParcel.setIcon_url(info.getIcon_url());
+					infoParcel.setMd5(info.getMd5());
+					infoParcel.setVersion(info.getVersion_name());
+					infoParcel.setPackage_name(info.getPackage_name());
 					
-					infoParcel.setApk_url("http://upgrade.joyplus.tv/joyplustv/joyplustv.apk");
-					infoParcel.setApp_name("悦视频");
-					infoParcel.setIcon_url("");
-					infoParcel.setMd5("");
-					infoParcel.setVersion("");
-					infoParcel.setPackage_name("");
+//					infoParcel.setApk_url("http://upgrade.joyplus.tv/joyplustv/joyplustv.apk");
+//					infoParcel.setApp_name("悦视频");
+//					infoParcel.setIcon_url("");
+//					infoParcel.setMd5("");
+//					infoParcel.setVersion("");
+//					infoParcel.setPackage_name("");
 					Intent downloadApkIntent  = new Intent(Global.ACTION_NEW_APK_DWONLOAD);
 					downloadApkIntent.putExtra("new_apk_download", infoParcel);
 					sendBroadcast(downloadApkIntent);
+					startActivity(new Intent(AppRecommendActivity.this,ManagePushApkActivity.class));
+				}else {
+					
+					Utils.showToast(AppRecommendActivity.this, "已经安装");
 				}
 			}
 		});
@@ -236,23 +234,30 @@ public class AppRecommendActivity extends Activity {
 			
 			return;
 		}
-		
-		if(isInstall){
-			
-			downloadTv.setText("已安装");
-		}else{
-			
-			downloadTv.setText("立即下载");
-		}
-		
-		if(isVisible) {
-			
-			downloadTv.layout((int)v.getX(), (int)(v.getY()+v.getHeight()/5 * 4), (int)(v.getX() + v.getWidth()), (int)(v.getY() + v.getHeight()));
-			downloadTv.setVisibility(View.VISIBLE);
-		}else {
-			
-			downloadTv.setVisibility(View.INVISIBLE);
-		}
+//		
+//		Log.i(TAG, "x:" + v.getX() + " y:" + v.getY());
+//		
+//		Log.i(TAG, "isVisible--->x:" + v.getX() + " y:" + v.getY()
+//				+ " w:" + v.getWidth() + " h:"+ v.getHeight());
+////		downloadTv.setVisibility(View.VISIBLE);
+//		downloadTv.postInvalidate();
+//		downloadTv.layout((int)v.getX(), (int)(v.getY()+v.getHeight()/5 * 4), (int)(v.getX() + v.getWidth()), (int)(v.getY() + v.getHeight()));
+//
+//
+//		downloadTv.forceLayout();
+//		downloadTv.requestLayout();
+//
+//		
+//		Log.i(TAG, "downloadTv--->x:" + downloadTv.getX() + " y:" + downloadTv.getY()
+//				+ " w:" + downloadTv.getWidth() + " h:"+ downloadTv.getHeight());
+//		
+////		if(isInstall){
+////			
+////			downloadTv.setText("已安装");
+////		}else{
+////			
+////			downloadTv.setText("立即下载");
+////		}
 	}
 	
 	protected void getServiceData(String url, String interfaceName) {
@@ -305,9 +310,11 @@ public class AppRecommendActivity extends Activity {
 					info.setApp_name(appRecommendView.resources[i].app_name);
 					
 					info.setIcon_url(appRecommendView.resources[i].icon_url);
+					info.setPic_url(appRecommendView.resources[i].pic_url);
 					info.setMd5(appRecommendView.resources[i].md5);
 					info.setPackage_name(appRecommendView.resources[i].package_name);
-					info.setVersion(appRecommendView.resources[i].version);
+					info.setVersion_name(appRecommendView.resources[i].version_name);
+					info.setVersion_code(appRecommendView.resources[i].version_code);
 					info.setApk_size(appRecommendView.resources[i].apk_size);
 					Log.d(TAG, "info--->" + info.toString());
 					serviceList.add(info);

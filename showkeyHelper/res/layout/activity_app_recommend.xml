@@ -60,6 +60,7 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/fl_gv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_cnter" >
@@ -79,7 +80,8 @@
             android:id="@+id/tv_download_bg"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/start_download"/>
+            android:background="@drawable/start_download"
+            android:visibility="invisible"/>
     </FrameLayout>
 
 </RelativeLayout>

@@ -89,20 +89,25 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 				R.drawable.ic_launcher);// 默认的图
 
 		View[] views = {viewHolder.newestTv,viewHolder.updateTv,viewHolder.rlLayout};
-		switch (info.getStatus()) {
-		case 0:
-			setStatusVisible(views, 0);
-			break;
-		case 1:
-			setStatusVisible(views, 1);
-			break;
-		case 2:
+		
+		if(info.isInstall()){
+			
 			setStatusVisible(views, 2);
-			break;
-
-		default:
-			break;
+		}else {
+			
+			switch (info.getStatus()) {
+			case 0:
+				setStatusVisible(views, 0);
+				break;
+			case 1:
+				setStatusVisible(views, 1);
+				break;
+				
+			default:
+				break;
+			}
 		}
+
 		return convertView;
 	}
 	

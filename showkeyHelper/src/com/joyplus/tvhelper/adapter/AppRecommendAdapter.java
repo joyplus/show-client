@@ -10,6 +10,7 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.androidquery.AQuery;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.AppRecommendInfo;
 
@@ -18,10 +19,13 @@ public class AppRecommendAdapter extends BaseAdapter {
 	private Context mContext;
 	private List<AppRecommendInfo> mList;
 	
-	public AppRecommendAdapter(Context context,List<AppRecommendInfo> list){
+	private AQuery aq;
+	
+	public AppRecommendAdapter(Context context,AQuery aq,List<AppRecommendInfo> list){
 		
 		this.mContext = context;
 		this.mList = list;
+		this.aq = aq;
 	}
 
 	@Override
@@ -58,12 +62,14 @@ public class AppRecommendAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		viewHolder.iv.setBackgroundResource(mList.get(position).getIconSrcId());
+//		viewHolder.iv.setBackgroundResource(mList.get(position).getIconSrcId());
+		aq.id(viewHolder.iv).image(mList.get(position).getPic_url(), true, true, 0,
+				0);// 默认的图
 		
 		AbsListView.LayoutParams layoutParams = new AbsListView.
-				LayoutParams(parent.getWidth()/4 -1*(int)mContext.getResources().getDimension(R.dimen.item_grid_padding),
-						parent.getHeight()/2 - 1 * (int)mContext.getResources().getDimension(R.dimen.item_grid_padding));
+				LayoutParams(parent.getWidth()/4,parent.getHeight()/2-2);
 		convertView.setLayoutParams(layoutParams);
+		convertView.setPadding(4, 4, 4, 4);
 		return convertView;
 	}
 	

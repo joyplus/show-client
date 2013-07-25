@@ -133,6 +133,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				 if(packageName.equals(serviceList.get(i).getPackage_name())){
 					 
 					 list.add(serviceList.get(i));
+					 serviceList.get(i).setInstall(true);
 					 setTvLivingStaus();
 					 adapter.notifyDataSetChanged();
 					 return;
@@ -162,51 +163,9 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				if(list != null && list.size() > 0){
 					
 					TvLiveInfo info = list.get(position);
-					switch (info.getStatus()) {
-					case 0:
+					Log.i(TAG, "setOnItemClickListener---->" + info.isInstall());
+					if(!info.isInstall()){
 						
-						break;
-					case 1://点击更新
-						List<File> dstListFile = info.getDstFileLists();
-						List<File> srcListFile = info.getSrcFileLists();
-						
-						if(dstListFile.size() == srcListFile.size()){
-							
-							for(int i=0;i<dstListFile.size();i++){
-								
-								File file = dstListFile.get(i);
-								if(file != null && srcListFile.get(i)!= null
-										&& srcListFile.get(i).exists()){
-									
-									File parentFile = file.getParentFile();
-									if(parentFile != null){
-										
-										if(!parentFile.exists()){
-											
-											parentFile.mkdirs();
-										}
-									}
-									
-									if(!file.exists()){
-										
-										try {
-											file.createNewFile();
-											
-											Utils.copyFile(srcListFile.get(i),file );
-											info.setStatus(TvLiveInfo.NEWS);
-											adapter.notifyDataSetChanged();
-										} catch (IOException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
-									}
-								}
-							}
-						}
-						
-
-						break;
-					case 2://进入下载
 						ApkDownloadInfoParcel infoParcel = new ApkDownloadInfoParcel();
 						infoParcel.setApk_url(info.getApk_url());
 						infoParcel.setApp_name(info.getApp_name());
@@ -217,10 +176,57 @@ public class TvLiveSrcUpdateActivity extends Activity {
 						Intent downloadApkIntent  = new Intent(Global.ACTION_NEW_APK_DWONLOAD);
 						downloadApkIntent.putExtra("new_apk_download", infoParcel);
 						sendBroadcast(downloadApkIntent);
-						break;
+						startActivity(new Intent(TvLiveSrcUpdateActivity.this,ManagePushApkActivity.class));
+					} else {
+						
+						switch (info.getStatus()) {
+						case 0:
+							
+							break;
+						case 1://点击更新
+							List<File> dstListFile = info.getDstFileLists();
+							List<File> srcListFile = info.getSrcFileLists();
+							
+							if(dstListFile.size() == srcListFile.size()){
+								
+								for(int i=0;i<dstListFile.size();i++){
+									
+									File file = dstListFile.get(i);
+									if(file != null && srcListFile.get(i)!= null
+											&& srcListFile.get(i).exists()){
+										
+										File parentFile = file.getParentFile();
+										if(parentFile != null){
+											
+											if(!parentFile.exists()){
+												
+												parentFile.mkdirs();
+											}
+										}
+										
+										if(!file.exists()){
+											
+											try {
+												file.createNewFile();
+												
+												Utils.copyFile(srcListFile.get(i),file );
+												info.setStatus(TvLiveInfo.NEWS);
+												adapter.notifyDataSetChanged();
+											} catch (IOException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+										}
+									}
+								}
+							}
+							
 
-					default:
-						break;
+							break;
+
+						default:
+							break;
+						}
 					}
 				}
 			}
@@ -251,7 +257,11 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				tvLiveInfo.setSrcFileLists(srcFileList);//保存临时文件
 				if (srcFileList.size() < fileNames.length) {
 
-					tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+					if(!tvLiveInfo.isInstall()){
+						
+						tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+					}
+					
 				} else {
 
 					// 获取fileList中所有文件大小总和
@@ -278,14 +288,23 @@ public class TvLiveSrcUpdateActivity extends Activity {
 								.getTotalSize4ListFiles(dstFileList);
 						if (listFileTotalSize > fileTotalSize) {
 
-							tvLiveInfo.setStatus(TvLiveInfo.UPDATE);
+							if(!tvLiveInfo.isInstall()){
+								
+								tvLiveInfo.setStatus(TvLiveInfo.UPDATE);
+							}
 						} else {
 
-							tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+							if(!tvLiveInfo.isInstall()){
+								
+								tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+							}
 						}
 					} else {
 
-						tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+						if(!tvLiveInfo.isInstall()){
+							
+							tvLiveInfo.setStatus(TvLiveInfo.NEWS);
+						}
 					}
 				}
 			}
@@ -331,8 +350,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					}
 				}
 				if(!isSame && !tvLiveInfo.isIs_specific_app()){
-					
-					tvLiveInfo.setStatus(TvLiveInfo.DOWNLOAD);
+				
 					list.add(tvLiveInfo);
 					
 					if(tvLiveInfo.getFile_urls() != null){
@@ -423,14 +441,14 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					}
 					
 					info.setIcon_url(tvLiveViews.resources[i].icon_url);
-					if(tvLiveViews.resources[i].is_specific_app.equals("1")){
+					if(tvLiveViews.resources[i].is_specific_app.equals("0")){
 						info.setIs_specific_app(true);
-					}else if(tvLiveViews.resources[i].is_specific_app.equals("0")){
+					}else if(tvLiveViews.resources[i].is_specific_app.equals("1")){
 						info.setIs_specific_app(false);
 					}
 					info.setMd5(tvLiveViews.resources[i].md5);
 					info.setPackage_name(tvLiveViews.resources[i].package_name);
-					info.setVersion(tvLiveViews.resources[i].version);
+					info.setVersion(tvLiveViews.resources[i].version_name);
 					info.setStatus(TvLiveInfo.NEWS);
 					Log.d(TAG, "info--->" + info.toString());
 					serviceList.add(info);
