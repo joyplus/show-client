@@ -194,10 +194,15 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				Log.d(TAG, "info  --getDownload_state() >" + info.getDownload_state());
 				switch (info.getDownload_state()) {
 				case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+					downloadManager.pauseTask(info.getTast());
+					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
+					dbService.updateMovieDownLoadInfo(info);
+					adpter_downloading.notifyDataSetChanged();
+					break;
 				case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
 					downloadManager.pauseTask(info.getTast());
+					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 					dbService.updateMovieDownLoadInfo(info);
-					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
 					adpter_downloading.notifyDataSetChanged();
 					break;
 				case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:

@@ -304,7 +304,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				// TODO Auto-generated method stub
 ////				infolist = services.GetPushedApklist(infolist);
 //				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
-//				String url = Global.serverUrl + "/pushMsgHistories?app_key=" + Global.app_key 
+//				String url = Global.serverUrl + "/silent_app?app_key=" + Global.app_key 
 //						+ "&mac_address=" + Utils.getMacAdd() 
 //						+ "&page_num=" + 1
 //						+ "&page_size=" + 50;
@@ -316,21 +316,20 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					Log.d(TAG, "miss length ---------------------------->" + array.length());
 //					for(int i=0; i<array.length(); i++){
 //						JSONObject item = array.getJSONObject(i);
-//						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
-//						String file_url = item.getString("file_url");
-//						info.setPush_id(item.getInt("id"));
-//						info.setName(item.getString("app_name"));
-//						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-//						String fileName = Utils.getFileNameforUrl(file_url);
-//						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-//						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
-//						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
-//						info.setTast(task);
-//						downloadManager.addTast(task);
-//						info.set_id((int) services.insertApkInfo(info));
-//						userPushApkInfos.add(info);
-//						updateHistory(info.getPush_id());
-//						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+////						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+////						String file_url = item.getString("file_url");
+////						info.setPush_id(item.getInt("id"));
+////						info.setName(item.getString("app_name"));
+////						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+////						String fileName = Utils.getFileNameforUrl(file_url);
+////						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+////						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+////						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
+////						info.setTast(task);
+////						downloadManager.addTast(task);
+////						info.set_id((int) services.insertApkInfo(info));
+////						userPushApkInfos.add(info);
+////						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
 //					}
 //				} catch (JSONException e) {
 //					// TODO Auto-generated catch block
@@ -363,16 +362,20 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					for(int i=0; i<array.length(); i++){
 						JSONObject item = array.getJSONObject(i);
 						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
-						String file_url = getUrl(item.getString("file_url"));
-						if(file_url.contains(".m3u8")){
-							Log.e(TAG, "file_url is m3u8 file " + file_url);
+						String push_url = getUrl(item.getString("file_url"));
+						String downLoad_url = Utils.getRedirectUrl(push_url);
+						if(downLoad_url.contains(".m3u8")){
+							Log.e(TAG, "file_url is m3u8 file " + downLoad_url);
 							continue;
 						}
 						info.setPush_id(item.getInt("id"));
 						info.setName(item.getString("name"));
-						String fileName = Utils.getFileNameforUrl(file_url);
-						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-						DownloadTask task = new DownloadTask(file_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
+//						info.setName(item.getString("name"));
+						info.setPush_url(downLoad_url);
+						String fileName = Utils.getFileNameforUrl(downLoad_url);
+						info.setName(fileName);
+						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+						DownloadTask task = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
 						info.setFile_path(MOVIE_PATH.getAbsolutePath() + File.separator + fileName);
 						info.setTast(task);
 						downloadManager.addTast(task);
@@ -385,9 +388,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if(currentUserApkInfo==null){
-					startNextUserApkDownLoad(); 
-				}
+//				if(curr==null){
+//					startNextUserApkDownLoad(); 
+//				}
 			}
 		});
 	}
@@ -398,6 +401,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			public void run() {
 				// TODO Auto-generated method stub
 //				infolist = services.GetPushedApklist(infolist);
+//				07-25 14:53:32.444: D/FayeService(3890): http://tt.yue001.com:8080/pushMsgHistories?app_key=ijoyplus_android_0001bj&mac_address=0:9d:b:0:7d:b8&page_num=1&page_size=50
+
 				Log.d(TAG, "infolist size" + userPushApkInfos.size());
 				String url = Global.serverUrl + "/pushMsgHistories?app_key=" + Global.app_key 
 						+ "&mac_address=" + Utils.getMacAdd() 
@@ -517,7 +522,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					playDate.prod_id = data.getString("id");
+//					playDate.prod_id = data.getString("id");
+					int push_id = Integer.valueOf(data.getString("id"));
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 					playDate.prod_type = -11;
 //					playDate.prod_name = json.getString("prod_name");
@@ -540,6 +546,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					app.setmCurrentPlayDetailData(playDate);
 					app.set_ReturnProgramView(null);
 					startActivity(intent);
+					updateMovieHistory(push_id);
 					break;
 				case 6:
 					data = json.getJSONObject("body");
