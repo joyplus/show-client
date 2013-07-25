@@ -302,7 +302,7 @@ public class PackageUtils {
             String pi_packageName = pi.packageName;
 //            int pi_versionCode = pi.versionCode;
             //如果这个包名在系统已经安装过的应用中存在
-            if(packageName.endsWith(pi_packageName)&&versionCode>=pi.versionCode){
+            if(packageName.equalsIgnoreCase(pi_packageName)&&versionCode<=pi.versionCode){
             	return false;
 //               if(versionCode==pi_versionCode){
 //                   Log.i("test","已经安装，不用更新，可以卸载该应�?);
@@ -321,7 +321,7 @@ public class PackageUtils {
 			String pi_packageName = pi.packageName;
 //            int pi_versionCode = pi.versionCode;
 			//如果这个包名在系统已经安装过的应用中存在
-			if(packageName.endsWith(pi_packageName)){
+			if(packageName.equalsIgnoreCase(pi_packageName)){
 				return true;
 //               if(versionCode==pi_versionCode){
 //                   Log.i("test","已经安装，不用更新，可以卸载该应�?);

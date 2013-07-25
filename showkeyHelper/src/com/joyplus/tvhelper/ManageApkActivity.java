@@ -154,23 +154,24 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 				if (info != null) {
 					ApkInfo apkInfo = PackageUtils.getUnInstalledApkInfo(
 							ManageApkActivity.this, apk_path);
-					apkInfo.setVision(info.versionName);
-					apkInfo.setVersionCode(info.versionCode);
-					if (apkInfo != null) {
-						if (PackageUtils.isInstalled(ManageApkActivity.this,
-								info.packageName, info.versionCode)) {
-							apkInfo.setInstalled(true);
-							Log.d("TAG", apkInfo.getAppName()+"已安装");
-						} else {
-							apkInfo.setInstalled(false);
+					if(apkInfo!=null){ 
+						apkInfo.setVision(info.versionName);
+						apkInfo.setVersionCode(info.versionCode);
+						if (apkInfo != null) {
+							if (PackageUtils.isInstalled(ManageApkActivity.this,
+									info.packageName, info.versionCode)) {
+								apkInfo.setInstalled(true); 
+								Log.d("TAG", apkInfo.getAppName()+"已安装");
+							} else {
+								apkInfo.setInstalled(false);
+							}
+							apkInfo.setSize(file.length());
+							apkInfo.setFilePath(apk_path);
+							Message msg = myHandler.obtainMessage(0);
+							msg.obj = apkInfo;
+							myHandler.sendMessage(msg);
 						}
-						apkInfo.setSize(file.length());
-						apkInfo.setFilePath(apk_path);
-						Message msg = myHandler.obtainMessage(0);
-						msg.obj = apkInfo;
-						myHandler.sendMessage(msg);
 					}
-
 				}
 
 				// Log.d("TAG",

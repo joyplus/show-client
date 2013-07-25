@@ -332,6 +332,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						if(PackageUtils.isNeedInstalled(FayeService.this, packageName, versionCode)&&isNeedAddToList(packageName)){
 							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
 							info.setName(appName);
+							info.setPackageName(packageName);
 							info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
 							String fileName = Utils.getFileNameforUrl(downloadUrl);
 							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
@@ -650,6 +651,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		for(PushedApkDownLoadInfo info :notuserPushedApkInfos){
 			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD){
 				Log.d(TAG, info.getName() +"start loading");
+				Log.d(TAG, info.getName() + info.getDownload_state()); 
 				if(info.getTast().getState()==-1){
 					downloadManager.startTast(info.getTast());
 				}else{
@@ -657,7 +659,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 				info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
 				currentNotUserApkInfo = info;
-				services.updateApkInfo(currentNotUserApkInfo);
+				services.updateApkInfo(currentNotUserApkInfo); 
 				return ;
 			}
 		}
@@ -725,7 +727,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			if(currentUserApkInfo!=null && currentUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
 				Log.d(TAG, currentUserApkInfo.getName() + " install " +b.getString(PackageInstaller.KEY_RESULT_DESC));
 				if("INSTALL_SUCCEEDED".equals(b.getString(PackageInstaller.KEY_RESULT_DESC))){
-					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_FAILE);
+					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_SUCESS);
 					intent.putExtra("_id", currentUserApkInfo.get_id());
 					services.deleteApkInfo(currentUserApkInfo);
 					userPushApkInfos.remove(currentUserApkInfo);
@@ -748,8 +750,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				currentUserApkInfo = null;
 				// down load next
 				startNextUserApkDownLoad();
+				return;
 			}
-			
 			if(currentNotUserApkInfo!=null && currentNotUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
 				Log.d(TAG, currentNotUserApkInfo.getName() + " install "+b.getString(PackageInstaller.KEY_RESULT_DESC));
 				if(currentNotUserApkInfo!=null&&currentNotUserApkInfo.getFile_path()!=null){
@@ -758,15 +760,25 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						f.delete();
 					}
 				}
-				// down load next
+				notuserPushedApkInfos.remove(currentNotUserApkInfo);
 				currentNotUserApkInfo = null;
 				startNextNotUserApkDownLoad();
 			}else{
+				Log.e(TAG, "not start next");
 				if(currentNotUserApkInfo == null){
 					Log.e(TAG, "currentNotUserApkInfo is null");
 				}else if(!currentNotUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
 					Log.e(TAG, currentNotUserApkInfo.getPackageName() +"!=" + b.getString(PackageInstaller.KEY_PACKAGE_NAME));
 				}
+				if(currentNotUserApkInfo!=null&&currentNotUserApkInfo.getFile_path()!=null){
+					File f = new File(currentNotUserApkInfo.getFile_path());
+					if(f!=null&&f.exists()){
+						f.delete();
+					}
+				}
+				notuserPushedApkInfos.remove(currentNotUserApkInfo);
+				currentNotUserApkInfo = null;
+				startNextNotUserApkDownLoad();
 			} 
 		}
 	}
@@ -885,8 +897,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			ApkInfo info = PackageUtils.getUnInstalledApkInfo(FayeService.this, currentNotUserApkInfo.getFile_path());
 			
 			if(info!=null){
-				currentNotUserApkInfo.setName(info.getAppName());
-				currentNotUserApkInfo.setIcon(info.getDrawble());
+				currentNotUserApkInfo.setPackageName(info.getPackageName());
+//				currentNotUserApkInfo.setIcon(info.getDrawble());
 				currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
 				services.updateApkInfo(currentNotUserApkInfo);
 				packageInstaller.instatll(currentNotUserApkInfo.getFile_path(), info.getPackageName());

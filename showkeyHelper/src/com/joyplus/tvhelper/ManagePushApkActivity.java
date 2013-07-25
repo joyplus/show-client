@@ -281,11 +281,9 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				break;
 			case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE:
 				if(info.getPackageName()!=null){
-					Intent intent = new Intent(Intent.ACTION_VIEW);
-			     	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			     	//filePath为文件路径
-			     	intent.setDataAndType(Uri.parse("file://"+info.getFile_path()), info.getPackageName());
-			     	startActivity(intent);
+			     	Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, Uri.parse("file://"+info.getFile_path()));
+					startActivity(intent);
 				}
 				break;
 			}

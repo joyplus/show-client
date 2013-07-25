@@ -114,15 +114,18 @@ public class PushedApkAdapter extends BaseAdapter {
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE://下载完成
 			if(FayeService.isSystemApp){
 				holder.statue.setText("正在安装");
+				holder.progress.setProgress(progress);
+//				holder.progress.setSecondaryProgress(info.getProgress());
+//				holder.progress.setSecondaryProgress(0);
+				holder.progressLayout.setTag(info.get_id());
+				holder.progressText.setText(progress+"%");
 			}else{
 				holder.statue.setText("下载完成");
+				holder.progress.setVisibility(View.INVISIBLE);
+				holder.progressText.setVisibility(View.INVISIBLE);
 			}
 			
-			holder.progress.setProgress(progress);
-//			holder.progress.setSecondaryProgress(info.getProgress());
-//			holder.progress.setSecondaryProgress(0);
-			holder.progressLayout.setTag(info.get_id());
-			holder.progressText.setText(progress+"%");
+			
 			break;
 		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSEING://下载完成
 			holder.statue.setText("正在暂停");
