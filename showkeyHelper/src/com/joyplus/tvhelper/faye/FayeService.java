@@ -911,6 +911,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				packageInstaller.instatll(currentNotUserApkInfo.getFile_path(), info.getPackageName());
 			}else{
 				Log.e(TAG, "unInstall apk info get fiale load next");
+				File f = new File(currentNotUserApkInfo.getFile_path());
+				if(f!=null&&f.exists()){
+					f.delete();
+				}
 				currentNotUserApkInfo = null;
 				startNextNotUserApkDownLoad();
 			}
