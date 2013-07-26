@@ -463,7 +463,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setName(item.getString("app_name"));
 						info.setIsUser(PushedApkDownLoadInfo.IS_USER); 
 						String fileName = Utils.getFileNameforUrl(file_url);
-						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+						info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
 						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
 						info.setTast(task);
@@ -476,9 +476,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				if(currentUserApkInfo==null){
-					startNextUserApkDownLoad(); 
 				}
 			}
 		});

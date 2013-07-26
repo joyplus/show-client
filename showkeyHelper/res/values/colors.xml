@@ -88,4 +88,8 @@
 	
 	<color name="light_black_100">#FF3E454D</color>	
 
+	<color name="band_btn_normal">#4d4d4d</color>	
+	<color name="band_btn_focus">#1a1a1a</color>	
+	<color name="band_btn_pressed">#000000</color>	
+	
 </resources>
