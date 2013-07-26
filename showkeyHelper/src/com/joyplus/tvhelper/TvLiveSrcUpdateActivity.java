@@ -128,9 +128,9 @@ public class TvLiveSrcUpdateActivity extends Activity {
 			
 			Log.d("TAG", "--------------------------> app installed");
 			 String packageName = intent.getData().getEncodedSchemeSpecificPart();
-			 for(int i=0;i<serviceList.size();i++){
+			 for(int i=0;i<list.size();i++){
 				 
-				 if(packageName.equals(serviceList.get(i).getPackage_name())){
+				 if(packageName.equals(list.get(i).getPackage_name())){
 					 
 					 apkLists = PackageUtils.getInstalledApkInfos(TvLiveSrcUpdateActivity.this);
 					 for(ApkInfo info:apkLists){
