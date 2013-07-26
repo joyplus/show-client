@@ -80,8 +80,13 @@
             android:id="@+id/tv_download_bg"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/start_download"
-            android:visibility="invisible"/>
+            android:background="#cc000000"
+            android:visibility="invisible"
+            android:singleLine="true"
+            android:gravity="center"
+            android:textColor="@color/light_white"
+            android:textSize="@dimen/mid_text_size"
+            android:text="已经安装"/>
     </FrameLayout>
 
 </RelativeLayout>
