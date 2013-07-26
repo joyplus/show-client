@@ -20,7 +20,8 @@ public class TvLiveViews {
 		public String icon_url;//图片地址
 		public String is_specific_app;//是否是通用的视频APK，如果机器没有安装，应该推荐下载 1为特殊，0为普通
 		public FILE_URL[] file_urls;//直播源下载地址
-		public String version;//版本号
+		public String version_name;//版本号
+		public String version_code;//版本号
 		public String apk_url;//APK资源下载地址
 	}
 	

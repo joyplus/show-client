@@ -18,11 +18,21 @@ public class TvLiveInfo {
 	private String version;//版本号
 	private String apk_url;//APK资源下载地址
 	
-	private int status;//0代表已经是最新的，1代表点击更新，2推荐下载
+	private int status;//0代表已经是最新的，1代表点击更新
 	
+	private boolean isInstall;
+
 	private String[] fileNames;//下载的文件名
 	
 	private List<File> srcFileLists;//下载的临时文件
+	
+	public boolean isInstall() {
+		return isInstall;
+	}
+
+	public void setInstall(boolean isInstall) {
+		this.isInstall = isInstall;
+	}
 	
 	public List<File> getSrcFileLists() {
 		return srcFileLists;

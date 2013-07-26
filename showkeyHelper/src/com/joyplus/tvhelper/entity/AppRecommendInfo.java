@@ -6,13 +6,40 @@ public class AppRecommendInfo {
 	private String app_name;
 	private String package_name;
 	private String icon_url;
+	private String pic_url;
+
 	private String apk_size;
-	private String version;
+	private String version_name;
+	private String version_code;
 	private String apk_url;
 	
 	private boolean isInstalled;
 	
 	private int iconSrcId;
+	
+	public String getPic_url() {
+		return pic_url;
+	}
+
+	public void setPic_url(String pic_url) {
+		this.pic_url = pic_url;
+	}
+
+	public String getVersion_name() {
+		return version_name;
+	}
+
+	public void setVersion_name(String version_name) {
+		this.version_name = version_name;
+	}
+
+	public String getVersion_code() {
+		return version_code;
+	}
+
+	public void setVersion_code(String version_code) {
+		this.version_code = version_code;
+	}
 	
 
 	public int getIconSrcId() {
@@ -61,14 +88,6 @@ public class AppRecommendInfo {
 
 	public void setApk_size(String apk_size) {
 		this.apk_size = apk_size;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
 	}
 
 	public String getApk_url() {
