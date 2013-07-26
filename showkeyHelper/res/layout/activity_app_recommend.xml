@@ -73,8 +73,8 @@
             android:numColumns="4"
             android:listSelector="@drawable/item_full_selector"
             android:scrollbars="none"
-            android:verticalSpacing="2dp"
-            android:horizontalSpacing="2dp"
+            android:verticalSpacing="4dp"
+            android:horizontalSpacing="4dp"
             android:background="#150a04"></GridView>
         <TextView 
             android:id="@+id/tv_download_bg"

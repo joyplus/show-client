@@ -67,9 +67,9 @@ public class AppRecommendAdapter extends BaseAdapter {
 				0);// 默认的图
 		
 		AbsListView.LayoutParams layoutParams = new AbsListView.
-				LayoutParams(parent.getWidth()/4,parent.getHeight()/2-2);
+				LayoutParams(parent.getWidth()/4 - 4,parent.getHeight()/2 - 4);
 		convertView.setLayoutParams(layoutParams);
-		convertView.setPadding(4, 4, 4, 4);
+//		convertView.setPadding(4, 4, 4, 4);
 		return convertView;
 	}
 	

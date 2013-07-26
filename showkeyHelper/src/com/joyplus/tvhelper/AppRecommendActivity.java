@@ -242,8 +242,8 @@ public class AppRecommendActivity extends Activity {
 			
 			downloadTv.setVisibility(View.VISIBLE);
 			
-			FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(v.getWidth() -8, v.getHeight()/5 -4);
-			param.setMargins((int)v.getX() + 4, (int)v.getY() +v.getHeight()/5 * 4 , 0, 0);
+			FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(v.getWidth(), v.getHeight()/5 + 4);
+			param.setMargins((int)v.getX(), (int)(v.getY() +v.getHeight()/5 * 4) , 0, 0);
 			downloadTv.setLayoutParams(param);
 		}
 		
