@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.androidquery.AQuery;
@@ -65,6 +66,8 @@ public class TvLiveSrcUpdateActivity extends Activity {
 	
 	private File tempStoreTvLivingFileDir;
 	
+	private Button backBtn;
+	
 	private Handler handler = new Handler(){
 
 		@Override
@@ -102,6 +105,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		}
 		
 		gridView = (GridView) findViewById(R.id.gridview);
+		backBtn = (Button) findViewById(R.id.bt_back);
 		
 //		for(int i=0;i< 10;i++) {
 //			
@@ -159,6 +163,15 @@ public class TvLiveSrcUpdateActivity extends Activity {
 	}
 	
 	private void initListener(){
+		
+		backBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 		
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
