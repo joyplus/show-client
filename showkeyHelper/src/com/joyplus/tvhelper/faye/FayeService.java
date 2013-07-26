@@ -890,7 +890,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 			}else{
 				Log.d(TAG, "unInstall apk info get fiale load next");
-				currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+				currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_INSTALL_FAILE);
 				services.updateApkInfo(currentUserApkInfo);
 				currentUserApkInfo = null;
 				startNextUserApkDownLoad();
@@ -915,6 +915,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				if(f!=null&&f.exists()){
 					f.delete();
 				}
+				currentNotUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
+				services.updateApkInfo(currentNotUserApkInfo);
 				currentNotUserApkInfo = null;
 				startNextNotUserApkDownLoad();
 			}
