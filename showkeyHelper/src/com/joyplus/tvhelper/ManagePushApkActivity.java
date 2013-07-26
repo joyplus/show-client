@@ -91,13 +91,13 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				
 			}else if(Global.ACTION_APK_DOWNLOAD_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
-				if(FayeService.userPushApkInfos.size() == 0){
-					editeButton.setEnabled(false);
-				}else{
-					editeButton.setEnabled(true);
-				}
-				layout2.setVisibility(View.GONE);
-				layout1.setVisibility(View.VISIBLE);
+//				if(FayeService.userPushApkInfos.size() == 0){
+//					editeButton.setEnabled(false);
+//				}else{
+//					editeButton.setEnabled(true);
+//				}
+//				layout2.setVisibility(View.GONE);
+//				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNL_INSTALL_SUCESS.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);

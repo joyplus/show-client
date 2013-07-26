@@ -65,8 +65,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //				}else{
 //					editeButton.setEnabled(true);
 //				}
-//				layout2.setVisibility(View.GONE);
-//				layout1.setVisibility(View.VISIBLE);
+				layout2.setVisibility(View.GONE);
+				layout1.setVisibility(View.VISIBLE);
+				updateEditBottn();
 //				backButton.requestFocus();
 				adpter_downloading.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNL_GETSIZE_SUCESS.equals(action)){
@@ -83,6 +84,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				if(selectedIndex == 2){
 					listView.setAdapter(adpter_downloading);
 				}
+				updateEditBottn();
 				adpter_downloading.notifyDataSetChanged();
 //				updateInstallProgress(_id);
 			}else if(Global.ACTION_DOWNLOAD_START.equals(action)){
@@ -282,14 +284,17 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		case R.id.title_downloaded:
 			selectedIndex = 2;
 			listView.setAdapter(adpter_downloaded);
+			updateEditBottn();
 			break;
 		case R.id.title_downloading:
 			selectedIndex = 1;
 			listView.setAdapter(adpter_downloading);
+			updateEditBottn();
 			break;
 		case R.id.title_play_history:
 			selectedIndex = 0;
 			listView.setAdapter(adpter_play_history);
+			updateEditBottn();
 			break;
 		case R.id.back_Button:
 			finish();
@@ -406,6 +411,14 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			break;
 		default:
 			break;
+		}
+	}
+	
+	private void updateEditBottn(){
+		if(((BaseAdapter)listView.getAdapter()).getCount()>0){
+			editeButton.setEnabled(true);
+		}else{
+			editeButton.setEnabled(false);
 		}
 	}
 	
