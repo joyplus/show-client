@@ -14,8 +14,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -30,7 +32,6 @@ import com.joyplus.tvhelper.adapter.AppRecommendAdapter;
 import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.AppRecommendInfo;
-import com.joyplus.tvhelper.entity.TvLiveInfo;
 import com.joyplus.tvhelper.entity.service.AppRecommendView;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
@@ -51,9 +52,6 @@ public class AppRecommendActivity extends Activity {
 	private TextView downloadTv;
 	private AppRecommendAdapter adapter;
 	
-	private SparseArray<View> sparseArrayView = new SparseArray<View>();
-	private int preSelectedIndex = -1;
-	
 	private List<ApkInfo> apkLists = new ArrayList<ApkInfo>();
 	private List<AppRecommendInfo> serviceList = new ArrayList<AppRecommendInfo>();
 	
@@ -61,6 +59,8 @@ public class AppRecommendActivity extends Activity {
 	private AQuery aq;
 	
 	private FrameLayout flGv;
+	
+	private Button backBtn;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,7 @@ public class AppRecommendActivity extends Activity {
 		
 		gridView = (GridView) findViewById(R.id.gv);
 		downloadTv = (TextView) findViewById(R.id.tv_download_bg);
+		backBtn = (Button) findViewById(R.id.bt_back);
 		
 		apkLists = PackageUtils.getInstalledApkInfos(this);
 		
@@ -103,8 +104,17 @@ public class AppRecommendActivity extends Activity {
 				 
 				 if(packageName.equals(serviceList.get(i).getPackage_name())){
 					 
-					 serviceList.get(i).setInstalled(true);
-					 adapter.notifyDataSetChanged();
+					 apkLists = PackageUtils.getInstalledApkInfos(AppRecommendActivity.this);
+					 for(ApkInfo info:apkLists){
+						 
+						 if(packageName.equals(info.getPackageName())){
+							 
+							 serviceList.get(i).setInstalled(true);
+							 downloadTv.setText("已安装");
+							 adapter.notifyDataSetChanged();
+						 }
+					 }
+					 
 					 return;
 				 }
 			 }
@@ -136,9 +146,19 @@ public class AppRecommendActivity extends Activity {
 		}
 		
 		adapter.notifyDataSetChanged();
+		gridView.requestFocus();
 	}
 	
 	private void initListener(){
+		
+		backBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 		
 		gridView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -150,44 +170,18 @@ public class AppRecommendActivity extends Activity {
 				if(view == null) {
 					
 					return;
-				} else {
-					
-					sparseArrayView.put(position, view);
-				}
+				} 
 				
 				AppRecommendInfo info = serviceList.get(position);
 				
 				
-//				setStartDownLoadVisible(view, true,info.isInstalled());
-				
-				preSelectedIndex = position;
+				setStartDownLoadVisible(view, true,info.isInstalled());
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
 				
-			}
-		});
-		
-		gridView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				
-				if(!hasFocus){
-					
-					if(preSelectedIndex != -1) {
-						
-						View view = sparseArrayView.get(preSelectedIndex);
-						if(view != null) {
-							
-//							setStartDownLoadVisible(v, false,false);
-						}
-					}
-					
-				}
 			}
 		});
 		
@@ -234,30 +228,29 @@ public class AppRecommendActivity extends Activity {
 			
 			return;
 		}
+	
+		Log.i(TAG, "isVisible--->x:" + v.getX() + " y:" + v.getY()
+				+ " w:" + v.getWidth() + " h:"+ v.getHeight());
+		if(isInstall){
+			
+			downloadTv.setText("已安装");
+		}else{
+			
+			downloadTv.setText("立即下载");
+		}
+		if(isVisible){
+			
+			downloadTv.setVisibility(View.VISIBLE);
+			
+			FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(v.getWidth() -8, v.getHeight()/5 -4);
+			param.setMargins((int)v.getX() + 4, (int)v.getY() +v.getHeight()/5 * 4 , 0, 0);
+			downloadTv.setLayoutParams(param);
+		}
+		
+		Log.i(TAG, "downloadTv--->x:" + downloadTv.getX() + " y:" + downloadTv.getY()
+				+ " w:" + downloadTv.getWidth() + " h:"+ downloadTv.getHeight());
 //		
-//		Log.i(TAG, "x:" + v.getX() + " y:" + v.getY());
-//		
-//		Log.i(TAG, "isVisible--->x:" + v.getX() + " y:" + v.getY()
-//				+ " w:" + v.getWidth() + " h:"+ v.getHeight());
-////		downloadTv.setVisibility(View.VISIBLE);
-//		downloadTv.postInvalidate();
-//		downloadTv.layout((int)v.getX(), (int)(v.getY()+v.getHeight()/5 * 4), (int)(v.getX() + v.getWidth()), (int)(v.getY() + v.getHeight()));
-//
-//
-//		downloadTv.forceLayout();
-//		downloadTv.requestLayout();
-//
-//		
-//		Log.i(TAG, "downloadTv--->x:" + downloadTv.getX() + " y:" + downloadTv.getY()
-//				+ " w:" + downloadTv.getWidth() + " h:"+ downloadTv.getHeight());
-//		
-////		if(isInstall){
-////			
-////			downloadTv.setText("已安装");
-////		}else{
-////			
-////			downloadTv.setText("立即下载");
-////		}
+		
 	}
 	
 	protected void getServiceData(String url, String interfaceName) {
