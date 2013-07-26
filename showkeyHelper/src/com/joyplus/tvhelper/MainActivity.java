@@ -23,6 +23,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joyplus.tvhelper.faye.FayeService;
@@ -46,13 +47,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	
 	private LinearLayout layout_showtui, layout_xunlei, layout_yuntui, layout_zhibo, layout_tuijian;
 	
+	private RelativeLayout layout_ceshu, layout_upan;
+	
 	private ImageView image_jiasu, image_upan, image_appguanli, image_ceshu, image_setting;
 	
-	private LinearLayout layout_jiasu, layout_upan, layout_appguanli, layout_ceshu, layout_setting;
+	private LinearLayout layout_jiasu, layout_appguanli, layout_setting;
 	
 	private TextView title_text_1, title_text_2;
 	
-	private LinearLayout selectedLayout;
+	private View selectedLayout;
 	
 //	private FrameLayout relativeLayout;
 	
@@ -150,9 +153,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		layout_tuijian = (LinearLayout) findViewById(R.id.layout_tuijian);
 		
 		layout_jiasu = (LinearLayout) findViewById(R.id.layout_jiashu);
-		layout_upan = (LinearLayout) findViewById(R.id.layout_upan);
+		layout_upan = (RelativeLayout) findViewById(R.id.layout_upan);
 		layout_appguanli = (LinearLayout) findViewById(R.id.layout_appguanli);
-		layout_ceshu = (LinearLayout) findViewById(R.id.layout_ceshu);
+		layout_ceshu = (RelativeLayout) findViewById(R.id.layout_ceshu);
 		layout_setting = (LinearLayout) findViewById(R.id.layout_setting);
 		
 		title_text_1 = (TextView) findViewById(R.id.title_1);
@@ -315,7 +318,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			imageView2.startAnimation(animation_disappear);
 			imageView2.setVisibility(View.INVISIBLE);
 		}
-		selectedLayout = (LinearLayout) v;
+		selectedLayout =  v;
 	}
 
 	@Override

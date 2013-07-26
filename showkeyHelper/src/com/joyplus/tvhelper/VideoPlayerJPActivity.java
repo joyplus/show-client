@@ -1746,10 +1746,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			if(duration-curretnPosition<10*1000&&duration>0){
-				saveToDB(duration / 1000, (duration / 1000) -10);
-			}else{
-				saveToDB(duration / 1000, curretnPosition / 1000);
+			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_LOCAL){
+				if(duration-curretnPosition<10*1000&&duration>0){
+					saveToDB(duration / 1000, (duration / 1000) -10);
+				}else{
+					saveToDB(duration / 1000, curretnPosition / 1000);
+				}
 			}
 //		}
 		super.onPause();

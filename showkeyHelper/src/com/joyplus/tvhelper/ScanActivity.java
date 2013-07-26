@@ -73,6 +73,7 @@ public class ScanActivity extends Activity implements OnClickListener{
 	private LinearLayout layout_houtaijincheng, layout_lajihuanchun, layout_ziqiruanjian, layout_xiezaicanliu;
 	private ImageView big_image_1, big_image_2, big_image_3, big_image_4;
 	private ImageView imag_scan_anim_1, imag_scan_anim_2, imag_scan_anim_3, imag_scan_anim_4;
+	private ImageView icon_next_1, icon_next_2, icon_next_3;
 	private ProgressBar mPorgressBar;
 	private TextView backgroud_count_text;
 	private TextView cache_size_text;
@@ -115,12 +116,15 @@ public class ScanActivity extends Activity implements OnClickListener{
 				updateStep();
 				switch (mStep) {
 				case STEP_SCAN_CACHE:
+					icon_next_1.setImageResource(R.drawable.jiasu_next_active);
 					getCacheSize();
 					break;
 				case STEP_SCAN_AUTOSTART:
+					icon_next_2.setImageResource(R.drawable.jiasu_next_active);
 					queryAutoStartApp();
 					break;
 				case STEP_SCAN_DIRTY:
+					icon_next_3.setImageResource(R.drawable.jiasu_next_active);
 					getSdcardDirtyFile();
 					break;
 				default:
@@ -278,6 +282,10 @@ public class ScanActivity extends Activity implements OnClickListener{
 		big_image_2 = (ImageView) findViewById(R.id.big_image_2);
 		big_image_3 = (ImageView) findViewById(R.id.big_image_3);
 		big_image_4 = (ImageView) findViewById(R.id.big_image_4);
+		
+		icon_next_1 = (ImageView) findViewById(R.id.icon_next_1);
+		icon_next_2 = (ImageView) findViewById(R.id.icon_next_2);
+		icon_next_3 = (ImageView) findViewById(R.id.icon_next_3);
 		
 		imag_scan_anim_1 = (ImageView) findViewById(R.id.imag_scan_anim_1);
 		imag_scan_anim_2 = (ImageView) findViewById(R.id.imag_scan_anim_2);

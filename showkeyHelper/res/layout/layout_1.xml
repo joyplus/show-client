@@ -13,7 +13,7 @@
             android:layout_weight="1"
             android:id="@+id/showtui"
             android:focusable="true"
-            android:background="#f8aa33">
+            android:background="@color/bg_color_showtui">
             <RelativeLayout android:layout_width="fill_parent"
 	                        android:layout_height="fill_parent"
 	                        android:id="@+id/main_content_2"
@@ -93,7 +93,7 @@
             >
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="#6fbb41"
+                android:background="@color/bg_color_tuisong"
                 android:focusable="true"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
@@ -122,7 +122,7 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="#359ce1"
+                android:background="@color/bg_color_xunlei"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
@@ -153,7 +153,7 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="#f73e3b"
+                android:background="@color/bg_color_zhibo"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
@@ -177,7 +177,7 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="#7c4dbd"
+                android:background="@color/bg_color_tuijian"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"

@@ -170,6 +170,7 @@
 	                <ImageView android:layout_width="wrap_content"
 	                    android:layout_height="fill_parent"
 	                    android:layout_marginBottom="14dp"
+	                    android:id="@+id/icon_next_1"
 	                    android:src="@drawable/jiasu_next"/>
 	                <LinearLayout android:layout_width="0dp"
 	                    android:layout_height="fill_parent"
@@ -223,6 +224,7 @@
 	                <ImageView android:layout_width="wrap_content"
 	                    android:layout_height="fill_parent"
 	                    android:layout_marginBottom="14dp"
+	                    android:id="@+id/icon_next_2"
 	                    android:src="@drawable/jiasu_next"/>
 	                <LinearLayout android:layout_width="0dp"
 	                    android:layout_height="fill_parent"
@@ -277,6 +279,7 @@
 	                <ImageView android:layout_width="wrap_content"
 	                    android:layout_height="fill_parent"
 	                    android:layout_marginBottom="14dp"
+	                    android:id="@+id/icon_next_3"
 	                    android:src="@drawable/jiasu_next"/>
 	                <LinearLayout android:layout_width="0dp"
 	                    android:layout_height="fill_parent"

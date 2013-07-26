@@ -15,7 +15,7 @@
             android:id="@+id/layout_jiashu"
             android:focusable="true"
             android:gravity="center"
-            android:background="#7bb781">
+            android:background="@color/bg_color_jiasu">
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -41,16 +41,18 @@
             android:layout_weight="1"
             android:orientation="vertical"
             >
-            <LinearLayout android:layout_width="fill_parent"
+            <RelativeLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="#de6e33"
+                android:background="@color/bg_color_upan"
                 android:focusable="true"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:paddingBottom="10dp"
                 android:id="@+id/layout_upan"
                 android:layout_weight="1">
-                <ImageView android:layout_width="wrap_content"
+                <LinearLayout android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:gravity="center_horizontal">
+                    <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
 	                android:src="@drawable/main_icon_upan"/>
@@ -61,7 +63,15 @@
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
                            android:text="U盘助手"/>
-            </LinearLayout>
+                </LinearLayout>
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/unrealized"/>
+            </RelativeLayout>
+            
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"
             android:visibility="invisible"/>
@@ -72,7 +82,7 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="#00d4dc"
+                android:background="@color/bg_color_guanli"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
@@ -95,16 +105,39 @@
             android:layout_weight="1"
             android:orientation="vertical"
             >
-            <LinearLayout android:layout_width="fill_parent"
+<!--             <LinearLayout android:layout_width="fill_parent" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:focusable="true" -->
+<!--                 android:id="@+id/layout_ceshu" -->
+<!--                 android:orientation="vertical" -->
+<!--                 android:gravity="center_horizontal" -->
+<!--                 android:paddingBottom="10dp" -->
+<!--                 android:background="#3e5fa2" -->
+<!--                 android:layout_weight="1"> -->
+<!-- 	            <ImageView android:layout_width="wrap_content" -->
+<!-- 	                android:layout_height="fill_parent" -->
+<!-- 	                android:layout_weight="1" -->
+<!-- 	                android:src="@drawable/main_icon_cesu"/> -->
+<!-- 	            <TextView android:layout_width="fill_parent" -->
+<!--                            android:layout_height="wrap_content" -->
+<!--                            android:textColor="#f0f0f0" -->
+<!--                            android:textSize="35dp" -->
+<!--                            android:gravity="center_horizontal" -->
+<!--                            android:layout_alignParentBottom="true" -->
+<!--                            android:text="网络测速"/> -->
+<!--             </LinearLayout> -->
+            <RelativeLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:background="@color/bg_color_cesu"
                 android:focusable="true"
                 android:id="@+id/layout_ceshu"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:paddingBottom="10dp"
-                android:background="#3e5fa2"
                 android:layout_weight="1">
-	            <ImageView android:layout_width="wrap_content"
+                <LinearLayout android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:gravity="center_horizontal">
+                    <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
 	                android:src="@drawable/main_icon_cesu"/>
@@ -115,7 +148,14 @@
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
                            android:text="网络测速"/>
-            </LinearLayout>
+                </LinearLayout>
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/unrealized"/>
+            </RelativeLayout>
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"
             android:visibility="invisible"/>
@@ -126,7 +166,7 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="#5e5f63"
+                android:background="@color/bg_color_setting"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
