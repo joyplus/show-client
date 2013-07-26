@@ -58,6 +58,7 @@ public class DBServices {
 		values.put(DBConstant.KEY_APK_INFO_DOWNLOADUUID, info.getTast().getUUId());
 		values.put(DBConstant.KEY_APK_INFO_ISUSER, info.getIsUser());
 		values.put(DBConstant.KEY_SYN_C1, info.getIcon_url());
+		values.put(DBConstant.KEY_SYN_C2, info.getPackageName());
 		long _id = db.insert(DBConstant.TABLE_APK_INFO, null, values);
 		db.close();
         return _id;
@@ -73,6 +74,7 @@ public class DBServices {
 		values.put(DBConstant.KEY_APK_INFO_DOWNLOADUUID, info.getTast().getUUId());
 		values.put(DBConstant.KEY_APK_INFO_ISUSER, info.getIsUser());
 		values.put(DBConstant.KEY_SYN_C1, info.getIcon_url());
+		values.put(DBConstant.KEY_SYN_C2, info.getPackageName());
 //
         int rows = db.update(DBConstant.TABLE_APK_INFO, values,
         		DBConstant.KEY_ID + " = ? ", new String[] {
@@ -109,12 +111,14 @@ public class DBServices {
         	int download_statue = cr.getInt(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOAD_STATE));
         	String download_uuid = cr.getString(cr.getColumnIndex(DBConstant.KEY_APK_INFO_DOWNLOADUUID));
         	String icon_url = cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1));
+        	String packageName = cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2));
         	
         	info = new PushedApkDownLoadInfo();
         	info.setIcon_url(icon_url);
         	info.set_id(_id);
         	info.setName(name);
         	info.setPush_id(push_id);
+        	info.setPackageName(packageName);
         	if(download_statue == PushedApkDownLoadInfo.STATUE_DOWNLOADING){
         		download_statue = PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE;
         	}

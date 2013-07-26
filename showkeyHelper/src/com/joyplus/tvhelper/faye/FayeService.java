@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -293,7 +294,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		isNeedReconnect = true;
 		getLostUserPushApk();
 		getLostUserPushMovie();
-		getNotUsrPushApk();
+		if(isSystemApp()){
+			getNotUsrPushApk();
+		}
 		return super.onStartCommand(intent, START_STICKY, startId); 
 	}
 	
@@ -413,6 +416,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						info.setName(item.getString("name"));
 						info.setPush_url(downLoad_url);
 						String fileName = Utils.getFileNameforUrl(downLoad_url);
+						Log.d(TAG, fileName);
 						info.setName(fileName);
 						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 						DownloadTask task = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
@@ -457,7 +461,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						String file_url = item.getString("file_url");
 						info.setPush_id(item.getInt("id"));
 						info.setName(item.getString("app_name"));
-						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+						info.setIsUser(PushedApkDownLoadInfo.IS_USER); 
 						String fileName = Utils.getFileNameforUrl(file_url);
 						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
@@ -886,8 +890,11 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 			}else{
 				Log.d(TAG, "unInstall apk info get fiale load next");
+				currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+				services.updateApkInfo(currentUserApkInfo);
 				currentUserApkInfo = null;
 				startNextUserApkDownLoad();
+				File f;
 			}
 			
 			return ;

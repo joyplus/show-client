@@ -30,6 +30,7 @@ import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.widget.Toast;
 
@@ -414,7 +415,7 @@ public static InetAddress getLocalIpAddress(){
 //		if(filename.contains(".")){
 //			filename = filename.substring(0, filename.lastIndexOf("."));
 //		}
-		return System.currentTimeMillis() + filename;
+		return System.currentTimeMillis() + Uri.decode(filename);
 	}
 	
 	public static String getDisPlayFileNameforUrl(String url){
