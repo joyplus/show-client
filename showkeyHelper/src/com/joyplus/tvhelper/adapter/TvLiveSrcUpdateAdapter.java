@@ -90,7 +90,7 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 
 		View[] views = {viewHolder.newestTv,viewHolder.updateTv,viewHolder.rlLayout};
 		
-		if(info.isInstall()){
+		if(!info.isInstall()){
 			
 			setStatusVisible(views, 2);
 		}else {

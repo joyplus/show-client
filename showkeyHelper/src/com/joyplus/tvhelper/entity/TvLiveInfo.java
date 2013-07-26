@@ -20,7 +20,7 @@ public class TvLiveInfo {
 	
 	private int status;//0代表已经是最新的，1代表点击更新
 	
-	private boolean isInstall;
+	private boolean isInstall = false;
 
 	private String[] fileNames;//下载的文件名
 	

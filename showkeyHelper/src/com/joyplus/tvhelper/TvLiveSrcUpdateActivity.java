@@ -132,11 +132,18 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				 
 				 if(packageName.equals(serviceList.get(i).getPackage_name())){
 					 
-					 list.add(serviceList.get(i));
-					 serviceList.get(i).setInstall(true);
-					 setTvLivingStaus();
-					 adapter.notifyDataSetChanged();
-					 return;
+					 apkLists = PackageUtils.getInstalledApkInfos(TvLiveSrcUpdateActivity.this);
+					 for(ApkInfo info:apkLists){
+						 
+						 if(packageName.equals(info.getPackageName())){
+							 
+//							 list.add(serviceList.get(i));
+							 list.get(i).setInstall(true);
+							 setTvLivingStaus();
+							 adapter.notifyDataSetChanged();
+							 return; 
+						 }
+					 }
 				 }
 			 }
 			
@@ -257,7 +264,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				tvLiveInfo.setSrcFileLists(srcFileList);//保存临时文件
 				if (srcFileList.size() < fileNames.length) {
 
-					if(!tvLiveInfo.isInstall()){
+					if(tvLiveInfo.isInstall()){
 						
 						tvLiveInfo.setStatus(TvLiveInfo.NEWS);
 					}
@@ -288,20 +295,20 @@ public class TvLiveSrcUpdateActivity extends Activity {
 								.getTotalSize4ListFiles(dstFileList);
 						if (listFileTotalSize > fileTotalSize) {
 
-							if(!tvLiveInfo.isInstall()){
+							if(tvLiveInfo.isInstall()){
 								
 								tvLiveInfo.setStatus(TvLiveInfo.UPDATE);
 							}
 						} else {
 
-							if(!tvLiveInfo.isInstall()){
+							if(tvLiveInfo.isInstall()){
 								
 								tvLiveInfo.setStatus(TvLiveInfo.NEWS);
 							}
 						}
 					} else {
 
-						if(!tvLiveInfo.isInstall()){
+						if(tvLiveInfo.isInstall()){
 							
 							tvLiveInfo.setStatus(TvLiveInfo.NEWS);
 						}
@@ -335,6 +342,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					if(apkInfo.getPackageName()!= null && 
 							apkInfo.getPackageName().equals(tvLiveInfo.getPackage_name())){
 
+						tvLiveInfo.setInstall(true);
 						list.add(tvLiveInfo);
 						isSame = true;
 						if(tvLiveInfo.getFile_urls() != null){
@@ -351,6 +359,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 				}
 				if(!isSame && !tvLiveInfo.isIs_specific_app()){
 				
+					tvLiveInfo.setInstall(false);
 					list.add(tvLiveInfo);
 					
 					if(tvLiveInfo.getFile_urls() != null){
