@@ -91,6 +91,7 @@ public class DBServices {
         		String.valueOf(info.get_id())
                 });
         Log.i(TAG, rows + "rows deleted");
+        dmg.deleteTask(info.getTast());
         db.close();
     }
 	
@@ -165,7 +166,7 @@ public class DBServices {
         	info.setPush_id(push_id);
         	info.setDownload_state(download_statue);
         	info.setFile_path(file_path);
-        	info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
+        	info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER); 
         	info.setTast(dmg.findTaksByUUID(download_uuid));
         	if(download_statue == PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE||download_statue == PushedApkDownLoadInfo.STATUE_INSTALL_FAILE){
         		//。。。
@@ -201,6 +202,7 @@ public class DBServices {
 				String.valueOf(info.get_id())
 		});
 		Log.i(TAG, rows + "rows deleted");
+		dmg.deleteTask(info.getTast());
 		db.close();
 	}
 	
