@@ -13,7 +13,7 @@
         android:layout_height="@dimen/list_top_margin"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="#D76C6A"
+        android:background="@color/bg_color_zhibo"
         android:gravity="center"
         android:text="直播视频源"
         android:textColor="#F2F2F2"
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:layout_below="@id/tv_live_src_update_title"
-        android:background="#D76C6A" >
+        android:background="@color/bg_color_zhibo" >
 
         <TextView
             android:id="@+id/tv_live_src_update_supports"

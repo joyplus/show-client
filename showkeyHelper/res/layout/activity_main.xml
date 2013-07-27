@@ -47,6 +47,7 @@
     android:paddingBottom="20dp"
     android:layout_height="90dp"
     android:textSize="24dp"
+    android:visibility="invisible"
     android:textColor="#ffffff"
     android:gravity="right|center_vertical"
     android:paddingRight="147dp"

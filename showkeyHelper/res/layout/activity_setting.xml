@@ -24,7 +24,7 @@
 	            android:orientation="horizontal">
 	       		<LinearLayout android:layout_width="0dp"
 	       		    android:layout_height="fill_parent"
-	       		    android:background="#5e5f63"
+	       		    android:background="@color/bg_color_setting"
 	       		    android:orientation="vertical"
 	       		    android:layout_weight="1">
 	       		    <TextView android:layout_width="fill_parent"
@@ -200,6 +200,7 @@
 	            app:textColor="#f0f0f0"
 	            app:textSize="18sp"
 	            app:text="今天已有推推    123 次"
+	            android:visibility="invisible"
 	            >
 	        </com.joyplus.tvhelper.ui.NotificationView>
 	        <LinearLayout android:layout_width="fill_parent"
