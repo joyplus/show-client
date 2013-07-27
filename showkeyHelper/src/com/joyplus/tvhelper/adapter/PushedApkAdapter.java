@@ -74,7 +74,7 @@ public class PushedApkAdapter extends BaseAdapter {
 		}else if(info.getIcon_url()!=null&&info.getIcon_url().length()>0){
 			aq.id(holder.icon).image(info.getIcon_url(),true,false,0,R.drawable.ic_launcher);
 		}else{
-			holder.icon.setImageResource(R.drawable.ic_launcher);
+			holder.icon.setImageResource(R.drawable.defult_app_icon);
 		}
 		holder.progress.setVisibility(View.VISIBLE);
 		holder.progressText.setVisibility(View.VISIBLE);
