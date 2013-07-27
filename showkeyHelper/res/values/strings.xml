@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">showkey助手</string>
+    <string name="app_name">showkey电视助手</string>
     
     <string name="login_xunlei_title">迅雷离线</string>
     <string name="login_xunlei_vipname">白金账户</string>
@@ -18,7 +18,10 @@
     <string name="logout_out_date">到期日期:</string>
     <string name="logout_logout">注销</string>
     
-    <string name="return_back">返回</string>
+    <string name="button_back">返  回</string>
+    <string name="button_edit">编  辑</string>
+    <string name="button_canle_edit">取消编辑</string>
+    <string name="button_del">删  除</string>
     
     <string name=" networknotwork">你的网络好像有问题，请重试！</string>
     

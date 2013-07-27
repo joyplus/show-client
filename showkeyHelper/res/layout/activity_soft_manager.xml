@@ -28,7 +28,7 @@
 	                    android:gravity="center"
 	                    android:textColor="#f0f0f0"
 	                    android:background="@color/bg_color_guanli"
-	                    android:textSize="30sp"/>
+	                    android:textSize="30dp"/>
 	       		<TextView android:layout_width="0dp"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="4.3"/>
@@ -52,6 +52,7 @@
 	                            android:layout_height="85dp"
 	                            android:id="@+id/progressbar"
 	                            app:max="100"
+	                            app:Show_Bottom="false"
 	                            app:Inside_Interval="5"
 	                            app:fill="false"
 	                            app:Paint_Color="#fffb940f"
@@ -69,19 +70,19 @@
 	                            android:layout_height="wrap_content"
 	                            android:textColor="#f0f0f0"
 	                            android:id="@+id/text_usedSize"
-	                            android:textSize="24sp"/>
+	                            android:textSize="24dp"/>
 	                        <TextView android:layout_width="wrap_content"
 	                            android:layout_height="wrap_content"
 	                            android:textColor="#f0f0f0"
 	                            android:id="@+id/text_unusedSize"
-	                            android:textSize="30sp"/>
+	                            android:textSize="30dp"/>
 	                    </LinearLayout>
 	                    <Button android:layout_width="133dp"
                					android:layout_height="45dp"
-		                        android:text="返  回"
+		                        android:text="@string/button_back"
 		                        android:id="@+id/back_Button"
-		                        android:textSize="20sp"
-		                        android:textColor="@color/xunlei_return_btn_textcolor"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
 		                        android:layout_marginRight="30dp"
 		                        android:layout_gravity="center_vertical"
 		                        android:background="@drawable/xunlei_return_btn_bg"/>
@@ -106,7 +107,7 @@
 	                        <TextView android:layout_width="fill_parent"
 	                            android:layout_height="wrap_content"
 	                            android:textColor="#f0f0f0"
-	                            android:textSize="18sp"
+	                            android:textSize="18dp"
 	                            android:gravity="center_horizontal"
 	                            android:layout_alignParentBottom="true"
 	                            android:layout_marginBottom="10dp"
@@ -121,7 +122,7 @@
 	                            android:gravity="center_horizontal"
 	                            android:text="卸载"
 	                            android:textColor="#f0f0f0"
-	                            android:textSize="30sp" />
+	                            android:textSize="30dp" />
 	                    </RelativeLayout>
 	                </LinearLayout>
 	                <LinearLayout android:layout_width="284dp"
@@ -138,7 +139,7 @@
 	                        <TextView android:layout_width="fill_parent"
 	                            android:layout_height="wrap_content"
 	                            android:textColor="#f0f0f0"
-	                            android:textSize="18sp"
+	                            android:textSize="18dp"
 	                            android:gravity="center_horizontal"
 	                            android:layout_alignParentBottom="true"
 	                            android:layout_marginBottom="10dp"
@@ -152,7 +153,7 @@
 	                            android:gravity="center_horizontal"
 	                            android:text="安装包管理"
 	                            android:textColor="#f0f0f0"
-	                            android:textSize="30sp" />
+	                            android:textSize="30dp" />
 	                    </RelativeLayout>
 	                </LinearLayout>
 	            </LinearLayout>
@@ -166,7 +167,7 @@
 	            android:layout_height="wrap_content"
 	            android:id="@+id/notification"
 	            app:textColor="#f0f0f0"
-	            app:textSize="18sp"
+	            app:textSize="18dp"
 	            android:visibility="invisible"
 	            app:text="今天已有推推    123 次"
 	            >
@@ -181,18 +182,18 @@
 	            <TextView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:textColor="#f0f0f0"
-	            	android:textSize="20sp"
+	            	android:textSize="20dp"
 	            	android:layout_marginLeft="10dp"
 	                android:text="遥控器按"/>
 	            <TextView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	            	android:textSize="25sp"
+	            	android:textSize="25dp"
 	            	android:textColor="#d89026"
 	                android:text="\t返回\t"/>
 	            <TextView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:textColor="#f0f0f0"
-	            	android:textSize="20sp"
+	            	android:textSize="20dp"
 	                android:text="离开"/>
 	        </LinearLayout>
 	    </LinearLayout>

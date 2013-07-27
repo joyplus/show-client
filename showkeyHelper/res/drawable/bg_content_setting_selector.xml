@@ -3,10 +3,10 @@
     <item android:state_pressed="true">
          <shape>
 	        <gradient
-	                android:startColor="#dcd0bf"
-	                android:centerColor="#dcd0bf"
+	                android:startColor="#d0d0d0"
+	                android:centerColor="#d0d0d0"
 	                android:centerY="0.75"
-	                android:endColor="#dcd0bf"
+	                android:endColor="#d0d0d0"
 	                android:angle="270"
 	        />
     	</shape>
@@ -14,10 +14,10 @@
     <item android:state_focused="true">
         <shape>
 	        <gradient
-	                android:startColor="#dcd0bf"
-	                android:centerColor="#dcd0bf"
+	                android:startColor="#d0d0d0"
+	                android:centerColor="#d0d0d0"
 	                android:centerY="0.75"
-	                android:endColor="#dcd0bf"
+	                android:endColor="#d0d0d0"
 	                android:angle="270"
 	        />
     	</shape>

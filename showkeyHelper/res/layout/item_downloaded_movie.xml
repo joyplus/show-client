@@ -21,7 +21,7 @@
 	            android:layout_height="wrap_content"
 	            android:singleLine="true"
 	            android:textColor="#000000"
-	            android:textSize="24sp"
+	            android:textSize="24dp"
 	            android:ellipsize="middle"
 	            android:id="@+id/movie_name"/>
 	        <TextView android:layout_width="fill_parent"
@@ -29,7 +29,7 @@
 	            android:layout_marginTop="8dp"
 	            android:singleLine="true"
 	            android:textColor="#7a7a7a"
-	            android:textSize="16sp"
+	            android:textSize="16dp"
 	            android:id="@+id/movie_size"/>
 	    </LinearLayout>
 	    <ImageView android:layout_width="25dp"

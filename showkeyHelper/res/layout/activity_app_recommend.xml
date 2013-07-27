@@ -53,9 +53,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="34dp"
-            android:text="返回"
+            android:text="@string/button_back"
             android:background="@drawable/xunlei_return_btn_bg"
-            android:textColor="@color/xunlei_return_btn_textcolor"
+            android:textColor="@color/common_white_btn_textcolor"
             android:textSize="@dimen/mid_text_size" />
     </RelativeLayout>
 

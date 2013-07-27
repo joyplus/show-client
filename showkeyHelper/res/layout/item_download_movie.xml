@@ -31,13 +31,13 @@
 	            android:text="1knjafafjaksjfijspfokfoi2joi3495045668788878.mp4"
 	            android:textColor="#000000"
 	            android:ellipsize="middle"
-	            android:textSize="24sp"
+	            android:textSize="24dp"
 	            android:id="@+id/app_name"/>
 	            <TextView android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:singleLine="true"
 	            android:textColor="#000000"
-	            android:textSize="22sp"
+	            android:textSize="22dp"
 	            android:text="50%"
 	            android:id="@+id/progress_value"
 	            />
@@ -54,7 +54,7 @@
 		            android:layout_height="wrap_content"
 		            android:singleLine="true"
 		            android:textColor="#7a7a7a"
-		            android:textSize="16sp"
+		            android:textSize="16dp"
 		            android:text="1024MB"
 		            android:id="@+id/app_size"/> 
 	            <TextView android:layout_width="wrap_content"
@@ -63,13 +63,13 @@
 		            android:textColor="#7a7a7a"
 		            android:text="|"
 		            android:layout_marginLeft="5dp"
-		            android:textSize="16sp"/>
+		            android:textSize="16dp"/>
 	            <TextView android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:layout_marginLeft="5dp"
 		            android:singleLine="true"
 		            android:textColor="#7a7a7a"
-		            android:textSize="16sp"
+		            android:textSize="16dp"
 		            android:text="暂停"
 		            android:id="@+id/app_statue"/>
 	            </LinearLayout>
@@ -91,14 +91,14 @@
 	            android:layout_height="wrap_content"
 	            android:singleLine="true"
 	            android:textColor="#000000"
-	            android:textSize="24sp"
+	            android:textSize="24dp"
 	            android:id="@+id/app_name"/>
 	        <TextView android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:layout_marginTop="8dp"
 	            android:singleLine="true"
 	            android:textColor="#7a7a7a"
-	            android:textSize="12sp"
+	            android:textSize="12dp"
 	            android:id="@+id/app_size"/>
 	    </LinearLayout> -->
 	   <!--  <LinearLayout android:layout_width="fill_parent"
@@ -116,14 +116,14 @@
 	            android:layout_weight="1"
 	            android:singleLine="true"
 	            android:textColor="#679f3e"
-	            android:textSize="22sp"
+	            android:textSize="22dp"
 	            android:id="@+id/app_statue"
 	            />
 	            <TextView android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:singleLine="true"
 	            android:textColor="#000000"
-	            android:textSize="22sp"
+	            android:textSize="22dp"
 	            android:id="@+id/progress_value"
 	            />
 	        </LinearLayout>

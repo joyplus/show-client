@@ -305,10 +305,10 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="34dp"
-                android:textColor="@color/xunlei_return_btn_textcolor"
+                android:textColor="@color/common_black_btn_textcolor"
                 android:background="@drawable/xunlei_return_btn_bg"
-                android:textSize="@dimen/max_low1_text_size"
-                android:text="@string/return_back"
+                android:textSize="@dimen/mid_text_size"
+                android:text="@string/button_back"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"/>
 

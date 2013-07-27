@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,6 +50,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private List<PushedMovieDownLoadInfo> downloadedMovies;
 	private List<MoviePlayHistoryInfo> playinfos;
 	private MyApp app;
+	
+	private Button selectedButon;
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
@@ -128,6 +131,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		listView.setAdapter(adpter_play_history);
 		selectedIndex = 0;
+		selectedButon = title_playHistory;
+		selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+		selectedButon.setTextColor(Color.BLACK);
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
 		app = (MyApp) getApplication();
@@ -283,16 +289,31 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		switch (v.getId()) {
 		case R.id.title_downloaded:
 			selectedIndex = 2;
+			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
+			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
+			selectedButon = title_downloaded;
+			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			selectedButon.setTextColor(Color.BLACK);
 			listView.setAdapter(adpter_downloaded);
 			updateEditBottn();
 			break;
 		case R.id.title_downloading:
 			selectedIndex = 1;
+			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
+			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
+			selectedButon = title_downloading;
+			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			selectedButon.setTextColor(Color.BLACK);
 			listView.setAdapter(adpter_downloading);
 			updateEditBottn();
 			break;
 		case R.id.title_play_history:
 			selectedIndex = 0;
+			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
+			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
+			selectedButon = title_playHistory;
+			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			selectedButon.setTextColor(Color.BLACK);
 			listView.setAdapter(adpter_play_history);
 			updateEditBottn();
 			break;
