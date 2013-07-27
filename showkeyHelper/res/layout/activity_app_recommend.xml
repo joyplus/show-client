@@ -17,7 +17,7 @@
             android:layout_width="@dimen/zero_value"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#A16DE9"
+            android:background="@color/bg_color_tuijian"
             android:gravity="center"
             android:text="应用推荐"
             android:textColor="#F2F2F2"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:layout_below="@id/ll_title"
-        android:background="#A16DE9" >
+        android:background="@color/bg_color_tuijian" >
 
         <TextView
             android:id="@+id/tv_live_src_update_supports"

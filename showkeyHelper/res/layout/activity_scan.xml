@@ -26,7 +26,7 @@
 	                    android:layout_weight="1"
 	                    android:text="电视加速"
 	                    android:gravity="center"
-	                    android:background="@color/jiasu_title_background"
+	                    android:background="@color/bg_color_jiasu"
 	                    android:textColor="#f0f0f0"
 	                    android:textSize="30dp"/>
 	            <TextView android:layout_width="0dp"
@@ -38,7 +38,7 @@
 	            android:layout_height="fill_parent"
 	            android:orientation="vertical">
 	            <LinearLayout android:layout_width="fill_parent"
-	                android:background="@color/jiasu_title_background"
+	                android:background="@color/bg_color_jiasu"
 	                android:layout_height="95dp"
 	                android:orientation="vertical"
 	                >
@@ -134,7 +134,7 @@
                                     android:orientation="vertical"
                                     android:paddingTop="26dp"
                                     android:id="@+id/layout_houtaijincheng"
-                                    android:background="@color/jiasu_title_background">
+                                    android:background="@color/bg_color_jiasu">
                                     <TextView android:layout_width="fill_parent"
                                         android:layout_height="0dp"
                                         android:textSize="30dp"
@@ -188,7 +188,7 @@
                                     android:orientation="vertical"
                                     android:paddingTop="26dp"
                                     android:id="@+id/layout_lajihuanchun"
-                                    android:background="@color/jiasu_title_background">
+                                    android:background="@color/bg_color_jiasu">
                                     <TextView android:layout_width="fill_parent"
                                         android:layout_height="0dp"
                                         android:textSize="30dp"
@@ -242,7 +242,7 @@
                                     android:orientation="vertical"
                                     android:paddingTop="26dp"
                                     android:id="@+id/layout_ziqiruanjian"
-                                    android:background="@color/jiasu_title_background">
+                                    android:background="@color/bg_color_jiasu">
                                     <TextView android:layout_width="fill_parent"
                                         android:layout_height="0dp"
                                         android:textSize="30dp"
@@ -297,7 +297,7 @@
                                     android:orientation="vertical"
                                     android:paddingTop="26dp"
                                     android:id="@+id/layout_xiezaicanliu"
-                                    android:background="@color/jiasu_title_background">
+                                    android:background="@color/bg_color_jiasu">
                                     <TextView android:layout_width="fill_parent"
                                         android:layout_height="0dp"
                                         android:textSize="30dp"
@@ -342,6 +342,7 @@
 	            android:id="@+id/notification"
 	            app:textColor="#f0f0f0"
 	            app:textSize="18dp"
+	            android:visibility="invisible"
 	            app:text="今天已有推推    123 次"
 	            >
 	        </com.joyplus.tvhelper.ui.NotificationView>

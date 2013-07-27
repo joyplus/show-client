@@ -26,7 +26,7 @@
 	                    android:layout_weight="1"
 	                    android:text="软件卸载"
 	                    android:gravity="center"
-	                    android:background="@color/app_mannage_title_background"
+	                    android:background="@color/bg_color_guanli"
 	                    android:textColor="#f0f0f0"
 	                    android:textSize="30dp"/>
 	            <TextView android:layout_width="0dp"
@@ -38,7 +38,7 @@
 	            android:layout_height="fill_parent"
 	            android:orientation="vertical">
 	            <LinearLayout android:layout_width="fill_parent"
-	                android:background="@color/app_mannage_title_background"
+	                android:background="@color/bg_color_guanli"
 	                android:layout_height="95dp"
 	                android:orientation="vertical"
 	                >
@@ -73,7 +73,7 @@
 	                            android:textSize="24dp"/>
 	                        <TextView android:layout_width="wrap_content"
 	                            android:layout_height="wrap_content"
-	                            android:textColor="#d89026"
+	                            android:textColor="#f0f0f0"
 	                            android:id="@+id/text_unusedSize"
 	                            android:textSize="30dp"/>
 	                    </LinearLayout>
@@ -115,6 +115,7 @@
 	            android:id="@+id/notification"
 	            app:textColor="#f0f0f0"
 	            app:textSize="18dp"
+	            android:visibility="invisible"
 	            app:text="今天已有推推    123 次"
 	            >
 	        </com.joyplus.tvhelper.ui.NotificationView>
