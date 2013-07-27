@@ -43,9 +43,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="34dp"
-            android:background="@drawable/tv_update_return_btn_bg"
             android:text="返回"
-            android:textColor="#F0F0F0"
+            android:background="@drawable/xunlei_return_btn_bg"
+            android:textColor="@color/xunlei_return_btn_textcolor"
             android:textSize="@dimen/mid_text_size" />
 
         <!--

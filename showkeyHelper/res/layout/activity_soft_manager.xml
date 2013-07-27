@@ -81,7 +81,7 @@
 		                        android:text="返  回"
 		                        android:id="@+id/back_Button"
 		                        android:textSize="20sp"
-		                        android:textColor="#f0f0f0"
+		                        android:textColor="@color/xunlei_return_btn_textcolor"
 		                        android:layout_marginRight="30dp"
 		                        android:layout_gravity="center_vertical"
 		                        android:background="@drawable/xunlei_return_btn_bg"/>

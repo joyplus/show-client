@@ -82,6 +82,7 @@
 	<color name="item_list_text_black">#878787</color>
 	
 	<color name="light_black_20">#333E454D</color>
+	<color name="light_black_30">#4c3E454D</color>
 	
 	<color name="light_black_text">#414850</color>
 	<color name="light_black_60">#993E454D</color>
@@ -95,11 +96,11 @@
 	<color name="bg_color_showtui">#f8aa33</color>
 	<color name="bg_color_tuisong">#60a239</color>
 	<color name="bg_color_zhibo">#d76c6a</color>
-	<color name="bg_color_xunlei">#359ce1</color>
+	<color name="bg_color_xunlei">#636DF0</color>
 	<color name="bg_color_tuijian">#a16de9</color>
 	<color name="bg_color_jiasu">#87cd91</color>
 	<color name="bg_color_upan">#be7955</color>
 	<color name="bg_color_cesu">#468966</color>
-	<color name="bg_color_guanli">#04b3ba</color>
+	<color name="bg_color_guanli">#AA66CC</color>
 	<color name="bg_color_setting">#5e5f63</color>
 </resources>
