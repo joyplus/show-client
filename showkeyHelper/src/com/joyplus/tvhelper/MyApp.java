@@ -1,6 +1,6 @@
 package com.joyplus.tvhelper;
 
-import java.util.List;
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,9 +9,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.androidquery.util.AQUtility;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
-import com.joyplus.tvhelper.entity.TvLiveInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
+import com.joyplus.tvhelper.utils.Constant;
 
 public class MyApp extends Application {
 	
@@ -31,6 +32,8 @@ public class MyApp extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		
+		File cacheDir = new File(Constant.PATH);
+		AQUtility.setCacheDir(cacheDir);
 		pool = Executors.newFixedThreadPool(2);
 	}
 	

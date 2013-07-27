@@ -332,6 +332,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		Log.i(TAG, "list.size-->"+ list.size());
 		adapter = new TvLiveSrcUpdateAdapter(this, list,aq);
 		gridView.setAdapter(adapter);
+		gridView.requestFocus();
 	}
 	
 	private void getLivingUpdateList(){

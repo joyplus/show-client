@@ -64,7 +64,7 @@ public class AppRecommendAdapter extends BaseAdapter {
 		
 //		viewHolder.iv.setBackgroundResource(mList.get(position).getIconSrcId());
 		aq.id(viewHolder.iv).image(mList.get(position).getPic_url(), true, true, 0,
-				0);// 默认的图
+				R.drawable.default_app_bg);// 默认的图
 		
 		AbsListView.LayoutParams layoutParams = new AbsListView.
 				LayoutParams(parent.getWidth()/4 - 4,parent.getHeight()/2 - 4);

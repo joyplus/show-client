@@ -102,9 +102,9 @@ public class Constant {
 //			+ "/joy/image_cache/";
 	//用此目录用户清除程序时，可以删掉缓存信息
 	public static String PATH = Environment.getExternalStorageDirectory()
-	+ "/Android/data/com.joyplus.tv/image_cache";
+	+ "/Android/data/com.joyplus.tvhelper/image_cache";
 	public static String PATH_BIG_IMAGE = Environment.getExternalStorageDirectory()
-	+ "/Android/data/com.joyplus.tv/bg_image_cache";
+	+ "/Android/data/com.joyplus.tvhelper/bg_image_cache";
 	public static String PATH_HEAD = Environment.getExternalStorageDirectory()
 			+ "/joy/admin/";
 	public static String TV_LIVING_FILE_PATH = Environment.getExternalStorageDirectory()
