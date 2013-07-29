@@ -122,8 +122,8 @@ public class XunLeiLXActivity extends Activity {
 			
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
 		}
-		userNameEdit.setText("13918413043@163.com");
-		passwdEdit.setText("6105586");
+//		userNameEdit.setText("13918413043@163.com");
+//		passwdEdit.setText("6105586");
 		
 		
 		addViewListener();
