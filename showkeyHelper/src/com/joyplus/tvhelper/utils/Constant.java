@@ -11,7 +11,7 @@ public class Constant {
 //	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
 	 public static String APPKEY = "ijoyplus_android_0001bj";
 	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
-	 public static final String URL_FAQ = "http://tt.yue001.com:8080/help.html";//视频直播源
+	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
 		 
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 

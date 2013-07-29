@@ -409,8 +409,15 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
 						String push_url = getUrl(item.getString("file_url"));
 						String downLoad_url = Utils.getRedirectUrl(push_url);
-						if(downLoad_url.contains(".m3u8")){
-							Log.e(TAG, "file_url is m3u8 file " + downLoad_url);
+						boolean isSupport = true;
+						for(int j=0; i<Constant.video_dont_support_extensions.length; j++){
+							if(downLoad_url.contains(Constant.video_dont_support_extensions[j])){
+								Log.e(TAG, "not support down load m3u8 !");
+								isSupport = false;
+								break;
+							}
+						}
+						if(!isSupport){
 							continue;
 						}
 						info.setPush_id(item.getInt("id"));
@@ -600,9 +607,11 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					movieDownLoadInfo.setPush_id(data.getInt("id"));
 					String downLoad_url = Utils.getRedirectUrl(push_url);
 					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
-					if(downLoad_url.contains(".m3u8")){
-						Log.e(TAG, "not support down load m3u8 !");
-						return ; 
+					for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
+						if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
+							Log.e(TAG, "not support down load m3u8 !");
+							return ; 
+						}
 					}
 					movieDownLoadInfo.setName(movie_file_name);
 					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
@@ -620,6 +629,16 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						downloadManager.startTast(movieTask);
 						services.updateMovieDownLoadInfo(currentMovieInfo);
 					}
+					break;
+				case 10:
+					JSONObject json_accept = new JSONObject();
+					try {
+						json_accept.put("msg_type", 3);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					myClient.sendMessage(json_accept);
 					break;
 				default:
 					break;
