@@ -215,6 +215,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					adpter_downloading.notifyDataSetChanged();
 					break;
 				case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+					Log.i(TAG, "PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE--->Edit");
 					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					dbService.updateMovieDownLoadInfo(info);
 					Intent intentpause = new Intent(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
@@ -402,7 +403,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			case 1:
 				for(int i=0; i<FayeService.movieDownLoadInfos.size(); i++){
 					PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(i);
-					if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_DOWNLOADING){
+					if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_DOWNLOADING
+							||info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD){
 						downloadManager.pauseTask(info.getTast());
 						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 					}

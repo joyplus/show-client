@@ -26,6 +26,7 @@ import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.adapter.PushedApkAdapter;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
+import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
@@ -212,7 +213,8 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			layout2.setVisibility(View.VISIBLE);
 			for(int i=0; i<FayeService.userPushApkInfos.size(); i++){
 				PushedApkDownLoadInfo info = FayeService.userPushApkInfos.get(i);
-				if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING){
+				if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING
+						||info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD){
 					downloadManager.pauseTask(info.getTast());
 					info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 				}

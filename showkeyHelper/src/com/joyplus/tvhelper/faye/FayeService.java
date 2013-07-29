@@ -832,6 +832,109 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //			return;
 //		}
 //		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the Faile");
+		if (currentUserApkInfo != null
+				&& uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())) {
+			
+			switch (currentUserApkInfo.getDownload_state()) {
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_STARTED:
+				case DownloadTask.STATE_CONNECTING:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
+				case DownloadTask.STATE_FINISHED:
+					break;
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+					break;
+				case DownloadTask.STATE_PAUSED:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+				case DownloadTask.STATE_FAILED:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+
+				default:
+					break;
+				}
+				break; 
+			default:
+				break;
+			}
+		}
+		
+		if (currentNotUserApkInfo != null
+				&& uiid.equalsIgnoreCase(currentNotUserApkInfo.getTast().getUUId())) {
+			
+			switch (currentNotUserApkInfo.getDownload_state()) {
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+
+				switch (currentNotUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_STARTED:
+				case DownloadTask.STATE_CONNECTING:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
+				case DownloadTask.STATE_FINISHED:
+					break;
+				case DownloadTask.STATE_DOWNLOADING:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+					break;
+				case DownloadTask.STATE_PAUSED:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+				case DownloadTask.STATE_FAILED:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+
+				default:
+					break;
+				}
+				break; 
+			default:
+				break;
+			}
+		}
+		
+		if (currentMovieInfo != null
+				&& uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())) {
+			
+			switch (currentMovieInfo.getDownload_state()) {
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+
+				switch (currentMovieInfo.getTast().getState()) {
+				case DownloadTask.STATE_STARTED:
+				case DownloadTask.STATE_CONNECTING:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
+				case DownloadTask.STATE_FINISHED:
+					break;
+				case DownloadTask.STATE_DOWNLOADING:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+					break;
+				case DownloadTask.STATE_PAUSED:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+				case DownloadTask.STATE_FAILED:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+
+				default:
+					break;
+				}
+				break; 
+			default:
+				break;
+			}
+		}
+		
+
 	}
 
 	@Override
