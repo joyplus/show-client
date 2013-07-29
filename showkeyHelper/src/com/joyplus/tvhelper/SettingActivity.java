@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -181,9 +182,16 @@ public class SettingActivity extends Activity implements OnClickListener{
 			layout_about.requestFocus();
 			break;
 		case R.id.layout_refressPin:
-			showDialog(0);
-			sendBroadcast(new Intent(Global.ACTION_PINCODE_REFRESH));
-			new Thread(new GetPinCodeTask()).start();
+			if(HttpUtils.isNetworkAvailable(this)){
+				
+				showDialog(0);
+				sendBroadcast(new Intent(Global.ACTION_PINCODE_REFRESH));
+				new Thread(new GetPinCodeTask()).start();
+			}else {
+				
+				Utils.showToast(this, "检查网络设置");
+			}
+			
 			break;
 		case R.id.layout_deleteApk:
 			isdelete = !isdelete;
