@@ -114,17 +114,16 @@ public class XunLeiLXActivity extends Activity {
 		if(XunLeiLiXianUtil.getLoginUserName(getApplicationContext()) != null 
 				&& !XunLeiLiXianUtil.getLoginUserName(getApplicationContext()).equals("")){
 			
-//			userNameEdit.setText("13918413043@163.com");
 			userNameEdit.setText(XunLeiLiXianUtil.getLoginUserName(getApplicationContext()));
 		}
 		
 		if(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()) != null
 				&& !XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()).equals("")){
 			
-//			passwdEdit.setText("6105586");
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
 		}
-//		userNameEdit.setText("13918413043@163.com");
+		userNameEdit.setText("13918413043@163.com");
+		passwdEdit.setText("6105586");
 		
 		
 		addViewListener();
@@ -316,6 +315,23 @@ public class XunLeiLXActivity extends Activity {
 						}
 					}
 				});
+		
+		playerListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				
+				if(!hasFocus){
+					
+					if(expandFlag != -1){
+						
+						playerListView.collapseGroup(expandFlag);
+						expandFlag = -1;
+					}
+				}
+			}
+		});
 		
 		playerListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 			

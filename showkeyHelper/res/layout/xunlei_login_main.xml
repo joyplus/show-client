@@ -63,7 +63,7 @@
                     <RelativeLayout
                         android:id="@+id/rl_username"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent" >
 
                         <ImageView
                             android:id="@+id/iv_username"
@@ -125,10 +125,10 @@
                             android:layout_toRightOf="@id/iv_passwd"
                             android:background="@android:color/transparent"
                             android:hint="@string/login_xunlei_passwd_hint"
+                            android:inputType="textPassword"
                             android:singleLine="true"
                             android:textColorHint="#979797"
-                            android:textSize="@dimen/min_text_size" 
-                            android:inputType="textPassword"/>
+                            android:textSize="@dimen/min_text_size" />
                     </RelativeLayout>
                 </RelativeLayout>
 
@@ -141,8 +141,8 @@
                     android:layout_marginRight="@dimen/lx_padding_left"
                     android:layout_marginTop="46dp"
                     android:background="@drawable/xunlei_login_btn_bg"
-                    android:textColor="@color/xunlei_login_btn_textcolor"
                     android:text="@string/login_xunlei_login"
+                    android:textColor="@color/xunlei_login_btn_textcolor"
                     android:textSize="@dimen/min_text_size" />
             </RelativeLayout>
 
@@ -277,8 +277,8 @@
                     android:layout_marginRight="@dimen/lx_padding_left"
                     android:layout_marginTop="51dp"
                     android:background="@drawable/xunlei_login_btn_bg"
-                    android:textColor="@color/xunlei_login_btn_textcolor"
                     android:text="@string/logout_logout"
+                    android:textColor="@color/xunlei_login_btn_textcolor"
                     android:textSize="@dimen/min_text_size" />
             </RelativeLayout>
         </FrameLayout>
@@ -299,32 +299,74 @@
                 android:text="@string/login_list_title"
                 android:textColor="#414850"
                 android:textSize="@dimen/max_text_size" />
-            <Button 
+
+            <Button
                 android:id="@+id/bt_back"
                 android:layout_width="133dp"
                 android:layout_height="45dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginRight="34dp"
-                android:textColor="@color/common_black_btn_textcolor"
-                android:background="@drawable/xunlei_return_btn_bg"
-                android:textSize="@dimen/mid_text_size"
-                android:text="@string/button_back"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"/>
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="34dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/xunlei_return_btn_bg"
+                android:text="@string/button_back"
+                android:textColor="@color/common_black_btn_textcolor"
+                android:textSize="@dimen/mid_text_size" />
 
-            <TextView 
+            <TextView
                 android:id="@+id/tv_bg_line"
-                android:layout_height="1dp"
                 android:layout_width="match_parent"
-                android:background="@drawable/divider_line"
-                android:layout_below="@id/tv_list_tittle"/>
+                android:layout_height="1dp"
+                android:layout_below="@id/tv_list_tittle"
+                android:background="@drawable/divider_line" />
+
             <ExpandableListView
                 android:id="@+id/lv_movie"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_bg_line"
-                android:divider="@color/light_white"/>
+                android:divider="@color/light_white" />
         </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="85dp"
+        android:paddingRight="@dimen/activity_right_margin" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_notice" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="遥控器按"
+            android:textColor="#f0f0f0"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/notice_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\t返回"
+            android:textColor="#d89026"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/notice_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\t离开"
+            android:textColor="#f0f0f0"
+            android:textSize="20dp" />
     </LinearLayout>
 
 </RelativeLayout>

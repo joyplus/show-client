@@ -1,84 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_bottom_margin"
-    android:paddingLeft="@dimen/activity_left_margin"
-    android:paddingRight="@dimen/activity_right_margin"
-    android:paddingTop="@dimen/activity_top_margin" >
-
-    <TextView
-        android:id="@+id/tv_live_src_update_title"
-        android:layout_width="240dp"
-        android:layout_height="@dimen/list_top_margin"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/bg_color_zhibo"
-        android:gravity="center"
-        android:text="直播视频源"
-        android:textColor="#F2F2F2"
-        android:textSize="@dimen/max_text_size" />
+    android:layout_height="match_parent" >
 
     <RelativeLayout
-        android:id="@+id/rl_cnter"
         android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:layout_below="@id/tv_live_src_update_title"
-        android:background="@color/bg_color_zhibo" >
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_bottom_margin"
+        android:paddingLeft="@dimen/activity_left_margin"
+        android:paddingRight="@dimen/activity_right_margin"
+        android:paddingTop="@dimen/activity_top_margin" >
 
         <TextView
-            android:id="@+id/tv_live_src_update_supports"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="37dp"
-            android:text="支持主流直播电视源更新"
+            android:id="@+id/tv_live_src_update_title"
+            android:layout_width="240dp"
+            android:layout_height="@dimen/list_top_margin"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/bg_color_zhibo"
+            android:gravity="center"
+            android:text="直播视频源"
             android:textColor="#F2F2F2"
             android:textSize="@dimen/max_text_size" />
 
-        <Button
-            android:id="@+id/bt_back"
-            android:layout_width="133dp"
-            android:layout_height="45dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="34dp"
-            android:text="@string/button_back"
-            android:background="@drawable/xunlei_return_btn_bg"
-            android:textColor="@color/common_white_btn_textcolor"
-            android:textSize="@dimen/mid_text_size" />
+        <RelativeLayout
+            android:id="@+id/rl_cnter"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:layout_below="@id/tv_live_src_update_title"
+            android:background="@color/bg_color_zhibo" >
 
-        <!--
-             <Button
-            android:id="@+id/bt_auto_update"
-            android:layout_width="133dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="27dp"
-            android:layout_toLeftOf="@id/bt_back"
-            android:background="@drawable/tv_update_return_btn_bg"
-            android:text="自动更新"
-            android:textColor="#F0F0F0"
-            android:textSize="@dimen/mid_text_size" />
-        -->
+            <TextView
+                android:id="@+id/tv_live_src_update_supports"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="37dp"
+                android:text="支持主流直播电视源更新"
+                android:textColor="#F2F2F2"
+                android:textSize="@dimen/max_text_size" />
+
+            <Button
+                android:id="@+id/bt_back"
+                android:layout_width="133dp"
+                android:layout_height="45dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="34dp"
+                android:background="@drawable/xunlei_return_btn_bg"
+                android:text="@string/button_back"
+                android:textColor="@color/common_white_btn_textcolor"
+                android:textSize="@dimen/mid_text_size" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_gv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rl_cnter"
+            android:background="#F2F2F2"
+            android:paddingBottom="95dp"
+            android:paddingTop="69dp" >
+
+            <GridView
+                android:id="@+id/gridview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:numColumns="4"
+                android:verticalSpacing="5dp" >
+            </GridView>
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/rl_cnter"
-        android:background="#F2F2F2"
-        android:paddingBottom="95dp"
-        android:paddingTop="69dp" >
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="85dp"
+        android:paddingRight="@dimen/activity_right_margin">
 
-        <GridView
-            android:id="@+id/gridview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="4"
-            android:verticalSpacing="5dp" 
-            android:gravity="center">
-        </GridView>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_notice" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="遥控器按"
+            android:textColor="#f0f0f0"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/notice_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\t返回"
+            android:textColor="#d89026"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/notice_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\t离开"
+            android:textColor="#f0f0f0"
+            android:textSize="20dp" />
     </LinearLayout>
 
 </RelativeLayout>
