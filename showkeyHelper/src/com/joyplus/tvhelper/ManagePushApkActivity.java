@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -64,11 +65,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				adpter.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNLOAD_RECIVED.equals(action)){
 				Log.d(TAG, "receve --- > " + Global.ACTION_DOWNLOAD_RECIVED);
-				if(FayeService.userPushApkInfos.size() == 0){
-					editeButton.setEnabled(false);
-				}else{
-					editeButton.setEnabled(true);
-				}
+				updateEditBottn();
 				layout2.setVisibility(View.GONE);
 				layout1.setVisibility(View.VISIBLE);
 				backButton.requestFocus();
@@ -114,11 +111,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 						valueText.setText(100+"%");
 					}
 				}
-				if(FayeService.userPushApkInfos.size() == 0){
-					editeButton.setEnabled(false);
-				}else{
-					editeButton.setEnabled(true);
-				}
+				updateEditBottn();
 				layout2.setVisibility(View.GONE);
 				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
@@ -128,11 +121,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			}else if(Global.ACTION_DOWNL_INSTALL_FAILE.equals(action)){
 				Log.d(TAG, "ManagePushApkActivity onReceive" + action);
 				handler.removeMessages(MESSAGE_UPDATE_INSTALLE_PROGRESS);
-				if(FayeService.userPushApkInfos.size() == 0){
-					editeButton.setEnabled(false);
-				}else{
-					editeButton.setEnabled(true);
-				}
+				updateEditBottn();
 				layout2.setVisibility(View.GONE);
 				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
@@ -156,11 +145,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		list = (ListView) findViewById(R.id.listView);
 		pincodeTextView = (TextView) findViewById(R.id.pincode_text);
 		displayPincode();
-		if(FayeService.userPushApkInfos.size() == 0){
-			editeButton.setEnabled(false);
-		}else{
-			editeButton.setEnabled(true);
-		}
+		updateEditBottn();
 		layout2.setVisibility(View.GONE);
 		layout1.setVisibility(View.VISIBLE);
 		for(PushedApkDownLoadInfo info: FayeService.userPushApkInfos){
@@ -354,5 +339,12 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 //		}
 //		Log.d(TAG, displayString);
 		pincodeTextView.setText("PIN:\t" + pincode);
+	}
+	private void updateEditBottn(){
+		if(FayeService.userPushApkInfos.size()>0){
+			editeButton.setVisibility(View.VISIBLE);
+		}else{
+			editeButton.setVisibility(View.INVISIBLE);
+		}
 	}
 }

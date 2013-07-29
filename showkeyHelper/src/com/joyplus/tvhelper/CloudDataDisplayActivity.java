@@ -302,6 +302,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			updateEditBottn();
 			break;
 		case R.id.title_downloading:
+			for(PushedMovieDownLoadInfo info : FayeService.movieDownLoadInfos){
+				info.setDownload_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+			}
 			selectedIndex = 1;
 			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
 			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
@@ -314,6 +317,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			updateEditBottn();
 			break;
 		case R.id.title_play_history:
+			playinfos = dbService.queryMoviePlayHistoryList();
+			adpter_play_history = new MoviePlayHistoryAdapter(CloudDataDisplayActivity.this, playinfos);
 			selectedIndex = 0;
 			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
 			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
@@ -445,9 +450,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	
 	private void updateEditBottn(){
 		if(((BaseAdapter)listView.getAdapter()).getCount()>0){
-			editeButton.setEnabled(true);
+			editeButton.setVisibility(View.VISIBLE);
 		}else{
-			editeButton.setEnabled(false);
+			editeButton.setVisibility(View.INVISIBLE);
 		}
 	}
 	
