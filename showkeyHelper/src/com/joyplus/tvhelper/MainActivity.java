@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
@@ -115,18 +116,36 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		headers.put("app_key", Constant.APPKEY);
 		app.setHeaders(headers);
 	}
+	
+	private long exitTime = 0;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-//		switch (keyCode) {
+		switch (keyCode) {
 //		case KeyEvent.KEYCODE_DPAD_LEFT:
 //			layout.showPre();
 //			break;
 //		case KeyEvent.KEYCODE_DPAD_RIGHT:
 //			layout.showNext();
 //			break;
-//		}
+		case KeyEvent.KEYCODE_BACK:
+			if ((System.currentTimeMillis() - exitTime) > 2000) {
+//				Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+
+				Toast toast = new Toast(this);
+				View v = getLayoutInflater().inflate(R.layout.toast_textview, null);
+				toast.setView(v);
+				toast.setDuration(Toast.LENGTH_SHORT);
+				toast.show();
+				exitTime = System.currentTimeMillis();
+			} else {
+				finish();
+				android.os.Process.killProcess(android.os.Process.myPid());
+				System.exit(0);
+			}
+			return true;
+		}
 		return super.onKeyDown(keyCode, event);
 	}
 	
