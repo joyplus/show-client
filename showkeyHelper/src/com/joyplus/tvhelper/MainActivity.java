@@ -32,7 +32,6 @@ import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tvhelper.utils.Constant;
-import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
@@ -448,7 +447,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			params.put("mac_address", Utils.getMacAdd());
 			params.put("client", new Build().MODEL);
 			Log.d(TAG, "client = " + new Build().MODEL);
-			String str = HttpTools.post(MainActivity.this, Global.serverUrl+"/generatePinCode", params);
+			String str = HttpTools.post(MainActivity.this, Constant.BASE_URL+"/generatePinCode", params);
 			Log.d(TAG, str);
 			try {
 				JSONObject data = new JSONObject(str);

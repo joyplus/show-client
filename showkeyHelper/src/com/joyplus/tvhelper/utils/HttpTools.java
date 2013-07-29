@@ -139,7 +139,7 @@ public class HttpTools {
 //			reqeust.setHeader("User-Agent",
 //					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
 //			reqeust.setHeaders(headers);
-			reqeust.setHeader("app_key", Global.app_key);
+			reqeust.setHeader("app_key", Constant.APPKEY);
 			reqeust.setEntity(p_entity);
 			res = getHttpClient().execute(reqeust);
 			if (res != null
@@ -184,7 +184,7 @@ public class HttpTools {
 		String result = null;
 		HttpResponse res;
 		HttpGet reqeust = new HttpGet(url);
-		reqeust.setHeader("app_key", Global.app_key);
+		reqeust.setHeader("app_key", Constant.APPKEY);
 		try {
 			res = getHttpClient().execute(reqeust);
 			if (res != null

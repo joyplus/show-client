@@ -6,77 +6,13 @@ public class Constant {
 	
 	public static boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
 	
-//	public static final String APPKEY_TOP = "ijoyplus_android_0001";//正式
-//	// 正式环境
-//	public static final String BASE_URL_TOP = "http://api.joyplus.tv/joyplus-service/index.php/";//正式
-//	public static boolean TestEnv = false;
-//	public static  String BASE_URL = "http://api.joyplus.tv/joyplus-service/index.php/";
-//	public static String DEFAULT_APPKEY = "ijoyplus_android_0001";
-//	public static String APPKEY = "ijoyplus_android_0001";
-//	public static final String TV_LIVING_BASE_URL = "tt.showkey.tv";//视频直播源
-//	public static final String FAYESERVERURL = "http://comet.joyplus.tv:8080/bindtv";
-//	public static final String FAYESERVERURL_CHECKBAND = "http://comet.joyplus.tv:8080/api/check_binding";
-	
-//	
-	
-	/*
-	 * test: 新的测试环境： 测试环境：
-	 * 
-	 * 1：service: apitest.joyplus.tv/joyplus-service/index.php
-	 * 
-	 * app_key:
-	 * 
-	 * Android:ijoyplusandroid0001bj
-	 * 
-	 * IOS: ijoyplusios001bj
-	 * 
-	 * 
-	 * 2：cms cms-test.yue001.com/manager/index.php
-	 */
 	
 //	//测试环境控制
-	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
-	public static final String BASE_URL_TOP = "http://apitest.yue001.com/joyplus-service/index.php/";//测试
-	public static boolean TestEnv = true;
-////	
-////	//测试环境
-	 public static  String BASE_URL =
-	 "http://apitest.yue001.com/joyplus-service/index.php/";
-	 public static String DEFAULT_APPKEY = "ijoyplus_android_0001bj";
+//	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
 	 public static String APPKEY = "ijoyplus_android_0001bj";
-
-	 public static final String FAYESERVERURL =
-	 "http://comettest.joyplus.tv:8000/bindtv";//测试
-	 public static final String FAYESERVERURL_CHECKBAND =
-	 "http://comettest.joyplus.tv:8000/api/check_binding";//测试
-	 public static final String TV_LIVING_BASE_URL = "http://tt.yue001.com:8080";//视频直播源
-
-	
-	// 我们的sina账号
-	public static String SINA_CONSUMER_KEY = "1490285522";
-	public static String SINA_CONSUMER_SECRET = "f9ebc3ca95991b6dfce2c1608687e92b";
-	public static String TECENTAPPID = "100317415";
-	public static String SINA_REDIRECTURL = "https://api.weibo.com/oauth2/default.html";
-	
-	
-	// Test Env parse
-	public static String Parse_AppId = "FtAzML5ln4zKkcL28zc9XR6kSlSGwXLdnsQ2WESB";
-	public static String Parse_ClientKey = "YzMYsyKNV7ibjZMfIDSGoV5zxsylV4evtO8x64tl";
-
-	// Production Env
-	// public static String Parse_AppId =
-	// "UBgv7IjGR8i6AN0nS4diS48oQTk6YErFi3LrjK4P";
-	// public static String Parse_ClientKey =
-	// "Y2lKxqco7mN3qBmZ05S8jxSP8nhN92hSN4OHDZR8";
-
-	// faye 相关（二维码扫描）
-	public static final String FAYECHANNEL_TV_BASE = "/screencast/CHANNEL_TV_";
-	public static final String FAYECHANNEL_TV_HEAD = "/screencast/";
-	public static final String FAYECHANNEL_MOBILE_BASE = "/screencast/CHANNEL_MOBILE_";
-	public static final String CHANNELHEADER = "joy";
-
-	
-	
+	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
+	 public static final String URL_FAQ = "http://tt.yue001.com:8080/help.html";//视频直播源
+		 
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 
 	

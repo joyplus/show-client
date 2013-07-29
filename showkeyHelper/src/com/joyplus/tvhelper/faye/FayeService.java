@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,6 +41,7 @@ import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
@@ -256,8 +256,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		movieDownLoadInfos = services.queryMovieDownLoadInfos();
 		isSystemApp = isSystemApp();
 		Log.d(TAG, channel);
-		URI url = URI.create(Global.serverUrl+"/uploadApk");
-		Log.d(TAG, "Server----->" + Global.serverUrl+"/uploadApk");
+		URI url = URI.create(Constant.BASE_URL+"/uploadApk");
+		Log.d(TAG, "Server----->" + Constant.BASE_URL+"/uploadApk");
 		Log.d(TAG, "channel----->" + channel);
 		myClient = new FayeClient(handler, url, channel);
 		myClient.setFayeListener(this);
@@ -309,7 +309,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				// TODO Auto-generated method stub
 //				infolist = services.GetPushedApklist(infolist);
 				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
-				String url = Global.serverUrl + "/silent_app?app_key=" + Global.app_key 
+				String url = Constant.BASE_URL + "/silent_app?app_key=" + Constant.APPKEY 
 						+ "&mac_address=" + Utils.getMacAdd() 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
@@ -394,7 +394,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				// TODO Auto-generated method stub
 //				infolist = services.GetPushedApklist(infolist);
 				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
-				String url = Global.serverUrl + "/pushVodHistories?app_key=" + Global.app_key 
+				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
 						+ "&mac_address=" + Utils.getMacAdd() 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
@@ -447,7 +447,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				07-25 14:53:32.444: D/FayeService(3890): http://tt.yue001.com:8080/pushMsgHistories?app_key=ijoyplus_android_0001bj&mac_address=0:9d:b:0:7d:b8&page_num=1&page_size=50
 
 				Log.d(TAG, "infolist size" + userPushApkInfos.size());
-				String url = Global.serverUrl + "/pushMsgHistories?app_key=" + Global.app_key 
+				String url = Constant.BASE_URL + "/pushMsgHistories?app_key=" + Constant.APPKEY 
 						+ "&mac_address=" + Utils.getMacAdd() 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
@@ -691,7 +691,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String url = Global.serverUrl + "/updateHistory?app_key=" + Global.app_key 
+				String url = Constant.BASE_URL + "/updateHistory?app_key=" + Constant.APPKEY 
 						+ "&mac_address=" + Utils.getMacAdd()
 						+ "&id=" + id;
 				Log.d(TAG, url);
@@ -708,7 +708,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				String url = Global.serverUrl + "/updateVodHistory?app_key=" + Global.app_key 
+				String url = Constant.BASE_URL + "/updateVodHistory?app_key=" + Constant.APPKEY 
 						+ "&mac_address=" + Utils.getMacAdd()
 						+ "&id=" + id;
 				Log.d(TAG, url);
@@ -893,7 +893,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				services.updateApkInfo(currentUserApkInfo);
 				currentUserApkInfo = null;
 				startNextUserApkDownLoad();
-				File f;
 			}
 			
 			return ;

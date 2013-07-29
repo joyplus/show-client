@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -132,7 +133,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 		            return true;
 		          }
 		    });
-		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
+//		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
+		webView.loadUrl(Constant.URL_FAQ +"?"+System.currentTimeMillis());
 		
 	}
 
@@ -260,7 +262,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			params.put("mac_address", Utils.getMacAdd());
 			params.put("client", new Build().MODEL);
 //			Log.d(TAG, "client = " + new Build().MODEL);
-			String str = HttpTools.post(SettingActivity.this, Global.serverUrl+"/generatePinCode", params);
+			String str = HttpTools.post(SettingActivity.this, Constant.BASE_URL+"/generatePinCode", params);
 			Log.d(TAG, str);
 			try {
 				JSONObject data = new JSONObject(str);

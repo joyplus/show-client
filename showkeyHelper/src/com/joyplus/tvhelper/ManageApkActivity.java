@@ -31,8 +31,6 @@ import android.widget.TextView;
 
 import com.joyplus.tvhelper.adapter.ApkAdapter;
 import com.joyplus.tvhelper.entity.ApkInfo;
-import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
-import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.ui.RoundProgressBar;
 import com.joyplus.tvhelper.utils.PackageUtils;
 

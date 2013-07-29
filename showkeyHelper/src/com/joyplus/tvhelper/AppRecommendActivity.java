@@ -11,13 +11,11 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -302,7 +300,7 @@ public class AppRecommendActivity extends Activity {
 	
 	private void getAppRecommendServiceData(){
 		
-		String url = Constant.TV_LIVING_BASE_URL + "/top_app";
+		String url = Constant.BASE_URL + "/top_app";
 		getServiceData(url, "initAppRecommendServiceData");
 	}
 	

@@ -449,7 +449,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 	
 	private void getTvLivingServiceData(){
 		
-		String url = Constant.TV_LIVING_BASE_URL + "/living_res";
+		String url = Constant.BASE_URL + "/living_res";
 		getServiceData(url, "initTvLivingServiceData");
 	}
 	

@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.joyplus.tvhelper.faye.WebSocketClient.Listener;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
 
@@ -306,7 +307,7 @@ public class FayeClient implements Listener {
             json.put(KEY_CLIENT_ID, mFayeClientId);
             json.put(KEY_SUBSCRIPTION, mActiveSubChannel);
 		    JSONObject json1 = new JSONObject();
-		    json1.put("app_key", Global.app_key);
+		    json1.put("app_key", Constant.APPKEY);
 		    json.put("ext", json1);
             if (null != mConnectionExtension) {
 
@@ -380,7 +381,7 @@ public class FayeClient implements Listener {
             json.put(KEY_DATA, message);
             json.put(KEY_ID, messageId);
             JSONObject json1 = new JSONObject();
-		    json1.put("app_key", Global.app_key);
+		    json1.put("app_key", Constant.APPKEY);
 		    json.put("ext", json1);
             if (null != extension) {
                 json.put(KEY_EXT, extension);
