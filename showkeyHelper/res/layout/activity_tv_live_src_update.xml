@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:background="@color/bg_color_zhibo"
             android:gravity="center"
-            android:text="直播视频源"
+            android:text="电视直播源"
             android:textColor="#F2F2F2"
             android:textSize="@dimen/max_text_size" />
 
