@@ -27,6 +27,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -35,6 +36,7 @@ import com.joyplus.tvhelper.utils.Utils;
 public class SettingActivity extends Activity implements OnClickListener{
 	
 	private static final int MESSAGE_GETPINCODE_SUCCESS = 0;
+	private static final int MESSAGE_GETPINCODE_FAILE = MESSAGE_GETPINCODE_SUCCESS+1;
 	private static final String TAG = "SettingActivity";
 	private Button btn_setting;
 	private Button btn_help;
@@ -59,10 +61,13 @@ public class SettingActivity extends Activity implements OnClickListener{
 			switch (msg.what) {
 			case MESSAGE_GETPINCODE_SUCCESS:
 				displayPincode();
-//				startService(new Intent(SettingActivity.this, FayeService.class));
+				startService(new Intent(SettingActivity.this, FayeService.class));
 				removeDialog(0);
 				break;
-
+			case MESSAGE_GETPINCODE_FAILE:
+				Toast.makeText(SettingActivity.this, "请求pinCode失败", 100).show();
+				removeDialog(0);
+				break;
 			default:
 				break;
 			}
@@ -259,8 +264,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 				mHandler.sendEmptyMessage(MESSAGE_GETPINCODE_SUCCESS);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				Toast.makeText(SettingActivity.this, "请求pinCode失败", 100).show();
 				e.printStackTrace();
+				mHandler.sendEmptyMessage(MESSAGE_GETPINCODE_FAILE);
 			}
 			  
 		}
