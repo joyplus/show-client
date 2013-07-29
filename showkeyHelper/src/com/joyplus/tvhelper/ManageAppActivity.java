@@ -36,6 +36,8 @@ public class ManageAppActivity extends Activity implements OnClickListener{
 		layout1.setOnClickListener(this);
 		layout2.setOnClickListener(this);
 		getSize();
+		
+		layout1.requestFocus();
 //		progressBar.setProgress(50);
 //		progressBar.startCartoom(10);
 	}
