@@ -9,16 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.joyplus.network.filedownload.model.DownloadTask;
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.utils.PackageUtils;
-import com.joyplus.utils.FileUtil;
 
 public class PushedMovieDownLoadAdapter extends BaseAdapter {
 
@@ -78,8 +75,60 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 			holder.progress.setMax(100);
 		}
 		holder.statue.setTextColor(Color.GRAY);
+		
+//		DownloadTask tempTask = info.getTast();
+//		switch (info.getDownload_state()) {
+//		case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+//		case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+//		case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+//
+//			switch (tempTask.getState()) {
+//			case DownloadTask.STATE_STARTED:
+//			case DownloadTask.STATE_CONNECTING:
+//			case DownloadTask.STATE_FINISHED:
+//				break;
+//			case DownloadTask.STATE_DOWNLOADING:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+//				break;
+//			case DownloadTask.STATE_PAUSED:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//				break;
+//			case DownloadTask.STATE_FAILED:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//				break;
+//
+//			default:
+//				break;
+//			}
+//			break; 
+//		case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+//			switch (tempTask.getState()) {
+//			case DownloadTask.STATE_STARTED:
+//			case DownloadTask.STATE_CONNECTING:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//				break;
+//			case DownloadTask.STATE_FINISHED:
+//				break;
+//			case DownloadTask.STATE_DOWNLOADING:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+//				break;
+//			case DownloadTask.STATE_PAUSED:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//				break;
+//			case DownloadTask.STATE_FAILED:
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//				break;
+//
+//			default:
+//				break;
+//			}
+//		default:
+//			break;
+//		}
+		
+		
 		switch (info.getDownload_state()) {
-		case PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
+		case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
 			holder.statue.setText("等待下载");
 //			holder.progress.setProgress(progress);
 			holder.progress.setProgress(info.getTast().getCurLength());
@@ -87,16 +136,25 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressText.setText(progress+"%");
 			break;
-		case PushedApkDownLoadInfo.STATUE_DOWNLOADING://正在下载
+		case PushedMovieDownLoadInfo.STATUE_DOWNLOADING://正在下载
 			holder.statue.setText(getSpeed(info.getTast()));
 			holder.progress.setProgress(info.getTast().getCurLength());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progress.setSecondaryProgress(0);
 			holder.progressText.setText(progress+"%");
 			break;
-		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE://暂停下载
+		case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE://暂停下载
 			holder.statue.setTextColor(Color.RED);
 			holder.statue.setText("已暂停下载");
+			holder.progress.setProgress(0);
+//			holder.progress.setSecondaryProgress(progress);
+			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
+			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
+			holder.progressText.setText(progress+"%");
+			break;
+		case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+			holder.statue.setText("正在暂停");
+			holder.statue.setTextColor(Color.RED);
 			holder.progress.setProgress(0);
 //			holder.progress.setSecondaryProgress(progress);
 			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
@@ -111,15 +169,6 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 //			holder.progressLayout.setTag(info.get_id());
 ////			holder.progressText.setText(info.getProgress()+"%");
 //			break;
-		case PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSEING://下载完成
-			holder.statue.setText("正在暂停");
-			holder.statue.setTextColor(Color.RED);
-			holder.progress.setProgress(0);
-//			holder.progress.setSecondaryProgress(progress);
-			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
-			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
-			holder.progressText.setText(progress+"%");
-			break;
 //		case PushedApkDownLoadInfo.STATUE_INSTALL_FAILE://安装失败
 //			holder.statue.setText("安装失败");
 //			holder.progress.setProgress(progress);
@@ -127,18 +176,19 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 //			holder.progressLayout.setTag(info.get_id());
 //			break;
 		}
+		
 		switch (info.getEdite_state()) {
-		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
-			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING){
+		case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
+			if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_DOWNLOADING){
 				holder.statue_icon.setImageResource(R.drawable.icon_continue);
 			}else{
 				holder.statue_icon.setImageResource(R.drawable.icon_puse);
 			}
 			break;
-		case PushedApkDownLoadInfo.EDITE_STATUE_EDIT:
+		case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
 			holder.statue_icon.setImageResource(R.drawable.item_statue_selete);
 			break;
-		case PushedApkDownLoadInfo.EDITE_STATUE_SELETED:
+		case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
 			holder.statue_icon.setImageResource(R.drawable.item_statue_seleted);
 			break;
 		}
