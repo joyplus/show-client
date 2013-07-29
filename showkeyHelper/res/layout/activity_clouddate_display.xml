@@ -156,7 +156,7 @@
 	       		                />
 	       		        <ListView android:layout_width="fill_parent"
 	       		            android:layout_height="fill_parent"
-	       		            android:layout_marginTop="2dp"
+	       		            android:listSelector="@drawable/bg_content_setting_selector"
 	       		            android:id="@+id/movieList">
 	       		            
 	       		        </ListView>

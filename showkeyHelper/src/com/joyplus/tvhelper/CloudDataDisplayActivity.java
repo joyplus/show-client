@@ -136,6 +136,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		selectedButon.setTextColor(Color.BLACK);
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
+		updateEditBottn();
 		app = (MyApp) getApplication();
 		IntentFilter filter = new IntentFilter(Global.ACTION_DOWNLOAD_PROGRESS);
 		filter.addAction(Global.ACTION_DOWNL_GETSIZE_SUCESS);
@@ -451,6 +452,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private void updateEditBottn(){
 		if(((BaseAdapter)listView.getAdapter()).getCount()>0){
 			editeButton.setVisibility(View.VISIBLE);
+			listView.requestFocus();
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
 		}

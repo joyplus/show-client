@@ -2,7 +2,6 @@
 <RelativeLayout android:layout_width="fill_parent"
     android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 	<LinearLayout android:layout_width="fill_parent"
-	    android:background="@drawable/bg_soft_manager_menu_selector"
 	    android:layout_height="105dp" 
 	    android:gravity="center_vertical"
 	    android:paddingLeft="10dp"

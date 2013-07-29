@@ -60,6 +60,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 				break;
 			 case 1:
 			 	removeDialog(0);
+			 	gridView.requestFocus();
 			 break;
 			// case 2:
 			// String fileName = (String) msg.obj;
@@ -218,6 +219,12 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 	             }
 	               
 	         }
+	        if(apks.size()>0){
+	        	editeButton.setVisibility(View.INVISIBLE);
+	        	gridView.requestFocus();
+	        }else{
+	        	editeButton.setVisibility(View.VISIBLE);
+	        }
 	        layout1.setVisibility(View.VISIBLE);
 			layout2.setVisibility(View.GONE);
 			notice_key.setText("\t返回");
@@ -232,6 +239,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 			for (int i = 0; i < apks.size(); i++) {
 				apks.get(i).setStatue(1);
 			}
+			gridView.requestFocus();
 			adapter.notifyDataSetChanged();
 			cancleButton.requestFocus();
 			break;
@@ -243,6 +251,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 			for (int i = 0; i < apks.size(); i++) {
 				apks.get(i).setStatue(0);
 			}
+			gridView.requestFocus();
 			adapter.notifyDataSetChanged();
 			break;
 		}

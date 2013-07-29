@@ -22,4 +22,15 @@
 	        />
     	</shape>
     </item>
+    <item android:state_selected="true">
+        <shape>
+	        <gradient
+	                android:startColor="#d0d0d0"
+	                android:centerColor="#d0d0d0"
+	                android:centerY="0.75"
+	                android:endColor="#d0d0d0"
+	                android:angle="270"
+	        />
+    	</shape>
+    </item>
 </selector>

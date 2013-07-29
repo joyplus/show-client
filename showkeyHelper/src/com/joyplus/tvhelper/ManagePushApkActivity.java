@@ -339,6 +339,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 	private void updateEditBottn(){
 		if(FayeService.userPushApkInfos.size()>0){
 			editeButton.setVisibility(View.VISIBLE);
+			list.requestFocus();
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
 		}

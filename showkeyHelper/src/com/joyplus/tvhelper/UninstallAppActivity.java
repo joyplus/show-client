@@ -45,6 +45,7 @@ public class UninstallAppActivity extends Activity implements OnItemClickListene
 				switch (msg.what) {
 				case 0:
 					adapter.notifyDataSetChanged();
+					gridView.requestFocus();
 					break;
 				}
 			}
