@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tvhelper.utils.Constant;
@@ -43,6 +44,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	private static final String TAG = "MainActivity";
 	
 	private static final int MESSAGE_GETPINCODE_SUCCESS = 0;
+	private static final int MESSAGE_GETPINCODE_FAILE = MESSAGE_GETPINCODE_SUCCESS+1;
 	
 	private ImageView image_showtui, image_xunlei, image_yuntui, image_zhibo, image_tuijian;
 	
@@ -85,7 +87,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				layout_showtui.requestFocus();
 				startService(new Intent(MainActivity.this, FayeService.class));
 				break;
-
+			case MESSAGE_GETPINCODE_FAILE:
+				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+				break;
 			default:
 				break;
 			}
@@ -107,7 +111,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		layout = (MyScrollLayout) findViewById(R.id.layout);
 		findViews();
 		if(PreferencesUtils.getPincode(this)==null){
-			new Thread(new GetPinCodeTask()).start();
+			if(HttpUtils.isNetworkAvailable(this)){
+				new Thread(new GetPinCodeTask()).start();
+			}else {
+				
+				Utils.showToast(this, "检查网络设置");
+			}
+			
 		}else{
 			mHandler.sendEmptyMessageDelayed((MESSAGE_GETPINCODE_SUCCESS),200);
 		}
@@ -451,6 +461,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 //				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+				mHandler.sendEmptyMessage(MESSAGE_GETPINCODE_FAILE);
 				e.printStackTrace();
 			}
 			  

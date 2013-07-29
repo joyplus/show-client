@@ -185,7 +185,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			if(HttpUtils.isNetworkAvailable(this)){
 				
 				showDialog(0);
-				sendBroadcast(new Intent(Global.ACTION_PINCODE_REFRESH));
+//				sendBroadcast(new Intent(Global.ACTION_PINCODE_REFRESH));
 				new Thread(new GetPinCodeTask()).start();
 			}else {
 				

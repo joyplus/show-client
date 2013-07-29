@@ -123,11 +123,13 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}
 			}else if(Global.ACTION_APK_DELETE_DOWNLOAD.equals(action)){
 				
-			}else if(Global.ACTION_PINCODE_REFRESH.equals(action)){
-				myClient.disconnectFromServer();
-				isNeedReconnect = false;
-				stopSelf();
-			}else if(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE.equals(action)){
+			}
+//			else if(Global.ACTION_PINCODE_REFRESH.equals(action)){
+//				myClient.disconnectFromServer();
+//				isNeedReconnect = false;
+//				stopSelf();
+//			}
+			else if(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE.equals(action)){
 				if(currentMovieInfo ==null){
 					startNextMovieDownLoad();
 				}
@@ -264,7 +266,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		filter.addAction(Global.ACTION_DOWNLOAD_PAUSE);
 		filter.addAction(Global.ACTION_APK_DOWNLOAD_CONTINUE);
 		filter.addAction(Global.ACTION_APK_DELETE_DOWNLOAD);
-		filter.addAction(Global.ACTION_PINCODE_REFRESH);
+//		filter.addAction(Global.ACTION_PINCODE_REFRESH);
 		filter.addAction(Global.ACTION_MOVIE_DELETE_DOWNLOAD);
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
 		filter.addAction(Global.ACTION_NEW_APK_DWONLOAD);
