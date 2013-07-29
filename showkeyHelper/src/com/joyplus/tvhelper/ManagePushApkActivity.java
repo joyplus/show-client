@@ -163,6 +163,9 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		}
 		layout2.setVisibility(View.GONE);
 		layout1.setVisibility(View.VISIBLE);
+		for(PushedApkDownLoadInfo info: FayeService.userPushApkInfos){
+			info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_NOMAL);
+		}
 		adpter = new PushedApkAdapter(ManagePushApkActivity.this,FayeService.userPushApkInfos);
 		list.setAdapter(adpter);
 		list.setOnItemClickListener(this);

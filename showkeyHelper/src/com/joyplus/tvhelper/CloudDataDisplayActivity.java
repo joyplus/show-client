@@ -294,7 +294,11 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			selectedButon = title_downloaded;
 			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
 			selectedButon.setTextColor(Color.BLACK);
+			downloadedMovies = dbService.queryMovieDownLoadedInfos();
+			adpter_downloaded = new MovieDownLoadedAdapter(CloudDataDisplayActivity.this, downloadedMovies);
 			listView.setAdapter(adpter_downloaded);
+			layout2.setVisibility(View.GONE);
+			layout1.setVisibility(View.VISIBLE);
 			updateEditBottn();
 			break;
 		case R.id.title_downloading:
@@ -304,6 +308,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			selectedButon = title_downloading;
 			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
 			selectedButon.setTextColor(Color.BLACK);
+			layout2.setVisibility(View.GONE);
+			layout1.setVisibility(View.VISIBLE);
 			listView.setAdapter(adpter_downloading);
 			updateEditBottn();
 			break;
@@ -315,6 +321,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
 			selectedButon.setTextColor(Color.BLACK);
 			listView.setAdapter(adpter_play_history);
+			layout2.setVisibility(View.GONE);
+			layout1.setVisibility(View.VISIBLE);
 			updateEditBottn();
 			break;
 		case R.id.back_Button:
