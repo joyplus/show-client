@@ -12,10 +12,13 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,6 +42,7 @@ import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.TvLiveInfo;
 import com.joyplus.tvhelper.entity.service.TvLiveViews;
+import com.joyplus.tvhelper.ui.WaitingDialog;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.PackageUtils;
@@ -47,6 +51,8 @@ import com.joyplus.tvhelper.utils.Utils;
 public class TvLiveSrcUpdateActivity extends Activity {
 	
 	public static final String TAG = "TvLiveSrcUpdateActivity";
+	
+	private static final int DIALOG_WAITING = 0;
 	
 	public static final int STRAT_DOWNLOAD_FILE = 0;
 	public static final int DOWNLOAD_FILES_SUCESS = STRAT_DOWNLOAD_FILE+1;
@@ -122,6 +128,8 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		filter.addDataScheme("package");
 		this.registerReceiver(reciver, filter);
 		
+		showDialog(DIALOG_WAITING);
+		
 	}
 	
 	private BroadcastReceiver reciver = new BroadcastReceiver(){
@@ -154,6 +162,31 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		}
 		
 	};
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+
+		default:
+			break;
+		}
+		return super.onCreateDialog(id);
+	}
 	
 	@Override
 	protected void onDestroy() {
@@ -333,6 +366,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		adapter = new TvLiveSrcUpdateAdapter(this, list,aq);
 		gridView.setAdapter(adapter);
 		gridView.requestFocus();
+		removeDialog(DIALOG_WAITING);
 	}
 	
 	private void getLivingUpdateList(){

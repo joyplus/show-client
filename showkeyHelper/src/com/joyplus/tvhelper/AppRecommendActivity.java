@@ -7,10 +7,13 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -33,6 +36,7 @@ import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.AppRecommendInfo;
 import com.joyplus.tvhelper.entity.service.AppRecommendView;
+import com.joyplus.tvhelper.ui.WaitingDialog;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.PackageUtils;
@@ -41,6 +45,8 @@ import com.joyplus.tvhelper.utils.Utils;
 public class AppRecommendActivity extends Activity {
 	
 	public static final String TAG = "AppRecommendActivity";
+	
+	private static final int DIALOG_WAITING = 0;
 	
 //	private List<AppRecommendInfo> list = new ArrayList<AppRecommendInfo>();
 	
@@ -90,6 +96,8 @@ public class AppRecommendActivity extends Activity {
 		IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
 		filter.addDataScheme("package");
 		this.registerReceiver(reciver, filter);
+		
+		showDialog(DIALOG_WAITING);
 	}
 	
 	private BroadcastReceiver reciver = new BroadcastReceiver(){
@@ -124,6 +132,31 @@ public class AppRecommendActivity extends Activity {
 	};
 	
 	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		
+		switch (id) {
+		case DIALOG_WAITING:
+			WaitingDialog dlg = new WaitingDialog(this);
+			dlg.show();
+			dlg.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			dlg.setDialogWindowStyle();
+			return dlg;
+
+		default:
+			break;
+		}
+		return super.onCreateDialog(id);
+	}
+	
+	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		unregisterReceiver(reciver);
@@ -147,6 +180,7 @@ public class AppRecommendActivity extends Activity {
 		
 		adapter.notifyDataSetChanged();
 		gridView.requestFocus();
+		removeDialog(DIALOG_WAITING);
 	}
 	
 	private void initListener(){
