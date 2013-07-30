@@ -569,6 +569,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		case 3:
 			mVideoNameText.setText(mProd_name + " " + mProd_sub_name);
 			break;
+		default:
+			mVideoNameText.setText(mProd_name);
 		}
 	}
 

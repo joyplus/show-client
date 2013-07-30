@@ -326,7 +326,7 @@ public class DBServices {
 		}else{
 			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
 	        		DBConstant.KEY_PLAY_INFO_PUSH_URL + " = ? ", new String[] {
-	        		info.getLocal_url()+ ""
+	        		info.getPush_url()+ ""
 	                }); 
 		}
        
@@ -382,16 +382,18 @@ public class DBServices {
 					DBConstant.KEY_PLAY_INFO_PUSH_URL + " =? ", new String[] {
 	        		 info.getPush_url()}, null, null, null);
 		}
-		
+		boolean flag = false;
 		if(cr!=null){
 			if(cr.moveToNext()){
-				return true;
+				flag =  true;
 			}else{
-				return false;
+				flag = false;
 			}
 		}else{
-			return false;
+			flag  = false;
 		}
-		
+		cr.close();
+		db.close();
+		return flag;
 	}
 }
