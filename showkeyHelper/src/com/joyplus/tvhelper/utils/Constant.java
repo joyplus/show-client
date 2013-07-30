@@ -9,10 +9,17 @@ public class Constant {
 	
 //	//测试环境控制
 //	public static final String APPKEY_TOP = "ijoyplus_android_0001bj";//测试
+//	 public static String APPKEY = "ijoyplus_android_0001bj";
+//	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
+//	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
+	 
+	 
 	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
-	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
-		 
+	 public static final String BASE_URL = "http://172.16.31.64:8030";//视频直播源
+	 public static final String URL_FAQ = "http://172.16.31.64:8030/helptv.html";//视频直播源
+	
+	 public static final String DES_KEY = "adaq8owq";
+	 
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 
 	

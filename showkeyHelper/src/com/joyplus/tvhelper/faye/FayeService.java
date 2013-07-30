@@ -42,6 +42,7 @@ import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.DES;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
@@ -407,7 +408,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					for(int i=0; i<array.length(); i++){
 						JSONObject item = array.getJSONObject(i);
 						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
-						String push_url = getUrl(item.getString("file_url"));
+						String push_url = "";
+						try {
+							push_url = getUrl(item.getString("file_url"));
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							continue;
+						}
 						String downLoad_url = Utils.getRedirectUrl(push_url);
 						boolean isSupport = true;
 						for(int j=0; i<Constant.video_dont_support_extensions.length; j++){
@@ -574,7 +582,13 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 					playDate.prod_type = -11;
 //					playDate.prod_name = json.getString("prod_name");
-					String movie_play_url = getUrl(data.getString("url"));
+					String movie_play_url = null;
+					try {
+						movie_play_url = getUrl(data.getString("url"));
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					if(movie_play_url == null){
 						Log.e(TAG, "movie_play_url error !");
 						return ;
@@ -598,7 +612,13 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				case 6:
 					data = json.getJSONObject("body");
 					PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
-					String push_url = getUrl(data.getString("url"));
+					String push_url = null;
+					try {
+						push_url = getUrl(data.getString("url"));
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					if(push_url == null){
 						Log.e(TAG, "push download url error");
 						return ;
@@ -968,7 +988,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //	mp4{m}http://hot.vrs.sohu.com/ipad1244506_4585881117442_4455827.m3u8?plat=0{mType}hd2{m}http://hot.vrs.sohu.com/ipad1244507_4585881117442_4455828.m3u8?plat=0 
 
 	
-	private String getUrl(String push_urls){
+	private String getUrl(String push_urls) throws Exception{
+		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
+		Log.d(TAG, push_urls);
 		String[] urls = push_urls.split("\\{mType\\}");
 		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 		for(String str : urls){
