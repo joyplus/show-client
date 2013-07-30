@@ -42,7 +42,6 @@ import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Constant;
-import com.joyplus.tvhelper.utils.DES;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
@@ -62,7 +61,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	private static File APK_PATH = null;
 	private static File MOVIE_PATH = null;
-	private boolean isNeedReconnect = false;
+//	private boolean isNeedReconnect = false;
 	
 	public static final int MESSAGE_DOWNLOAD_GET_FILESIE_SUCCESS = 0;
 	public static final int MESSAGE_DOWNLOAD_CREAT_FILE_SUCCESS = 1;
@@ -247,7 +246,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		MOVIE_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/movie");
 		app = (MyApp) getApplication();
 		services = DBServices.getInstance(this);
-		channel = "/" + PreferencesUtils.getChannel(this);
 		downloadManager = DownloadManager.getInstance(this);
 		downloadManager.setDownLoadListner(this);
 		packageInstaller = new PackageInstaller(this);
@@ -256,12 +254,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		notuserPushedApkInfos = services.queryNotUserApkDownLoadInfo();
 		movieDownLoadInfos = services.queryMovieDownLoadInfos();
 		isSystemApp = isSystemApp();
-		Log.d(TAG, channel);
-		URI url = URI.create(Constant.BASE_URL+"/uploadApk");
-		Log.d(TAG, "Server----->" + Constant.BASE_URL+"/uploadApk");
-		Log.d(TAG, "channel----->" + channel);
-		myClient = new FayeClient(handler, url, channel);
-		myClient.setFayeListener(this);
 		IntentFilter filter = new IntentFilter(Global.ACTION_CONFIRM_ACCEPT);
 		filter.addAction(Global.ACTION_CONFIRM_REFUSE);
 		filter.addAction(Global.ACTION_DOWNLOAD_PAUSE);
@@ -293,8 +285,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
+		URI url = URI.create(Constant.BASE_URL+"/uploadApk");
+		channel = "/" + PreferencesUtils.getChannel(this);
+		myClient = new FayeClient(handler, url, channel);
+		Log.d(TAG, "Server----->" + Constant.BASE_URL+"/uploadApk");
+		Log.d(TAG, "channel----->" + channel);
+		myClient.setFayeListener(this);
 		myClient.connectToServer(null); 
-		isNeedReconnect = true;
+//		isNeedReconnect = true;
 		getLostUserPushApk();
 		getLostUserPushMovie();
 		if(isSystemApp()){
@@ -514,9 +512,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->");
-		if(isNeedReconnect){
+//		if(isNeedReconnect){
 			myClient.connectToServer(null);
-		}
+//		}
 	}
 
 	@Override
@@ -581,16 +579,17 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					int push_id = Integer.valueOf(data.getString("id"));
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 					playDate.prod_type = -11;
+					playDate.prod_name = data.getString("name");
 //					playDate.prod_name = json.getString("prod_name");
 					String movie_play_url = null;
 					try {
-						movie_play_url = getUrl(data.getString("url"));
+						movie_play_url = getUrl(data.getString("downurl"));
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					if(movie_play_url == null){
-						Log.e(TAG, "movie_play_url error !");
+						Log.e(TAG, "movie_play_url error !"); 
 						return ;
 					}
 					playDate.prod_url = movie_play_url;
@@ -633,7 +632,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 							return ; 
 						}
 					}
-					movieDownLoadInfo.setName(movie_file_name);
+					movieDownLoadInfo.setName(data.getString("name"));
 					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
 					DownloadTask movieTask = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
 					movieDownLoadInfo.setTast(movieTask);
@@ -989,7 +988,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 
 	
 	private String getUrl(String push_urls) throws Exception{
-		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
+//		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
 		Log.d(TAG, push_urls);
 		String[] urls = push_urls.split("\\{mType\\}");
 		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
