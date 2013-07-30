@@ -433,7 +433,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setPush_url(downLoad_url);
 						String fileName = Utils.getFileNameforUrl(downLoad_url);
 						Log.d(TAG, fileName);
-						info.setName(fileName);
+//						info.setName(fileName);
 						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 						DownloadTask task = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
 						info.setFile_path(MOVIE_PATH.getAbsolutePath() + File.separator + fileName);
@@ -614,7 +614,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
 					String push_url = null;
 					try {
-						push_url = getUrl(data.getString("url"));
+						push_url = getUrl(data.getString("downurl"));
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

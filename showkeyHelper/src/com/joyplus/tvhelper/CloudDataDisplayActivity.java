@@ -162,7 +162,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //				playDate.prod_id = data.getString("id");
 //				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 //				playDate.prod_type = playInfo.getPlay_type();
-//				playDate.prod_name = json.getString("prod_name");
+				playDate.prod_name = playInfo.getName();
 				if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
 					playDate.prod_url = playInfo.getLocal_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
@@ -246,6 +246,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //				playDate.prod_id = data.getString("id");
 //				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 				playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+				playDate.prod_name = info_complete.getName();
 //				playDate.prod_name = json.getString("prod_name");
 				playDate.prod_url = info_complete.getFile_path();
 //				playDate.prod_src = json.getString("prod_src");
@@ -390,6 +391,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 			layout2.setVisibility(View.GONE);
 			layout1.setVisibility(View.VISIBLE);
+			updateEditBottn();
 			break;
 		case R.id.edit_Button:
 			layout1.setVisibility(View.GONE);
