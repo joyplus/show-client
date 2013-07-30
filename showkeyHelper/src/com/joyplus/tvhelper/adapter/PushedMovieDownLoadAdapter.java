@@ -76,57 +76,6 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 		}
 		holder.statue.setTextColor(Color.GRAY);
 		
-//		DownloadTask tempTask = info.getTast();
-//		switch (info.getDownload_state()) {
-//		case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
-//		case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
-//		case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
-//
-//			switch (tempTask.getState()) {
-//			case DownloadTask.STATE_STARTED:
-//			case DownloadTask.STATE_CONNECTING:
-//			case DownloadTask.STATE_FINISHED:
-//				break;
-//			case DownloadTask.STATE_DOWNLOADING:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-//				break;
-//			case DownloadTask.STATE_PAUSED:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-//				break;
-//			case DownloadTask.STATE_FAILED:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-//				break;
-//
-//			default:
-//				break;
-//			}
-//			break; 
-//		case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
-//			switch (tempTask.getState()) {
-//			case DownloadTask.STATE_STARTED:
-//			case DownloadTask.STATE_CONNECTING:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-//				break;
-//			case DownloadTask.STATE_FINISHED:
-//				break;
-//			case DownloadTask.STATE_DOWNLOADING:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-//				break;
-//			case DownloadTask.STATE_PAUSED:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-//				break;
-//			case DownloadTask.STATE_FAILED:
-//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-//				break;
-//
-//			default:
-//				break;
-//			}
-//		default:
-//			break;
-//		}
-		
-		
 		switch (info.getDownload_state()) {
 		case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
 			holder.statue.setText("等待下载");

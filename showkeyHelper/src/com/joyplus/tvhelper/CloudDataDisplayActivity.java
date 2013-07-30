@@ -213,6 +213,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
 					dbService.updateMovieDownLoadInfo(info);
 					adpter_downloading.notifyDataSetChanged();
+					
 					break;
 				case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
 					Log.i(TAG, "PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE--->Edit");
@@ -305,7 +306,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			break;
 		case R.id.title_downloading:
 			for(PushedMovieDownLoadInfo info : FayeService.movieDownLoadInfos){
-				info.setDownload_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
 			}
 			selectedIndex = 1;
 			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);

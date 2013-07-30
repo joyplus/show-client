@@ -130,6 +130,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				stopSelf();
 //			}
 			else if(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE.equals(action)){
+				Log.i(TAG, "receiver---->" + action);
 				if(currentMovieInfo ==null){
 					startNextMovieDownLoad();
 				}
@@ -410,7 +411,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						String push_url = getUrl(item.getString("file_url"));
 						String downLoad_url = Utils.getRedirectUrl(push_url);
 						boolean isSupport = true;
-						for(int j=0; i<Constant.video_dont_support_extensions.length; j++){
+						for(int j=0; j<Constant.video_dont_support_extensions.length; j++){
 							if(downLoad_url.contains(Constant.video_dont_support_extensions[j])){
 								Log.e(TAG, "not support down load m3u8 !");
 								isSupport = false;
@@ -842,8 +843,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 
 				switch (currentUserApkInfo.getTast().getState()) {
 				case DownloadTask.STATE_STARTED:
+//					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
 				case DownloadTask.STATE_CONNECTING:
-					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					
 					break;
 				case DownloadTask.STATE_FINISHED:
 					break;
@@ -860,7 +863,17 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				default:
 					break;
 				}
-				break; 
+				break;
+			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+					break;
+
+				default:
+					break;
+				}
+				break;
 			default:
 				break;
 			}
@@ -876,8 +889,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 
 				switch (currentNotUserApkInfo.getTast().getState()) {
 				case DownloadTask.STATE_STARTED:
+//					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
 				case DownloadTask.STATE_CONNECTING:
-					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					
 					break;
 				case DownloadTask.STATE_FINISHED:
 					break;
@@ -895,6 +910,16 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					break;
 				}
 				break; 
+			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+					break;
+
+				default:
+					break;
+				}
+				break;
 			default:
 				break;
 			}
@@ -903,6 +928,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		if (currentMovieInfo != null
 				&& uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())) {
 			
+			Log.i(TAG, "onDownloadPogressed currentMovieInfo--->getDownload_state" + currentMovieInfo.getDownload_state()
+					+ " currentMovieInfo.getTast().getState():" + currentMovieInfo.getTast().getState());
+			
 			switch (currentMovieInfo.getDownload_state()) {
 			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
 			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
@@ -910,8 +938,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 
 				switch (currentMovieInfo.getTast().getState()) {
 				case DownloadTask.STATE_STARTED:
+//					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
 				case DownloadTask.STATE_CONNECTING:
-					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					
 					break;
 				case DownloadTask.STATE_FINISHED:
 					break;
@@ -929,6 +959,16 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					break;
 				}
 				break; 
+			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+					break;
+
+				default:
+					break;
+				}
+				break;
 			default:
 				break;
 			}
