@@ -1,5 +1,7 @@
 package com.joyplus.tvhelper.entity;
 
+import android.util.Log;
+
 import com.joyplus.network.filedownload.model.DownloadTask;
 
 public class PushedMovieDownLoadInfo {
@@ -57,6 +59,7 @@ public class PushedMovieDownLoadInfo {
 	}
 
 	public void setDownload_state(int download_state) {
+//		Log.i("PushedMovieDownLoadInfo", "download_state--->" + download_state);
 		this.download_state = download_state;
 	}
 

@@ -130,6 +130,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				stopSelf();
 //			}
 			else if(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE.equals(action)){
+				Log.i(TAG, "receiver---->" + action);
 				if(currentMovieInfo ==null){
 					startNextMovieDownLoad();
 				}
@@ -416,7 +417,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						}
 						String downLoad_url = Utils.getRedirectUrl(push_url);
 						boolean isSupport = true;
-						for(int j=0; i<Constant.video_dont_support_extensions.length; j++){
+						for(int j=0; j<Constant.video_dont_support_extensions.length; j++){
 							if(downLoad_url.contains(Constant.video_dont_support_extensions[j])){
 								Log.e(TAG, "not support down load m3u8 !");
 								isSupport = false;
@@ -851,6 +852,148 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //			return;
 //		}
 //		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the Faile");
+		if (currentUserApkInfo != null
+				&& uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())) {
+			
+			switch (currentUserApkInfo.getDownload_state()) {
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_STARTED:
+//					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
+				case DownloadTask.STATE_CONNECTING:
+					
+					break;
+				case DownloadTask.STATE_FINISHED:
+					break;
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+					break;
+				case DownloadTask.STATE_PAUSED:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+				case DownloadTask.STATE_FAILED:
+					currentUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+
+				default:
+					break;
+				}
+				break;
+			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+					break;
+
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		
+		if (currentNotUserApkInfo != null
+				&& uiid.equalsIgnoreCase(currentNotUserApkInfo.getTast().getUUId())) {
+			
+			switch (currentNotUserApkInfo.getDownload_state()) {
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+
+				switch (currentNotUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_STARTED:
+//					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
+				case DownloadTask.STATE_CONNECTING:
+					
+					break;
+				case DownloadTask.STATE_FINISHED:
+					break;
+				case DownloadTask.STATE_DOWNLOADING:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+					break;
+				case DownloadTask.STATE_PAUSED:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+				case DownloadTask.STATE_FAILED:
+					currentNotUserApkInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+
+				default:
+					break;
+				}
+				break; 
+			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+					break;
+
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		
+		if (currentMovieInfo != null
+				&& uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())) {
+			
+			Log.i(TAG, "onDownloadPogressed currentMovieInfo--->getDownload_state" + currentMovieInfo.getDownload_state()
+					+ " currentMovieInfo.getTast().getState():" + currentMovieInfo.getTast().getState());
+			
+			switch (currentMovieInfo.getDownload_state()) {
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+
+				switch (currentMovieInfo.getTast().getState()) {
+				case DownloadTask.STATE_STARTED:
+//					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+					break;
+				case DownloadTask.STATE_CONNECTING:
+					
+					break;
+				case DownloadTask.STATE_FINISHED:
+					break;
+				case DownloadTask.STATE_DOWNLOADING:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+					break;
+				case DownloadTask.STATE_PAUSED:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+				case DownloadTask.STATE_FAILED:
+					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+					break;
+
+				default:
+					break;
+				}
+				break; 
+			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+				switch (currentUserApkInfo.getTast().getState()) {
+				case DownloadTask.STATE_DOWNLOADING:
+					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+					break;
+
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		
+
 	}
 
 	@Override
