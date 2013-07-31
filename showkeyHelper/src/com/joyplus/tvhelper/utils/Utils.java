@@ -441,6 +441,9 @@ public static InetAddress getLocalIpAddress(){
 		for(String str : urls){
 			URLS_INDEX url_index_info = new URLS_INDEX();
 			String[] p = str.split("\\{m\\}");
+			if(p.length<2){
+				continue;
+			}
 			if("hd2".equalsIgnoreCase(p[0])){
 				url_index_info.defination = 0;
 			}else if("hd".equalsIgnoreCase(p[0])){
