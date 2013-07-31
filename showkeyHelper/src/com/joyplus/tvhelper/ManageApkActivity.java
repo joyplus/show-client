@@ -220,10 +220,10 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 	               
 	         }
 	        if(apks.size()>0){
-	        	editeButton.setVisibility(View.INVISIBLE);
+	        	editeButton.setVisibility(View.VISIBLE);
 	        	gridView.requestFocus();
 	        }else{
-	        	editeButton.setVisibility(View.VISIBLE);
+	        	editeButton.setVisibility(View.INVISIBLE);
 	        }
 	        layout1.setVisibility(View.VISIBLE);
 			layout2.setVisibility(View.GONE);
