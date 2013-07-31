@@ -69,7 +69,7 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 		holder.name.setText(info.getName());
 		int progress = 0;
 		if(info.getTast().getSize()>0){
-			holder.progress.setMax(info.getTast().getSize());
+			holder.progress.setMax((int)info.getTast().getSize());
 			progress = (int) ((info.getTast().getCurLength()*100d) / info.getTast().getSize());
 		}else{
 			holder.progress.setMax(100);

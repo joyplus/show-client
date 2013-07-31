@@ -141,7 +141,7 @@
 	       		                android:paddingLeft="20dp"
 	       		                android:paddingRight="20dp"
 	       		                android:focusable="true"
-	       		            	
+	       		            	android:visibility="invisible"
 	       		            	android:background="@drawable/bg_content_setting_selector"
 	       		                android:gravity="center_vertical"
 	       		                android:id="@+id/layout_confirm"

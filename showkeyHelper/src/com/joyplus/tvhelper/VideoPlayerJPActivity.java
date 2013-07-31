@@ -76,6 +76,8 @@ import com.joyplus.tvhelper.ui.ArcView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
+import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.SouceComparatorIndex1;
 import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
@@ -100,6 +102,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
 	public static final int TYPE_LOCAL = TYPE_PUSH -1;
+	
+	private MoviePlayHistoryInfo play_info;
+	private boolean isRequset = false;
 
 	/**
 	 * 数据加载
@@ -359,6 +364,10 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = playDate.prod_qua;
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
+		
+		if(mProd_type == TYPE_PUSH || mProd_type == TYPE_LOCAL){
+			play_info = (MoviePlayHistoryInfo) playDate.obj;
+		}
 
 		Log.d(TAG, "name ----->" + mProd_name);
 		Log.d(TAG, "currentPlayUrl ----->" + currentPlayUrl);
@@ -501,8 +510,15 @@ public class VideoPlayerJPActivity extends Activity implements
 						if (mProd_type > 0 && !"-1".equals(mProd_id)
 								&& mProd_id != null) {
 							getProgramViewDetailServiceData();
-						}else if(mProd_type==-11||mProd_type==-12){
+						}else if(mProd_type==TYPE_LOCAL){
 							showDialog(0);
+						}else if(mProd_type==TYPE_PUSH){
+							if(isRequset){
+								showDialog(0);
+							}else{
+								//失效了 接着搞
+								new Thread(new RequestNewUrl()).start();
+							}
 						}
 					}
 				} else {
@@ -1761,28 +1777,31 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void saveToDB(long duration, long playBackTime) {
 		//save play date
-		MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
-		info.setDuration((int) duration);
-		info.setPlayback_time((int) playBackTime);
-		info.setName(mProd_name);
+		play_info.setDownload_url(currentPlayUrl);
+		play_info.setDuration((int) duration);
+		play_info.setPlayback_time((int) playBackTime);
+//		MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
+//		info.setDuration((int) duration);
+//		info.setPlayback_time((int) playBackTime);
+//		info.setName(mProd_name);
 		DBServices services = DBServices.getInstance(this);
 		Log.d(TAG, "mProd_type---------------->" + mProd_type);
-		if(mProd_type == TYPE_PUSH){
-			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-			info.setPush_url(currentPlayUrl);
+//		if(mProd_type == TYPE_PUSH){
+//			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+//			info.setPush_url(currentPlayUrl);
+////			services.insertMoviePlayHistory(info);
+//		}else if(mProd_type == TYPE_LOCAL){
+//			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
+//			info.setLocal_url(currentPlayUrl);
+////			services.insertMoviePlayHistory(info);
+//		}
+//		if(services.hasMoviePlayHistory(info)){
+//			Log.d(TAG, "updateMoviePlayHistory");
+			services.updateMoviePlayHistory(play_info);
+//		}else{
+//			Log.d(TAG, "insertMoviePlayHistory");
 //			services.insertMoviePlayHistory(info);
-		}else if(mProd_type == TYPE_LOCAL){
-			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
-			info.setLocal_url(currentPlayUrl);
-//			services.insertMoviePlayHistory(info);
-		}
-		if(services.hasMoviePlayHistory(info)){
-			Log.d(TAG, "updateMoviePlayHistory");
-			services.updateMoviePlayHistory(info);
-		}else{
-			Log.d(TAG, "insertMoviePlayHistory");
-			services.insertMoviePlayHistory(info);
-		}
+//		}
 	}
 	
 	@Override
@@ -2024,6 +2043,32 @@ public class VideoPlayerJPActivity extends Activity implements
 			e.printStackTrace();
 		}
 		
+		
+	}
+	
+	
+	class RequestNewUrl implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			isRequset = true;
+			String url = Constant.BASE_URL + "/updataXunleiurl?url=" + play_info.getPush_url() 
+					+ "&id=" + play_info.getPush_id()
+					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
+			String str = HttpTools.get(VideoPlayerJPActivity.this, url);
+			Log.d(TAG, str);
+			try {
+				JSONObject json = new JSONObject(str);
+				String downLoadurls = json.getString("downurl");
+				currentPlayUrl = Utils.getUrl(downLoadurls);
+				currentPlayUrl = Utils.getRedirectUrl(currentPlayUrl);
+				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			} catch (Exception e) {
+				// TODO: handle exception
+				mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
+			}
+		}
 		
 	}
 	

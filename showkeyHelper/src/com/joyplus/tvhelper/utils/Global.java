@@ -77,7 +77,7 @@ public class Global {
 	/**
 	 * 刷新pincode
 	 */
-//	public static final String ACTION_PINCODE_REFRESH = "action_pincode_refresh";
+	public static final String ACTION_PINCODE_REFRESH = "action_pincode_refresh";
 	
 	public static final String ACTION_NEW_APK_DWONLOAD= "action_new_apk_dwonload";
 	

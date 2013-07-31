@@ -38,8 +38,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private static final String TAG = "CloudDataDisplayActivity";
 	
 	private ListView listView;
-	private PushedMovieDownLoadAdapter adpter_downloading;
-	private MovieDownLoadedAdapter adpter_downloaded;
+//	private PushedMovieDownLoadAdapter adpter_downloading;
+//	private MovieDownLoadedAdapter adpter_downloaded;
 	private MoviePlayHistoryAdapter adpter_play_history;
 	private DownloadManager downloadManager;
 	private DBServices dbService;
@@ -47,7 +47,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private Button title_playHistory, title_downloading, title_downloaded;
 	private Button backButton, deleteButton, cancleButton, editeButton;
 	private LinearLayout layout1, layout2;
-	private List<PushedMovieDownLoadInfo> downloadedMovies;
+//	private List<PushedMovieDownLoadInfo> downloadedMovies;
 	private List<MoviePlayHistoryInfo> playinfos;
 	private MyApp app;
 	
@@ -60,7 +60,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
 			if(Global.ACTION_DOWNLOAD_PROGRESS.equals(action)){
-				adpter_downloading.notifyDataSetChanged();
+//				adpter_downloading.notifyDataSetChanged();
 			}else if(Global.ACTION_DOWNLOAD_RECIVED.equals(action)){
 //				Log.d(TAG, "receve --- > " + Global.ACTION_APK_RECIVED);
 //				if(FayeService.userPushApkInfos.size() == 0){
@@ -68,34 +68,34 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //				}else{
 //					editeButton.setEnabled(true);
 //				}
-				layout2.setVisibility(View.GONE);
-				layout1.setVisibility(View.VISIBLE);
-				updateEditBottn();
-//				backButton.requestFocus();
-				adpter_downloading.notifyDataSetChanged();
-			}else if(Global.ACTION_DOWNL_GETSIZE_SUCESS.equals(action)){
-				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
-				adpter_downloading.notifyDataSetChanged();
-			}else if(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE.equals(action)){
-				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
-//				int _id = intent.getIntExtra("_id", 0);
-//				editeButton.setEnabled(false);
 //				layout2.setVisibility(View.GONE);
 //				layout1.setVisibility(View.VISIBLE);
-				downloadedMovies = dbService.queryMovieDownLoadedInfos();
-				adpter_downloaded = new MovieDownLoadedAdapter(CloudDataDisplayActivity.this, downloadedMovies);
-				if(selectedIndex == 2){
-					listView.setAdapter(adpter_downloading);
-				}
-				updateEditBottn();
-				adpter_downloading.notifyDataSetChanged();
+//				updateEditBottn();
+////				backButton.requestFocus();
+//				adpter_downloading.notifyDataSetChanged();
+			}else if(Global.ACTION_DOWNL_GETSIZE_SUCESS.equals(action)){
+//				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
+//				adpter_downloading.notifyDataSetChanged();
+			}else if(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE.equals(action)){
+//				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
+////				int _id = intent.getIntExtra("_id", 0);
+////				editeButton.setEnabled(false);
+////				layout2.setVisibility(View.GONE);
+////				layout1.setVisibility(View.VISIBLE);
+//				downloadedMovies = dbService.queryMovieDownLoadedInfos();
+//				adpter_downloaded = new MovieDownLoadedAdapter(CloudDataDisplayActivity.this, downloadedMovies);
+//				if(selectedIndex == 2){
+//					listView.setAdapter(adpter_downloading);
+//				}
+//				updateEditBottn();
+//				adpter_downloading.notifyDataSetChanged();
 //				updateInstallProgress(_id);
 			}else if(Global.ACTION_DOWNLOAD_START.equals(action)){
-				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
-				adpter_downloading.notifyDataSetChanged();
+//				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
+//				adpter_downloading.notifyDataSetChanged();
 			}else if(Global.ACTION_MOVIE_DOWNLOAD_FAILE.equals(action)){
-				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
-				adpter_downloading.notifyDataSetChanged();
+//				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
+//				adpter_downloading.notifyDataSetChanged();
 			}
 		}
 		
@@ -112,22 +112,22 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		editeButton = (Button) findViewById(R.id.edit_Button);
 		listView = (ListView) findViewById(R.id.movieList);
 		title_playHistory = (Button) findViewById(R.id.title_play_history);
-		title_downloading = (Button) findViewById(R.id.title_downloading);
-		title_downloaded = (Button) findViewById(R.id.title_downloaded);
+//		title_downloading = (Button) findViewById(R.id.title_downloading);
+//		title_downloaded = (Button) findViewById(R.id.title_downloaded);
 		layout1 = (LinearLayout) findViewById(R.id.fistBtn_group);
 		layout2 = (LinearLayout) findViewById(R.id.secondBtn_group);
 		title_playHistory.setOnClickListener(this);
-		title_downloading.setOnClickListener(this);
-		title_downloaded.setOnClickListener(this);
+//		title_downloading.setOnClickListener(this);
+//		title_downloaded.setOnClickListener(this);
 		backButton.setOnClickListener(this);
 		deleteButton.setOnClickListener(this);
 		cancleButton.setOnClickListener(this);
 		editeButton.setOnClickListener(this);
-		adpter_downloading = new PushedMovieDownLoadAdapter(this, FayeService.movieDownLoadInfos);
+//		adpter_downloading = new PushedMovieDownLoadAdapter(this, FayeService.movieDownLoadInfos);
 		dbService = DBServices.getInstance(this);
-		downloadedMovies = dbService.queryMovieDownLoadedInfos();
+//		downloadedMovies = dbService.queryMovieDownLoadedInfos();
 		playinfos = dbService.queryMoviePlayHistoryList();
-		adpter_downloaded = new MovieDownLoadedAdapter(this, downloadedMovies);
+//		adpter_downloaded = new MovieDownLoadedAdapter(this, downloadedMovies);
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		listView.setAdapter(adpter_play_history);
 		selectedIndex = 0;
@@ -167,9 +167,10 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					playDate.prod_url = playInfo.getLocal_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
 				}else{
-					playDate.prod_url = playInfo.getPush_url();
+					playDate.prod_url = playInfo.getDownload_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 				}
+				playDate.obj = playInfo;
 				Log.d(TAG, "prod_type" + playDate.prod_type);
 //				playDate.prod_src = json.getString("prod_src");
 				playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
@@ -195,85 +196,98 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				break;
 			}
 			break;
-		case 1:
-			PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(position);
-			Log.d(TAG, "info  --getEdite_state() >" + info.getEdite_state());
-			switch (info.getEdite_state()) {
-			case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
-				Log.d(TAG, "info  --getDownload_state() >" + info.getDownload_state());
-				switch (info.getDownload_state()) {
-				case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
-					downloadManager.pauseTask(info.getTast());
-					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
-					dbService.updateMovieDownLoadInfo(info);
-					adpter_downloading.notifyDataSetChanged();
-					break;
-				case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
-					downloadManager.pauseTask(info.getTast());
-					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-					dbService.updateMovieDownLoadInfo(info);
-					adpter_downloading.notifyDataSetChanged();
-					
-					break;
-				case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
-					Log.i(TAG, "PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE--->Edit");
-					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-					dbService.updateMovieDownLoadInfo(info);
-					Intent intentpause = new Intent(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
-					sendBroadcast(intentpause);
-					adpter_downloading.notifyDataSetChanged();
-					break;
-				}
-				break;
-			case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
-				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
-				adpter_downloading.notifyDataSetChanged();
-				break;
-			case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
-				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
-				adpter_downloading.notifyDataSetChanged();
-				break;
-			}
-			break;
-		case 2:
-			PushedMovieDownLoadInfo info_complete = downloadedMovies.get(position);
-			switch (info_complete.getEdite_state()) {
-			case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
-				Log.d(TAG, info_complete.getFile_path());
-				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-//				intent.putExtra("ID", json.getString("prod_id"));
-//				playDate.prod_id = data.getString("id");
-//				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
-				playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
-				playDate.prod_name = info_complete.getName();
-//				playDate.prod_name = json.getString("prod_name");
-				playDate.prod_url = info_complete.getFile_path();
-//				playDate.prod_src = json.getString("prod_src");
-//				playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-//				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
-//				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
-//					if(json.has("prod_subname")){//旧版android 没有传递该参数
-//						playDate.prod_sub_name = json.getString("prod_subname");
-//					}else{
-//						playDate.prod_type = -1;
-//					}
+//		case 1:
+//			PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(position);
+//			Log.d(TAG, "info  --getEdite_state() >" + info.getEdite_state());
+//			switch (info.getEdite_state()) {
+//			case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
+//				Log.d(TAG, "info  --getDownload_state() >" + info.getDownload_state());
+//				switch (info.getDownload_state()) {
+//				case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+//					downloadManager.pauseTask(info.getTast());
+//					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING);
+//					dbService.updateMovieDownLoadInfo(info);
+//					adpter_downloading.notifyDataSetChanged();
+//					break;
+//				case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+//					downloadManager.pauseTask(info.getTast());
+//					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//					dbService.updateMovieDownLoadInfo(info);
+//					adpter_downloading.notifyDataSetChanged();
+//					
+//					break;
+//				case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+//					Log.i(TAG, "PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE--->Edit");
+//					info.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//					dbService.updateMovieDownLoadInfo(info);
+//					Intent intentpause = new Intent(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE);
+//					sendBroadcast(intentpause);
+//					adpter_downloading.notifyDataSetChanged();
+//					break;
 //				}
-				app.setmCurrentPlayDetailData(playDate);
-				app.set_ReturnProgramView(null);
-				startActivity(intent);
-				break;
-			case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
-				info_complete.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
-				adpter_downloaded.notifyDataSetChanged();
-				break;
-			case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
-				info_complete.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
-				adpter_downloaded.notifyDataSetChanged();
-				break;
-
-			}
-			break;
+//				break;
+//			case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
+//				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
+//				adpter_downloading.notifyDataSetChanged();
+//				break;
+//			case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
+//				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
+//				adpter_downloading.notifyDataSetChanged();
+//				break;
+//			}
+//			break;
+//		case 2:
+//			PushedMovieDownLoadInfo info_complete = downloadedMovies.get(position);
+//			switch (info_complete.getEdite_state()) {
+//			case PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL:
+//				Log.d(TAG, info_complete.getFile_path());
+//				
+//				
+//				MoviePlayHistoryInfo play_info = dbService.queryMoviePlayHistoryByLoaclUrl(info_complete.getFile_path());
+//				
+//				if(play_info == null){
+//					play_info = new MoviePlayHistoryInfo();
+//					play_info.setName(info_complete.getName());
+//					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
+//					play_info.setLocal_url(info_complete.getFile_path());
+//					play_info.setId((int) dbService.insertMoviePlayHistory(play_info));
+//				}
+//				
+//				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+//				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+////				intent.putExtra("ID", json.getString("prod_id"));
+////				playDate.prod_id = data.getString("id");
+////				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+//				playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+//				playDate.prod_name = play_info.getName();
+////				playDate.prod_name = json.getString("prod_name");
+//				playDate.prod_url = play_info.getLocal_url();
+//				playDate.obj = play_info;
+////				playDate.prod_src = json.getString("prod_src");
+//				playDate.prod_time = play_info.getPlayback_time()*1000;
+////				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+////				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+////					if(json.has("prod_subname")){//旧版android 没有传递该参数
+////						playDate.prod_sub_name = json.getString("prod_subname");
+////					}else{
+////						playDate.prod_type = -1;
+////					}
+////				}
+//				app.setmCurrentPlayDetailData(playDate);
+//				app.set_ReturnProgramView(null);
+//				startActivity(intent);
+//				break;
+//			case PushedMovieDownLoadInfo.EDITE_STATUE_EDIT:
+//				info_complete.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
+//				adpter_downloaded.notifyDataSetChanged();
+//				break;
+//			case PushedMovieDownLoadInfo.EDITE_STATUE_SELETED:
+//				info_complete.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
+//				adpter_downloaded.notifyDataSetChanged();
+//				break;
+//
+//			}
+//			break;
 		default:
 			break;
 		}
@@ -291,35 +305,35 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.title_downloaded:
-			selectedIndex = 2;
-			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
-			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
-			selectedButon = title_downloaded;
-			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
-			selectedButon.setTextColor(Color.BLACK);
-			downloadedMovies = dbService.queryMovieDownLoadedInfos();
-			adpter_downloaded = new MovieDownLoadedAdapter(CloudDataDisplayActivity.this, downloadedMovies);
-			listView.setAdapter(adpter_downloaded);
-			layout2.setVisibility(View.GONE);
-			layout1.setVisibility(View.VISIBLE);
-			updateEditBottn();
-			break;
-		case R.id.title_downloading:
-			for(PushedMovieDownLoadInfo info : FayeService.movieDownLoadInfos){
-				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
-			}
-			selectedIndex = 1;
-			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
-			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
-			selectedButon = title_downloading;
-			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
-			selectedButon.setTextColor(Color.BLACK);
-			layout2.setVisibility(View.GONE);
-			layout1.setVisibility(View.VISIBLE);
-			listView.setAdapter(adpter_downloading);
-			updateEditBottn();
-			break;
+//		case R.id.title_downloaded:
+//			selectedIndex = 2;
+//			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
+//			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
+//			selectedButon = title_downloaded;
+//			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+//			selectedButon.setTextColor(Color.BLACK);
+//			downloadedMovies = dbService.queryMovieDownLoadedInfos();
+//			adpter_downloaded = new MovieDownLoadedAdapter(CloudDataDisplayActivity.this, downloadedMovies);
+//			listView.setAdapter(adpter_downloaded);
+//			layout2.setVisibility(View.GONE);
+//			layout1.setVisibility(View.VISIBLE);
+//			updateEditBottn();
+//			break;
+//		case R.id.title_downloading:
+//			for(PushedMovieDownLoadInfo info : FayeService.movieDownLoadInfos){
+//				info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+//			}
+//			selectedIndex = 1;
+//			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
+//			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
+//			selectedButon = title_downloading;
+//			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+//			selectedButon.setTextColor(Color.BLACK);
+//			layout2.setVisibility(View.GONE);
+//			layout1.setVisibility(View.VISIBLE);
+//			listView.setAdapter(adpter_downloading);
+//			updateEditBottn();
+//			break;
 		case R.id.title_play_history:
 			playinfos = dbService.queryMoviePlayHistoryList();
 			adpter_play_history = new MoviePlayHistoryAdapter(CloudDataDisplayActivity.this, playinfos);
@@ -353,40 +367,40 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		               
 		         }
 				break;
-			case 1:
-				Iterator<PushedMovieDownLoadInfo> iterator_1 = FayeService.movieDownLoadInfos.iterator();  
-		         while(iterator_1.hasNext()) {  
-		        	 PushedMovieDownLoadInfo info = iterator_1.next();  
-		             if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED) {  
-							File f = new File(info.getFile_path());
-							if(f!=null&&f.exists()){
-								f.delete();
-							}
-							dbService.deleteMovieDownLoadInfo(info);
-							iterator_1.remove();  
-		             }else{
-		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
-		             }  
-		               
-		         }
-				break;
-			case 2:
-				Iterator<PushedMovieDownLoadInfo> iterator_2 = downloadedMovies.iterator();  
-				while(iterator_2.hasNext()) {  
-		        	 PushedMovieDownLoadInfo info = iterator_2.next();  
-		             if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED) {  
-							File f = new File(info.getFile_path());
-							if(f!=null&&f.exists()){
-								f.delete();
-							}
-							dbService.deleteMovieDownLoadInfo(info);
-							iterator_2.remove();  
-		             } else{
-		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
-		             } 
-		               
-		         }
-				break;
+//			case 1:
+//				Iterator<PushedMovieDownLoadInfo> iterator_1 = FayeService.movieDownLoadInfos.iterator();  
+//		         while(iterator_1.hasNext()) {  
+//		        	 PushedMovieDownLoadInfo info = iterator_1.next();  
+//		             if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED) {  
+//							File f = new File(info.getFile_path());
+//							if(f!=null&&f.exists()){
+//								f.delete();
+//							}
+//							dbService.deleteMovieDownLoadInfo(info);
+//							iterator_1.remove();  
+//		             }else{
+//		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+//		             }  
+//		               
+//		         }
+//				break;
+//			case 2:
+//				Iterator<PushedMovieDownLoadInfo> iterator_2 = downloadedMovies.iterator();  
+//				while(iterator_2.hasNext()) {  
+//		        	 PushedMovieDownLoadInfo info = iterator_2.next();  
+//		             if(info.getEdite_state()==PushedApkDownLoadInfo.EDITE_STATUE_SELETED) {  
+//							File f = new File(info.getFile_path());
+//							if(f!=null&&f.exists()){
+//								f.delete();
+//							}
+//							dbService.deleteMovieDownLoadInfo(info);
+//							iterator_2.remove();  
+//		             } else{
+//		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+//		             } 
+//		               
+//		         }
+//				break;
 			}
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 			layout2.setVisibility(View.GONE);
@@ -403,23 +417,23 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
 				}
 				break;
-			case 1:
-				for(int i=0; i<FayeService.movieDownLoadInfos.size(); i++){
-					PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(i);
-					if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_DOWNLOADING
-							||info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD){
-						downloadManager.pauseTask(info.getTast());
-						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-					}
-					info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
-				}
-				break;
-			case 2:
-				for(int i=0; i<downloadedMovies.size(); i++){
-					PushedMovieDownLoadInfo info = downloadedMovies.get(i);
-					info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_EDIT);
-				}
-				break;
+//			case 1:
+//				for(int i=0; i<FayeService.movieDownLoadInfos.size(); i++){
+//					PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(i);
+//					if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_DOWNLOADING
+//							||info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD){
+//						downloadManager.pauseTask(info.getTast());
+//						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//					}
+//					info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
+//				}
+//				break;
+//			case 2:
+//				for(int i=0; i<downloadedMovies.size(); i++){
+//					PushedMovieDownLoadInfo info = downloadedMovies.get(i);
+//					info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_EDIT);
+//				}
+//				break;
 			}
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 			cancleButton.requestFocus();
@@ -434,18 +448,18 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
 				}
 				break;
-			case 1:
-				for(int i=0; i<FayeService.movieDownLoadInfos.size(); i++){
-					PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(i);
-					info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
-				}
-				break;
-			case 2:
-				for(int i=0; i<downloadedMovies.size(); i++){
-					PushedMovieDownLoadInfo info = downloadedMovies.get(i);
-					info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_NOMAL);
-				}
-				break;
+//			case 1:
+//				for(int i=0; i<FayeService.movieDownLoadInfos.size(); i++){
+//					PushedMovieDownLoadInfo info = FayeService.movieDownLoadInfos.get(i);
+//					info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+//				}
+//				break;
+//			case 2:
+//				for(int i=0; i<downloadedMovies.size(); i++){
+//					PushedMovieDownLoadInfo info = downloadedMovies.get(i);
+//					info.setEdite_state(PushedApkDownLoadInfo.EDITE_STATUE_NOMAL);
+//				}
+//				break;
 			}
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 			break;

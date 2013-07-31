@@ -37,6 +37,7 @@ import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
@@ -60,7 +61,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private ExecutorService pool = Executors.newFixedThreadPool(5); 
 	
 	private static File APK_PATH = null;
-	private static File MOVIE_PATH = null;
+//	private static File MOVIE_PATH = null;
 //	private boolean isNeedReconnect = false;
 	
 	public static final int MESSAGE_DOWNLOAD_GET_FILESIE_SUCCESS = 0;
@@ -82,12 +83,15 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private DownloadManager downloadManager;
 	private PackageInstaller packageInstaller;
 	private PushedApkDownLoadInfo currentUserApkInfo; 
-	private PushedMovieDownLoadInfo currentMovieInfo;
+//	private PushedMovieDownLoadInfo currentMovieInfo;
 	private PushedApkDownLoadInfo currentNotUserApkInfo; 
 	public static List<PushedApkDownLoadInfo> userPushApkInfos;
 	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos;
-	public static List<PushedMovieDownLoadInfo> movieDownLoadInfos;
+//	public static List<PushedMovieDownLoadInfo> movieDownLoadInfos;
 	private MyApp app;
+	
+	private MoviePlayHistoryInfo play_info;
+	private String pincode_md5;
 //	private String currentPackage = null;
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
@@ -98,23 +102,40 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			String action = intent.getAction();
 			Log.d(TAG, "recive broadcast --->" + action);
 			if(Global.ACTION_CONFIRM_ACCEPT.equals(action)){
-				JSONObject json = new JSONObject();
-				try {
-					json.put("msg_type", 3);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				myClient.sendMessage(json);
+				
+				PreferencesUtils.setPincodeMd5(FayeService.this, pincode_md5);
+				play_info.setId((int)services.insertMoviePlayHistory(play_info));
+				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+				Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+				intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				
+				playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+				playDate.prod_name = play_info.getName();
+				playDate.obj = play_info;
+				playDate.prod_url = play_info.getDownload_url();
+				app.setmCurrentPlayDetailData(playDate);
+				app.set_ReturnProgramView(null);
+				startActivity(intent_play);
+//				JSONObject json = new JSONObject();
+//				try {
+//					json.put("msg_type", 3);
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				myClient.sendMessage(json);
+				
 			}else if(Global.ACTION_CONFIRM_REFUSE.equals(action)){
-				JSONObject json = new JSONObject();
-				try {
-					json.put("msg_type", 4);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				myClient.sendMessage(json);
+//				JSONObject json = new JSONObject();
+//				try {
+//					json.put("msg_type", 4);
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				myClient.sendMessage(json);
+				play_info = null;
+				pincode_md5 = null;
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
 				
 			}else if(Global.ACTION_APK_DOWNLOAD_CONTINUE.equals(action)){
@@ -130,10 +151,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				stopSelf();
 //			}
 			else if(Global.ACTION_MOVIE_DOWNLOAD_CONTINUE.equals(action)){
-				Log.i(TAG, "receiver---->" + action);
-				if(currentMovieInfo ==null){
-					startNextMovieDownLoad();
-				}
+//				Log.i(TAG, "receiver---->" + action);
+//				if(currentMovieInfo ==null){
+//					startNextMovieDownLoad();
+//				}
 			}else if(Global.ACTION_MOVIE_DELETE_DOWNLOAD.equals(action)){
 				
 			}else if(Global.ACTION_NEW_APK_DWONLOAD.equals(action)){
@@ -244,7 +265,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		super.onCreate();
 //		com.joyplus.utils.Log.mbLoggable = true;
 		APK_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/apk");
-		MOVIE_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/movie");
+//		MOVIE_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/movie");
 		app = (MyApp) getApplication();
 		services = DBServices.getInstance(this);
 		downloadManager = DownloadManager.getInstance(this);
@@ -253,7 +274,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		packageInstaller.addObserver(this);
 		userPushApkInfos = services.queryUserApkDownLoadInfo();
 		notuserPushedApkInfos = services.queryNotUserApkDownLoadInfo();
-		movieDownLoadInfos = services.queryMovieDownLoadInfos();
+//		movieDownLoadInfos = services.queryMovieDownLoadInfos();
 		isSystemApp = isSystemApp();
 		IntentFilter filter = new IntentFilter(Global.ACTION_CONFIRM_ACCEPT);
 		filter.addAction(Global.ACTION_CONFIRM_REFUSE);
@@ -295,7 +316,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		myClient.connectToServer(null); 
 //		isNeedReconnect = true;
 		getLostUserPushApk();
-		getLostUserPushMovie();
+		//getLostUserPushMovie();
 		if(isSystemApp()){
 			getNotUsrPushApk();
 		}
@@ -387,70 +408,70 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	}
 	
 	
-	private void getLostUserPushMovie(){
-		pool.execute(new Runnable() {	
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-//				infolist = services.GetPushedApklist(infolist);
-				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
-				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
-						+ "&page_num=" + 1
-						+ "&page_size=" + 50;
-				Log.d(TAG, url);
-				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
-				try {
-					JSONArray array = new JSONArray(str);
-					Log.d(TAG, "miss length ---------------------------->" + array.length());
-					for(int i=0; i<array.length(); i++){
-						JSONObject item = array.getJSONObject(i);
-						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
-						String push_url = "";
-						try {
-							push_url = getUrl(item.getString("file_url"));
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							continue;
-						}
-						String downLoad_url = Utils.getRedirectUrl(push_url);
-						boolean isSupport = true;
-						for(int j=0; j<Constant.video_dont_support_extensions.length; j++){
-							if(downLoad_url.contains(Constant.video_dont_support_extensions[j])){
-								Log.e(TAG, "not support down load m3u8 !");
-								isSupport = false;
-								break;
-							}
-						}
-						if(!isSupport){
-							continue;
-						}
-						info.setPush_id(item.getInt("id"));
-						info.setName(item.getString("name"));
+//	private void getLostUserPushMovie(){
+//		pool.execute(new Runnable() {	
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+////				infolist = services.GetPushedApklist(infolist);
+//				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
+//				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
+//						+ "&mac_address=" + Utils.getMacAdd() 
+//						+ "&page_num=" + 1
+//						+ "&page_size=" + 50;
+//				Log.d(TAG, url);
+//				String str = HttpTools.get(FayeService.this, url);
+//				Log.d(TAG, "pushMsgHistories response-->" + str);
+//				try {
+//					JSONArray array = new JSONArray(str);
+//					Log.d(TAG, "miss length ---------------------------->" + array.length());
+//					for(int i=0; i<array.length(); i++){
+//						JSONObject item = array.getJSONObject(i);
+//						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
+//						String push_url = "";
+//						try {
+//							push_url = Utils.getUrl(item.getString("file_url"));
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//							continue;
+//						}
+//						String downLoad_url = Utils.getRedirectUrl(push_url);
+//						boolean isSupport = true;
+//						for(int j=0; j<Constant.video_dont_support_extensions.length; j++){
+//							if(downLoad_url.contains(Constant.video_dont_support_extensions[j])){
+//								Log.e(TAG, "not support down load m3u8 !");
+//								isSupport = false;
+//								break;
+//							}
+//						}
+//						if(!isSupport){
+//							continue;
+//						}
+//						info.setPush_id(item.getInt("id"));
 //						info.setName(item.getString("name"));
-						info.setPush_url(downLoad_url);
-						String fileName = Utils.getFileNameforUrl(downLoad_url);
-						Log.d(TAG, fileName);
-//						info.setName(fileName);
-						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-						DownloadTask task = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
-						info.setFile_path(MOVIE_PATH.getAbsolutePath() + File.separator + fileName);
-						info.setTast(task);
-						downloadManager.addTast(task);
-						info.set_id((int) services.insertMovieDownLoadInfo(info));
-						movieDownLoadInfos.add(info);
-						updateMovieHistory(info.getPush_id());
-						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+////						info.setName(item.getString("name"));
+//						info.setPush_url(downLoad_url);
+//						String fileName = Utils.getFileNameforUrl(downLoad_url);
+//						Log.d(TAG, fileName);
+////						info.setName(fileName);
+//						info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//						DownloadTask task = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), fileName, 3);
+//						info.setFile_path(MOVIE_PATH.getAbsolutePath() + File.separator + fileName);
+//						info.setTast(task);
+//						downloadManager.addTast(task);
+//						info.set_id((int) services.insertMovieDownLoadInfo(info));
+//						movieDownLoadInfos.add(info);
+//						updateMovieHistory(info.getPush_id());
+//						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+//					}
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	private void getLostUserPushApk(){
 		pool.execute(new Runnable() {	
@@ -513,9 +534,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->");
-//		if(isNeedReconnect){
-			myClient.connectToServer(null);
-//		}
+		myClient.connectToServer(null);
 	}
 
 	@Override
@@ -566,25 +585,16 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						services.updateApkInfo(currentUserApkInfo);
 					}
 					break;
-				case 2:
-					handler.sendMessage(msg);
-					break;
 				case 5:
 //					JSONObject data_1 = json.getJSONObject("body");
 					data = json.getJSONObject("body");
-					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+					
 //					intent.putExtra("ID", json.getString("prod_id"));
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//					playDate.prod_id = data.getString("id");
-					int push_id = Integer.valueOf(data.getString("id"));
-//					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
-					playDate.prod_type = -11;
-					playDate.prod_name = data.getString("name");
-//					playDate.prod_name = json.getString("prod_name");
+					
+					
 					String movie_play_url = null;
 					try {
-						movie_play_url = getUrl(data.getString("downurl"));
+						movie_play_url = Utils.getUrl(data.getString("downurl"));
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -593,64 +603,95 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						Log.e(TAG, "movie_play_url error !"); 
 						return ;
 					}
-					playDate.prod_url = movie_play_url;
-//					playDate.prod_src = json.getString("prod_src");
-//					playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-//					playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
-//					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
-//						if(json.has("prod_subname")){//旧版android 没有传递该参数
-//							playDate.prod_sub_name = json.getString("prod_subname");
-//						}else{
-//							playDate.prod_type = -1;
+					int push_id = Integer.valueOf(data.getString("id"));
+					
+					play_info = new MoviePlayHistoryInfo();
+					play_info.setDownload_url(movie_play_url);
+					play_info.setName(data.getString("name"));
+					play_info.setPush_id(push_id);
+					play_info.setPush_url(data.getString("playurl"));
+					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+//					play_info.setId((int)services.insertMoviePlayHistory(play_info));
+					
+					pincode_md5 = data.getString("md5_code");
+					
+					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+						play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+						Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//						playDate.prod_id = data.getString("id");
+						
+//						playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+						playDate.prod_name = play_info.getName();
+						playDate.obj = play_info;
+//						playDate.prod_name = json.getString("prod_name");
+						
+						
+						playDate.prod_url = play_info.getDownload_url();
+//						playDate.prod_src = json.getString("prod_src");
+//						playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
+//						playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+//						if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//							if(json.has("prod_subname")){//旧版android 没有传递该参数
+//								playDate.prod_sub_name = json.getString("prod_subname");
+//							}else{
+//								playDate.prod_type = -1;
+//							}
 //						}
-//					}
-					app.setmCurrentPlayDetailData(playDate);
-					app.set_ReturnProgramView(null);
-					startActivity(intent);
+						app.setmCurrentPlayDetailData(playDate);
+						app.set_ReturnProgramView(null);
+						startActivity(intent);
+					}else{
+						handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+					}
 					updateMovieHistory(push_id);
 					break;
 				case 6:
-					data = json.getJSONObject("body");
-					PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
-					String push_url = null;
-					try {
-						push_url = getUrl(data.getString("downurl"));
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					if(push_url == null){
-						Log.e(TAG, "push download url error");
-						return ;
-					}
-					movieDownLoadInfo.setPush_url(push_url);
-					movieDownLoadInfo.setPush_id(data.getInt("id"));
-					String downLoad_url = Utils.getRedirectUrl(push_url);
-					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
-					for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
-						if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
-							Log.e(TAG, "not support down load m3u8 !");
-							return ; 
-						}
-					}
-					movieDownLoadInfo.setName(data.getString("name"));
-					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
-					DownloadTask movieTask = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
-					movieDownLoadInfo.setTast(movieTask);
-					downloadManager.addTast(movieTask);
-					movieDownLoadInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-					movieDownLoadInfo.set_id((int) services.insertMovieDownLoadInfo(movieDownLoadInfo));
-					movieDownLoadInfos.add(movieDownLoadInfo);
-					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-					updateMovieHistory(movieDownLoadInfo.get_id());
-					if(currentMovieInfo==null){
-						currentMovieInfo = movieDownLoadInfo;
-						currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-						downloadManager.startTast(movieTask);
-						services.updateMovieDownLoadInfo(currentMovieInfo);
-					}
+//					data = json.getJSONObject("body");
+//					PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
+//					String push_url = null;
+//					try {
+//						push_url = Utils.getUrl(data.getString("downurl"));
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//					if(push_url == null){
+//						Log.e(TAG, "push download url error");
+//						return ;
+//					}
+//					movieDownLoadInfo.setPush_url(push_url);
+//					movieDownLoadInfo.setPush_id(data.getInt("id"));
+//					String downLoad_url = Utils.getRedirectUrl(push_url);
+//					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
+//					for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
+//						if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
+//							Log.e(TAG, "not support down load m3u8 !");
+//							return ; 
+//						}
+//					}
+//					movieDownLoadInfo.setName(data.getString("name"));
+//					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
+//					DownloadTask movieTask = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name, 3);
+//					movieDownLoadInfo.setTast(movieTask);
+//					downloadManager.addTast(movieTask);
+//					movieDownLoadInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//					movieDownLoadInfo.set_id((int) services.insertMovieDownLoadInfo(movieDownLoadInfo));
+//					movieDownLoadInfos.add(movieDownLoadInfo);
+//					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+//					updateMovieHistory(movieDownLoadInfo.getPush_id());
+//					if(currentMovieInfo==null){
+//						currentMovieInfo = movieDownLoadInfo;
+//						currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+//						downloadManager.startTast(movieTask);
+//						services.updateMovieDownLoadInfo(currentMovieInfo);
+//					}
 					break;
 				case 10:
+				case 2:
 					JSONObject json_accept = new JSONObject();
 					try {
 						json_accept.put("msg_type", 3);
@@ -707,22 +748,22 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		}
 	}
 	
-	private void startNextMovieDownLoad(){
-		Log.d(TAG, "startNextMovieDownLoad--->");
-		for(PushedMovieDownLoadInfo info :movieDownLoadInfos){
-			if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD){
-				if(info.getTast().getState()==-1){
-					downloadManager.startTast(info.getTast());
-				}else{
-					downloadManager.resumeTask(info.getTast());
-				}
-				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-				currentMovieInfo = info;
-				services.updateMovieDownLoadInfo(currentMovieInfo);
-				return ;
-			}
-		}
-	}
+//	private void startNextMovieDownLoad(){
+//		Log.d(TAG, "startNextMovieDownLoad--->");
+//		for(PushedMovieDownLoadInfo info :movieDownLoadInfos){
+//			if(info.getDownload_state()==PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD){
+//				if(info.getTast().getState()==-1){
+//					downloadManager.startTast(info.getTast());
+//				}else{
+//					downloadManager.resumeTask(info.getTast());
+//				}
+//				info.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+//				currentMovieInfo = info;
+//				services.updateMovieDownLoadInfo(currentMovieInfo);
+//				return ;
+//			}
+//		}
+//	}
 	
 	private void updateHistory(final int id){
 		pool.execute(new Runnable() {
@@ -944,54 +985,54 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			}
 		}
 		
-		if (currentMovieInfo != null
-				&& uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())) {
-			
-			Log.i(TAG, "onDownloadPogressed currentMovieInfo--->getDownload_state" + currentMovieInfo.getDownload_state()
-					+ " currentMovieInfo.getTast().getState():" + currentMovieInfo.getTast().getState());
-			
-			switch (currentMovieInfo.getDownload_state()) {
-			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
-			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
-			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
-
-				switch (currentMovieInfo.getTast().getState()) {
-				case DownloadTask.STATE_STARTED:
-//					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-					break;
-				case DownloadTask.STATE_CONNECTING:
-					
-					break;
-				case DownloadTask.STATE_FINISHED:
-					break;
-				case DownloadTask.STATE_DOWNLOADING:
-					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-					break;
-				case DownloadTask.STATE_PAUSED:
-					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-					break;
-				case DownloadTask.STATE_FAILED:
-					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-					break;
-
-				default:
-					break;
-				}
-				break; 
-			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
-				switch (currentUserApkInfo.getTast().getState()) {
-				case DownloadTask.STATE_DOWNLOADING:
-					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
-					break;
-
-				default:
-					break;
-				}
-				break;
-			default:
-				break;
-			}
-		}
+//		if (currentMovieInfo != null
+//				&& uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())) {
+//			
+//			Log.i(TAG, "onDownloadPogressed currentMovieInfo--->getDownload_state" + currentMovieInfo.getDownload_state()
+//					+ " currentMovieInfo.getTast().getState():" + currentMovieInfo.getTast().getState());
+//			
+//			switch (currentMovieInfo.getDownload_state()) {
+//			case PushedMovieDownLoadInfo.STATUE_DOWNLOADING:
+//			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE:
+//			case PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSEING:
+//
+//				switch (currentMovieInfo.getTast().getState()) {
+//				case DownloadTask.STATE_STARTED:
+////					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//					break;
+//				case DownloadTask.STATE_CONNECTING:
+//					
+//					break;
+//				case DownloadTask.STATE_FINISHED:
+//					break;
+//				case DownloadTask.STATE_DOWNLOADING:
+//					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+//					break;
+//				case DownloadTask.STATE_PAUSED:
+//					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//					break;
+//				case DownloadTask.STATE_FAILED:
+//					currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//					break;
+//
+//				default:
+//					break;
+//				}
+//				break; 
+//			case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD:
+//				switch (currentUserApkInfo.getTast().getState()) {
+//				case DownloadTask.STATE_DOWNLOADING:
+//					currentUserApkInfo.getTast().setState(DownloadTask.STATE_PAUSED);
+//					break;
+//
+//				default:
+//					break;
+//				}
+//				break;
+//			default:
+//				break;
+//			}
+//		}
 		
 
 	}
@@ -1031,19 +1072,19 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			startNextNotUserApkDownLoad();
 			return ;
 		}
-		if(currentMovieInfo!=null &&uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())){
-			//下载完成
-			currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-			//通知ui
-			Intent downLoadCompletIntent = new Intent(Global.ACTION_MOVIE_DOWNLOAD_FAILE);
-		    downLoadCompletIntent.putExtra("_id", currentMovieInfo.get_id());
-		    sendBroadcast(downLoadCompletIntent);
-		    services.updateMovieDownLoadInfo(currentMovieInfo);
-			//开始下一个
-			currentMovieInfo = null;
-			startNextMovieDownLoad();
-			return ;
-		}
+//		if(currentMovieInfo!=null &&uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())){
+//			//下载完成
+//			currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
+//			//通知ui
+//			Intent downLoadCompletIntent = new Intent(Global.ACTION_MOVIE_DOWNLOAD_FAILE);
+//		    downLoadCompletIntent.putExtra("_id", currentMovieInfo.get_id());
+//		    sendBroadcast(downLoadCompletIntent);
+//		    services.updateMovieDownLoadInfo(currentMovieInfo);
+//			//开始下一个
+//			currentMovieInfo = null;
+//			startNextMovieDownLoad();
+//			return ;
+//		}
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"  not handle the Faile");
 	}
 	
@@ -1102,19 +1143,19 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			return ;
 		}
 		
-		if(currentMovieInfo!=null &&uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())){
-			//下载完成
-			currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
-			services.updateMovieDownLoadInfo(currentMovieInfo);
-			//通知ui
-			Intent downLoadCompletIntent = new Intent(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE);
-		    downLoadCompletIntent.putExtra("_id", currentMovieInfo.get_id());
-		    sendBroadcast(downLoadCompletIntent);
-		    movieDownLoadInfos.remove(currentMovieInfo);
-			//开始下一个
-			currentMovieInfo = null;
-			startNextMovieDownLoad();
-		}
+//		if(currentMovieInfo!=null &&uiid.equalsIgnoreCase(currentMovieInfo.getTast().getUUId())){
+//			//下载完成
+//			currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOAD_COMPLETE);
+//			services.updateMovieDownLoadInfo(currentMovieInfo);
+//			//通知ui
+//			Intent downLoadCompletIntent = new Intent(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE);
+//		    downLoadCompletIntent.putExtra("_id", currentMovieInfo.get_id());
+//		    sendBroadcast(downLoadCompletIntent);
+//		    movieDownLoadInfos.remove(currentMovieInfo);
+//			//开始下一个
+//			currentMovieInfo = null;
+//			startNextMovieDownLoad();
+//		}
 		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"can handle the complete");
 	}
 	
@@ -1130,36 +1171,36 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //	mp4{m}http://hot.vrs.sohu.com/ipad1244506_4585881117442_4455827.m3u8?plat=0{mType}hd2{m}http://hot.vrs.sohu.com/ipad1244507_4585881117442_4455828.m3u8?plat=0 
 
 	
-	private String getUrl(String push_urls) throws Exception{
-//		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
-		Log.d(TAG, push_urls);
-		String[] urls = push_urls.split("\\{mType\\}");
-		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
-		for(String str : urls){
-			URLS_INDEX url_index_info = new URLS_INDEX();
-			String[] p = str.split("\\{m\\}");
-			if("hd2".equalsIgnoreCase(p[0])){
-				url_index_info.defination = 0;
-			}else if("mp4".equalsIgnoreCase(p[0])){
-				url_index_info.defination = 1;
-			}else if("3gp".equalsIgnoreCase(p[0])){
-				url_index_info.defination = 2;
-			}else{
-				url_index_info.defination = 3;
-			}
-			url_index_info.url = p[1];
-			list.add(url_index_info);
-		}
-		if(list.size()>1){
-			Collections.sort(list, new DefinationComparatorIndex());
-		}
-		if(list.size()<=0){
-			return  null;
-		}else{
-			return list.get(0).url;
-		}
-	}
-	
+//	private String getUrl(String push_urls) throws Exception{
+////		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
+//		Log.d(TAG, push_urls);
+//		String[] urls = push_urls.split("\\{mType\\}");
+//		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+//		for(String str : urls){
+//			URLS_INDEX url_index_info = new URLS_INDEX();
+//			String[] p = str.split("\\{m\\}");
+//			if("hd2".equalsIgnoreCase(p[0])){
+//				url_index_info.defination = 0;
+//			}else if("mp4".equalsIgnoreCase(p[0])){
+//				url_index_info.defination = 1;
+//			}else if("3gp".equalsIgnoreCase(p[0])){
+//				url_index_info.defination = 2;
+//			}else{
+//				url_index_info.defination = 3;
+//			}
+//			url_index_info.url = p[1];
+//			list.add(url_index_info);
+//		}
+//		if(list.size()>1){
+//			Collections.sort(list, new DefinationComparatorIndex());
+//		}
+//		if(list.size()<=0){
+//			return  null;
+//		}else{
+//			return list.get(0).url;
+//		}
+//	}
+//	
 	class PUSH_URL_INDEX{
 		int defination;
 		String url;

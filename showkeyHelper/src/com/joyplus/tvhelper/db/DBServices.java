@@ -301,6 +301,7 @@ public class DBServices {
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
 		values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
 		values.put(DBConstant.KEY_SYN1, info.getDuration());
+		values.put(DBConstant.KEY_SYN_C1, info.getDuration());
 		long _id = db.insert(DBConstant.TABLE_PLAY_INFO, null, values);
 		db.close();
         return _id;
@@ -316,19 +317,23 @@ public class DBServices {
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
 		values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
 		values.put(DBConstant.KEY_SYN1, info.getDuration());
+		values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
 //
-		int rows;
-		if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
-			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
-		        		DBConstant.KEY_PLAY_INFO_FILE_PATH + " = ? ", new String[] {
-		        		info.getLocal_url()+ ""
-		                });
-		}else{
-			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
-	        		DBConstant.KEY_PLAY_INFO_PUSH_URL + " = ? ", new String[] {
-	        		info.getPush_url()+ ""
-	                }); 
-		}
+		int rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
+        		DBConstant.KEY_ID + " = ? ", new String[] {
+        		info.getId()+ ""
+                });;
+//		if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+//			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
+//		        		DBConstant.KEY_PLAY_INFO_FILE_PATH + " = ? ", new String[] {
+//		        		info.getLocal_url()+ ""
+//		                });
+//		}else{
+//			 rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
+//	        		DBConstant.KEY_PLAY_INFO_PUSH_URL + " = ? ", new String[] {
+//	        		info.getPush_url()+ ""
+//	                }); 
+//		}
        
         db.close();
         Log.d(TAG, rows + "--->update");
@@ -362,12 +367,35 @@ public class DBServices {
     		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
     		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
     		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
-    		
+    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
         	taskes.add(info);
         }
         cr.close();
         db.close();
         return taskes;
+	}
+	
+	public synchronized MoviePlayHistoryInfo queryMoviePlayHistoryByLoaclUrl(String localUrl){
+		SQLiteDatabase db = getConnection();
+        Cursor cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
+        		null, null, null, null, null);
+        MoviePlayHistoryInfo info = null;
+        while (cr.moveToNext()) {
+    		info = new MoviePlayHistoryInfo();
+    		
+    		info.setId(cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID)));
+    		info.setPlay_type(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_TYPE)));
+    		info.setPush_id(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_ID)));
+    		info.setPlayback_time(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME)));
+    		info.setDuration(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN1)));
+    		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
+    		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
+    		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+        }
+        cr.close();
+        db.close();
+        return info;
 	}
 	
 	public synchronized boolean hasMoviePlayHistory(MoviePlayHistoryInfo info){

@@ -63,6 +63,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			switch (msg.what) {
 			case MESSAGE_GETPINCODE_SUCCESS:
 				displayPincode();
+				sendBroadcast(new Intent(Global.ACTION_PINCODE_REFRESH));
 				startService(new Intent(SettingActivity.this, FayeService.class));
 				removeDialog(0);
 				break;
@@ -271,6 +272,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 				PreferencesUtils.setPincode(SettingActivity.this, pincode);
 				PreferencesUtils.setChannel(SettingActivity.this, channel);
 				PreferencesUtils.changeAcceptedStatue(SettingActivity.this, false);
+				PreferencesUtils.setPincodeMd5(SettingActivity.this, null);
 				mHandler.sendEmptyMessage(MESSAGE_GETPINCODE_SUCCESS);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

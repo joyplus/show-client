@@ -13,6 +13,7 @@ public class MoviePlayHistoryInfo {
 	private String name;
 	private int play_type;
 	private String push_url;
+	private String download_url;
 	private String local_url;
 	private int duration;
 	private int playback_time;
@@ -71,6 +72,12 @@ public class MoviePlayHistoryInfo {
 	}
 	public void setEdite_state(int edite_state) {
 		this.edite_state = edite_state;
+	}
+	public String getDownload_url() {
+		return download_url;
+	}
+	public void setDownload_url(String download_url) {
+		this.download_url = download_url;
 	}
 	
 }

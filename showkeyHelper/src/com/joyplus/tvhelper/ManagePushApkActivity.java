@@ -207,6 +207,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			adpter.notifyDataSetChanged();
 			layout2.setVisibility(View.GONE);
 			layout1.setVisibility(View.VISIBLE);
+			updateEditBottn();
 			break;
 		case R.id.edit_Button:
 			layout1.setVisibility(View.GONE);

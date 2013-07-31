@@ -12,7 +12,7 @@ public class PreferencesUtils {
 	private static final String CHANNEL = "channel";
 	private static final String ISNEEDCONFIRM = "isneedconfirm";
 	private static final String ISAUTODELETE = "isautodelete";
-	
+	private static final String PINCODE_MD5 = "md5_code";
 	
 	public static void changeAcceptedStatue(Context c ,boolean isAccepted){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
@@ -70,5 +70,17 @@ public class PreferencesUtils {
 	public static String getChannel(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
 		return s.getString(CHANNEL, null);
+	}
+	
+	public static void setPincodeMd5(Context c,String md5){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(PINCODE_MD5, md5);
+		editor.commit();
+	}
+	
+	public static String getPincodeMd5(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(PINCODE_MD5, null);
 	}
 }

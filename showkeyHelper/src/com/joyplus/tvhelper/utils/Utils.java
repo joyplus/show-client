@@ -14,6 +14,7 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -26,12 +27,15 @@ import org.apache.http.conn.util.InetAddressUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.joyplus.tvhelper.entity.URLS_INDEX;
+
 
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Utils {
@@ -427,5 +431,35 @@ public static InetAddress getLocalIpAddress(){
 //			filename = filename.substring(0, filename.lastIndexOf("."));
 //		}
 		return filename;
+	}
+	
+	public static String getUrl(String push_urls) throws Exception{
+//		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
+		Log.d(TAG, push_urls);
+		String[] urls = push_urls.split("\\{mType\\}");
+		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+		for(String str : urls){
+			URLS_INDEX url_index_info = new URLS_INDEX();
+			String[] p = str.split("\\{m\\}");
+			if("hd2".equalsIgnoreCase(p[0])){
+				url_index_info.defination = 0;
+			}else if("mp4".equalsIgnoreCase(p[0])){
+				url_index_info.defination = 1;
+			}else if("3gp".equalsIgnoreCase(p[0])){
+				url_index_info.defination = 2;
+			}else{
+				url_index_info.defination = 3;
+			}
+			url_index_info.url = p[1];
+			list.add(url_index_info);
+		}
+		if(list.size()>1){
+			Collections.sort(list, new DefinationComparatorIndex());
+		}
+		if(list.size()<=0){
+			return  null;
+		}else{
+			return list.get(0).url;
+		}
 	}
 }

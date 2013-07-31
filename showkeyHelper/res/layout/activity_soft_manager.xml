@@ -52,7 +52,7 @@
 	                            android:layout_height="85dp"
 	                            android:id="@+id/progressbar"
 	                            app:max="100"
-	                            app:Show_Bottom="false"
+	                            app:Show_Bottom="true"
 	                            app:Inside_Interval="5"
 	                            app:fill="false"
 	                            app:Paint_Color="#fffb940f"

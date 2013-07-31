@@ -455,6 +455,11 @@ public class FayeClient implements Listener {
 
             resetWebSocketConnection();
         }
+        mConnected = false;
+
+        if (mFayeListener != null) {
+            mFayeListener.disconnectedFromServer();
+        }
     }
 
     /**

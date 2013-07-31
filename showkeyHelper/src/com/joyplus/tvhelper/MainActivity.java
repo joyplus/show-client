@@ -7,7 +7,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +35,7 @@ import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
@@ -96,6 +100,20 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		};
 	};
 	
+	private BroadcastReceiver reciver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			image_showtui.setImageBitmap(null);
+			layout_showtui.setDrawingCacheEnabled(false);
+			displayPincode();
+			layout_showtui.setDrawingCacheEnabled(true);
+			image_showtui.setImageBitmap(layout_showtui.getDrawingCache());
+		}
+		
+	};
+	
 	private MyApp app;
 	private Map<String, String> headers;
 	@Override
@@ -124,6 +142,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		headers = new HashMap<String, String>();
 		headers.put("app_key", Constant.APPKEY);
 		app.setHeaders(headers);
+		IntentFilter filter = new IntentFilter(Global.ACTION_PINCODE_REFRESH);
+		registerReceiver(reciver, filter);
 	}
 	
 	private long exitTime = 0;
@@ -432,7 +452,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		displayPincode();
+//		displayPincode();
 		super.onResume();
 	}
 	
@@ -472,7 +492,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		
+		unregisterReceiver(reciver);
 		XunLeiLiXianUtil.Logout(getApplicationContext());
 	}
 	
