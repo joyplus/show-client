@@ -94,6 +94,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private String pincode_md5;
 //	private String currentPackage = null;
 	
+	private boolean isConnect = false;
+	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
 		@Override
@@ -528,18 +530,22 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void connectedToServer() {
 		// TODO Auto-generated method stub
 		Log.d(TAG, "server connected----->");
+		isConnect = true;
 	}
 
 	@Override
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->");
+		isConnect = false;
 		handler.postDelayed(new Runnable() {
 			
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				myClient.connectToServer(null);
+				if(!isConnect){
+					myClient.connectToServer(null);
+				}
 			}
 		}, 1000);
 	}
