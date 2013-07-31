@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -122,8 +123,8 @@ public class XunLeiLXActivity extends Activity {
 			
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
 		}
-//		userNameEdit.setText("13918413043@163.com");
-//		passwdEdit.setText("6105586");
+		userNameEdit.setText("13918413043@163.com");
+		passwdEdit.setText("6105586");
 		
 		
 		addViewListener();
@@ -316,20 +317,42 @@ public class XunLeiLXActivity extends Activity {
 					}
 				});
 		
-		playerListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//		playerListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//			
+//			@Override
+//			public void onFocusChange(View v, boolean hasFocus) {
+//				// TODO Auto-generated method stub
+//				
+//				if(!hasFocus){
+//						
+////						playerListView.collapseGroup(expandFlag);
+//						for (int i = 0; i < playerList.size(); i++) {
+//
+//								playerListView.collapseGroup(i);
+//						}
+//						expandFlag = -1;
+//				}
+//			}
+//		});
+		
+		logoutBt.setOnKeyListener(new View.OnKeyListener() {
 			
 			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				// TODO Auto-generated method stub
-				
-				if(!hasFocus){
-					
-					if(expandFlag != -1){
-						
-						playerListView.collapseGroup(expandFlag);
-						expandFlag = -1;
+				switch (keyCode) {
+				case KeyEvent.KEYCODE_DPAD_LEFT:
+					for (int i = 0; i < playerList.size(); i++) {
+
+							playerListView.collapseGroup(i);
 					}
+					expandFlag = -1;
+					break;
+
+				default:
+					break;
 				}
+				return false;
 			}
 		});
 		
