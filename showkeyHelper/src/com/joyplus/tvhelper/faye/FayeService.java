@@ -2,6 +2,8 @@ package com.joyplus.tvhelper.faye;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -620,7 +622,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					
 					play_info = new MoviePlayHistoryInfo();
 					play_info.setDownload_url(movie_play_url);
-					play_info.setName(data.getString("name"));
+					play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
 					play_info.setPush_id(push_id);
 					play_info.setPush_url(data.getString("playurl"));
 					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);

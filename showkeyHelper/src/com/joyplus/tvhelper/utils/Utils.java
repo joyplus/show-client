@@ -434,7 +434,7 @@ public static InetAddress getLocalIpAddress(){
 	}
 	
 	public static String getUrl(String push_urls) throws Exception{
-//		push_urls = DES.decryptDES(push_urls, Constant.DES_KEY);
+		push_urls = DesUtils.decode(Constant.DES_KEY, push_urls);
 		Log.d(TAG, push_urls);
 		String[] urls = push_urls.split("\\{mType\\}");
 		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
