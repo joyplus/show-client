@@ -40,6 +40,7 @@ import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnHoverListener, OnKeyListener, OnClickListener {
@@ -121,6 +122,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		MobclickAgent.onError(this);
 		UmengUpdateAgent.update(this);
 		
 		app = (MyApp) getApplication();
@@ -450,10 +452,19 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	}
 	
 	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 //		displayPincode();
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
 	}
 	
 	
