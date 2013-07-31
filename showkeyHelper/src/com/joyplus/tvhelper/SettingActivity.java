@@ -117,7 +117,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 		updateSwitch();
 		displayPincode();
 		seletedView = btn_setting; 
-		btn_setting.setBackgroundResource(R.drawable.setting_left_title_seleted);
+		btn_setting.setBackgroundResource(R.drawable.highlight);
 		btn_setting.setTextColor(Color.BLACK);
 		
 		webView.getSettings().setJavaScriptEnabled(false);
@@ -150,7 +150,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			seletedView.setBackgroundResource(R.drawable.bg_title_setting_selector);
 			seletedView.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
 			
-			btn_setting.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			btn_setting.setBackgroundResource(R.drawable.highlight);
 			btn_setting.setTextColor(Color.BLACK);
 			seletedView = btn_setting;
 			
@@ -164,7 +164,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			seletedView.setBackgroundResource(R.drawable.bg_title_setting_selector);
 			seletedView.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
 			
-			btn_help.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			btn_help.setBackgroundResource(R.drawable.highlight);
 			btn_help.setTextColor(Color.BLACK);
 			seletedView = btn_help;
 			layout_setting.setVisibility(View.GONE);
@@ -176,7 +176,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			seletedView.setBackgroundResource(R.drawable.bg_title_setting_selector);
 			seletedView.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
 			
-			btn_about.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			btn_about.setBackgroundResource(R.drawable.highlight);
 			btn_about.setTextColor(Color.BLACK);
 			seletedView = btn_about;
 			layout_setting.setVisibility(View.GONE);

@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -45,6 +46,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 	private DownloadManager downloadManager;
 	private DBServices dbService;
 	private PushedApkAdapter adpter;
+	private ImageView defult_img;
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -140,6 +142,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		cancleButton = (Button) findViewById(R.id.cancel_Button);
 		editeButton = (Button) findViewById(R.id.edit_Button);
 		list = (ListView) findViewById(R.id.listView);
+		defult_img = (ImageView)findViewById(R.id.defult_img);
 		pincodeTextView = (TextView) findViewById(R.id.pincode_text);
 		displayPincode();
 		updateEditBottn();
@@ -342,9 +345,11 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 	private void updateEditBottn(){
 		if(FayeService.userPushApkInfos.size()>0){
 			editeButton.setVisibility(View.VISIBLE);
+			defult_img.setVisibility(View.GONE);
 			list.requestFocus();
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
+			defult_img.setVisibility(View.VISIBLE);
 		}
 	}
 }

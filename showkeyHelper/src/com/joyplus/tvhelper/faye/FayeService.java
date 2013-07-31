@@ -534,7 +534,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void disconnectedFromServer() {
 		// TODO Auto-generated method stub
 		Log.w(TAG, "server disconnected!----->");
-		myClient.connectToServer(null);
+		handler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				myClient.connectToServer(null);
+			}
+		}, 1000);
 	}
 
 	@Override
@@ -705,7 +712,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					break;
 				}
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

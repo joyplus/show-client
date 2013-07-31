@@ -99,7 +99,7 @@
 	                        </LinearLayout>
 	                    </RelativeLayout>
 	        </LinearLayout>
-	        <LinearLayout android:layout_width="fill_parent"
+	        <RelativeLayout android:layout_width="fill_parent"
 	                android:layout_height="0dp"
 	                android:layout_weight="1"
 	                android:padding="20dp"
@@ -115,7 +115,12 @@
 	                    android:id="@+id/listView">
 	                    
 	                </ListView>
-	            </LinearLayout>
+	                <ImageView android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:visibility="gone"
+	                    android:id="@+id/defult_img"
+	                    android:src="@drawable/tutorial_apk"/>
+	            </RelativeLayout>
 	    </LinearLayout>
 	    <LinearLayout android:layout_width="fill_parent"
 	        android:layout_height="117dp"

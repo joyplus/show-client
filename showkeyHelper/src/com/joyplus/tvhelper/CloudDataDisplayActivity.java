@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -49,6 +50,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private LinearLayout layout1, layout2;
 //	private List<PushedMovieDownLoadInfo> downloadedMovies;
 	private List<MoviePlayHistoryInfo> playinfos;
+	private ImageView defult_img;
 	private MyApp app;
 	
 	private Button selectedButon;
@@ -116,6 +118,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //		title_downloaded = (Button) findViewById(R.id.title_downloaded);
 		layout1 = (LinearLayout) findViewById(R.id.fistBtn_group);
 		layout2 = (LinearLayout) findViewById(R.id.secondBtn_group);
+		defult_img = (ImageView)findViewById(R.id.defult_img);
 		title_playHistory.setOnClickListener(this);
 //		title_downloading.setOnClickListener(this);
 //		title_downloaded.setOnClickListener(this);
@@ -132,7 +135,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		listView.setAdapter(adpter_play_history);
 		selectedIndex = 0;
 		selectedButon = title_playHistory;
-		selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+		selectedButon.setBackgroundResource(R.drawable.highlight);
 		selectedButon.setTextColor(Color.BLACK);
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
@@ -310,7 +313,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
 //			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
 //			selectedButon = title_downloaded;
-//			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+//			selectedButon.setBackgroundResource(R.drawable.highlight);
 //			selectedButon.setTextColor(Color.BLACK);
 //			downloadedMovies = dbService.queryMovieDownLoadedInfos();
 //			adpter_downloaded = new MovieDownLoadedAdapter(CloudDataDisplayActivity.this, downloadedMovies);
@@ -327,7 +330,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
 //			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
 //			selectedButon = title_downloading;
-//			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+//			selectedButon.setBackgroundResource(R.drawable.highlight);
 //			selectedButon.setTextColor(Color.BLACK);
 //			layout2.setVisibility(View.GONE);
 //			layout1.setVisibility(View.VISIBLE);
@@ -341,7 +344,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			selectedButon.setBackgroundResource(R.drawable.bg_title_setting_selector);
 			selectedButon.setTextColor(getResources().getColorStateList(R.color.setting_title_selector));
 			selectedButon = title_playHistory;
-			selectedButon.setBackgroundResource(R.drawable.setting_left_title_seleted);
+			selectedButon.setBackgroundResource(R.drawable.highlight);
 			selectedButon.setTextColor(Color.BLACK);
 			listView.setAdapter(adpter_play_history);
 			layout2.setVisibility(View.GONE);
@@ -472,8 +475,10 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		if(((BaseAdapter)listView.getAdapter()).getCount()>0){
 			editeButton.setVisibility(View.VISIBLE);
 			listView.requestFocus();
+			defult_img.setVisibility(View.GONE);
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
+			defult_img.setVisibility(View.VISIBLE);
 		}
 	}
 	

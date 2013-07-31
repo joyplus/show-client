@@ -154,12 +154,21 @@
 	       		                android:layout_height="1px"
 	       		                android:background="@drawable/divider_line"
 	       		                />
-	       		        <ListView android:layout_width="fill_parent"
+	       		        <RelativeLayout android:layout_width="fill_parent"
+	       		            android:layout_height="fill_parent"
+	       		            >
+	       		            <ListView android:layout_width="fill_parent"
 	       		            android:layout_height="fill_parent"
 	       		            android:listSelector="@drawable/bg_content_setting_selector"
 	       		            android:id="@+id/movieList">
-	       		            
-	       		        </ListView>
+	       		            </ListView>
+	       		            <ImageView android:layout_width="fill_parent"
+			                    android:layout_height="fill_parent"
+			                    android:visibility="gone"
+			                    android:padding="10dp"
+			                    android:id="@+id/defult_img"
+			                    android:src="@drawable/tutorial_video"/>
+	       		        </RelativeLayout>
 	       		    </LinearLayout>
 	       		</LinearLayout>
 	        </LinearLayout>

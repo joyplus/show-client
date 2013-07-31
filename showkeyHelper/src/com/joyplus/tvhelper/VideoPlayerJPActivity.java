@@ -511,10 +511,15 @@ public class VideoPlayerJPActivity extends Activity implements
 								&& mProd_id != null) {
 							getProgramViewDetailServiceData();
 						}else if(mProd_type==TYPE_LOCAL){
-							showDialog(0);
+							if(!isFinishing()){
+								showDialog(0);
+							}
 						}else if(mProd_type==TYPE_PUSH){
 							if(isRequset){
-								showDialog(0);
+								if(!isFinishing()){
+									showDialog(0);
+								}
+								
 							}else{
 								//失效了 接着搞
 								new Thread(new RequestNewUrl()).start();

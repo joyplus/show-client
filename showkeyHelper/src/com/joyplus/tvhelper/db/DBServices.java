@@ -315,9 +315,15 @@ public class DBServices {
 		values.put(DBConstant.KEY_PLAY_INFO_FILE_PATH, info.getLocal_url());
 		values.put(DBConstant.KEY_PLAY_INFO_PUSH_URL, info.getPush_url());
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
-		values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
-		values.put(DBConstant.KEY_SYN1, info.getDuration());
-		values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
+		if(info.getPlayback_time()>0){
+			values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
+		}
+		if(info.getDuration()>0){
+			values.put(DBConstant.KEY_SYN1, info.getDuration());
+		}
+		if(info.getDownload_url()!=null){
+			values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
+		}
 //
 		int rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
         		DBConstant.KEY_ID + " = ? ", new String[] {

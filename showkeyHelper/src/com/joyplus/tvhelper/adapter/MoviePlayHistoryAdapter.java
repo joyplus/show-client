@@ -68,7 +68,8 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 		if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>0){
 			holder.size.setText("已看完");
 		}else{
-			holder.size.setText(Utils.formatDuration(info.getPlayback_time()*1000));
+			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
+					"  /  "+ Utils.formatDuration(info.getDuration()*1000));
 		}
 		switch (info.getEdite_state()) {
 		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
