@@ -1,0 +1,153 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+    <LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="1">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="89dp">
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="1">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="62dp"
+	            android:orientation="horizontal">
+	            <TextView android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:text="软件卸载"
+	                    android:gravity="center"
+	                    android:background="@color/bg_color_guanli"
+	                    android:textColor="#f0f0f0"
+	                    android:textSize="30dp"/>
+	            <TextView android:layout_width="0dp"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="4.3"
+	                android:visibility="invisible"/>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:orientation="vertical">
+	            <LinearLayout android:layout_width="fill_parent"
+	                android:background="@color/bg_color_guanli"
+	                android:layout_height="95dp"
+	                android:orientation="vertical"
+	                >
+	                <LinearLayout android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:paddingLeft="30dp"
+	                    android:orientation="horizontal">
+	                    <LinearLayout android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:background="@drawable/bg_round_progressbar">
+	                        <com.joyplus.tvhelper.ui.RoundProgressBar android:layout_width="85dp"
+	                            android:layout_height="85dp"
+	                            android:id="@+id/progressbar"
+	                            app:max="100"
+	                            app:Inside_Interval="5"
+	                            app:fill="false"
+	                            app:Paint_Color="#fffb940f"
+	                            app:Paint_Width="7">
+	                        </com.joyplus.tvhelper.ui.RoundProgressBar>
+	                    </LinearLayout>
+	                    <LinearLayout android:layout_width="0dp"
+	                        android:layout_height="fill_parent"
+	                        android:orientation="vertical"
+	                        android:paddingLeft="20dp"
+	                        android:layout_marginBottom="10dp"
+	                        android:gravity="center_vertical"
+	                        android:layout_weight="1">
+	                        <TextView android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:id="@+id/text_usedSize"
+	                            android:textSize="24dp"/>
+	                        <TextView android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:id="@+id/text_unusedSize"
+	                            android:textSize="30dp"/>
+	                    </LinearLayout>
+	                    <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_back"
+		                        android:id="@+id/back_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                </LinearLayout>
+	            </LinearLayout>
+	            <LinearLayout android:layout_width="fill_parent"
+	                android:layout_height="0dp"
+	                android:layout_weight="30"
+	                android:padding="20dp"
+	                android:background="#ffffff"
+	                android:gravity="center"
+	                android:orientation="horizontal"
+	                >
+	                <GridView android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:numColumns="5"
+	                    android:listSelector="@android:color/transparent"
+	                    android:id="@+id/gridView">
+	                    
+	                </GridView>
+	            </LinearLayout>
+	        </LinearLayout>
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="117dp"
+	        android:orientation="horizontal">
+	        <com.joyplus.tvhelper.ui.NotificationView 
+	            android:layout_width="700dp"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18dp"
+	            android:visibility="invisible"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joyplus.tvhelper.ui.NotificationView>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="right|center_vertical"
+	            android:orientation="horizontal">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/icon_notice"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:layout_marginLeft="10dp"
+	                android:text="遥控器按"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	            	android:textSize="25dp"
+	            	android:textColor="#d89026"
+	            	android:id="@+id/notice_key"
+	                android:text="\t返回"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:id="@+id/notice_action"
+	                android:text="\t离开"/>
+	        </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+    </LinearLayout>
+</LinearLayout>

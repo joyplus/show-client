@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:id="@+id/title"
+        android:layout_marginTop="90dp"
+        android:paddingLeft="147dp"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:id="@+id/title_1"
+            android:textColor="@color/main_title_selected"
+            android:text="转屏"/>
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:scaleType="fitXY"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/main_title_divider"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/title_2"
+            android:textSize="30dp"
+            android:textColor="@color/main_title_unselected"
+            android:text="工具"/>
+    </LinearLayout>
+<com.joyplus.tvhelper.ui.MyScrollLayout 
+    android:layout_width="fill_parent"
+    android:id="@+id/layout"
+    android:layout_weight="1"
+    android:layout_height="fill_parent">
+    <include layout="@layout/layout_1"
+        />
+<!--     <include layout="@layout/layout_2"/> -->
+    <include layout="@layout/layout_3"/>
+</com.joyplus.tvhelper.ui.MyScrollLayout>
+<TextView android:layout_width="fill_parent"
+    android:paddingBottom="20dp"
+    android:layout_height="90dp"
+    android:textSize="24dp"
+    android:visibility="invisible"
+    android:textColor="#ffffff"
+    android:gravity="right|center_vertical"
+    android:paddingRight="147dp"
+    android:text="今日已推送800次"/>
+</LinearLayout>

@@ -1,0 +1,380 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+    <LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="1">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="89dp">
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="1">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="62dp"
+	            android:orientation="horizontal">
+	            <TextView android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:text="电视加速"
+	                    android:gravity="center"
+	                    android:background="@color/bg_color_jiasu"
+	                    android:textColor="#f0f0f0"
+	                    android:textSize="30dp"/>
+	            <TextView android:layout_width="0dp"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="4.3"
+	                android:visibility="invisible"/>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:orientation="vertical">
+	            <LinearLayout android:layout_width="fill_parent"
+	                android:background="@color/bg_color_jiasu"
+	                android:layout_height="95dp"
+	                android:orientation="vertical"
+	                >
+	                <LinearLayout android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:paddingLeft="30dp"
+	                    android:orientation="horizontal">
+	                    <ImageView android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:layout_gravity="center"
+	                        android:src="@drawable/jiasu_huojian">
+	                    </ImageView>
+	                    <LinearLayout android:layout_width="0dp"
+	                        android:layout_height="fill_parent"
+	                        android:orientation="vertical"
+	                        android:paddingLeft="20dp"
+	                        android:paddingTop="10dp"
+	                        android:gravity="center_vertical"
+	                        android:layout_weight="1">
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:id="@+id/notice_title"
+	                            android:text="电视运行速度缓慢"
+	                            android:textSize="30dp"/>
+	                        <RelativeLayout android:layout_width="fill_parent"
+	                            android:layout_height="0dp"
+	                            android:layout_weight="1">
+	                            <ProgressBar
+	                                android:id="@+id/progressBar1"
+	                                style="@style/ProgressBar_jiasu"
+	                                android:layout_width="fill_parent"
+	                                android:layout_marginRight="100dp"
+	                                android:layout_marginTop="10dp"
+	                                android:layout_height="wrap_content"
+	                                android:layout_alignParentLeft="true"
+	                                android:layout_alignParentTop="true" />
+	                            <TextView android:layout_width="fill_parent"
+	                                android:layout_height="fill_parent"
+	                                android:gravity="center_vertical"
+	                                android:textColor="#f0f0f0"
+	                                android:textSize="20dp"
+	                                android:id="@+id/notice_jiasu_text"
+	                                android:visibility="gone"
+	                                android:text="建议立即加速，让电视运行如飞"/>
+	                        </RelativeLayout>
+	                    </LinearLayout>
+	                    <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_back"
+		                        android:id="@+id/back_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                    <Button android:layout_width="133dp"
+	                        android:layout_height="45dp"
+	                        android:text="一键加速"
+	                        android:textSize="@dimen/mid_text_size"
+	                        android:textColor="@color/common_white_btn_textcolor"
+	                        android:layout_marginTop="5dp"
+	                        android:layout_marginRight="30dp"
+	                        android:layout_gravity="center_vertical"
+	                        android:id="@+id/jiasu_Button"
+	                        android:visibility="gone"
+	                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                </LinearLayout>
+	            </LinearLayout>
+	            <LinearLayout android:layout_width="fill_parent"
+	                android:layout_height="0dp"
+	                android:layout_weight="30"
+	                android:paddingTop="50dp"
+	                android:paddingLeft="10dp"
+	                android:paddingRight="10dp"
+	                android:paddingBottom="50dp"
+	                android:background="#ffffff"
+	                android:gravity="center"
+	                >
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:orientation="vertical"
+	                    >
+	                    <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                        	android:layout_weight="1">
+                            <LinearLayout android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="20dp">
+                                <LinearLayout android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent"
+                                    android:orientation="vertical"
+                                    android:paddingTop="26dp"
+                                    android:id="@+id/layout_houtaijincheng"
+                                    android:background="@color/bg_color_jiasu">
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="30dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:text="后台进程"
+                                        android:layout_weight="1.4"/>
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="18dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:id="@+id/backgroud_count_text"
+                                        android:layout_weight="1"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                            <ImageView android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:visibility="gone"
+                                android:id="@+id/big_image_1"/>
+                            <ImageView android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/imag_scan_anim_1"
+                                android:visibility="invisible"
+                                android:src="@drawable/jiasu_scan_anim"/>
+                        </RelativeLayout>
+	                    <ImageView android:layout_width="fill_parent"
+	                        android:layout_height="34dp"
+	                        android:layout_marginTop="5dp"
+	                        android:id="@+id/notice_icon_1"
+	                        android:src="@drawable/jiasu_icon_shalou"/>
+	                </LinearLayout>
+	                <ImageView android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:layout_marginBottom="14dp"
+	                    android:id="@+id/icon_next_1"
+	                    android:src="@drawable/jiasu_next"/>
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:orientation="vertical"
+	                    >
+                        <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                        	android:layout_weight="1">
+                            <LinearLayout android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="20dp">
+                                <LinearLayout android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent"
+                                    android:orientation="vertical"
+                                    android:paddingTop="26dp"
+                                    android:id="@+id/layout_lajihuanchun"
+                                    android:background="@color/bg_color_jiasu">
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="30dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:text="垃圾缓存"
+                                        android:layout_weight="1.4"/>
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="18dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:id="@+id/cache_size_text"
+                                        android:layout_weight="1"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                            <ImageView android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:visibility="gone"
+                                android:id="@+id/big_image_2"/>
+                            <ImageView android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/imag_scan_anim_2"
+                                android:visibility="invisible"
+                                android:src="@drawable/jiasu_scan_anim"/>
+                        </RelativeLayout>
+	                    <ImageView android:layout_width="fill_parent"
+	                        android:layout_height="34dp"
+	                        android:layout_marginTop="5dp"
+	                        android:id="@+id/notice_icon_2"
+	                        android:src="@drawable/jiasu_icon_shalou"/>
+	                </LinearLayout>
+	                <ImageView android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:layout_marginBottom="14dp"
+	                    android:id="@+id/icon_next_2"
+	                    android:src="@drawable/jiasu_next"/>
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:orientation="vertical"
+	                    >
+	                    <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                        	android:layout_weight="1">
+                            <LinearLayout android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="20dp">
+                                <LinearLayout android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent"
+                                    android:orientation="vertical"
+                                    android:paddingTop="26dp"
+                                    android:id="@+id/layout_ziqiruanjian"
+                                    android:background="@color/bg_color_jiasu">
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="30dp"
+                                        android:textColor="#f0f0f0"
+                                        android:id="@+id/notice_autoStart_titie"
+                                        android:gravity="center"
+                                        android:text="自启软件\n(需要root)"
+                                        android:layout_weight="1.4"/>
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="18dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:id="@+id/auto_start_count_text"
+                                        android:layout_weight="1"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                            <ImageView android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:visibility="gone"
+                                android:id="@+id/big_image_3"/>
+                            <ImageView android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/imag_scan_anim_3"
+                                android:visibility="invisible"
+                                android:src="@drawable/jiasu_scan_anim"/>
+                        </RelativeLayout>
+	                    <ImageView android:layout_width="fill_parent"
+	                        android:layout_height="34dp"
+	                        android:layout_marginTop="5dp"
+	                        android:id="@+id/notice_icon_3"
+	                        android:src="@drawable/jiasu_icon_shalou"/>
+	                </LinearLayout>
+	                <ImageView android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:layout_marginBottom="14dp"
+	                    android:id="@+id/icon_next_3"
+	                    android:src="@drawable/jiasu_next"/>
+	                <LinearLayout android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:orientation="vertical"
+	                    >
+	                    <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                        	android:layout_weight="1">
+                            <LinearLayout android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="20dp">
+                                <LinearLayout android:layout_width="fill_parent"
+                                    android:layout_height="fill_parent"
+                                    android:orientation="vertical"
+                                    android:paddingTop="26dp"
+                                    android:id="@+id/layout_xiezaicanliu"
+                                    android:background="@color/bg_color_jiasu">
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="30dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:text="卸载残留"
+                                        android:layout_weight="1.4"/>
+                                    <TextView android:layout_width="fill_parent"
+                                        android:layout_height="0dp"
+                                        android:textSize="18dp"
+                                        android:textColor="#f0f0f0"
+                                        android:gravity="center"
+                                        android:id="@+id/canliu_size_text"
+                                        android:layout_weight="1"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                            <ImageView android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:visibility="gone"
+                                android:id="@+id/big_image_4"/>
+                            <ImageView android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/imag_scan_anim_4"
+                                android:visibility="invisible"
+                                android:src="@drawable/jiasu_scan_anim"/>
+                        </RelativeLayout>
+	                    <ImageView android:layout_width="fill_parent"
+	                        android:layout_height="34dp"
+	                        android:layout_marginTop="5dp"
+	                        android:id="@+id/notice_icon_4"
+	                        android:src="@drawable/jiasu_icon_shalou"/>
+	                </LinearLayout>
+	            </LinearLayout>
+	        </LinearLayout>
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="117dp"
+	        android:orientation="horizontal">
+	        <com.joyplus.tvhelper.ui.NotificationView 
+	            android:layout_width="700dp"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18dp"
+	            android:visibility="invisible"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joyplus.tvhelper.ui.NotificationView>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="right|center_vertical"
+	            android:orientation="horizontal">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/icon_notice"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:layout_marginLeft="10dp"
+	                android:text="遥控器按"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	            	android:textSize="25dp"
+	            	android:textColor="#d89026"
+	            	android:id="@+id/notice_key"
+	                android:text="\t返回"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:id="@+id/notice_action"
+	                android:text="\t离开"/>
+	        </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+    </LinearLayout>
+</LinearLayout>
