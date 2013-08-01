@@ -15,7 +15,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -37,6 +36,7 @@ import com.joyplus.tvhelper.entity.service.AppRecommendView;
 import com.joyplus.tvhelper.ui.WaitingDialog;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.Utils;
 

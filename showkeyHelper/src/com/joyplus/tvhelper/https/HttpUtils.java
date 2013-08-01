@@ -4,10 +4,10 @@ import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.joyplus.tvhelper.helper.HttpClientHelper;
 import com.joyplus.tvhelper.helper.NetWorkHelper;
+import com.joyplus.tvhelper.utils.Log;
 
 public class HttpUtils {
 	

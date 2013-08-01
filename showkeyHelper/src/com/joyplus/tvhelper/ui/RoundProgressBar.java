@@ -12,10 +12,10 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.utils.Log;
 
 public class RoundProgressBar extends TextView{
 

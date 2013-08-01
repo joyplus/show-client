@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
@@ -45,6 +44,7 @@ import com.joyplus.tvhelper.entity.service.TvLiveViews;
 import com.joyplus.tvhelper.ui.WaitingDialog;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.Utils;
 

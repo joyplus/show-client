@@ -8,8 +8,6 @@ import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import android.util.Log;
-
 public class MD5Util {
 
 	private static final String TAG = "MD5Util";

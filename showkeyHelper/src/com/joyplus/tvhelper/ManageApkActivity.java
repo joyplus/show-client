@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -32,6 +31,7 @@ import android.widget.TextView;
 import com.joyplus.tvhelper.adapter.ApkAdapter;
 import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.ui.RoundProgressBar;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 
 public class ManageApkActivity extends Activity implements OnClickListener,

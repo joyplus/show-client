@@ -28,9 +28,9 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 
-import android.util.Log;
 
 import com.joyplus.tvhelper.https.HttpResult;
+import com.joyplus.tvhelper.utils.Log;
 
 public class HttpClientHelper {
 

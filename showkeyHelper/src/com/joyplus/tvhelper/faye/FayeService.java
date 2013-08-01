@@ -27,7 +27,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
@@ -48,6 +47,7 @@ import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;

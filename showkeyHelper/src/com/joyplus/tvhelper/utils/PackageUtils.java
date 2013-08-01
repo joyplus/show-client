@@ -20,7 +20,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.storage.StorageManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.joyplus.tvhelper.entity.ApkInfo;
 

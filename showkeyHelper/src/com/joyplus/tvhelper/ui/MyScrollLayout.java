@@ -1,8 +1,9 @@
 package com.joyplus.tvhelper.ui;
 
+import com.joyplus.tvhelper.utils.Log;
+
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -15,9 +16,9 @@ import android.widget.Scroller;
 public class MyScrollLayout extends ViewGroup{  
   
     private static final String TAG = "ScrollLayout";        
-    private VelocityTracker mVelocityTracker;           // ÓÃÓÚÅÐ¶ÏË¦¶¯ÊÖÊÆ      
+    private VelocityTracker mVelocityTracker;           // ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½Ë¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½      
     private static final int SNAP_VELOCITY = 600;          
-    private Scroller  mScroller;                        // »¬¶¯¿ØÖÆÆ÷      
+    private Scroller  mScroller;                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½      
     private int mCurScreen;                               
     private int mDefaultScreen = 0;                            
     private float mLastMotionX;         

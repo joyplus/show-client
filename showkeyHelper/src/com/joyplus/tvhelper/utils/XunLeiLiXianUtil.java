@@ -17,7 +17,6 @@ import org.json.JSONTokener;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.joyplus.tvhelper.entity.SharpnessEnum;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;

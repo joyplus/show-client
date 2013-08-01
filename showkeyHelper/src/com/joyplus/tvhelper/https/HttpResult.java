@@ -10,8 +10,9 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.util.EntityUtils;
 
+import com.joyplus.tvhelper.utils.Log;
+
 import android.text.TextUtils;
-import android.util.Log;
 
 public class HttpResult {
 

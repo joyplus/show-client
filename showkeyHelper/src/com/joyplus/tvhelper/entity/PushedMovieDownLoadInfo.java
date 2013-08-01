@@ -1,6 +1,5 @@
 package com.joyplus.tvhelper.entity;
 
-import android.util.Log;
 
 import com.joyplus.network.filedownload.model.DownloadTask;
 
