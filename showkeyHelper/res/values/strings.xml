@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">showkey转屏助手</string>
+    
+    <string name="login_xunlei_title">迅雷离线</string>
+    <string name="login_xunlei_vipname">白金账户</string>
+    
+    <string name="login_xunlei_usrname_hint">输入账户名</string>
+    <string name="login_xunlei_passwd_hint">输入密码</string>
+    
+    <string name="login_xunlei_login">登陆</string>
+    <string name="login_list_title">云播放列表</string>
+    
+    <string name="logout_welcom">欢迎您 !</string>
+    <string name="logout_nickname">昵称:</string>
+    <string name="logout_userid">账号:</string>
+    <string name="logout_rank">会员等级:</string>
+    <string name="logout_out_date">到期日期:</string>
+    <string name="logout_logout">注销</string>
+    
+    <string name="button_back">返  回</string>
+    <string name="button_edit">编  辑</string>
+    <string name="button_canle_edit">取消编辑</string>
+    <string name="button_del">删  除</string>
+    
+    <string name=" networknotwork">你的网络好像有问题，请重试！</string>
+    
+    <string name="setting_about">\n志精科技洞察消费者视频娱乐消费习惯变革的趋势，致力于成为家庭娱乐分享的引擎。
+        \n\n使命：分享生活和爱的乐趣
+        \n\n愿景：成为家庭娱乐分享引擎
+        \n\n宗旨：
+        \n\n嫁接起移动屏幕和大屏幕的娱乐应用桥梁；
+        \n体验极富乐趣的家庭互动娱乐生活；
+        \n实现多屏合一智能化高效监播体系
+        \n\n企业文化：
+        \n\n先行与恒持——行业先导与使命必达
+        \n分享与共荣——高效沟通与利益共享
+        \n激情与守信——阳光心境与信誉为先
+        \n\n口号：Enjoy sharing life</string>
+</resources>

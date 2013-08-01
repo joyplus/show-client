@@ -1,0 +1,221 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+    <LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="26">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="89dp">
+	        
+	    </LinearLayout>
+	    <RelativeLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="80">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:orientation="horizontal">
+	       		<LinearLayout android:layout_width="0dp"
+	       		    android:layout_height="fill_parent"
+	       		    android:background="@color/bg_color_tuisong"
+	       		    android:orientation="vertical"
+	       		    android:layout_weight="1">
+	       		    <TextView android:layout_width="fill_parent"
+	       		        android:layout_height="62dp"
+	       		        android:text="视频云推送"
+	       		        android:gravity="center"
+	                    android:textColor="#f0f0f0"
+	                    android:textSize="30dp"/>
+	       		    <LinearLayout android:layout_width="fill_parent"
+	       		        android:layout_height="0dp"
+	       		        android:layout_marginTop="2dp"
+	       		        android:orientation="vertical"
+	       		        android:layout_weight="9">
+	       		        <Button android:layout_width="fill_parent"
+	       		            android:layout_height="44dp"
+	       		            android:gravity="center_vertical"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:textSize="24dp"
+	       		            android:paddingLeft="15dp"
+	       		            android:id="@+id/title_play_history"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="已观看"/>
+	       		        <!-- <Button android:layout_width="fill_parent"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:layout_height="44dp"
+	       		            android:gravity="center_vertical"
+	       		            android:textSize="24dp"
+	       		            android:paddingLeft="15dp"
+	       		            android:id="@+id/title_downloading"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="正在下载"/>
+	       		        <Button android:layout_width="fill_parent"
+	       		            android:layout_height="wrap_content"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:textSize="24dp"
+	       		            android:paddingTop="5dp"
+	       		            android:paddingLeft="15dp"
+	       		            android:paddingBottom="5dp"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="检查更新"/>
+	       		        <Button android:layout_width="fill_parent"
+	       		            android:layout_height="44dp"
+	       		            android:gravity="center_vertical"
+	       		            android:textColor="@color/setting_title_selector"
+	       		            android:textSize="24dp"
+	       		            android:paddingLeft="15dp"
+	       		            android:id="@+id/title_downloaded"
+	       		            android:background="@drawable/bg_title_setting_selector"
+	       		            android:text="已下载"/> -->
+	       		    </LinearLayout>
+	       		</LinearLayout>
+	       		<LinearLayout android:layout_width="0dp"
+	       		    android:layout_height="fill_parent"
+	       		    android:layout_weight="4.3"
+	       		    android:orientation="vertical">
+	       		    <TextView android:layout_width="fill_parent"
+	       		        android:layout_height="62dp"/>
+	       		    <LinearLayout android:layout_width="fill_parent"
+	       		        android:layout_height="fill_parent"
+	       		        android:orientation="vertical"
+	       		        android:background="#efefef">
+	       		        <LinearLayout android:layout_width="fill_parent"
+	       		            android:orientation="vertical"
+	       		            android:layout_height="95dp">
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="fill_parent"
+	       		                android:orientation="horizontal">
+	       		                <TextView android:layout_width="fill_parent"
+	       		                android:layout_height="fill_parent"
+	       		                android:layout_weight="1"
+	       		                android:text="视频列表"
+	       		                android:gravity="left|center_vertical"
+                				android:paddingLeft="@dimen/list_padding_left"
+	       		                android:textSize="@dimen/max_text_size"
+	       		                android:textColor="#414850"/>
+	       		            <RelativeLayout android:layout_width="wrap_content"
+	                        android:layout_height="fill_parent">
+	                        <LinearLayout android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:id="@+id/fistBtn_group">
+	                            <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_edit"
+		                        android:id="@+id/edit_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+		                    	<Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_back"
+		                        android:id="@+id/back_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                        </LinearLayout>
+	                        <LinearLayout android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:visibility="gone"
+	                            android:id="@+id/secondBtn_group">
+	                            <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_canle_edit"
+		                        android:id="@+id/cancel_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+		                    	<Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_del"
+		                        android:id="@+id/del_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                        </LinearLayout>
+	                    </RelativeLayout>
+	       		        </LinearLayout>
+	       		        </LinearLayout>
+	       		        <TextView android:layout_width="fill_parent"
+	       		                android:layout_height="1px"
+	       		                android:background="@drawable/divider_line"
+	       		                />
+	       		        <RelativeLayout android:layout_width="fill_parent"
+	       		            android:layout_height="fill_parent"
+	       		            >
+	       		            <ListView android:layout_width="fill_parent"
+	       		            android:layout_height="fill_parent"
+	       		            android:listSelector="@drawable/bg_content_setting_selector"
+	       		            android:id="@+id/movieList">
+	       		            </ListView>
+	       		            <ImageView android:layout_width="fill_parent"
+			                    android:layout_height="fill_parent"
+			                    android:visibility="gone"
+			                    android:padding="10dp"
+			                    android:id="@+id/defult_img"
+			                    android:src="@drawable/tutorial_video"/>
+	       		        </RelativeLayout>
+	       		    </LinearLayout>
+	       		</LinearLayout>
+	        </LinearLayout>
+	    </RelativeLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="117dp"
+	        android:orientation="horizontal">
+	        <com.joyplus.tvhelper.ui.NotificationView 
+	            android:layout_width="700dp"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18dp"
+	            android:visibility="invisible"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joyplus.tvhelper.ui.NotificationView>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="right|center_vertical"
+	            android:paddingRight="20dp"
+	            android:orientation="horizontal">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/icon_notice"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:layout_marginLeft="10dp"
+	                android:text="遥控器按"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	            	android:textSize="25dp"
+	            	android:textColor="#d89026"
+	            	android:id="@+id/notice_key"
+	                android:text="\t返回"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:id="@+id/notice_action"
+	                android:text="\t离开"/>
+	        </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+    </LinearLayout>
+</LinearLayout>
