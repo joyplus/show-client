@@ -59,7 +59,18 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 		}else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.name.setText(info.getName());
+		
+		
+		if(info.getName()==null||"".equals(info.getName())){
+			if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+				holder.name.setText(info.getLocal_url());
+			}else{
+				holder.name.setText(info.getPush_url());
+			}
+		}else{
+			holder.name.setText(info.getName());
+		}
+		
 //		if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
 //			holder.name.setText(Utils.getDisPlayFileNameforUrl(info.getLocal_url()));
 //		}else{
