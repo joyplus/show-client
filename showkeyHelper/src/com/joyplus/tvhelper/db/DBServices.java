@@ -358,7 +358,7 @@ public class DBServices {
 	public synchronized List<MoviePlayHistoryInfo> queryMoviePlayHistoryList(){
 		SQLiteDatabase db = getConnection();
         Cursor cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
-        		null, null, null, null, null);
+        		null, null, null, null, DBConstant.KEY_ID +" desc");
         ArrayList<MoviePlayHistoryInfo> taskes = new ArrayList<MoviePlayHistoryInfo>();
         
         MoviePlayHistoryInfo info;

@@ -60,7 +60,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 				break;
 			 case 1:
 			 	removeDialog(0);
-			 	gridView.requestFocus();
+			 	updateEditButton();
 			 break;
 			// case 2:
 			// String fileName = (String) msg.obj;
@@ -121,6 +121,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 		IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
 		filter.addDataScheme("package");
 		this.registerReceiver(reciver, filter);
+		updateEditButton();
 		showDialog(0);
 		new Thread(new FindApkTask()).start();
 	}
@@ -219,12 +220,7 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 	             }
 	               
 	         }
-	        if(apks.size()>0){
-	        	editeButton.setVisibility(View.VISIBLE);
-	        	gridView.requestFocus();
-	        }else{
-	        	editeButton.setVisibility(View.INVISIBLE);
-	        }
+	        updateEditButton();
 	        layout1.setVisibility(View.VISIBLE);
 			layout2.setVisibility(View.GONE);
 			notice_key.setText("\t返回");
@@ -339,5 +335,14 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 			break;
 		}
 		return super.onCreateDialog(id);
+	}
+	
+	private void updateEditButton(){
+		if(apks.size()>0){
+        	editeButton.setVisibility(View.VISIBLE);
+        	gridView.requestFocus();
+        }else{
+        	editeButton.setVisibility(View.INVISIBLE);
+        }
 	}
 }

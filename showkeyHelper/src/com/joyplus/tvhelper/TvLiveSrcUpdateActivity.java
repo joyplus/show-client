@@ -591,11 +591,11 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					}
 				}
 				
-				File[] files = tempStoreTvLivingFileDir.listFiles();
-				for(int i=0;i<files.length;i++){
-					
-					Log.i(TAG, "files--->" + files[i].getAbsolutePath());
-				}
+//				File[] files = tempStoreTvLivingFileDir.listFiles();
+//				for(int i=0;i<files.length;i++){
+//					
+//					Log.i(TAG, "files--->" + files[i].getAbsolutePath());
+//				}
 				handler.sendEmptyMessage(DOWNLOAD_FILES_SUCESS);
 			}
 		}
