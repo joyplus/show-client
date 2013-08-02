@@ -138,18 +138,21 @@ public class PackageUtils {
 			//判断是否为非系统预装的应用程�?
 			if ((pak.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) { 
 			// customs applications 
-				ApkInfo apkInfo = new ApkInfo();
-				apkInfo.setAppName(pManager.getApplicationLabel(pak.applicationInfo).toString());
-				apkInfo.setPackageName(pak.packageName);
-				apkInfo.setVision(pak.versionName);
-				try {
-					apkInfo.setDrawble(pManager.getApplicationIcon(pak.packageName));
-				} catch (NameNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(!pak.packageName.equalsIgnoreCase(context.getApplicationInfo().packageName)){
+					ApkInfo apkInfo = new ApkInfo();
+					apkInfo.setAppName(pManager.getApplicationLabel(pak.applicationInfo).toString());
+					apkInfo.setPackageName(pak.packageName);
+					apkInfo.setVision(pak.versionName);
+					try {
+						apkInfo.setDrawble(pManager.getApplicationIcon(pak.packageName));
+					} catch (NameNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						continue;
+					}
+//					apkInfo.setSize(size)
+					apps.add(apkInfo); 
 				}
-//				apkInfo.setSize(size)
-				apps.add(apkInfo); 
 			} 
 		} 
 		return apps; 
