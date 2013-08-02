@@ -111,6 +111,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="30dp"
                 android:text="Name"
+                android:singleLine="true"
+                android:ellipsize="middle"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/white"
                 android:textSize="24dp" />

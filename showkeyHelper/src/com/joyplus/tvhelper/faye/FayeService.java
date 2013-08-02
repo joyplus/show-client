@@ -116,7 +116,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 				playDate.prod_name = play_info.getName();
 				playDate.obj = play_info;
-				playDate.prod_url = play_info.getDownload_url();
+//				playDate.prod_url = play_info.getDownload_url();
 				app.setmCurrentPlayDetailData(playDate);
 				app.set_ReturnProgramView(null);
 				startActivity(intent_play);
@@ -607,27 +607,28 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					intent.putExtra("ID", json.getString("prod_id"));
 					
 					
-					String movie_play_url = null;
-					try {
-						movie_play_url = Utils.getUrl(data.getString("downurl"));
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					if(movie_play_url == null){
-						Log.e(TAG, "movie_play_url error !"); 
-						return ;
-					}
+//					String movie_play_url = null;
+//					try {
+//						movie_play_url = Utils.getUrl(data.getString("downurl"));
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//					if(movie_play_url == null){
+//						Log.e(TAG, "movie_play_url error !"); 
+//						return ;
+//					}
 					int push_id = Integer.valueOf(data.getString("id"));
 					
 					play_info = new MoviePlayHistoryInfo();
-					play_info.setDownload_url(movie_play_url);
+//					play_info.setDownload_url(movie_play_url);
 					play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
 					play_info.setPush_id(push_id);
 					play_info.setPush_url(data.getString("playurl"));
 					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+					play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
 //					play_info.setId((int)services.insertMoviePlayHistory(play_info));
-					
+					play_info.setDuration(Constant.DEFINATION_HD2);
 					pincode_md5 = data.getString("md5_code");
 					
 					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
@@ -645,10 +646,10 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						playDate.prod_name = json.getString("prod_name");
 						
 						
-						playDate.prod_url = play_info.getDownload_url();
+//						playDate.prod_url = play_info.getDownload_url();
 //						playDate.prod_src = json.getString("prod_src");
 //						playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-//						playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+						playDate.prod_qua = play_info.getDefination();
 //						if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //							if(json.has("prod_subname")){//旧版android 没有传递该参数
 //								playDate.prod_sub_name = json.getString("prod_subname");

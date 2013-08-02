@@ -13,11 +13,13 @@ public class MoviePlayHistoryInfo {
 	private String name;
 	private int play_type;
 	private String push_url;
-	private String download_url;
+//	private String download_url;
 	private String local_url;
 	private int duration;
 	private int playback_time;
 	private int push_id;
+	private String recivedDonwLoadUrls;
+	private int defination;
 	private int edite_state = 0;
 	public int getId() {
 		return id;
@@ -73,11 +75,23 @@ public class MoviePlayHistoryInfo {
 	public void setEdite_state(int edite_state) {
 		this.edite_state = edite_state;
 	}
-	public String getDownload_url() {
-		return download_url;
+//	public String getDownload_url() {
+//		return download_url;
+//	}
+//	public void setDownload_url(String download_url) {
+//		this.download_url = download_url;
+//	}
+	public String getRecivedDonwLoadUrls() {
+		return recivedDonwLoadUrls;
 	}
-	public void setDownload_url(String download_url) {
-		this.download_url = download_url;
+	public void setRecivedDonwLoadUrls(String recivedDonwLoadUrls) {
+		this.recivedDonwLoadUrls = recivedDonwLoadUrls;
+	}
+	public int getDefination() {
+		return defination;
+	}
+	public void setDefination(int defination) {
+		this.defination = defination;
 	}
 	
 }

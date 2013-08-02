@@ -170,14 +170,14 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					playDate.prod_url = playInfo.getLocal_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
 				}else{
-					playDate.prod_url = playInfo.getDownload_url();
+//					playDate.prod_url = playInfo.getDownload_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 				}
 				playDate.obj = playInfo;
 				Log.d(TAG, "prod_type" + playDate.prod_type);
 //				playDate.prod_src = json.getString("prod_src");
 				playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
-//				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+				playDate.prod_qua = playInfo.getDefination();
 //				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //					if(json.has("prod_subname")){//旧版android 没有传递该参数
 //						playDate.prod_sub_name = json.getString("prod_subname");
@@ -490,6 +490,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		if(selectedIndex == 0){
 			listView.setAdapter(adpter_play_history);
 		}
+		updateEditBottn();
 		super.onResume();
 	}
 }

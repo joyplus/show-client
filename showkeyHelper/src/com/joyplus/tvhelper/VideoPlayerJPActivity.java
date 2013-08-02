@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,6 +51,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,6 +78,7 @@ import com.joyplus.tvhelper.ui.ArcView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
+import com.joyplus.tvhelper.utils.DesUtils;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -377,6 +380,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		Log.d(TAG, "name ----->" + mProd_name);
 		Log.d(TAG, "currentPlayUrl ----->" + currentPlayUrl);
+		Log.d(TAG, "mProd_type ----->" + mProd_type);
 		
 		if(mDefination == 0){
 			mDefination = 8;
@@ -396,8 +400,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
 				if (mProd_type<0) {
 //					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-					new Thread(new UrlRedirectTask()).start();
-					
+					if(mProd_type == TYPE_PUSH){
+						new Thread(new UrlRedirectTask()).start();
+					}
+					return ;
 				} else {
 					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
@@ -409,13 +415,17 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 				}
 			} else {
-				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+				if(mProd_type == TYPE_PUSH){
+					MyApp.pool.execute(new getPlayList());
+				}else{
+					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
 
-					m_ReturnProgramView = app.get_ReturnProgramView();
-					mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-				} else {// 如果为空，就重新获取
+						m_ReturnProgramView = app.get_ReturnProgramView();
+						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+					} else {// 如果为空，就重新获取
 
-					getProgramViewDetailServiceData();
+						getProgramViewDetailServiceData();
+					}
 				}
 			}
 		}else {//迅雷 传递-10
@@ -520,7 +530,8 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(!isFinishing()){
 								showDialog(0);
 							}
-						}else if(mProd_type==TYPE_PUSH){
+						}
+						else if(mProd_type==TYPE_PUSH){
 							if(isRequset){
 								if(!isFinishing()){
 									showDialog(0);
@@ -548,7 +559,16 @@ public class VideoPlayerJPActivity extends Activity implements
 					} else {
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!");
-						if(!VideoPlayerJPActivity.this.isFinishing()){
+						if(mProd_type==TYPE_PUSH){
+							if(isRequset){
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}else{
+								//失效了 接着搞
+								new Thread(new RequestNewUrl()).start();
+							}
+						}else if(!VideoPlayerJPActivity.this.isFinishing()){
 							showDialog(0);
 							
 							//所有url不能播放，向服务器传递-1
@@ -580,6 +600,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			default:
 				break;
 			}
+		}
+
+		private int getDefinationFromString() {
+			// TODO Auto-generated method stub
+			return 0;
 		}
 	};
 
@@ -712,6 +737,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		Log.d(TAG, "keycode ---------->" + keyCode);
 		Log.d(TAG, "mStatue ---------->" + mStatue);
+		Log.d(TAG, "mProdType ---------->" + mProd_type);
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
 		case KeyEvent.KEYCODE_ESCAPE:
@@ -772,6 +798,11 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			}
 			break;
+		case KeyEvent.KEYCODE_MENU:
+			if(mStatue == STATUE_PLAYING&&mProd_type == TYPE_PUSH){
+				showDialog(1);
+			}
+			return true;
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			if (mStatue == STATUE_PLAYING) {
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1403,13 +1434,29 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
 			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
-			mDefinationIcon.setVisibility(View.VISIBLE);
-			if(Constant.player_quality_index[0].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-				mDefinationIcon.setImageResource(R.drawable.player_1080p);
-			}else if(Constant.player_quality_index[1].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-				mDefinationIcon.setImageResource(R.drawable.player_720p);
+			if(mProd_type == TYPE_PUSH){
+				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+//					mDefinationIcon.setImageResource(R.drawable.player_1080p);
+					mDefination = 8;
+				}else if("hd".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+//					mDefinationIcon.setImageResource(R.drawable.player_720p);
+					mDefination = 7;
+				}else if("mp4".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+//					mDefinationIcon.setImageResource(R.drawable.player_720p);
+					mDefination = 6;
+				}else{
+//					mDefinationIcon.setVisibility(View.INVISIBLE);
+					mDefination = 5;
+				}
 			}else{
-				mDefinationIcon.setVisibility(View.INVISIBLE);
+				mDefinationIcon.setVisibility(View.VISIBLE);
+				if(Constant.player_quality_index[0].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+					mDefinationIcon.setImageResource(R.drawable.player_1080p);
+				}else if(Constant.player_quality_index[1].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+					mDefinationIcon.setImageResource(R.drawable.player_720p);
+				}else{
+					mDefinationIcon.setVisibility(View.INVISIBLE);
+				}
 			}
 		}
 	}
@@ -1790,15 +1837,21 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void saveToDB(long duration, long playBackTime) {
 		//save play date
-		play_info.setDownload_url(currentPlayUrl);
+		Log.d(TAG, "mProd_type---------------->" + mProd_type);
 		play_info.setDuration((int) duration);
 		play_info.setPlayback_time((int) playBackTime);
+		if(mProd_type == TYPE_PUSH){
+			play_info.setDefination(mDefination);
+//			play_info.setDownload_url(currentPlayUrl);
+		}else if(mProd_type == TYPE_LOCAL){
+			play_info.setLocal_url(currentPlayUrl);
+		}
+		
 //		MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
 //		info.setDuration((int) duration);
 //		info.setPlayback_time((int) playBackTime);
 //		info.setName(mProd_name);
 		DBServices services = DBServices.getInstance(this);
-		Log.d(TAG, "mProd_type---------------->" + mProd_type);
 //		if(mProd_type == TYPE_PUSH){
 //			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 //			info.setPush_url(currentPlayUrl);
@@ -1901,19 +1954,21 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		// TODO Auto-generated method stub
-		 Dialog alertDialog = new AlertDialog.Builder(this). 
-	                setTitle("提示"). 
-	                setMessage("该视频无法播放"). 
-	                setPositiveButton("确定", new DialogInterface.OnClickListener() {
+		switch (id) {
+		case 0:
+			Dialog alertDialog = new AlertDialog.Builder(this). 
+            setTitle("提示"). 
+            setMessage("该视频无法播放"). 
+            setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							finish();
-						}
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					finish();
+				}
 
-					}).
-	                create();
+			}).
+            create();
 		 	alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				
 				@Override
@@ -1922,8 +1977,70 @@ public class VideoPlayerJPActivity extends Activity implements
 					finish();
 				}
 			});
-	        alertDialog.show(); 
-		return super.onCreateDialog(id);
+		    alertDialog.show(); 
+		    return alertDialog;
+		case 1:
+			Dialog dialog = new AlertDialog.Builder(VideoPlayerJPActivity.this).create();
+			dialog.show();
+			LayoutInflater inflater = LayoutInflater.from(VideoPlayerJPActivity.this);
+			View view = inflater.inflate(R.layout.video_choose_defination, null);
+			Button btn_hd2 = (Button) view.findViewById(R.id.btn_hd2);
+			Button btn_hd = (Button) view.findViewById(R.id.btn_hd);
+			Button btn_mp4 = (Button) view.findViewById(R.id.btn_mp4);
+			Button btn_flv = (Button) view.findViewById(R.id.btn_flv);
+			if(playUrls_hd2.size()<=0){
+				btn_hd2.setVisibility(View.GONE);
+			}
+			if(playUrls_hd.size()<=0){
+				btn_hd.setVisibility(View.GONE);
+			}
+			if(playUrls_mp4.size()<=0){
+				btn_mp4.setVisibility(View.GONE);
+			}
+			if(playUrls_flv.size()<=0){
+				btn_flv.setVisibility(View.GONE);
+			}
+			btn_hd2.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					changeDefination(Constant.DEFINATION_HD2);
+					removeDialog(1);
+				}
+			});
+			btn_hd.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					changeDefination(Constant.DEFINATION_HD);
+					removeDialog(1);
+				}
+			});
+			btn_mp4.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					changeDefination(Constant.DEFINATION_MP4);
+					removeDialog(1);
+				}
+			});
+			btn_flv.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					changeDefination(Constant.DEFINATION_FLV);
+					removeDialog(1);
+				}
+			});
+			dialog.setContentView(view);
+			return dialog;
+		default:
+			return super.onCreateDialog(id);
+		}
 	}
 	
 	/**
@@ -2066,23 +2183,189 @@ public class VideoPlayerJPActivity extends Activity implements
 		public void run() {
 			// TODO Auto-generated method stub
 			isRequset = true;				 //updateXunleiurl
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + URLDecoder.decode(play_info.getPush_url())
+			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + URLEncoder.encode(play_info.getPush_url())
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
-			String str = HttpTools.get(VideoPlayerJPActivity.this, url);
-			Log.d(TAG, str);
+			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
+			Log.d(TAG, response);
 			try {
-				JSONObject json = new JSONObject(str);
+				JSONObject json = new JSONObject(response);
 				String downLoadurls = json.getString("downurl");
-				currentPlayUrl = Utils.getUrl(downLoadurls);
-				currentPlayUrl = Utils.getRedirectUrl(currentPlayUrl);
-				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+				String[] urls = downLoadurls.split("\\{mType\\}");
+//				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+				for(String str : urls){
+					URLS_INDEX url_index_info = new URLS_INDEX();
+					String[] p = str.split("\\{m\\}");
+					if(p.length<2){
+						continue;
+					}
+					url_index_info.defination_from_server = p[0];
+					url_index_info.url = p[1];
+					if("hd2".equalsIgnoreCase(p[0])){
+						playUrls_hd2.add(url_index_info);
+					}else if("hd".equalsIgnoreCase(p[0])){
+						playUrls_hd.add(url_index_info);
+					}else if("mp4".equalsIgnoreCase(p[0])){
+						playUrls_mp4.add(url_index_info);
+					}else{
+						playUrls_flv.add(url_index_info);;
+					}
+					playUrls.add(url_index_info);
+				}
+				sortPushUrls(play_info.getDefination());
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+//				currentPlayUrl = Utils.getUrl(downLoadurls);
+//				currentPlayUrl = Utils.getRedirectUrl(currentPlayUrl);
+//				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 			} catch (Exception e) {
 				// TODO: handle exception
-				mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
+//				mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 			}
 		}
 		
+	}
+	
+	class getPlayList implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try{
+				Log.d(TAG, "getPlayList----> start");
+				if(play_info!=null){
+					String data = DesUtils.decode(Constant.DES_KEY, play_info.getRecivedDonwLoadUrls());
+					String[] urls = data.split("\\{mType\\}");
+//					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+					for(String str : urls){
+						URLS_INDEX url_index_info = new URLS_INDEX();
+						String[] p = str.split("\\{m\\}");
+						if(p.length<2){
+							continue;
+						}
+						url_index_info.defination_from_server = p[0];
+						url_index_info.url = p[1];
+						if("hd2".equalsIgnoreCase(p[0])){
+							playUrls_hd2.add(url_index_info);
+						}else if("hd".equalsIgnoreCase(p[0])){
+							playUrls_hd.add(url_index_info);
+						}else if("mp4".equalsIgnoreCase(p[0])){
+							playUrls_mp4.add(url_index_info);
+						}else{
+							playUrls_flv.add(url_index_info);;
+						}
+						playUrls.add(url_index_info);
+					}
+					sortPushUrls(mDefination);
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}else{
+					Log.d(TAG, "play_info----> = null");
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+			}
+		}
+		
+	}
+
+	private void sortPushUrls(int defination){
+		for(URLS_INDEX url_index_info:playUrls){
+			switch (defination) {
+			case Constant.DEFINATION_HD2:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_HD:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_MP4:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_FLV:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		if(playUrls.size()>1){
+			Collections.sort(playUrls, new DefinationComparatorIndex());
+		}
+	}
+	
+	
+	private void changeDefination(int defination){
+		if(mDefination == defination){
+			return ;
+		}
+		lastTime = mVideoView.getCurrentPosition();
+		rxByteslast = 0;
+		mLoadingPreparedPercent = 0;
+		mEpisodeIndex = -1;
+		mPercentTextView.setText(", 已完成"
+				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		mDefination = defination;
+		mVideoView.stopPlayback();
+		mStatue = STATUE_LOADING;
+		mSeekBar.setEnabled(false);
+		mSeekBar.setProgress(0);
+		mTotalTimeTextView.setText("--:--");
+		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
+		mContinueLayout.setVisibility(View.GONE);
+		mControlLayout.setVisibility(View.GONE);
+		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
+		if (mStartRX == TrafficStats.UNSUPPORTED) {
+			mSpeedTextView
+					.setText("Your device does not support traffic stat monitoring.");
+		} else {
+
+			mHandler.postDelayed(mLoadingRunnable, 500);
+		}
+		sortPushUrls(mDefination);
+		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 	}
 	
 	
