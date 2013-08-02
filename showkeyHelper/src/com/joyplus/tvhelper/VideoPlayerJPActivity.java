@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -198,6 +199,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	private String currentPlayUrl;
 	private ReturnProgramView m_ReturnProgramView = null;
 	private List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+	
+	private List<URLS_INDEX> playUrls_hd2 = new ArrayList<URLS_INDEX>();//超清
+	private List<URLS_INDEX> playUrls_hd = new ArrayList<URLS_INDEX>();//高清
+	private List<URLS_INDEX> playUrls_mp4 = new ArrayList<URLS_INDEX>();//标清
+	private List<URLS_INDEX> playUrls_flv = new ArrayList<URLS_INDEX>();//流畅
 
 	private AQuery aq;
 	private MyApp app;
@@ -1382,7 +1388,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				strSrc = "PPTV";
 			} else if (mProd_src.equalsIgnoreCase("m1905")) {
 				strSrc = "电  影  网";
-			} else {
+			} else if(mProd_src.equalsIgnoreCase("XUNLEI")) {
+				strSrc = "迅  雷";
+			}else {
 				strSrc = "PPTV";
 			}
 			mResourceTextView.setText(strSrc);
@@ -2058,7 +2066,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		public void run() {
 			// TODO Auto-generated method stub
 			isRequset = true;				 //updateXunleiurl
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url() 
+			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + URLDecoder.decode(play_info.getPush_url())
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String str = HttpTools.get(VideoPlayerJPActivity.this, url);
