@@ -87,8 +87,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private PushedApkDownLoadInfo currentUserApkInfo; 
 //	private PushedMovieDownLoadInfo currentMovieInfo;
 	private PushedApkDownLoadInfo currentNotUserApkInfo; 
-	public static List<PushedApkDownLoadInfo> userPushApkInfos;
-	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos;
+	public static List<PushedApkDownLoadInfo> userPushApkInfos = new ArrayList<PushedApkDownLoadInfo>();
+	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos = new ArrayList<PushedApkDownLoadInfo>();
 //	public static List<PushedMovieDownLoadInfo> movieDownLoadInfos;
 	private MyApp app;
 	

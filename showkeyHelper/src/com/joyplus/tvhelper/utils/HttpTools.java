@@ -106,9 +106,9 @@ public class HttpTools {
 	}
 
 	public static String post(Context c, String url, Map<String, String> parmas) {
-		if(getNetworkStatus(c) == NETWORK_STATUS_NOT_AVAILABLE){
-			return NETWORK_NOT_AVAILABLE;
-		}
+//		if(getNetworkStatus(c) == NETWORK_STATUS_NOT_AVAILABLE){
+//			return NETWORK_NOT_AVAILABLE;
+//		}
 		String result = null;
 		HttpPost reqeust = new HttpPost(url);
 		HttpResponse res;
@@ -178,9 +178,9 @@ public class HttpTools {
 	
 	
 	public static String get(Context c, String url) {
-		if(getNetworkStatus(c) == NETWORK_STATUS_NOT_AVAILABLE){
-			return NETWORK_NOT_AVAILABLE;
-		}
+//		if(getNetworkStatus(c) == NETWORK_STATUS_NOT_AVAILABLE){
+//			return NETWORK_NOT_AVAILABLE;
+//		}
 		String result = null;
 		HttpResponse res;
 		HttpGet reqeust = new HttpGet(url);

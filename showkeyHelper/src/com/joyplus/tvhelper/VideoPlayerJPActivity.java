@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2058,7 +2059,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		public void run() {
 			// TODO Auto-generated method stub
 			isRequset = true;
-			String url = Constant.BASE_URL + "/updataXunleiurl?url=" + play_info.getPush_url() 
+			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url() 
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String str = HttpTools.get(VideoPlayerJPActivity.this, url);
