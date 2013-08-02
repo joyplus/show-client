@@ -551,8 +551,8 @@ public class VideoPlayerJPActivity extends Activity implements
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
-							Log.d(TAG, currentPlayUrl);
-							Log.d(TAG, mProd_src);
+							Log.d(TAG, "currentPlayUrl" + currentPlayUrl);
+							Log.d(TAG, "mProd_src" + mProd_src);
 							new Thread(new UrlRedirectTask()).start();
 //							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 						}

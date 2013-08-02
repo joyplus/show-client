@@ -189,7 +189,7 @@ public static InetAddress getLocalIpAddress(){
 			  str += Integer.toHexString(0xFF & b[i]);
 		  }
 //		  str = new String(b);
-	} catch (SocketException e) {
+	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
