@@ -458,6 +458,8 @@ public class ScanActivity extends Activity implements OnClickListener{
 				titleText.setText("电视运行良好");
 			}
 		});
+		jiasu_Button.setVisibility(View.GONE);
+		back_button.setVisibility(View.VISIBLE);
 	}
 	
 	private void killBackGroundProgress(){
