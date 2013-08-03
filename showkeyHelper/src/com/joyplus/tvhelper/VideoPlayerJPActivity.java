@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -41,17 +42,21 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -207,6 +212,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private List<URLS_INDEX> playUrls_hd = new ArrayList<URLS_INDEX>();//高清
 	private List<URLS_INDEX> playUrls_mp4 = new ArrayList<URLS_INDEX>();//标清
 	private List<URLS_INDEX> playUrls_flv = new ArrayList<URLS_INDEX>();//流畅
+	ArrayList<Integer> definationStrings = new ArrayList<Integer>();//清晰度选择
 
 	private AQuery aq;
 	private MyApp app;
@@ -800,7 +806,59 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case KeyEvent.KEYCODE_MENU:
 			if(mStatue == STATUE_PLAYING&&mProd_type == TYPE_PUSH){
-				showDialog(1);
+				try{
+					final Dialog dialog = new AlertDialog.Builder(this).create();
+					dialog.show();
+					LayoutInflater inflater = LayoutInflater.from(this);
+					View view = inflater.inflate(R.layout.video_choose_defination, null);
+					Button btn_ok = (Button) view.findViewById(R.id.btn_ok_def);
+					Button btn_cancel = (Button) view.findViewById(R.id.btn_cancle_def);
+					final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_def);
+					
+					definationStrings.clear();
+//					definationStrings.add("超    清");
+//					definationStrings.add("高    清");
+//					definationStrings.add("标    清");
+//					definationStrings.add("流    畅");
+					if(playUrls_hd2.size()>0){
+						definationStrings.add(Constant.DEFINATION_HD2);
+					}
+					if(playUrls_hd.size()>0){
+						definationStrings.add(Constant.DEFINATION_HD);
+					}
+					if(playUrls_mp4.size()>0){
+						definationStrings.add(Constant.DEFINATION_MP4);
+					}
+					if(playUrls_flv.size()>0){
+						definationStrings.add(Constant.DEFINATION_FLV);
+					}
+					
+					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
+					gallery.setSelection(definationStrings.indexOf(mDefination));
+					gallery.requestFocus();
+					btn_ok.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
+						}
+					});
+					btn_cancel.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+						}
+					});
+					dialog.setContentView(view);
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				
 			}
 			return true;
 		case KeyEvent.KEYCODE_VOLUME_UP:
@@ -1979,65 +2037,65 @@ public class VideoPlayerJPActivity extends Activity implements
 			});
 		    alertDialog.show(); 
 		    return alertDialog;
-		case 1:
-			Dialog dialog = new AlertDialog.Builder(VideoPlayerJPActivity.this).create();
-			dialog.show();
-			LayoutInflater inflater = LayoutInflater.from(VideoPlayerJPActivity.this);
-			View view = inflater.inflate(R.layout.video_choose_defination, null);
-			Button btn_hd2 = (Button) view.findViewById(R.id.btn_hd2);
-			Button btn_hd = (Button) view.findViewById(R.id.btn_hd);
-			Button btn_mp4 = (Button) view.findViewById(R.id.btn_mp4);
-			Button btn_flv = (Button) view.findViewById(R.id.btn_flv);
-			if(playUrls_hd2.size()<=0){
-				btn_hd2.setVisibility(View.GONE);
-			}
-			if(playUrls_hd.size()<=0){
-				btn_hd.setVisibility(View.GONE);
-			}
-			if(playUrls_mp4.size()<=0){
-				btn_mp4.setVisibility(View.GONE);
-			}
-			if(playUrls_flv.size()<=0){
-				btn_flv.setVisibility(View.GONE);
-			}
-			btn_hd2.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					changeDefination(Constant.DEFINATION_HD2);
-					removeDialog(1);
-				}
-			});
-			btn_hd.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					changeDefination(Constant.DEFINATION_HD);
-					removeDialog(1);
-				}
-			});
-			btn_mp4.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					changeDefination(Constant.DEFINATION_MP4);
-					removeDialog(1);
-				}
-			});
-			btn_flv.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					changeDefination(Constant.DEFINATION_FLV);
-					removeDialog(1);
-				}
-			});
-			dialog.setContentView(view);
-			return dialog;
+//		case 1:
+//			Dialog dialog = new AlertDialog.Builder(VideoPlayerJPActivity.this).create();
+//			dialog.show();
+//			LayoutInflater inflater = LayoutInflater.from(VideoPlayerJPActivity.this);
+//			View view = inflater.inflate(R.layout.video_choose_defination, null);
+//			Button btn_hd2 = (Button) view.findViewById(R.id.btn_hd2);
+//			Button btn_hd = (Button) view.findViewById(R.id.btn_hd);
+//			Button btn_mp4 = (Button) view.findViewById(R.id.btn_mp4);
+//			Button btn_flv = (Button) view.findViewById(R.id.btn_flv);
+//			if(playUrls_hd2.size()<=0){
+//				btn_hd2.setVisibility(View.GONE);
+//			}
+//			if(playUrls_hd.size()<=0){
+//				btn_hd.setVisibility(View.GONE);
+//			}
+//			if(playUrls_mp4.size()<=0){
+//				btn_mp4.setVisibility(View.GONE);
+//			}
+//			if(playUrls_flv.size()<=0){
+//				btn_flv.setVisibility(View.GONE);
+//			}
+//			btn_hd2.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					changeDefination(Constant.DEFINATION_HD2);
+//					removeDialog(1);
+//				}
+//			});
+//			btn_hd.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					changeDefination(Constant.DEFINATION_HD);
+//					removeDialog(1);
+//				}
+//			});
+//			btn_mp4.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					changeDefination(Constant.DEFINATION_MP4);
+//					removeDialog(1);
+//				}
+//			});
+//			btn_flv.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					changeDefination(Constant.DEFINATION_FLV);
+//					removeDialog(1);
+//				}
+//			});
+//			dialog.setContentView(view);
+//			return dialog;
 		default:
 			return super.onCreateDialog(id);
 		}
@@ -2377,5 +2435,61 @@ public class VideoPlayerJPActivity extends Activity implements
 		mSeekBar.setEnabled(true);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
+	}
+	
+	class DefinationAdapter extends BaseAdapter{
+
+		List<Integer> list;
+		Context c;
+		
+		public DefinationAdapter(Context c, List<Integer> list){
+			this.c = c;
+			this.list = list;
+		}
+		
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return list.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			TextView tv = new TextView(c);
+			tv.setTextColor(Color.WHITE);
+			tv.setTextSize(25);
+			switch (list.get(position)) {
+			case Constant.DEFINATION_HD2:
+				tv.setText("超    清");
+				break;
+			case Constant.DEFINATION_HD:
+				tv.setText("高    清");
+				break;
+			case Constant.DEFINATION_MP4:
+				tv.setText("标    清");
+				break;
+			case Constant.DEFINATION_FLV:
+				tv.setText("流    畅");
+				break;
+			}
+			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			tv.setGravity(Gravity.CENTER);
+			tv.setLayoutParams(param);
+			return tv;
+		}
+		
 	}
 }
