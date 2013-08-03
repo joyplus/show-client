@@ -168,7 +168,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				info.setIcon_url(apkInfo.getIcon_url());
 				String url = apkInfo.getApk_url();
 				String file_name = Utils.getFileNameforUrl(url);
-				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
 				info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 				downloadManager.addTast(task);
 				info.setTast(task);
@@ -366,7 +366,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 							info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
 							String fileName = Utils.getFileNameforUrl(downloadUrl);
 							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-							DownloadTask task = new DownloadTask(downloadUrl, APK_PATH.getAbsolutePath(), fileName, 3);
+							DownloadTask task = new DownloadTask(downloadUrl, APK_PATH.getAbsolutePath(), fileName);
 							info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
 							info.setTast(task);
 							info.set_id((int) services.insertApkInfo(info));
@@ -505,7 +505,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setIsUser(PushedApkDownLoadInfo.IS_USER); 
 						String fileName = Utils.getFileNameforUrl(file_url);
 						info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName);
 						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
 						info.setTast(task);
 						downloadManager.addTast(task);
@@ -583,7 +583,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					String url = data.getString("file_url");
 					String file_name = Utils.getFileNameforUrl(url);
 					info.setPush_id(id);
-					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
 					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 					downloadManager.addTast(task);
 					info.setTast(task);
@@ -1220,5 +1220,11 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	class PUSH_URL_INDEX{
 		int defination;
 		String url;
+	}
+
+	@Override
+	public void onDownloadFileUnusual(String arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
