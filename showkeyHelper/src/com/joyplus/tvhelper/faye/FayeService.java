@@ -108,13 +108,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			if(Global.ACTION_CONFIRM_ACCEPT.equals(action)){
 				
 				PreferencesUtils.setPincodeMd5(FayeService.this, pincode_md5);
-				play_info.setId((int)services.insertMoviePlayHistory(play_info));
+//				play_info.setId((int)services.insertMoviePlayHistory(play_info));
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 				Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 				intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				
 				playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 				playDate.prod_name = play_info.getName();
+				playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 				playDate.obj = play_info;
 //				playDate.prod_url = play_info.getDownload_url();
 				app.setmCurrentPlayDetailData(playDate);
@@ -138,6 +139,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					e.printStackTrace();
 //				}
 //				myClient.sendMessage(json);
+				services.deleteMoviePlayHistory(play_info);
 				play_info = null;
 				pincode_md5 = null;
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
@@ -619,21 +621,22 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						return ;
 //					}
 					int push_id = Integer.valueOf(data.getString("id"));
-					
-					play_info = new MoviePlayHistoryInfo();
-//					play_info.setDownload_url(movie_play_url);
-					play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
-					play_info.setPush_id(push_id);
-					play_info.setPush_url(data.getString("playurl"));
-					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-					play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
-//					play_info.setId((int)services.insertMoviePlayHistory(play_info));
-					play_info.setDuration(Constant.DEFINATION_HD2);
+					play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, data.getString("playurl"));
+					if(play_info == null){
+						play_info = new MoviePlayHistoryInfo();
+//						play_info.setDownload_url(movie_play_url);
+						play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
+						play_info.setPush_id(push_id);
+						play_info.setPush_url(data.getString("playurl"));
+						play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+						play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+//						play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						play_info.setDuration(Constant.DEFINATION_HD2);
+						play_info.setId((int)services.insertMoviePlayHistory(play_info));
+					}
 					pincode_md5 = data.getString("md5_code");
-					
 					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-						play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 						Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -642,6 +645,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 						playDate.prod_name = play_info.getName();
+						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
 //						playDate.prod_name = json.getString("prod_name");
 						

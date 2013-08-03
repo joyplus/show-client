@@ -485,12 +485,14 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
+		int selected = listView.getSelectedItemPosition();
 		playinfos = dbService.queryMoviePlayHistoryList();
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		if(selectedIndex == 0){
 			listView.setAdapter(adpter_play_history);
 		}
 		updateEditBottn();
+		listView.setSelection(selected);
 		super.onResume();
 	}
 }

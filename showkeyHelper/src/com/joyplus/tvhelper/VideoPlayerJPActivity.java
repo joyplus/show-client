@@ -607,11 +607,6 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			}
 		}
-
-		private int getDefinationFromString() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
 	};
 
 	private void updateName() {
@@ -1494,16 +1489,17 @@ public class VideoPlayerJPActivity extends Activity implements
 			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
 			if(mProd_type == TYPE_PUSH){
 				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-//					mDefinationIcon.setImageResource(R.drawable.player_1080p);
+					mDefinationIcon.setImageResource(R.drawable.icon_def_hd2);
 					mDefination = 8;
 				}else if("hd".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-//					mDefinationIcon.setImageResource(R.drawable.player_720p);
+					mDefinationIcon.setImageResource(R.drawable.icon_def_hd);
 					mDefination = 7;
 				}else if("mp4".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-//					mDefinationIcon.setImageResource(R.drawable.player_720p);
+					mDefinationIcon.setImageResource(R.drawable.icon_def_mp4);
 					mDefination = 6;
 				}else{
 //					mDefinationIcon.setVisibility(View.INVISIBLE);
+					mDefinationIcon.setImageResource(R.drawable.icon_def_flv);
 					mDefination = 5;
 				}
 			}else{
