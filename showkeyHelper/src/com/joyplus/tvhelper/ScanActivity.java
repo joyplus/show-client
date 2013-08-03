@@ -47,6 +47,7 @@ import com.joyplus.tvhelper.utils.PackageUtils;
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.RootTools.Result;
 import com.stericson.RootTools.exceptions.RootToolsException;
+import com.umeng.analytics.MobclickAgent;
 
 public class ScanActivity extends Activity implements OnClickListener{
 	
@@ -547,6 +548,21 @@ public class ScanActivity extends Activity implements OnClickListener{
 		
 		mHandler.removeCallbacksAndMessages(null);
 		super.onDestroy();
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 	
 	private void deleteFile(File f){

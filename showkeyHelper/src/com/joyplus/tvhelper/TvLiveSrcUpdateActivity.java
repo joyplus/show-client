@@ -47,6 +47,7 @@ import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.Utils;
+import com.umeng.analytics.MobclickAgent;
 
 public class TvLiveSrcUpdateActivity extends Activity {
 	
@@ -193,6 +194,20 @@ public class TvLiveSrcUpdateActivity extends Activity {
 		// TODO Auto-generated method stub
 		unregisterReceiver(reciver);
 		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
 	}
 	
 	private void initListener(){

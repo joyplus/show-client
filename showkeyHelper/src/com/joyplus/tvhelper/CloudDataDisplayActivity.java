@@ -33,6 +33,7 @@ import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
+import com.umeng.analytics.MobclickAgent;
 
 public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener {
 
@@ -494,5 +495,15 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		updateEditBottn();
 		listView.setSelection(selected);
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
 }

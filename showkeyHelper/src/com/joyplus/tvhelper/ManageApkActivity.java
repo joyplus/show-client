@@ -33,6 +33,7 @@ import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.ui.RoundProgressBar;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
+import com.umeng.analytics.MobclickAgent;
 
 public class ManageApkActivity extends Activity implements OnClickListener,
 		OnItemClickListener {
@@ -311,9 +312,17 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 	}
 	
 	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onResume(this);
 		getSize();
 	}
 	

@@ -34,6 +34,7 @@ import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
+import com.umeng.analytics.MobclickAgent;
 
 public class SettingActivity extends Activity implements OnClickListener{
 	
@@ -251,6 +252,20 @@ public class SettingActivity extends Activity implements OnClickListener{
 		}else{
 			switch_confirm.setImageResource(R.drawable.swith_off);
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
 	}
 	
 	class GetPinCodeTask implements Runnable{

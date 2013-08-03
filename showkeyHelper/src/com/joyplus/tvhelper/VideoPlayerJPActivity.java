@@ -90,6 +90,7 @@ import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.SouceComparatorIndex1;
 import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
+import com.umeng.analytics.MobclickAgent;
 
 public class VideoPlayerJPActivity extends Activity implements
 		MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener,
@@ -1861,7 +1862,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-//		MobclickAgent.onResume(this);
+		MobclickAgent.onResume(this);
 		super.onResume();
 	}
 
@@ -1871,7 +1872,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.i(TAG, "onPause--->");
 		
 		// TODO Auto-generated method stub
-//		MobclickAgent.onPause(this);
+		MobclickAgent.onPause(this);
 //		if (mProd_type < 0&&mStatue!=STATUE_LOADING) {
 			// SaveToServer(mVideoView.getDuration(),
 			// mVideoView.getCurrentPosition());
