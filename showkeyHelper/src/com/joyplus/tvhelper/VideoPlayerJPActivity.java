@@ -508,8 +508,15 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
-					if(!VideoPlayerJPActivity.this.isFinishing()){
-						showDialog(0);
+					if(mProd_type==TYPE_PUSH){
+						if(isRequset){
+							if(!isFinishing()){
+								showDialog(0);
+							}
+						}else{
+							//失效了 接着搞
+							new Thread(new RequestNewUrl()).start();
+						}
 					}
 					return;
 				}
@@ -1985,6 +1992,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		mEpisodeIndex = -1;
 		mPercentTextView.setText(", 已完成"
 				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		play_info = null;
+		playUrls.clear();
+		playUrls_flv.clear();
+		playUrls_hd.clear();
+		playUrls_hd2.clear();
+		playUrls_mp4.clear();
 		initVedioDate();
 	}
 
@@ -2246,9 +2259,15 @@ public class VideoPlayerJPActivity extends Activity implements
 			Log.d(TAG, response);
 			try {
 				JSONObject json = new JSONObject(response);
-				String downLoadurls = json.getString("downurl");
+				String downLoadurls = DesUtils.decode(Constant.DES_KEY, json.getString("downurl"));
+				Log.d(TAG, "downLoadurls--->" + downLoadurls);
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+				playUrls.clear();
+				playUrls_flv.clear();
+				playUrls_hd.clear();
+				playUrls_hd2.clear();
+				playUrls_mp4.clear();
 				for(String str : urls){
 					URLS_INDEX url_index_info = new URLS_INDEX();
 					String[] p = str.split("\\{m\\}");
@@ -2293,6 +2312,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					String data = DesUtils.decode(Constant.DES_KEY, play_info.getRecivedDonwLoadUrls());
 					String[] urls = data.split("\\{mType\\}");
 //					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+					playUrls.clear();
+					playUrls_flv.clear();
+					playUrls_hd.clear();
+					playUrls_hd2.clear();
+					playUrls_mp4.clear();
 					for(String str : urls){
 						URLS_INDEX url_index_info = new URLS_INDEX();
 						String[] p = str.split("\\{m\\}");
