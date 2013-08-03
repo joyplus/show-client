@@ -3,6 +3,7 @@ package com.joyplus.tvhelper.adapter;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.utils.Utils;
 
 public class PlayExpandListAdapter extends BaseExpandableListAdapter {
+	
+	private static final String TAG = "PlayExpandListAdapter";
 
 	private Context context;
 	private ArrayList<XLLXFileInfo> files;
@@ -59,9 +62,10 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public int getChildrenCount(int groupPosition) {
 		// TODO Auto-generated method stub
+//		Log.i(TAG, "getChildrenCount-->");
 		if(files.get(groupPosition)!= null && files.get(groupPosition).isDir
 				&& files.get(groupPosition).btFiles != null) {
-			
+//			Log.i(TAG, "groupPosition-->" + groupPosition + "length" + files.get(groupPosition).btFiles.length);
 			return files.get(groupPosition).btFiles.length;
 		}
 		
@@ -104,6 +108,12 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public boolean hasStableIds() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	@Override
+	public boolean isChildSelectable(int groupPosition, int childPosition) {
 		// TODO Auto-generated method stub
 		return true;
 	}
@@ -187,12 +197,6 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		holder.nameTv.setText(files.get(groupPosition).btFiles[childPosition].file_name);
 		
 		return convertView;
-	}
-
-	@Override
-	public boolean isChildSelectable(int groupPosition, int childPosition) {
-		// TODO Auto-generated method stub
-		return true;
 	}
 	
 	class ViewHolder {

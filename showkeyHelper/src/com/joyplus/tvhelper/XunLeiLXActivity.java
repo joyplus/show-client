@@ -124,6 +124,9 @@ public class XunLeiLXActivity extends Activity {
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
 		}
 		
+		userNameEdit.setText("13918413043@163.com");
+		passwdEdit.setText("6105586");
+		
 		addViewListener();
 		
 	}
@@ -276,8 +279,9 @@ public class XunLeiLXActivity extends Activity {
 										}).start();
 							}else {
 								
-								Log.i(TAG, "handler.post(new Runnable()--->groupPosition:" +
-										groupPosition + " expandFlag--->" + expandFlag);
+								Log.i(TAG, "!= null handler.post(new Runnable()--->groupPosition:" +
+										groupPosition + " expandFlag--->" + expandFlag
+										+ "  btFiles--->" + xllxFileInfo.btFiles.length);
 								
 								if(expandFlag == groupPosition) {
 									
@@ -291,7 +295,7 @@ public class XunLeiLXActivity extends Activity {
 						}
 					}
 				}
-				return false;
+				return true;
 			}
 		});
 		
@@ -303,7 +307,9 @@ public class XunLeiLXActivity extends Activity {
 						// TODO Auto-generated method stub
 						
 						Log.i(TAG, "onGroupExpand--->" + groupPosition);
-
+						XLLXFileInfo xllxFileInfo = playerList.get(groupPosition);
+						if(xllxFileInfo != null && xllxFileInfo.btFiles != null)
+						Log.i(TAG, "  btFiles--->" + xllxFileInfo.btFiles.length);
 						for (int i = 0; i < playerList.size(); i++) {
 
 							if (i != groupPosition) {
@@ -311,8 +317,23 @@ public class XunLeiLXActivity extends Activity {
 								playerListView.collapseGroup(i);
 							}
 						}
+						
+						expandFlag = groupPosition;
 					}
 				});
+		
+		playerListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+			
+			@Override
+			public void onGroupCollapse(int groupPosition) {
+				// TODO Auto-generated method stub
+				
+				if(playerListView.isGroupExpanded(groupPosition)){
+					
+					playerListView.collapseGroup(groupPosition);
+				}
+			}
+		});
 		
 //		playerListView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //			
@@ -339,6 +360,10 @@ public class XunLeiLXActivity extends Activity {
 				// TODO Auto-generated method stub
 				switch (keyCode) {
 				case KeyEvent.KEYCODE_DPAD_LEFT:
+					
+					if(expandFlag != -1)
+					Log.i(TAG, "KEYCODE_DPAD_LEFT" + playerListView.isGroupExpanded(expandFlag));
+					
 					for (int i = 0; i < playerList.size(); i++) {
 
 							playerListView.collapseGroup(i);
@@ -367,7 +392,9 @@ public class XunLeiLXActivity extends Activity {
 						
 						if(playerList.get(groupPosition).btFiles[childPosition] != null
 								&& !playerList.get(groupPosition).btFiles[childPosition].isDir) {
-							
+							Log.i(TAG, "setOnChildClickListener groupPosition:" + groupPosition 
+									+ " childPosition:" + childPosition + " length:" + playerList.get(groupPosition).btFiles.length
+									+ " id:" + id);
 							XLLXFileInfo xllxFileInfo = playerList.get(groupPosition).btFiles[childPosition];
 							
 							if(xllxFileInfo.file_name != null && !xllxFileInfo.file_name.equals("")) {
@@ -414,7 +441,7 @@ public class XunLeiLXActivity extends Activity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Log.i(TAG, "onItemSelected--->" + position);
+				Log.i(TAG, "onItemSelected--->" + position + " id:" + id);
 				
 				if(isCanCache) {
 					
