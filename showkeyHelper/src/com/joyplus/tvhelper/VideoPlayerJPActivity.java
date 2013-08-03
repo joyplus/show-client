@@ -1488,6 +1488,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
 			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
 			if(mProd_type == TYPE_PUSH){
+				mDefinationIcon.setVisibility(View.VISIBLE);
 				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
 					mDefinationIcon.setImageResource(R.drawable.icon_def_hd2);
 					mDefination = 8;
@@ -1503,14 +1504,14 @@ public class VideoPlayerJPActivity extends Activity implements
 					mDefination = 5;
 				}
 			}else{
-				mDefinationIcon.setVisibility(View.VISIBLE);
-				if(Constant.player_quality_index[0].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-					mDefinationIcon.setImageResource(R.drawable.player_1080p);
-				}else if(Constant.player_quality_index[1].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
-					mDefinationIcon.setImageResource(R.drawable.player_720p);
-				}else{
-					mDefinationIcon.setVisibility(View.INVISIBLE);
-				}
+				mDefinationIcon.setVisibility(View.GONE);
+//				if(Constant.player_quality_index[0].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+//					mDefinationIcon.setImageResource(R.drawable.player_1080p);
+//				}else if(Constant.player_quality_index[1].equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+//					mDefinationIcon.setImageResource(R.drawable.player_720p);
+//				}else{
+//					mDefinationIcon.setVisibility(View.INVISIBLE);
+//				}
 			}
 		}
 	}
