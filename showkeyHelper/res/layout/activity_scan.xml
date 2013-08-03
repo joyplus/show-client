@@ -341,7 +341,7 @@
 	            android:id="@+id/notification"
 	            app:textColor="#f0f0f0"
 	            app:textSize="18dp"
-	            android:visibility="invisible"
+	            android:visibility="gone"
 	            app:text="今天已有推推    123 次"
 	            >
 	        </com.joyplus.tvhelper.ui.NotificationView>

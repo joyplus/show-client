@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
@@ -75,7 +76,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	public static final int MESSAGE_SHOW_DIALOG = 101;
 	public static final int MESSAGE_NEW_DOWNLOAD_ADD = 102;
-	public static final int MESSAGE_APK_INSTALLED_PROGRESS = 102;
+	public static final int MESSAGE_APK_INSTALLED_PROGRESS = 103;
+	public static final int MESSAGE_APK_INSTALLED_SUCCESS= 104;
+	public static final int MESSAGE_APK_INSTALLED_FAIL= 105;
 	
 	public static final int MESSAGE_LISTEN_APP_LOOPER = 201;
 	
@@ -201,6 +204,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				Log.d(TAG, "MESSAGE_NEW_DOWNLOAD_ADD -- >");
 				Intent dowanlaodAddIntent = new Intent(Global.ACTION_DOWNLOAD_RECIVED);
 				sendBroadcast(dowanlaodAddIntent);
+				break;
+			case MESSAGE_APK_INSTALLED_SUCCESS:
+				Utils.showToast(FayeService.this, msg.obj + "安装成功");
+				Log.d(TAG, "MESSAGE_APK_INSTALLED_SUCCESS -- >");
+				break;
+			case MESSAGE_APK_INSTALLED_FAIL:
+				Log.d(TAG, "MESSAGE_APK_INSTALLED_FAIL -- >");
+				Utils.showToast(FayeService.this, msg.obj + "安装成功");
 				break;
 			case MESSAGE_LISTEN_APP_LOOPER:
 				Log.d(TAG, "MESSAGE_LISTEN_APP_LOOPER-----");
@@ -830,6 +841,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			if(currentUserApkInfo!=null && currentUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
 				Log.d(TAG, currentUserApkInfo.getName() + " install " +b.getString(PackageInstaller.KEY_RESULT_DESC));
 				if("INSTALL_SUCCEEDED".equals(b.getString(PackageInstaller.KEY_RESULT_DESC))){
+					Message msg = handler.obtainMessage(MESSAGE_APK_INSTALLED_SUCCESS);
+					msg.obj = currentUserApkInfo.getName();
+					handler.sendMessage(msg);
 					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_SUCESS);
 					intent.putExtra("_id", currentUserApkInfo.get_id());
 					services.deleteApkInfo(currentUserApkInfo);
@@ -846,6 +860,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}else{
 					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_FAILE);
 					intent.putExtra("_id", currentUserApkInfo.get_id());
+					Message msg = handler.obtainMessage(MESSAGE_APK_INSTALLED_FAIL);
+					msg.obj = currentUserApkInfo.getName();
+					handler.sendMessage(msg);
 					currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_INSTALL_FAILE);
 					services.updateApkInfo(currentUserApkInfo);
 					sendBroadcast(intent);
