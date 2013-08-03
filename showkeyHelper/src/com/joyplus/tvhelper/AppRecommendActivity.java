@@ -207,6 +207,20 @@ public class AppRecommendActivity extends Activity {
 			}
 		});
 		
+		backBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+			
+				if(hasFocus){
+					
+					downloadTv.setVisibility(View.INVISIBLE);
+					gridView.setSelection(-1);
+				}
+			}
+		});
+		
 		gridView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 			@Override
