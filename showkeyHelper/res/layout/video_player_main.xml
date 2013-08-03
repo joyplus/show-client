@@ -133,8 +133,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="30dp"
-                android:text="26dp"
-                android:textStyle="bold"
+                android:textSize="26dp" 
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/white" />
         </LinearLayout>
@@ -283,7 +282,7 @@
                 android:paddingBottom="19dp"
                 android:text="--:--"
                 android:textColor="@color/white"
-                android:textSize="24dp" />
+                android:textSize="28dp" />
         </RelativeLayout>
     </RelativeLayout>
 
