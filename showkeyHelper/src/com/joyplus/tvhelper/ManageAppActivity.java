@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.joyplus.tvhelper.ui.RoundProgressBar;
 import com.joyplus.tvhelper.utils.PackageUtils;
+import com.umeng.analytics.MobclickAgent;
 
 public class ManageAppActivity extends Activity implements OnClickListener{
 	
@@ -126,5 +127,21 @@ public class ManageAppActivity extends Activity implements OnClickListener{
 			startActivity(new Intent(ManageAppActivity.this, ManageApkActivity.class));
 			break;
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+//		displayPincode();
+		super.onResume();
+		
+		MobclickAgent.onResume(this);
 	}
 }

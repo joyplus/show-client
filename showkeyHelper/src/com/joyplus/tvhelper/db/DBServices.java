@@ -301,7 +301,9 @@ public class DBServices {
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
 		values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
 		values.put(DBConstant.KEY_SYN1, info.getDuration());
-		values.put(DBConstant.KEY_SYN_C1, info.getDuration());
+		values.put(DBConstant.KEY_SYN2, info.getDefination());
+//		values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
+		values.put(DBConstant.KEY_SYN_C2, info.getRecivedDonwLoadUrls());
 		long _id = db.insert(DBConstant.TABLE_PLAY_INFO, null, values);
 		db.close();
         return _id;
@@ -315,14 +317,19 @@ public class DBServices {
 		values.put(DBConstant.KEY_PLAY_INFO_FILE_PATH, info.getLocal_url());
 		values.put(DBConstant.KEY_PLAY_INFO_PUSH_URL, info.getPush_url());
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
+		values.put(DBConstant.KEY_SYN2, info.getDefination());
 		if(info.getPlayback_time()>0){
 			values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
 		}
 		if(info.getDuration()>0){
 			values.put(DBConstant.KEY_SYN1, info.getDuration());
 		}
-		if(info.getDownload_url()!=null){
-			values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
+//		if(info.getDownload_url()!=null){
+//			values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
+//		}
+		
+		if(info.getRecivedDonwLoadUrls()!=null){
+			values.put(DBConstant.KEY_SYN_C2, info.getRecivedDonwLoadUrls());
 		}
 //
 		int rows = db.update(DBConstant.TABLE_PLAY_INFO, values,
@@ -370,10 +377,12 @@ public class DBServices {
     		info.setPush_id(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_ID)));
     		info.setPlayback_time(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME)));
     		info.setDuration(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN1)));
+    		info.setDefination(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN2)));
     		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
     		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
     		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
-    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+//    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+    		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
         	taskes.add(info);
         }
         cr.close();
@@ -397,37 +406,45 @@ public class DBServices {
     		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
     		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
     		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
-    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+//    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
         }
         cr.close();
         db.close();
         return info;
 	}
 	
-	public synchronized boolean hasMoviePlayHistory(MoviePlayHistoryInfo info){
+	public synchronized MoviePlayHistoryInfo hasMoviePlayHistory(int type,String url){
 		SQLiteDatabase db = getConnection();
 		Cursor cr;
-		if(info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+		MoviePlayHistoryInfo info = null;
+		if(type==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
 			cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
 					DBConstant.KEY_PLAY_INFO_FILE_PATH + " =? ", new String[] {
-	        		 info.getLocal_url()}, null, null, null);
+					url}, null, null, null);
 		}else{
 			cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
 					DBConstant.KEY_PLAY_INFO_PUSH_URL + " =? ", new String[] {
-	        		 info.getPush_url()}, null, null, null);
+					url}, null, null, null);
 		}
-		boolean flag = false;
 		if(cr!=null){
 			if(cr.moveToNext()){
-				flag =  true;
-			}else{
-				flag = false;
+				info = new MoviePlayHistoryInfo();
+				
+				info.setId(cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID)));
+	    		info.setPlay_type(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_TYPE)));
+	    		info.setPush_id(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_ID)));
+	    		info.setPlayback_time(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME)));
+	    		info.setDuration(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN1)));
+	    		info.setDefination(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN2)));
+	    		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
+	    		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
+	    		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+//	    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+	    		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
 			}
-		}else{
-			flag  = false;
 		}
 		cr.close();
 		db.close();
-		return flag;
+		return info;
 	}
 }

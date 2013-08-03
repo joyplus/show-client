@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
@@ -75,7 +76,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	public static final int MESSAGE_SHOW_DIALOG = 101;
 	public static final int MESSAGE_NEW_DOWNLOAD_ADD = 102;
-	public static final int MESSAGE_APK_INSTALLED_PROGRESS = 102;
+	public static final int MESSAGE_APK_INSTALLED_PROGRESS = 103;
+	public static final int MESSAGE_APK_INSTALLED_SUCCESS= 104;
+	public static final int MESSAGE_APK_INSTALLED_FAIL= 105;
 	
 	public static final int MESSAGE_LISTEN_APP_LOOPER = 201;
 	
@@ -87,8 +90,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private PushedApkDownLoadInfo currentUserApkInfo; 
 //	private PushedMovieDownLoadInfo currentMovieInfo;
 	private PushedApkDownLoadInfo currentNotUserApkInfo; 
-	public static List<PushedApkDownLoadInfo> userPushApkInfos = new ArrayList<PushedApkDownLoadInfo>();
-	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos = new ArrayList<PushedApkDownLoadInfo>();
+	public static List<PushedApkDownLoadInfo> userPushApkInfos;
+	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos;
 //	public static List<PushedMovieDownLoadInfo> movieDownLoadInfos;
 	private MyApp app;
 	
@@ -108,15 +111,16 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			if(Global.ACTION_CONFIRM_ACCEPT.equals(action)){
 				
 				PreferencesUtils.setPincodeMd5(FayeService.this, pincode_md5);
-				play_info.setId((int)services.insertMoviePlayHistory(play_info));
+//				play_info.setId((int)services.insertMoviePlayHistory(play_info));
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 				Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 				intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				
 				playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 				playDate.prod_name = play_info.getName();
+				playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 				playDate.obj = play_info;
-				playDate.prod_url = play_info.getDownload_url();
+//				playDate.prod_url = play_info.getDownload_url();
 				app.setmCurrentPlayDetailData(playDate);
 				app.set_ReturnProgramView(null);
 				startActivity(intent_play);
@@ -138,6 +142,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					e.printStackTrace();
 //				}
 //				myClient.sendMessage(json);
+				services.deleteMoviePlayHistory(play_info);
 				play_info = null;
 				pincode_md5 = null;
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
@@ -168,7 +173,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				info.setIcon_url(apkInfo.getIcon_url());
 				String url = apkInfo.getApk_url();
 				String file_name = Utils.getFileNameforUrl(url);
-				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
 				info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 				downloadManager.addTast(task);
 				info.setTast(task);
@@ -199,6 +204,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				Log.d(TAG, "MESSAGE_NEW_DOWNLOAD_ADD -- >");
 				Intent dowanlaodAddIntent = new Intent(Global.ACTION_DOWNLOAD_RECIVED);
 				sendBroadcast(dowanlaodAddIntent);
+				break;
+			case MESSAGE_APK_INSTALLED_SUCCESS:
+				Utils.showToast(FayeService.this, msg.obj + "安装成功");
+				Log.d(TAG, "MESSAGE_APK_INSTALLED_SUCCESS -- >");
+				break;
+			case MESSAGE_APK_INSTALLED_FAIL:
+				Log.d(TAG, "MESSAGE_APK_INSTALLED_FAIL -- >");
+				Utils.showToast(FayeService.this, msg.obj + "安装成功");
 				break;
 			case MESSAGE_LISTEN_APP_LOOPER:
 				Log.d(TAG, "MESSAGE_LISTEN_APP_LOOPER-----");
@@ -366,7 +379,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 							info.setIsUser(PushedApkDownLoadInfo.IS_NOT_USER);
 							String fileName = Utils.getFileNameforUrl(downloadUrl);
 							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-							DownloadTask task = new DownloadTask(downloadUrl, APK_PATH.getAbsolutePath(), fileName, 3);
+							DownloadTask task = new DownloadTask(downloadUrl, APK_PATH.getAbsolutePath(), fileName);
 							info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
 							info.setTast(task);
 							info.set_id((int) services.insertApkInfo(info));
@@ -505,7 +518,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						info.setIsUser(PushedApkDownLoadInfo.IS_USER); 
 						String fileName = Utils.getFileNameforUrl(file_url);
 						info.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
-						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName, 3);
+						DownloadTask task = new DownloadTask(file_url, APK_PATH.getAbsolutePath(), fileName);
 						info.setFile_path(APK_PATH.getAbsolutePath() + File.separator + fileName);
 						info.setTast(task);
 						downloadManager.addTast(task);
@@ -583,7 +596,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					String url = data.getString("file_url");
 					String file_name = Utils.getFileNameforUrl(url);
 					info.setPush_id(id);
-					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name, 3);
+					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
 					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 					downloadManager.addTast(task);
 					info.setTast(task);
@@ -607,32 +620,34 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					intent.putExtra("ID", json.getString("prod_id"));
 					
 					
-					String movie_play_url = null;
-					try {
-						movie_play_url = Utils.getUrl(data.getString("downurl"));
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					if(movie_play_url == null){
-						Log.e(TAG, "movie_play_url error !"); 
-						return ;
-					}
+//					String movie_play_url = null;
+//					try {
+//						movie_play_url = Utils.getUrl(data.getString("downurl"));
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//					if(movie_play_url == null){
+//						Log.e(TAG, "movie_play_url error !"); 
+//						return ;
+//					}
 					int push_id = Integer.valueOf(data.getString("id"));
-					
-					play_info = new MoviePlayHistoryInfo();
-					play_info.setDownload_url(movie_play_url);
-					play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
-					play_info.setPush_id(push_id);
-					play_info.setPush_url(data.getString("playurl"));
-					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-//					play_info.setId((int)services.insertMoviePlayHistory(play_info));
-					
+					play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, data.getString("playurl"));
+					if(play_info == null){
+						play_info = new MoviePlayHistoryInfo();
+//						play_info.setDownload_url(movie_play_url);
+						play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
+						play_info.setPush_id(push_id);
+						play_info.setPush_url(data.getString("playurl"));
+						play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+						play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+//						play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						play_info.setDuration(Constant.DEFINATION_HD2);
+						play_info.setId((int)services.insertMoviePlayHistory(play_info));
+					}
 					pincode_md5 = data.getString("md5_code");
-					
 					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-						play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 						Intent intent = new Intent(this,VideoPlayerJPActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -641,14 +656,15 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 						playDate.prod_name = play_info.getName();
+						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
 //						playDate.prod_name = json.getString("prod_name");
 						
 						
-						playDate.prod_url = play_info.getDownload_url();
+//						playDate.prod_url = play_info.getDownload_url();
 //						playDate.prod_src = json.getString("prod_src");
 //						playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-//						playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+						playDate.prod_qua = play_info.getDefination();
 //						if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //							if(json.has("prod_subname")){//旧版android 没有传递该参数
 //								playDate.prod_sub_name = json.getString("prod_subname");
@@ -825,6 +841,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			if(currentUserApkInfo!=null && currentUserApkInfo.getPackageName().equalsIgnoreCase(b.getString(PackageInstaller.KEY_PACKAGE_NAME))){
 				Log.d(TAG, currentUserApkInfo.getName() + " install " +b.getString(PackageInstaller.KEY_RESULT_DESC));
 				if("INSTALL_SUCCEEDED".equals(b.getString(PackageInstaller.KEY_RESULT_DESC))){
+					Message msg = handler.obtainMessage(MESSAGE_APK_INSTALLED_SUCCESS);
+					msg.obj = currentUserApkInfo.getName();
+					handler.sendMessage(msg);
 					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_SUCESS);
 					intent.putExtra("_id", currentUserApkInfo.get_id());
 					services.deleteApkInfo(currentUserApkInfo);
@@ -841,6 +860,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				}else{
 					Intent intent = new Intent(Global.ACTION_DOWNL_INSTALL_FAILE);
 					intent.putExtra("_id", currentUserApkInfo.get_id());
+					Message msg = handler.obtainMessage(MESSAGE_APK_INSTALLED_FAIL);
+					msg.obj = currentUserApkInfo.getName();
+					handler.sendMessage(msg);
 					currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_INSTALL_FAILE);
 					services.updateApkInfo(currentUserApkInfo);
 					sendBroadcast(intent);
@@ -1219,5 +1241,11 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	class PUSH_URL_INDEX{
 		int defination;
 		String url;
+	}
+
+	@Override
+	public void onDownloadFileUnusual(String arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

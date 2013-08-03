@@ -30,6 +30,7 @@ import com.joyplus.tvhelper.entity.ApkInfo;
 import com.joyplus.tvhelper.ui.RoundProgressBar;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
+import com.umeng.analytics.MobclickAgent;
 
 public class UninstallAppActivity extends Activity implements OnItemClickListener{
 	
@@ -151,10 +152,18 @@ public class UninstallAppActivity extends Activity implements OnItemClickListene
 	}
 	
 	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		getSize();
 		super.onResume();
+		MobclickAgent.onResume(this);
+		getSize();
 	}
 	
 	@Override

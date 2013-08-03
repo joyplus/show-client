@@ -325,7 +325,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_bg_line"
-                android:divider="@color/light_white" />
+                android:divider="@color/light_white" 
+                android:listSelector="@drawable/bg_content_setting_selector"/>
         </RelativeLayout>
     </LinearLayout>
 

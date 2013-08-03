@@ -131,14 +131,13 @@
 	            android:id="@+id/notification"
 	            app:textColor="#f0f0f0"
 	            app:textSize="18dp"
-	            android:visibility="invisible"
+	            android:visibility="gone"
 	            app:text="今天已有推推    123 次"
 	            >
 	        </com.joyplus.tvhelper.ui.NotificationView>
 	        <LinearLayout android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:gravity="right|center_vertical"
-	            android:paddingRight="20dp"
 	            android:orientation="horizontal">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"

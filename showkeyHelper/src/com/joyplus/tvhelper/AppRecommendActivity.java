@@ -39,6 +39,7 @@ import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.Utils;
+import com.umeng.analytics.MobclickAgent;
 
 public class AppRecommendActivity extends Activity {
 	
@@ -181,6 +182,20 @@ public class AppRecommendActivity extends Activity {
 		removeDialog(DIALOG_WAITING);
 	}
 	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	
 	private void initListener(){
 		
 		backBtn.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +204,20 @@ public class AppRecommendActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				finish();
+			}
+		});
+		
+		backBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+			
+				if(hasFocus){
+					
+					downloadTv.setVisibility(View.INVISIBLE);
+					gridView.setSelection(-1);
+				}
 			}
 		});
 		

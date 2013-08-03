@@ -80,14 +80,14 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 		case PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD://等待下载
 			holder.statue.setText("等待下载");
 //			holder.progress.setProgress(progress);
-			holder.progress.setProgress(info.getTast().getCurLength());
+			holder.progress.setProgress((int)info.getTast().getCurLength());
 			holder.progress.setSecondaryProgress(0);
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressText.setText(progress+"%");
 			break;
 		case PushedMovieDownLoadInfo.STATUE_DOWNLOADING://正在下载
 			holder.statue.setText(getSpeed(info.getTast()));
-			holder.progress.setProgress(info.getTast().getCurLength());
+			holder.progress.setProgress((int)info.getTast().getCurLength());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progress.setSecondaryProgress(0);
 			holder.progressText.setText(progress+"%");
@@ -97,7 +97,7 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 			holder.statue.setText("已暂停下载");
 			holder.progress.setProgress(0);
 //			holder.progress.setSecondaryProgress(progress);
-			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
+			holder.progress.setSecondaryProgress((int)info.getTast().getCurLength());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressText.setText(progress+"%");
 			break;
@@ -106,7 +106,7 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
 			holder.statue.setTextColor(Color.RED);
 			holder.progress.setProgress(0);
 //			holder.progress.setSecondaryProgress(progress);
-			holder.progress.setSecondaryProgress(info.getTast().getCurLength());
+			holder.progress.setSecondaryProgress((int)info.getTast().getCurLength());
 			holder.size.setText(PackageUtils.fomartSize(info.getTast().getSize()));
 			holder.progressText.setText(progress+"%");
 			break;

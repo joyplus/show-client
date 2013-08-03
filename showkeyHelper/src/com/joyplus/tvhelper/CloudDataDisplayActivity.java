@@ -33,6 +33,7 @@ import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
+import com.umeng.analytics.MobclickAgent;
 
 public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener {
 
@@ -170,14 +171,14 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					playDate.prod_url = playInfo.getLocal_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
 				}else{
-					playDate.prod_url = playInfo.getDownload_url();
+//					playDate.prod_url = playInfo.getDownload_url();
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 				}
 				playDate.obj = playInfo;
 				Log.d(TAG, "prod_type" + playDate.prod_type);
 //				playDate.prod_src = json.getString("prod_src");
 				playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
-//				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
+				playDate.prod_qua = playInfo.getDefination();
 //				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //					if(json.has("prod_subname")){//旧版android 没有传递该参数
 //						playDate.prod_sub_name = json.getString("prod_subname");
@@ -485,11 +486,24 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
+		int selected = listView.getSelectedItemPosition();
 		playinfos = dbService.queryMoviePlayHistoryList();
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		if(selectedIndex == 0){
 			listView.setAdapter(adpter_play_history);
 		}
+		updateEditBottn();
+		listView.setSelection(selected);
 		super.onResume();
+		
+		MobclickAgent.onResume(this);
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
 }

@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.joyplus.tvhelper.utils.Global;
+import com.umeng.analytics.MobclickAgent;
 
 public class DialogActivity extends Activity implements OnClickListener {
 
@@ -46,5 +47,19 @@ public class DialogActivity extends Activity implements OnClickListener {
 			sendBroadcast(new Intent(Global.ACTION_CONFIRM_REFUSE));
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
 	}
 }

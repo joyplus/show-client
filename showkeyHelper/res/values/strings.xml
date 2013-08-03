@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">showkey转屏助手</string>
+    <string name="app_name">转屏助手</string>
     
     <string name="login_xunlei_title">迅雷离线</string>
     <string name="login_xunlei_vipname">白金账户</string>

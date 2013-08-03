@@ -100,7 +100,6 @@
 	                        android:text="一键加速"
 	                        android:textSize="@dimen/mid_text_size"
 	                        android:textColor="@color/common_white_btn_textcolor"
-	                        android:layout_marginTop="5dp"
 	                        android:layout_marginRight="30dp"
 	                        android:layout_gravity="center_vertical"
 	                        android:id="@+id/jiasu_Button"
@@ -342,7 +341,7 @@
 	            android:id="@+id/notification"
 	            app:textColor="#f0f0f0"
 	            app:textSize="18dp"
-	            android:visibility="invisible"
+	            android:visibility="gone"
 	            app:text="今天已有推推    123 次"
 	            >
 	        </com.joyplus.tvhelper.ui.NotificationView>

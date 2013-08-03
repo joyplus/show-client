@@ -8,15 +8,15 @@ public class Constant {
 	
 	
 //	//测试环境控制
-//	 public static String APPKEY = "ijoyplus_android_0001bj";
-//	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
-//	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
+	 public static String APPKEY = "ijoyplus_android_0001bj";
+	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
+	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
 	 
 	 //正式环境
 	 
-	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static final String BASE_URL = "http://tt.showkey.tv";//视频直播源
-	 public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
+//	 public static String APPKEY = "ijoyplus_android_0001bj";
+//	 public static final String BASE_URL = "http://tt.showkey.tv";//视频直播源
+//	 public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
 	//刘洋环境
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
 //	 public static final String BASE_URL = "http://172.16.31.64:8030";//视频直播源
@@ -57,4 +57,9 @@ public class Constant {
 	public static String TV_LIVING_FILE_PATH = Environment.getExternalStorageDirectory()
 	+ "/Android/data/com.joyplus.tvhelper/tv_living_file_temp";
 
+	
+	public static final int DEFINATION_HD2 = 8; 
+	public static final int DEFINATION_HD = 7; 
+	public static final int DEFINATION_MP4 = 6; 
+	public static final int DEFINATION_FLV = 5; 
 }
