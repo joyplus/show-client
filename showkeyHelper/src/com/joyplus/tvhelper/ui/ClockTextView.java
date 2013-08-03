@@ -48,8 +48,8 @@ public class ClockTextView extends TextView {
 	}
 	
 	private void start(){
-		Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "font/Roboto-Thin.ttf");
-		setTypeface(tf);
+//		Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "font/Roboto-Thin.ttf");
+//		setTypeface(tf);
 		updateTime();
 	}
 	
