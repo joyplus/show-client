@@ -459,34 +459,45 @@ public class VideoPlayerJPActivity extends Activity implements
 							for(int i=0;i<list.size();i++) {
 								
 								VideoPlayUrl videoPlayUrl = list.get(i);
-								
 								Log.i(TAG, "VideoPlayUrl--->" + videoPlayUrl.toString());
 								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
-									URLS_INDEX url = new URLS_INDEX();
-									url.source_from = "XUNLEI";
-									url.url = videoPlayUrl.playurl;
 									
-									if(videoPlayUrl.sharp != null) {
+									URLS_INDEX url = new URLS_INDEX();
+									url.url = videoPlayUrl.playurl;
+									url.source_from = "XUNLEI";
+									if(videoPlayUrl.isCanDrag){// can drag hd2 hd mp4 
 										
-										int index = videoPlayUrl.sharp.getIndex();
-										switch (index) {
-										case 2:
-										case 3:
-										case 4:
-										case 5:
-											url.defination_from_server ="hd2";
-											break;
+										if(videoPlayUrl.sharp != null) {
+											
+											int index = videoPlayUrl.sharp.getIndex();
+											switch (index) {
+											case 0:
+												url.defination_from_server ="mp4";
+												break;
+											case 2:
+												url.defination_from_server ="hd";
+												break;
+											case 3:
+												url.defination_from_server ="hd2";
+												break;
 
-										default:
-											break;
+											default:
+												break;
+											}
 										}
+									}else {//can't drag flv
+										url.defination_from_server ="flv";
+//										playUrls_flv.a
 									}
+								
 									playUrls.add(url);
 								}
 							}
 							
 						}
 					}
+					initFourList();
+					sortPushUrls(mDefination);
 					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}
 			});
@@ -810,7 +821,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
-			if(mStatue == STATUE_PLAYING&&mProd_type == TYPE_PUSH){
+			if(mStatue == STATUE_PLAYING&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI)){
 				try{
 					final Dialog dialog = new AlertDialog.Builder(this).create();
 					dialog.show();
@@ -1497,7 +1508,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
 			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
-			if(mProd_type == TYPE_PUSH){
+			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_XUNLEI){
 				mDefinationIcon.setVisibility(View.VISIBLE);
 				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
 					mDefinationIcon.setImageResource(R.drawable.icon_def_hd2);
@@ -2270,10 +2281,10 @@ public class VideoPlayerJPActivity extends Activity implements
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 				playUrls.clear();
-				playUrls_flv.clear();
-				playUrls_hd.clear();
-				playUrls_hd2.clear();
-				playUrls_mp4.clear();
+//				playUrls_flv.clear();
+//				playUrls_hd.clear();
+//				playUrls_hd2.clear();
+//				playUrls_mp4.clear();
 				for(String str : urls){
 					URLS_INDEX url_index_info = new URLS_INDEX();
 					String[] p = str.split("\\{m\\}");
@@ -2282,17 +2293,18 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 					url_index_info.defination_from_server = p[0];
 					url_index_info.url = p[1];
-					if("hd2".equalsIgnoreCase(p[0])){
-						playUrls_hd2.add(url_index_info);
-					}else if("hd".equalsIgnoreCase(p[0])){
-						playUrls_hd.add(url_index_info);
-					}else if("mp4".equalsIgnoreCase(p[0])){
-						playUrls_mp4.add(url_index_info);
-					}else{
-						playUrls_flv.add(url_index_info);;
-					}
+//					if("hd2".equalsIgnoreCase(p[0])){
+//						playUrls_hd2.add(url_index_info);
+//					}else if("hd".equalsIgnoreCase(p[0])){
+//						playUrls_hd.add(url_index_info);
+//					}else if("mp4".equalsIgnoreCase(p[0])){
+//						playUrls_mp4.add(url_index_info);
+//					}else{
+//						playUrls_flv.add(url_index_info);;
+//					}
 					playUrls.add(url_index_info);
 				}
+				initFourList();
 				sortPushUrls(play_info.getDefination());
 				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 //				currentPlayUrl = Utils.getUrl(downLoadurls);
@@ -2319,10 +2331,10 @@ public class VideoPlayerJPActivity extends Activity implements
 					String[] urls = data.split("\\{mType\\}");
 //					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 					playUrls.clear();
-					playUrls_flv.clear();
-					playUrls_hd.clear();
-					playUrls_hd2.clear();
-					playUrls_mp4.clear();
+//					playUrls_flv.clear();
+//					playUrls_hd.clear();
+//					playUrls_hd2.clear();
+//					playUrls_mp4.clear();
 					for(String str : urls){
 						URLS_INDEX url_index_info = new URLS_INDEX();
 						String[] p = str.split("\\{m\\}");
@@ -2331,17 +2343,18 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 						url_index_info.defination_from_server = p[0];
 						url_index_info.url = p[1];
-						if("hd2".equalsIgnoreCase(p[0])){
-							playUrls_hd2.add(url_index_info);
-						}else if("hd".equalsIgnoreCase(p[0])){
-							playUrls_hd.add(url_index_info);
-						}else if("mp4".equalsIgnoreCase(p[0])){
-							playUrls_mp4.add(url_index_info);
-						}else{
-							playUrls_flv.add(url_index_info);;
-						}
+//						if("hd2".equalsIgnoreCase(p[0])){
+//							playUrls_hd2.add(url_index_info);
+//						}else if("hd".equalsIgnoreCase(p[0])){
+//							playUrls_hd.add(url_index_info);
+//						}else if("mp4".equalsIgnoreCase(p[0])){
+//							playUrls_mp4.add(url_index_info);
+//						}else{
+//							playUrls_flv.add(url_index_info);;
+//						}
 						playUrls.add(url_index_info);
 					}
+					initFourList();
 					sortPushUrls(mDefination);
 					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}else{
@@ -2356,8 +2369,29 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		
 	}
+	
+	private void initFourList(){
+		playUrls_flv.clear();
+		playUrls_hd.clear();
+		playUrls_hd2.clear();
+		playUrls_mp4.clear();
+		for(URLS_INDEX url_index_info:playUrls){
+			if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+				playUrls_hd2.add(url_index_info);
+			}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+				playUrls_hd.add(url_index_info);
+			}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+				playUrls_mp4.add(url_index_info);
+			}else{
+				playUrls_flv.add(url_index_info);;
+			}
+		}
+	}
 
 	private void sortPushUrls(int defination){
+		
+		
+		
 		for(URLS_INDEX url_index_info:playUrls){
 			switch (defination) {
 			case Constant.DEFINATION_HD2:
