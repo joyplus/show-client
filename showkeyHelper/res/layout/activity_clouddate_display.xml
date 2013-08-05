@@ -47,7 +47,7 @@
 	       		            android:id="@+id/title_play_history"
 	       		            android:background="@drawable/bg_title_setting_selector"
 	       		            android:text="已观看"/>
-	       		        <!-- <Button android:layout_width="fill_parent"
+	       		        <Button android:layout_width="fill_parent"
 	       		            android:textColor="@color/setting_title_selector"
 	       		            android:layout_height="44dp"
 	       		            android:gravity="center_vertical"
@@ -56,15 +56,7 @@
 	       		            android:id="@+id/title_downloading"
 	       		            android:background="@drawable/bg_title_setting_selector"
 	       		            android:text="正在下载"/>
-	       		        <Button android:layout_width="fill_parent"
-	       		            android:layout_height="wrap_content"
-	       		            android:textColor="@color/setting_title_selector"
-	       		            android:textSize="24dp"
-	       		            android:paddingTop="5dp"
-	       		            android:paddingLeft="15dp"
-	       		            android:paddingBottom="5dp"
-	       		            android:background="@drawable/bg_title_setting_selector"
-	       		            android:text="检查更新"/>
+
 	       		        <Button android:layout_width="fill_parent"
 	       		            android:layout_height="44dp"
 	       		            android:gravity="center_vertical"
@@ -73,7 +65,7 @@
 	       		            android:paddingLeft="15dp"
 	       		            android:id="@+id/title_downloaded"
 	       		            android:background="@drawable/bg_title_setting_selector"
-	       		            android:text="已下载"/> -->
+	       		            android:text="已下载"/>
 	       		    </LinearLayout>
 	       		</LinearLayout>
 	       		<LinearLayout android:layout_width="0dp"
