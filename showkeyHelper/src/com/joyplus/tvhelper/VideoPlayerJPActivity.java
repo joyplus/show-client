@@ -530,6 +530,11 @@ public class VideoPlayerJPActivity extends Activity implements
 							//失效了 接着搞
 							new Thread(new RequestNewUrl()).start();
 						}
+					}else if(mProd_type == TYPE_XUNLEI){
+						
+						if(!isFinishing()){
+							showDialog(0);
+						}
 					}
 					return;
 				}
