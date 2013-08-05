@@ -562,7 +562,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					myClient.connectToServer(null);
 				}
 			}
-		}, 1000);
+		}, 2000);
 	}
 
 	@Override
