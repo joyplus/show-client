@@ -11,6 +11,7 @@ public class VideoPlayUrl implements Serializable {
 	
 	public String playurl;
 	public SharpnessEnum sharp;
+	public boolean isCanDrag = true;
 
 	public boolean equals(Object paramObject) {
 		if ((paramObject instanceof VideoPlayUrl)) {
@@ -24,7 +25,7 @@ public class VideoPlayUrl implements Serializable {
 	}
 
 	public String toString() {
-		return "VideoPlayUrl [sharp=" + this.sharp + ", playurl="
+		return "VideoPlayUrl [sharp=" + this.sharp + ", isCanDrag=" + isCanDrag +", playurl="
 				+ this.playurl + "]";
 	}
 }

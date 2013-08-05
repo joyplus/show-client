@@ -459,6 +459,8 @@ public class VideoPlayerJPActivity extends Activity implements
 							for(int i=0;i<list.size();i++) {
 								
 								VideoPlayUrl videoPlayUrl = list.get(i);
+								
+								Log.i(TAG, "VideoPlayUrl--->" + videoPlayUrl.toString());
 								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
 									URLS_INDEX url = new URLS_INDEX();
 									url.source_from = "XUNLEI";
