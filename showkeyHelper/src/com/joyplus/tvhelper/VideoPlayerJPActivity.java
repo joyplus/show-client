@@ -2259,7 +2259,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			Log.d(TAG, response);
 			try {
 				JSONObject json = new JSONObject(response);
-				String downLoadurls = DesUtils.decode(Constant.DES_KEY, json.getString("downurl"));
+				String reciveData = json.getString("downurl");
+				if(play_info!=null){
+					play_info.setRecivedDonwLoadUrls(reciveData);
+				}
+				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
