@@ -142,7 +142,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					e.printStackTrace();
 //				}
 //				myClient.sendMessage(json);
-				services.deleteMoviePlayHistory(play_info);
+				if(play_info!=null){
+					services.deleteMoviePlayHistory(play_info);
+				}
 				play_info = null;
 				pincode_md5 = null;
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
