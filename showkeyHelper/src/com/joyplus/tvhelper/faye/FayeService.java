@@ -699,6 +699,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					movieDownLoadInfo.setPush_url(push_url);
 					movieDownLoadInfo.setPush_id(data.getInt("id"));
 					String downLoad_url = Utils.getRedirectUrl(push_url);
+					Log.d(TAG, "push download url--->" + push_url);
 					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
 					for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
 						if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
