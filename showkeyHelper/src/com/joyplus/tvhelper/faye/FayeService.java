@@ -317,7 +317,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		com.joyplus.utils.Log.mbLoggable = false;
+		com.joyplus.utils.Log.mbLoggable = true;
 	}
 
 
