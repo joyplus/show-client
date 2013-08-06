@@ -3,9 +3,6 @@ package com.joyplus.tvhelper.faye;
 import java.io.File;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -27,7 +24,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.widget.Toast;
 
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
@@ -42,10 +38,8 @@ import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
-import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Constant;
-import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
@@ -96,6 +90,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private MyApp app;
 	
 	private MoviePlayHistoryInfo play_info;
+	private PushedApkDownLoadInfo apkdownload_info;
+	private int push_type;
 	private String pincode_md5;
 //	private String currentPackage = null;
 	
@@ -112,18 +108,30 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				
 				PreferencesUtils.setPincodeMd5(FayeService.this, pincode_md5);
 //				play_info.setId((int)services.insertMoviePlayHistory(play_info));
-				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
-				intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				if(push_type == 0){//apk
+					userPushApkInfos.add(apkdownload_info);
+					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+					if(currentUserApkInfo==null){
+						currentUserApkInfo = apkdownload_info;
+						currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+						downloadManager.startTast(apkdownload_info.getTast());
+						services.updateApkInfo(currentUserApkInfo);
+					}
+				}else if(push_type == 1){
+					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+					Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+					intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					
+					playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+					playDate.prod_name = play_info.getName();
+					playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
+					playDate.obj = play_info;
+//					playDate.prod_url = play_info.getDownload_url();
+					app.setmCurrentPlayDetailData(playDate);
+					app.set_ReturnProgramView(null);
+					startActivity(intent_play);
+				}
 				
-				playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
-				playDate.prod_name = play_info.getName();
-				playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
-				playDate.obj = play_info;
-//				playDate.prod_url = play_info.getDownload_url();
-				app.setmCurrentPlayDetailData(playDate);
-				app.set_ReturnProgramView(null);
-				startActivity(intent_play);
 //				JSONObject json = new JSONObject();
 //				try {
 //					json.put("msg_type", 3);
@@ -142,10 +150,18 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //					e.printStackTrace();
 //				}
 //				myClient.sendMessage(json);
-				if(play_info!=null){
-					services.deleteMoviePlayHistory(play_info);
+				if(push_type == 0){//apk
+					if(apkdownload_info!=null){
+						services.deleteApkInfo(apkdownload_info);
+					}
+					apkdownload_info = null;
+				}else if(push_type == 1){
+					if(play_info!=null){
+						services.deleteMoviePlayHistory(play_info);
+					}
+					play_info = null;
+					
 				}
-				play_info = null;
 				pincode_md5 = null;
 			}else if(Global.ACTION_DOWNLOAD_PAUSE.equals(action)){
 				
@@ -608,15 +624,23 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					info.setIsUser(PushedApkDownLoadInfo.IS_USER);
 					info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					info.set_id((int) services.insertApkInfo(info));
-					userPushApkInfos.add(info);
-					updateHistory(id);
-					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-					if(currentUserApkInfo==null){
-						currentUserApkInfo = info;
-						currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-						downloadManager.startTast(task);
-						services.updateApkInfo(currentUserApkInfo);
+					apkdownload_info = info;
+					push_type = 0;
+					pincode_md5 = data.getString("md5_code");
+					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+						userPushApkInfos.add(info);
+						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+						if(currentUserApkInfo==null){
+							currentUserApkInfo = info;
+							currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+							downloadManager.startTast(task);
+							services.updateApkInfo(currentUserApkInfo);
+						}
+					}else{
+						handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
 					}
+					updateHistory(id);
 					break;
 				case 5:
 //					JSONObject data_1 = json.getJSONObject("body");
@@ -650,6 +674,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						play_info.setDuration(Constant.DEFINATION_HD2);
 						play_info.setId((int)services.insertMoviePlayHistory(play_info));
 					}
+					push_type = 1;
 					pincode_md5 = data.getString("md5_code");
 					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
