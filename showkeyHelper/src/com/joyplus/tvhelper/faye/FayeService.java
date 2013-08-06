@@ -703,7 +703,15 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
 					for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
 						if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
-							Log.e(TAG, "not support down load m3u8 !");
+//							Log.e(TAG, "not support down load m3u8 !");
+							Utils.showToast(FayeService.this, "本视频不支持下载");
+							return ; 
+						}
+					}
+					for(int i=0; i<Constant.video_dont_download_sign.length; i++){
+						if(downLoad_url.contains(Constant.video_dont_download_sign[i])){
+//							Log.e(TAG, "not support down load m3u8 !");
+							Utils.showToast(FayeService.this, "本视频不支持下载");
 							return ; 
 						}
 					}
