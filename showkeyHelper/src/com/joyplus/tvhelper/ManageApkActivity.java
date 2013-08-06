@@ -260,9 +260,14 @@ public class ManageApkActivity extends Activity implements OnClickListener,
 		// TODO Auto-generated method stub
 		switch (apks.get(position).getStatue()) {
 		case 0:
-			Uri packageURI =Uri.parse("file://"+apks.get(position).getFilePath());
-			Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, packageURI);
-			startActivity(intent);
+			try {
+				Uri packageURI =Uri.parse("file://"+apks.get(position).getFilePath());
+				Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, packageURI);
+				startActivity(intent);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 			break;
 		case 1:
 			apks.get(position).setStatue(2);

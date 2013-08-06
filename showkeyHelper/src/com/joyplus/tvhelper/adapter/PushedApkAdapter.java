@@ -120,9 +120,12 @@ public class PushedApkAdapter extends BaseAdapter {
 				holder.progressLayout.setTag(info.get_id());
 				holder.progressText.setText(progress+"%");
 			}else{
-				holder.statue.setText("下载完成");
-				holder.progress.setVisibility(View.INVISIBLE);
-				holder.progressText.setVisibility(View.INVISIBLE);
+				holder.statue.setText("点击安装");
+				holder.progress.setSecondaryProgress(holder.progress.getMax());
+				holder.progress.setSecondaryProgress(0);
+				holder.progressText.setText("100%");
+//				holder.progress.setVisibility(View.INVISIBLE);
+//				holder.progressText.setVisibility(View.INVISIBLE);
 			}
 			
 			

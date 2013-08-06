@@ -55,6 +55,29 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		};
 	};
 	
+	private BroadcastReceiver receiver1 = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String packageName = intent.getData().getSchemeSpecificPart();
+			Iterator<PushedApkDownLoadInfo> iterator = FayeService.userPushApkInfos.iterator();  
+	         while(iterator.hasNext()) {  
+	        	 PushedApkDownLoadInfo info = iterator.next();  
+	             if(packageName.equals(info.getPackageName())) {  
+						File f = new File(info.getFile_path());
+						if(f!=null&&f.exists()){
+							f.delete();
+						}
+						dbService.deleteApkInfo(info);
+						iterator.remove();  
+	             }
+	         }  
+			adpter.notifyDataSetChanged();
+			updateEditBottn();
+		}
+	};
+	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
 		@Override
@@ -171,6 +194,12 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
 		filter.addAction(Global.ACTION_APK_DOWNLOAD_FAILE);
 		registerReceiver(receiver, filter);
+		if(!FayeService.isSystemApp){
+			IntentFilter filter1 = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+			filter1.addDataScheme("package");
+			this.registerReceiver(receiver1, filter1);
+		}
+		
 	}
 
 	@Override
@@ -271,10 +300,18 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				adpter.notifyDataSetChanged();
 				break;
 			case PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE:
-				if(info.getPackageName()!=null){
-			     	//filePath为文件路径
-			     	Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, Uri.parse("file://"+info.getFile_path()));
-					startActivity(intent);
+				if(!FayeService.isSystemApp){
+					if(info.getPackageName()!=null){
+				     	//filePath为文件路径
+						try {
+							Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, Uri.parse("file://"+info.getFile_path()));
+							startActivity(intent);
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
+						}
+				     	
+					}
 				}
 				break;
 			}
@@ -294,6 +331,9 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		unregisterReceiver(receiver);
+		if(!FayeService.isSystemApp){
+			unregisterReceiver(receiver1);
+		}
 		super.onDestroy();
 	}
 	
