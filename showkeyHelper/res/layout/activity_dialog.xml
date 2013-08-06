@@ -33,7 +33,7 @@
             android:layout_height="30dp"
             android:id="@+id/btn_canle"
             android:textSize="16dp"
-            android:textColor="#f1f1f1"
+            android:textColor="@color/common_black_btn_textcolor"
             android:background="@drawable/bg_btn_band"
             android:text="拒绝"/>
 	        <Button android:layout_width="75dp"
@@ -41,7 +41,7 @@
 	            android:layout_marginLeft="10dp"
 	            android:id="@+id/btn_ok"
 	            android:textSize="16dp"
-	            android:textColor="#f1f1f1"
+	            android:textColor="@color/common_black_btn_textcolor"
 	            android:background="@drawable/bg_btn_band"
 	            android:text="绑定"/>
         </LinearLayout>

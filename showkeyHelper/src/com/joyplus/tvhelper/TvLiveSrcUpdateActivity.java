@@ -39,8 +39,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tvhelper.adapter.TvLiveSrcUpdateAdapter;
 import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.TvLiveInfo;
 import com.joyplus.tvhelper.entity.service.TvLiveViews;
+import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.ui.WaitingDialog;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
@@ -233,6 +235,19 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					TvLiveInfo info = list.get(position);
 					Log.i(TAG, "setOnItemClickListener---->" + info.isInstall());
 					if(!info.isInstall()){
+						
+						List<PushedApkDownLoadInfo> tempList = FayeService.userPushApkInfos;
+						if(tempList!= null && tempList.size() > 0){
+							
+							for(int i=0;i<tempList.size();i++){
+								
+								if(info.getPackage_name().equals(tempList.get(i).getPackageName())){
+									
+									startActivity(new Intent(TvLiveSrcUpdateActivity.this,ManagePushApkActivity.class));
+									return;
+								}
+							}
+						}
 						
 						ApkDownloadInfoParcel infoParcel = new ApkDownloadInfoParcel();
 						infoParcel.setApk_url(info.getApk_url());

@@ -8,17 +8,18 @@ public class DesUtils {
     public DesUtils() {
     }
 //
-//    public static void main(String[] args) {
-//        DesUtils ttt = new DesUtils();
-//        String key1 = "12345678";
-//        String key2 = null;
-//        String key3 = null;
-//        String data = "B7F75494E118B9BDE2E876A54F093BE4";
-////        String str = ttt.strEnc(data, key1, key2, key3);
-////        System.out.println(str);
-//        String dec = ttt.strDec(data, key1, key2, key3);
+    public static void main(String[] args) {
+        DesUtils ttt = new DesUtils();
+        String key1 = "12345678";
+        String key2 = null;
+        String key3 = null;
+        String data = "299CEF4EB3639BC0FC764CE145D891";
+//        String str = ttt.strEnc(data, key1, key2, key3);
+//        System.out.println(str);
+//        String dec = DesUtils.strDec(data, key1, key2, key3);
 //        System.out.println(dec);
-//    }
+//        System.out.println("hello world");
+    }
 
     /**
      * DES加密/解密

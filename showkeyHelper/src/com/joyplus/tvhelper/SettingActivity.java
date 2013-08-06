@@ -137,7 +137,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 		    });
 //		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
 		webView.loadUrl(Constant.URL_FAQ +"?"+System.currentTimeMillis());
-		
+		layout_refresh.requestFocus();
 	}
 
 	@Override

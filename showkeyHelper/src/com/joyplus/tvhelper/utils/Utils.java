@@ -447,7 +447,7 @@ public static InetAddress getLocalIpAddress(){
 				url_index_info.defination = 0;
 			}else if("hd".equalsIgnoreCase(p[0])){
 				url_index_info.defination = 1;
-			}else if("flv".equalsIgnoreCase(p[0])){
+			}else if("mp4".equalsIgnoreCase(p[0])){
 				url_index_info.defination = 2;
 			}else{
 				url_index_info.defination = 3;

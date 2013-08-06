@@ -120,9 +120,13 @@ public class PushedApkAdapter extends BaseAdapter {
 				holder.progressLayout.setTag(info.get_id());
 				holder.progressText.setText(progress+"%");
 			}else{
-				holder.statue.setText("下载完成");
-				holder.progress.setVisibility(View.INVISIBLE);
-				holder.progressText.setVisibility(View.INVISIBLE);
+				holder.statue.setText("点击安装");
+				holder.progress.setMax(100);
+				holder.progress.setProgress(holder.progress.getMax());
+				holder.progress.setSecondaryProgress(0);
+				holder.progressText.setText("100%");
+//				holder.progress.setVisibility(View.INVISIBLE);
+//				holder.progressText.setVisibility(View.INVISIBLE);
 			}
 			
 			
@@ -142,10 +146,18 @@ public class PushedApkAdapter extends BaseAdapter {
 			holder.progressLayout.setTag(info.get_id());
 			break;
 		}
+		holder.statue_icon.setVisibility(View.VISIBLE);
 		switch (info.getEdite_state()) {
 		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
 			if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOADING){
 				holder.statue_icon.setImageResource(R.drawable.icon_continue);
+			}else if(info.getDownload_state()==PushedApkDownLoadInfo.STATUE_DOWNLOAD_COMPLETE){
+				if(FayeService.isSystemApp){
+					
+					holder.statue_icon.setImageResource(R.drawable.icon_puse);
+				}else{
+					holder.statue_icon.setVisibility(View.INVISIBLE);
+				}
 			}else{
 				holder.statue_icon.setImageResource(R.drawable.icon_puse);
 			}
@@ -154,7 +166,7 @@ public class PushedApkAdapter extends BaseAdapter {
 			holder.statue_icon.setImageResource(R.drawable.item_statue_selete);
 			break;
 		case PushedApkDownLoadInfo.EDITE_STATUE_SELETED:
-			holder.statue_icon.setImageResource(R.drawable.item_statue_seleted);
+			holder.statue_icon.setImageResource(R.drawable.item_statue_seleted); 
 			break;
 		}
 		return convertView;
