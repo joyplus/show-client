@@ -627,6 +627,17 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					apkdownload_info = info;
 					push_type = 0;
 					pincode_md5 = data.getString("md5_code");
+					for(PushedApkDownLoadInfo info_1: userPushApkInfos){
+						if(packageName!=null&&packageName.equals(info_1.getPackageName())){
+							updateHistory(id);
+							return;
+						}
+						
+						if(getApplicationInfo().packageName.equals(packageName)){
+							updateHistory(id);
+							return;
+						}
+					}
 					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 						userPushApkInfos.add(info);
