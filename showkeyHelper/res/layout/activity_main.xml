@@ -17,7 +17,7 @@
             android:textSize="30dp"
             android:id="@+id/title_1"
             android:textColor="@color/main_title_selected"
-            android:text=" 转  屏 "/>
+            android:text="转  屏 "/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:scaleType="fitXY"

@@ -131,8 +131,8 @@ public class XunLeiLXActivity extends Activity {
 //		userNameEdit.setText("13918413043@163.com");
 //		passwdEdit.setText("6105586");
 		
-//		userNameEdit.setText("lylfyzen");
-//		passwdEdit.setText("ijoyplus001");
+		userNameEdit.setText("lylfyzen");
+		passwdEdit.setText("ijoyplus001");
 
 		addViewListener();
 

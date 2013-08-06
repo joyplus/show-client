@@ -3,7 +3,7 @@
 
 <!--     <item android:drawable="@color/light_black_60" android:state_focused="true" /> -->
     <item android:drawable="@drawable/btn_common_fouce" android:state_focused="true" />
-    <item android:drawable="@color/light_black_100" android:state_pressed="true" />
+    <item android:drawable="@drawable/btn_common_fouce" android:state_pressed="true" />
     <item android:drawable="@color/light_black_60" android:state_selected="true" />
     <item android:drawable="@color/light_black_30"  />
 

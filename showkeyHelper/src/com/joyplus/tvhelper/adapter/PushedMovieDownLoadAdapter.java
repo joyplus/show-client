@@ -153,6 +153,9 @@ public class PushedMovieDownLoadAdapter extends BaseAdapter {
         
         if(task.getSpeed()>=1024){
         	buffer.append(df.format(task.getSpeed()/1024d)).append("M/s");
+        }else if(task.getSpeed() <= 0){
+        	
+        	buffer.append(0).append("k/s");
         }else{
         	buffer.append(task.getSpeed()).append("k/s");
         }

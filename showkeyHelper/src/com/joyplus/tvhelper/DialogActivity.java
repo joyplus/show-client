@@ -25,6 +25,7 @@ public class DialogActivity extends Activity implements OnClickListener {
 		
 		btn_ok.setOnClickListener(this);
 		btn_cancle.setOnClickListener(this);
+		btn_ok.requestFocus();
 	}
 	@Override
 	public void onClick(View v) {

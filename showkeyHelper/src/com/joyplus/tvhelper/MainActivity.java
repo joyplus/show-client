@@ -211,6 +211,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		title_text_1 = (TextView) findViewById(R.id.title_1);
 		title_text_2 = (TextView) findViewById(R.id.title_2);
 		
+		title_text_1.setOnClickListener(this);
+		title_text_2.setOnClickListener(this);
 //		relativeLayout = (FrameLayout) findViewById(R.id.relative_layout);
 		
 		layout_showtui.setOnFocusChangeListener(this);
@@ -429,7 +431,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		case R.id.layout_setting:
 			startActivity(new Intent(this, SettingActivity.class));
 			break;
-
+		case R.id.title_1:
+			layout.snapToScreen(0);
+			break;
+		case R.id.title_2:
+			layout.snapToScreen(1);
+			break;
 		default:
 			break;
 		}

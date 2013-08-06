@@ -147,8 +147,15 @@ public class UninstallAppActivity extends Activity implements OnItemClickListene
 ////	     pi.instatll("/sdcard/joyplus.apk", "com.joyplus");
 //	     pi.uninstall(apks.get(position).getPackageName());
 		Uri packageURI=Uri.parse("package:"+apks.get(position).getPackageName());//xx是包名
-        Intent intent=new Intent(Intent.ACTION_DELETE,packageURI);
-        startActivity(intent);
+		try {
+			Intent intent=new Intent(Intent.ACTION_DELETE,packageURI);
+	        startActivity(intent);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+        
 	}
 	
 	@Override

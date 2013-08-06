@@ -393,7 +393,8 @@ public class DBServices {
 	public synchronized MoviePlayHistoryInfo queryMoviePlayHistoryByLoaclUrl(String localUrl){
 		SQLiteDatabase db = getConnection();
         Cursor cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
-        		null, null, null, null, null);
+        		DBConstant.KEY_PLAY_INFO_FILE_PATH + " =? ", new String[] {
+        		localUrl}, null, null, null);
         MoviePlayHistoryInfo info = null;
         while (cr.moveToNext()) {
     		info = new MoviePlayHistoryInfo();

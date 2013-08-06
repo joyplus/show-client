@@ -422,13 +422,15 @@ public class XunLeiLiXianUtil {
 	
 	public static ArrayList<VideoPlayUrl> getLXPlayUrl(Context context,
 			XLLXFileInfo xllxFileInfo) {
-		ArrayList<VideoPlayUrl> localArrayList = getLXPlayUrl4Vod_dl_all(context,xllxFileInfo);
-		if (localArrayList.size() > 0) {
+		ArrayList<VideoPlayUrl> localArrayList = getLXPlayUrl4Vod_dl_all(context,xllxFileInfo);//can drag
+		ArrayList<VideoPlayUrl> tempArrayList = getLXPlayUrlReferer(context, xllxFileInfo);//can't drag
+		localArrayList.addAll(tempArrayList);
+//		if (localArrayList.size() > 0) {
 			
 			return localArrayList;
-		}
+//		}
 			
-		return getLXPlayUrlReferer(context, xllxFileInfo);
+//		return getLXPlayUrlReferer(context, xllxFileInfo);
 	}
 
 	public static ArrayList<VideoPlayUrl> getLXPlayUrl4Vod_dl_all(
@@ -473,6 +475,7 @@ public class XunLeiLiXianUtil {
 					localVideoPlayUrl3.playurl = fullHDJSONObject
 							.getString("url");
 					localVideoPlayUrl3.sharp = SharpnessEnum.getSharp(3);
+					localVideoPlayUrl3.isCanDrag = true;
 					localArrayList.add(localVideoPlayUrl3);
 				}
 
@@ -481,6 +484,7 @@ public class XunLeiLiXianUtil {
 					VideoPlayUrl localVideoPlayUrl2 = new VideoPlayUrl();
 					localVideoPlayUrl2.playurl = hdJSONObject.getString("url");
 					localVideoPlayUrl2.sharp = SharpnessEnum.getSharp(2);
+					localVideoPlayUrl2.isCanDrag = true;
 					localArrayList.add(localVideoPlayUrl2);
 				}
 
@@ -489,6 +493,7 @@ public class XunLeiLiXianUtil {
 					VideoPlayUrl localVideoPlayUrl1 = new VideoPlayUrl();
 					localVideoPlayUrl1.playurl = sdJSONObject.getString("url");
 					localVideoPlayUrl1.sharp = SharpnessEnum.getSharp(0);
+					localVideoPlayUrl1.isCanDrag = true;
 					localArrayList.add(localVideoPlayUrl1);
 
 				}
@@ -556,6 +561,7 @@ public class XunLeiLiXianUtil {
 										.getJSONObject(j).getString("vod_url");
 								localVideoPlayUrl.sharp = SharpnessEnum
 										.getSharp(j);
+								localVideoPlayUrl.isCanDrag = false;
 								localArrayList.add(localVideoPlayUrl);
 							}
 
