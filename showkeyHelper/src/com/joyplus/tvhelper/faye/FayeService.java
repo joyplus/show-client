@@ -178,6 +178,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
 				info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 				downloadManager.addTast(task);
+				info.setPackageName(apkInfo.getPackage_name());
 				info.setTast(task);
 				info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 				info.setIsUser(PushedApkDownLoadInfo.IS_USER);
@@ -596,12 +597,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					final int id = data.getInt("id");
 					info.setName(data.getString("app_name"));
 					String url = data.getString("file_url");
+					String packageName = data.getString("package_name");
 					String file_name = Utils.getFileNameforUrl(url);
 					info.setPush_id(id);
 					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
 					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
 					downloadManager.addTast(task);
 					info.setTast(task);
+					info.setPackageName(packageName);
 					info.setIsUser(PushedApkDownLoadInfo.IS_USER);
 					info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
 					info.set_id((int) services.insertApkInfo(info));
