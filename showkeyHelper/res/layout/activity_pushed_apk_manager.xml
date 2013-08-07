@@ -1,0 +1,169 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+    <LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+        
+    </LinearLayout>
+	<LinearLayout android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:layout_weight="1">
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="89dp">
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:orientation="vertical"
+	        android:layout_weight="80">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="62dp"
+	            android:orientation="horizontal">
+	            <TextView android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="1"
+	                    android:text="Show推"
+	                    android:gravity="center"
+	                    android:background="@color/bg_color_showtui"
+	                    android:textColor="#f0f0f0"
+	                    android:textSize="30dp"/>
+	            <TextView android:layout_width="0dp"
+	                    android:layout_height="fill_parent"
+	                    android:layout_weight="4.3"
+	                    android:visibility="invisible"/>
+	        </LinearLayout>
+	                <LinearLayout android:layout_width="fill_parent"
+	                    android:layout_height="95dp"
+	            		android:background="@color/bg_color_showtui"
+	                    android:paddingLeft="30dp"
+	                    android:paddingTop="10dp"
+	                    android:orientation="horizontal">
+	                    <TextView android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:layout_weight="1"
+	                        android:gravity="left|center_vertical"
+	                        android:textSize="35dp"
+		                    android:textColor="#f0f0f0"
+		                    android:paddingBottom="10dp"
+		                    android:id="@+id/pincode_text"
+		                    android:text="PIN:  B5P62J"
+	                        />
+	                     <RelativeLayout android:layout_width="wrap_content"
+	                        android:layout_height="fill_parent">
+	                        <LinearLayout android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:id="@+id/fistBtn_group">
+	                            <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_edit"
+		                        android:id="@+id/edit_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+		                    	<Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_back"
+		                        android:id="@+id/back_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                        </LinearLayout>
+	                        <LinearLayout android:layout_width="wrap_content"
+	                            android:layout_height="fill_parent"
+	                            android:visibility="gone"
+	                            android:id="@+id/secondBtn_group">
+	                            <Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_canle_edit"
+		                        android:id="@+id/cancel_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+		                    	<Button android:layout_width="133dp"
+               					android:layout_height="45dp"
+		                        android:text="@string/button_del"
+		                        android:id="@+id/del_Button"
+		                        android:textSize="@dimen/mid_text_size"
+		                        android:textColor="@color/common_white_btn_textcolor"
+		                        android:layout_marginRight="30dp"
+		                        android:layout_gravity="center_vertical"
+		                        android:background="@drawable/xunlei_return_btn_bg"/>
+	                        </LinearLayout>
+	                    </RelativeLayout>
+	        </LinearLayout>
+	        <RelativeLayout android:layout_width="fill_parent"
+	                android:layout_height="0dp"
+	                android:layout_weight="1"
+	                android:padding="20dp"
+	                android:gravity="center"
+	                android:background="#fcefde"
+	                android:orientation="horizontal"
+	                >
+	               <!--  "#fcefde" -->
+	                <ListView android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:divider="@null"
+	                    android:listSelector="@drawable/bg_content_setting_selector"
+	                    android:id="@+id/listView">
+	                    
+	                </ListView>
+	                <ImageView android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:visibility="gone"
+	                    android:id="@+id/defult_img"
+	                    android:src="@drawable/tutorial_apk"/>
+	            </RelativeLayout>
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="117dp"
+	        android:orientation="horizontal">
+	        <com.joyplus.tvhelper.ui.NotificationView 
+	            android:layout_width="700dp"
+	            android:layout_height="wrap_content"
+	            android:id="@+id/notification"
+	            app:textColor="#f0f0f0"
+	            app:textSize="18dp"
+	            android:visibility="gone"
+	            app:text="今天已有推推    123 次"
+	            >
+	        </com.joyplus.tvhelper.ui.NotificationView>
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="right|center_vertical"
+	            android:orientation="horizontal">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/icon_notice"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:layout_marginLeft="10dp"
+	                android:text="遥控器按"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	            	android:textSize="25dp"
+	            	android:textColor="#d89026"
+	            	android:id="@+id/notice_key"
+	                android:text="\t返回"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:textColor="#f0f0f0"
+	            	android:textSize="20dp"
+	            	android:id="@+id/notice_action"
+	                android:text="\t离开"/>
+	        </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_width="148dp"
+        android:layout_height="fill_parent">
+    </LinearLayout>
+</LinearLayout>

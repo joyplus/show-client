@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6E6E6"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zero_value"
+            android:layout_weight="1" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zero_value"
+            android:layout_weight="3.3" 
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_icon_tv"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/icon_tv_taijie" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zero_value"
+            android:layout_weight="2" >
+
+            <TextView
+                android:id="@+id/tv_tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="泰西视频"
+                android:textColor="#303030"
+                android:textSize="@dimen/mid_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zero_value"
+            android:layout_weight="0.7" >
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zero_value"
+            android:layout_weight="1.8" >
+
+            <TextView
+                android:id="@+id/tv_update"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="点击更新"
+                android:textColor="#00AEEF"
+                android:textSize="25dp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/tv_newssrc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="已是最新源"
+                android:textColor="#303030"
+                android:textSize="25dp"
+                android:visibility="visible" />
+
+            <RelativeLayout
+                android:id="@+id/rl_recommoned_download"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00AEEF"
+                android:visibility="invisible" >
+
+                <TextView
+                    android:id="@+id/tv_recommoned_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:text="推荐下载"
+                    android:textColor="#F0F0F0"
+                    android:textSize="25dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@id/tv_recommoned_download"
+                    android:src="@drawable/white_star" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@id/tv_recommoned_download"
+                    android:src="@drawable/white_star" />
+            </RelativeLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>
