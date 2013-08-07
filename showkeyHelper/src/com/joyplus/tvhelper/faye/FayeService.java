@@ -3,6 +3,7 @@ package com.joyplus.tvhelper.faye;
 import java.io.File;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -84,9 +85,9 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private PushedApkDownLoadInfo currentUserApkInfo; 
 	private PushedMovieDownLoadInfo currentMovieInfo;
 	private PushedApkDownLoadInfo currentNotUserApkInfo; 
-	public static List<PushedApkDownLoadInfo> userPushApkInfos;
-	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos;
-	public static List<PushedMovieDownLoadInfo> movieDownLoadInfos;
+	public static List<PushedApkDownLoadInfo> userPushApkInfos = new ArrayList<PushedApkDownLoadInfo>();
+	public static List<PushedApkDownLoadInfo> notuserPushedApkInfos = new ArrayList<PushedApkDownLoadInfo>();
+	public static List<PushedMovieDownLoadInfo> movieDownLoadInfos = new ArrayList<PushedMovieDownLoadInfo>();;
 	private MyApp app;
 	
 	private MoviePlayHistoryInfo play_info;
@@ -336,7 +337,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		com.joyplus.utils.Log.mbLoggable = true;
+		com.joyplus.utils.Log.mbLoggable = false;
 	}
 
 
