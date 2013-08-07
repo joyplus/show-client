@@ -63,7 +63,8 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 	public int getChildrenCount(int groupPosition) {
 		// TODO Auto-generated method stub
 //		Log.i(TAG, "getChildrenCount-->");
-		if(files.get(groupPosition)!= null && files.get(groupPosition).isDir
+		if(files.size() > groupPosition &&
+				files.get(groupPosition)!= null && files.get(groupPosition).isDir
 				&& files.get(groupPosition).btFiles != null) {
 //			Log.i(TAG, "groupPosition-->" + groupPosition + "length" + files.get(groupPosition).btFiles.length);
 			return files.get(groupPosition).btFiles.length;
@@ -85,7 +86,8 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
 		// TODO Auto-generated method stub
-		if(files.get(groupPosition)!= null && files.get(groupPosition).btFiles != null
+		if(files.size() > groupPosition &&
+				files.get(groupPosition)!= null && files.get(groupPosition).btFiles != null
 				&& files.get(groupPosition).btFiles.length > childPosition) {
 			
 			return files.get(groupPosition).btFiles[childPosition];
