@@ -125,7 +125,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					
 					playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 					playDate.prod_name = play_info.getName();
-					playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
+//					playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 					playDate.obj = play_info;
 //					playDate.prod_url = play_info.getDownload_url();
 					app.setmCurrentPlayDetailData(playDate);
@@ -684,6 +684,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
 //						play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						play_info.setDuration(Constant.DEFINATION_HD2);
+						play_info.setCreat_time(System.currentTimeMillis());
 						play_info.setId((int)services.insertMoviePlayHistory(play_info));
 					}
 					push_type = 1;
@@ -698,7 +699,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 						playDate.prod_name = play_info.getName();
-						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
+//						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
 //						playDate.prod_name = json.getString("prod_name");
 						

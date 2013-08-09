@@ -254,6 +254,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					play_info.setName(info_complete.getName());
 					play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
 					play_info.setLocal_url(info_complete.getFile_path());
+					play_info.setCreat_time(System.currentTimeMillis());
 					play_info.setId((int) dbService.insertMoviePlayHistory(play_info));
 				}
 				
@@ -491,9 +492,13 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		if(selectedIndex == 0){
 			listView.setAdapter(adpter_play_history);
+			listView.requestFocus();
+			listView.setSelection(0);
+		}else{
+			listView.requestFocus();
+			listView.setSelection(selected);
 		}
 		updateEditBottn();
-		listView.setSelection(selected);
 		super.onResume();
 		
 		MobclickAgent.onResume(this);

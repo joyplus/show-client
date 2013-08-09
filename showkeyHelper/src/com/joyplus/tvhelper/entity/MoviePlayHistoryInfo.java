@@ -20,6 +20,7 @@ public class MoviePlayHistoryInfo {
 	private int push_id;
 	private String recivedDonwLoadUrls;
 	private int defination;
+	private long creat_time;
 	private int edite_state = 0;
 	public int getId() {
 		return id;
@@ -92,6 +93,12 @@ public class MoviePlayHistoryInfo {
 	}
 	public void setDefination(int defination) {
 		this.defination = defination;
+	}
+	public long getCreat_time() {
+		return creat_time;
+	}
+	public void setCreat_time(long creat_time) {
+		this.creat_time = creat_time;
 	}
 	
 }
