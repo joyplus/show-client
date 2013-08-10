@@ -538,4 +538,15 @@ public static InetAddress getLocalIpAddress(){
 			e.printStackTrace();
 		}
 	}
+    public static boolean isUTF_8(byte[] file){
+        if(file.length<3)
+            return false;
+//        if((file[0]&0xFF)==0xEF && 
+//                (file[1]&0xFF)==0xBB &&
+//                (file[2]&0xFF)==0xBF)
+        
+        if (file[0] == -17 && file[1] == -69 && file[2] == -65) 
+            return true;
+        return false;
+    }
 }
