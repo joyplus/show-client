@@ -15,30 +15,36 @@ public class PlayBaiduActivity extends Activity {
 	
 	private MoviePlayHistoryInfo play_info;
 	
+	private String url;
+	private String name;
+	private String from;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		String url = getIntent().getStringExtra("url");
-		startPlayer(url);
+		url = getIntent().getStringExtra("url");
+		name = getIntent().getStringExtra("name");
+		from = getIntent().getStringExtra("push_url");
+		startPlayer();
 //		setContentView(R.layout.activity_playbaidu);
 		
 	}
 	
-private void startPlayer(String url){
+private void startPlayer(){
 		
-		String[] str = url.split("|");
-		String name = null;
-		if(str.length>=3){
-			name = str[2];
-		}
-		
+//		String[] str = url.split("|");
+//		String name = null;
+//		if(str.length>=3){
+//			name = str[2];
+//		}
+//		
 		if(isBaiduInstalled()){
 			Intent localIntent = new Intent("com.baidu.search.video");
 //			Intent localIntent = new Intent("com.baidu.player");
 //		    localIntent.putExtra("title", "爱爱囧事_DVDscr国语中字.rmvb|");
 		    localIntent.putExtra("title", name);
-//		    localIntent.putExtra("refer", "http://www.77vcd.com/Drama/shiershengxiao/");
+		    localIntent.putExtra("refer", from);
 //		    localIntent.putExtra("bdhdurl", "bdhd://199202767|7218455282C420D033467A75EBCCCF5D|小夫妻时代01.HDTV.rmvb|");
 //		    localIntent.putExtra("bdhdurl", "bdhd://423797339|F438C1DF87CADAB226828D0F95F9E698|爱爱囧事_DVDscr国语中字.rmvb|");
 		    localIntent.putExtra("bdhdurl", url);

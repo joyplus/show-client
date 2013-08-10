@@ -549,4 +549,13 @@ public static InetAddress getLocalIpAddress(){
             return true;
         return false;
     }
+    
+    public static String getBaiduName(String url){
+    	String[] str = url.split("\\|");
+		String name = null;
+		if(str.length>=3){
+			name = str[2];
+		}
+		return name;
+    }
 }
