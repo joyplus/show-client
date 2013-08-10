@@ -4,6 +4,7 @@ public class MoviePlayHistoryInfo {
 
 	public static final int PLAY_TYPE_ONLINE = 0;
 	public static final int PLAY_TYPE_LOCAL = PLAY_TYPE_ONLINE + 1;
+	public static final int PLAY_TYPE_BAIDU = PLAY_TYPE_LOCAL + 1;
 	
 	public static final int EDITE_STATUE_NOMAL 			= 0;
 	public static final int EDITE_STATUE_EDIT 			= EDITE_STATUE_NOMAL + 1;

@@ -17,6 +17,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.blaznyoght.subtitles.model.Collection;
@@ -560,8 +561,15 @@ public class VideoPlayerJPActivity extends Activity implements
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
 						if(isRequset){
-							if(!isFinishing()){
-								showDialog(0);
+							if(play_info.getPush_url()!=null&&URLUtil.isNetworkUrl(play_info.getPush_url())){
+								Intent intent = new Intent();
+								intent.putExtra("url", play_info.getPush_url());
+								intent.setClass(VideoPlayerJPActivity.this, WebViewActivity.class);
+								startActivity(intent);
+							}else{
+								if(!isFinishing()){
+									showDialog(0);
+								}
 							}
 						}else{
 							//失效了 接着搞
@@ -2406,8 +2414,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			isRequset = true;				 //updateXunleiurl
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + URLEncoder.encode(play_info.getPush_url())
+			isRequset = true;
+			playUrls.clear();
+			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url()
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
