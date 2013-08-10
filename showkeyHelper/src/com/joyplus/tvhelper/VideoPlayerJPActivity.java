@@ -1084,10 +1084,10 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					}
 					
-					long startTime = mCurSubTitleE.getStartTime().getTime();
-					long endTime = mCurSubTitleE.getEndTime().getTime();
-					
 					if(tempE != null){
+						
+						long startTime = tempE.getStartTime().getTime();
+						long endTime = tempE.getEndTime().getTime();
 						
 						if(tempE.getRank() == mCurSubTitleE.getRank()){//相同的 消失掉字幕
 							
@@ -1095,18 +1095,23 @@ public class VideoPlayerJPActivity extends Activity implements
 								Log.d(TAG, "subtitle over--->");
 								mSubTitleTv.setText("");
 								
-								int rank = mCurSubTitleE.getRank();
-								if(rank < mSubTitleCollection.getElementSize()){
-									Log.d(TAG, "subtitle over--->");
-									mCurSubTitleE = new org.blaznyoght.subtitles.model.
-											Element(mSubTitleCollection.getElements().get(rank));
-								}
+//								int rank = tempE.getRank();
+//								if(rank < mSubTitleCollection.getElementSize()){
+//									Log.d(TAG, "subtitle over--->");
+//									mCurSubTitleE = new org.blaznyoght.subtitles.model.
+//											Element(mSubTitleCollection.getElements().get(rank));
+//								}
 							}
 						} else {
 							
 							if(Math.abs(startTime - currentPosition) <= SEEKBAR_REFRESH_TIME ){
 								Log.d(TAG, "subtitle start--->");
-								mSubTitleTv.setText(mCurSubTitleE.getText());
+								
+								if(tempE.getRank() - mCurSubTitleE.getRank() > 0){
+									
+									
+								}
+								tempE.setText(tempE.getText());
 							}
 						}
 					}
