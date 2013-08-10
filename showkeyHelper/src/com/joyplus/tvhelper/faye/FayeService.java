@@ -31,6 +31,7 @@ import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.network.filedownload.model.DownloadTask;
 import com.joyplus.tvhelper.DialogActivity;
 import com.joyplus.tvhelper.MyApp;
+import com.joyplus.tvhelper.PlayBaiduActivity;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
@@ -41,6 +42,7 @@ import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.DesUtils;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
@@ -60,6 +62,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	private static File APK_PATH = null;
 	private static File MOVIE_PATH = null;
+	
+	private static final long TIME_OUT = 60*1000;
 //	private boolean isNeedReconnect = false;
 	
 	public static final int MESSAGE_DOWNLOAD_GET_FILESIE_SUCCESS = 0;
@@ -353,7 +357,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		myClient.connectToServer(null); 
 //		isNeedReconnect = true;
 		getLostUserPushApk();
-		//getLostUserPushMovie();
+		getLostUserPushMovie();
 		if(isSystemApp()){
 			getNotUsrPushApk();
 		}
@@ -445,25 +449,49 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	}
 	
 	
-//	private void getLostUserPushMovie(){
-//		pool.execute(new Runnable() {	
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-////				infolist = services.GetPushedApklist(infolist);
-//				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
-//				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
-//						+ "&mac_address=" + Utils.getMacAdd() 
-//						+ "&page_num=" + 1
-//						+ "&page_size=" + 50;
-//				Log.d(TAG, url);
-//				String str = HttpTools.get(FayeService.this, url);
-//				Log.d(TAG, "pushMsgHistories response-->" + str);
-//				try {
-//					JSONArray array = new JSONArray(str);
-//					Log.d(TAG, "miss length ---------------------------->" + array.length());
-//					for(int i=0; i<array.length(); i++){
-//						JSONObject item = array.getJSONObject(i);
+	private void getLostUserPushMovie(){
+		pool.execute(new Runnable() {	
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+//				infolist = services.GetPushedApklist(infolist);
+				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
+				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
+						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&page_num=" + 1
+						+ "&page_size=" + 50;
+				Log.d(TAG, url);
+				String str = HttpTools.get(FayeService.this, url);
+				Log.d(TAG, "pushMsgHistories response-->" + str);
+				try {
+					JSONArray array = new JSONArray(str);
+					Log.d(TAG, "miss length ---------------------------->" + array.length());
+					for(int i=0; i<array.length(); i++){
+						JSONObject item = array.getJSONObject(i);
+						int push_id = item.getInt("id");
+						String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
+						String push_url = item.getString("playurl");
+						String push_play_url = item.getString("downurl");
+						int type = item.getInt("type");
+						if(type == 5){//漏掉的播放
+							MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+							if(play_info == null){
+								play_info = new MoviePlayHistoryInfo();
+//								play_info.setDownload_url(movie_play_url);
+								play_info.setName(push_name);
+								play_info.setPush_id(push_id);
+								play_info.setPush_url(push_url);
+								play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+								play_info.setRecivedDonwLoadUrls(push_play_url);
+//								play_info.setId((int)services.insertMoviePlayHistory(play_info));
+								play_info.setDuration(Constant.DEFINATION_HD2);
+								play_info.setCreat_time(System.currentTimeMillis());
+								play_info.setId((int)services.insertMoviePlayHistory(play_info));
+							}
+						}else if(type == 6){//漏掉的下载
+							
+						}
+						updateMovieHistory(push_id);
 //						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
 //						String push_url = "";
 //						try {
@@ -501,14 +529,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						movieDownLoadInfos.add(info);
 //						updateMovieHistory(info.getPush_id());
 //						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-//					}
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	private void getLostUserPushApk(){
 		pool.execute(new Runnable() {	
@@ -657,7 +685,13 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				case 5:
 //					JSONObject data_1 = json.getJSONObject("body");
 					data = json.getJSONObject("body");
-					
+					int push_id = Integer.valueOf(data.getString("id"));
+					long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+					Log.d(TAG, "time ---->" + time);
+					if(time>TIME_OUT){
+						updateMovieHistory(push_id);
+						return ;
+					}
 //					intent.putExtra("ID", json.getString("prod_id"));
 					
 					
@@ -672,7 +706,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //						Log.e(TAG, "movie_play_url error !"); 
 //						return ;
 //					}
-					int push_id = Integer.valueOf(data.getString("id"));
 					play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, data.getString("playurl"));
 					if(play_info == null){
 						play_info = new MoviePlayHistoryInfo();
@@ -783,6 +816,26 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						e.printStackTrace();
 					}
 					myClient.sendMessage(json_accept);
+					break;
+				case 11://百度
+					data = json.getJSONObject("body");
+					int baidu_push_id = Integer.valueOf(data.getString("id"));
+					long time_1 = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+					Log.d(TAG, "time ---->" + time_1);
+					if(time_1>TIME_OUT){
+						updateMovieHistory(baidu_push_id);
+						return ;
+					}
+					String baidu_play_url = DesUtils.decode(Constant.DES_KEY, data.getString("downurl"));
+					String baidu_push_url = data.getString("playurl");
+					Log.d(TAG, "baidu_play_url  -> " + baidu_play_url);
+					if(baidu_play_url.startsWith("bdhd")){
+						Intent intent = new Intent(FayeService.this,PlayBaiduActivity.class);
+						intent.putExtra("url", baidu_play_url);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intent);
+					}
+					updateMovieHistory(baidu_push_id);
 					break;
 				default:
 					break;

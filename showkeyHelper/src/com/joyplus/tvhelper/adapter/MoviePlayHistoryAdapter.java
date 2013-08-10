@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper.adapter;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 import android.content.Context;
@@ -65,7 +66,7 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 			if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
 				holder.name.setText(info.getLocal_url());
 			}else{
-				holder.name.setText(info.getPush_url());
+				holder.name.setText(URLDecoder.decode(info.getPush_url()));
 			}
 		}else{
 			holder.name.setText(info.getName());
@@ -76,7 +77,10 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 //		}else{
 //			holder.name.setText(Utils.getDisPlayFileNameforUrl(info.getPush_url()));
 //		}
-		if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>0){
+		if(info.getDuration()<10){
+			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
+					"  /  "+ "--:--:--");
+		}else if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>10){
 			holder.size.setText("已看完");
 		}else{
 			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
