@@ -17,7 +17,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.blaznyoght.subtitles.model.Collection;
@@ -561,15 +560,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
 						if(isRequset){
-							if(play_info.getPush_url()!=null&&URLUtil.isNetworkUrl(play_info.getPush_url())){
-								Intent intent = new Intent();
-								intent.putExtra("url", play_info.getPush_url());
-								intent.setClass(VideoPlayerJPActivity.this, WebViewActivity.class);
-								startActivity(intent);
-							}else{
-								if(!isFinishing()){
-									showDialog(0);
-								}
+							if(!isFinishing()){
+								showDialog(0);
 							}
 						}else{
 							//失效了 接着搞
@@ -1062,7 +1054,14 @@ public class VideoPlayerJPActivity extends Activity implements
 						mSubTitleCollection.getElements().get(i);
 				if(currentPosition < element.getStartTime().getTime()){
 					
-					mCurSubTitleE = new org.blaznyoght.subtitles.model.Element(element);
+					if(i - 1 >= 0 ){
+						
+						mCurSubTitleE = mSubTitleCollection.getElements().get(i-1);
+					}else {
+						
+						mCurSubTitleE = new org.blaznyoght.subtitles.model.Element(element);
+					}
+					
 					return;
 				}
 			}
@@ -2060,7 +2059,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.d(TAG, "mProd_type---------------->" + mProd_type);
 		play_info.setDuration((int) duration);
 		play_info.setPlayback_time((int) playBackTime);
-		play_info.setCreat_time(System.currentTimeMillis());
 		if(mProd_type == TYPE_PUSH){
 			play_info.setDefination(mDefination);
 //			play_info.setDownload_url(currentPlayUrl);
@@ -2409,9 +2407,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			isRequset = true;
-			playUrls.clear();
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url()
+			isRequset = true;				 //updateXunleiurl
+			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + URLEncoder.encode(play_info.getPush_url())
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
