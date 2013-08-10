@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -18,6 +19,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.blaznyoght.subtitles.model.Collection;
+import org.blaznyoght.subtitles.model.Parser;
+import org.blaznyoght.subtitles.model.Time;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -135,6 +139,8 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private static final int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
+	
+	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
 
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
@@ -181,7 +187,10 @@ public class VideoPlayerJPActivity extends Activity implements
 	 * 暂停继续层
 	 */
 	private LinearLayout mContinueLayout;
-
+	/**
+	 * subtitle
+	 */
+	private TextView mSubTitleTv;
 	/**
 	 * 基本播放参数
 	 */
@@ -242,6 +251,12 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private Animation mAlphaDispear;
 	private boolean isSeekBarIntoch = false;
+	
+	/**  Subtitle*/
+	private Collection mSubTitleCollection = null;
+	private int mStartTimeSubTitle,mEndTimeSubTitle;
+	private org.blaznyoght.subtitles.model.Element mCurSubTitleE;
+//	,mPreSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -449,6 +464,28 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
+						//get subtitle
+						byte[] subTitle = XunLeiLiXianUtil.getSubtitle(VideoPlayerJPActivity.this,xllxFileInfo);
+						
+						if(subTitle != null && subTitle.length > 3){
+							
+							Parser parser = new Parser();
+							
+							boolean isUtf8 = Utils.isUTF_8(subTitle);
+							Log.i(TAG, "isUtf8--->" + isUtf8);
+							
+							if(!isUtf8){
+								
+								parser.setCharset("GBK");
+							} else {
+								
+								parser.setCharset("UTF-8");
+							}
+							parser.parse(new ByteArrayInputStream(subTitle));
+							
+							mSubTitleCollection = parser.getCollection();
+							Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
+						}
 						
 						if(list != null && list.size() > 0) {
 							
@@ -620,6 +657,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case MESSAGE_UPDATE_PROGRESS:
 				updateSeekBar();
+				
 				break;
 			case MESSAGE_HIDE_PROGRESSBAR:
 				dismissView(mNoticeLayout);
@@ -708,6 +746,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mBottomButton = (ImageButton) findViewById(R.id.ib_control_bottom);
 		mCenterButton = (ImageButton) findViewById(R.id.ib_control_center);
 		mContinueButton = (ImageButton) findViewById(R.id.btn_continue);
+		
+		mSubTitleTv = (TextView) findViewById(R.id.tv_subtitle);
 
 		mPreButton.setOnClickListener(this);
 		mNextButton.setOnClickListener(this);
@@ -786,8 +826,10 @@ public class VideoPlayerJPActivity extends Activity implements
 			case STATUE_FAST_DRAG:
 				mTimeJumpSpeed = 0;
 				upDateFastTimeBar();
-				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+//				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
+				endUpdateSeekBar();
+				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
 				mSeekBar.setProgress(mVideoView.getCurrentPosition());
 				mSeekBar.setEnabled(true);
@@ -818,8 +860,10 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				mTimeJumpSpeed = 0;
 				upDateFastTimeBar();
-				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//				mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+//				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
+				endUpdateSeekBar();
+				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
 				mSeekBar.setEnabled(true);
 				break;
@@ -995,6 +1039,88 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+	
+	private void startUpdateSeekBar(long time){
+		
+		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
+		
+		if(mSubTitleCollection != null && mVideoView != null
+				&& mVideoView.getCurrentPosition() >= 0
+				&& mCurSubTitleE == null){
+			long currentPosition = mVideoView.getCurrentPosition();
+			for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+				
+				org.blaznyoght.subtitles.model.Element element = 
+						mSubTitleCollection.getElements().get(i);
+				if(currentPosition < element.getStartTime().getTime()){
+					
+					mCurSubTitleE = new org.blaznyoght.subtitles.model.Element(element);
+					return;
+				}
+			}
+		}
+		
+		updateSubtitle();
+		
+		
+	}
+	
+	private void updateSubtitle(){
+		
+		
+		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
+			long currentPosition = mVideoView.getCurrentPosition();
+			if(mSubTitleCollection != null){
+				
+				if(mCurSubTitleE != null ){
+					org.blaznyoght.subtitles.model.Element tempE = null;
+					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+						
+						org.blaznyoght.subtitles.model.Element element = 
+								mSubTitleCollection.getElements().get(i);
+						if(currentPosition < element.getStartTime().getTime()){
+							tempE = element;
+							break;
+						}
+					}
+					
+					long startTime = mCurSubTitleE.getStartTime().getTime();
+					long endTime = mCurSubTitleE.getEndTime().getTime();
+					
+					if(tempE != null){
+						
+						if(tempE.getRank() == mCurSubTitleE.getRank()){//相同的 消失掉字幕
+							
+							if(Math.abs(endTime - currentPosition) <= SEEKBAR_REFRESH_TIME){
+								Log.d(TAG, "subtitle over--->");
+								mSubTitleTv.setText("");
+								
+								int rank = mCurSubTitleE.getRank();
+								if(rank < mSubTitleCollection.getElementSize()){
+									Log.d(TAG, "subtitle over--->");
+									mCurSubTitleE = new org.blaznyoght.subtitles.model.
+											Element(mSubTitleCollection.getElements().get(rank));
+								}
+							}
+						} else {
+							
+							if(Math.abs(startTime - currentPosition) <= SEEKBAR_REFRESH_TIME ){
+								Log.d(TAG, "subtitle start--->");
+								mSubTitleTv.setText(mCurSubTitleE.getText());
+							}
+						}
+					}
+					mCurSubTitleE = tempE;
+				}
+			}
+		}
+	}
+	
+	private void endUpdateSeekBar(){
+		
+		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
+		mCurSubTitleE = null;
+	}
 
 	private void showControlLayout() {
 		// 判断上下集能不能用
@@ -1142,7 +1268,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mSeekBar.setMax((int) mVideoView.getDuration());
 		mSeekBar.setOnSeekBarChangeListener(VideoPlayerJPActivity.this);
 		mSeekBar.setProgress((int) lastTime);
-		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
+		startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 
 	}
 
@@ -1181,7 +1308,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				hidePreLoad(); 
 			}else{
 				mSeekBar.setProgress((int) current);
-				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
+//				mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
 			}
 			break;
 		case STATUE_PLAYING:
@@ -1190,7 +1318,8 @@ public class VideoPlayerJPActivity extends Activity implements
 				mSeekBar.setProgress((int) current1);
 				// updateTimeNoticeView(mSeekBar.getProgress());
 			}
-			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+//			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
+			startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 			break;
 		case STATUE_FAST_DRAG:
 			if (mTimeJumpSpeed > 0) {
@@ -1209,11 +1338,13 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			mSeekBar.setProgress(mFastJumpTime);
 			// updateTimeNoticeView(mSeekBar.getProgress());
-			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS,
-					mTimes[Math.abs(mTimeJumpSpeed) - 1]);
+//			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS,
+//					mTimes[Math.abs(mTimeJumpSpeed) - 1]);
+			startUpdateSeekBar(mTimes[Math.abs(mTimeJumpSpeed) - 1]);
 			break;
 		default:
-			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+			startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
+//			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
 			break;
 		}
 	}
@@ -2500,7 +2631,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mHandler.removeCallbacks(mLoadingRunnable);
 		mStatue = STATUE_PLAYING;
 		mSeekBar.setEnabled(true);
-		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, 1000);
+		startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
+//		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
 		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 5000);
 	}
 	
