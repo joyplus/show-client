@@ -2052,6 +2052,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.d(TAG, "mProd_type---------------->" + mProd_type);
 		play_info.setDuration((int) duration);
 		play_info.setPlayback_time((int) playBackTime);
+		play_info.setCreat_time(System.currentTimeMillis());
 		if(mProd_type == TYPE_PUSH){
 			play_info.setDefination(mDefination);
 //			play_info.setDownload_url(currentPlayUrl);
