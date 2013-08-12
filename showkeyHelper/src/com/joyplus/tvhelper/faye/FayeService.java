@@ -124,14 +124,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					}
 				}else if(push_type == 1){
 					if(play_info!=null&&play_info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
-						if(play_info.getRecivedDonwLoadUrls().startsWith("bdhd")){
+//						if(play_info.getRecivedDonwLoadUrls().startsWith("bdhd")){
 							Intent intent_baidu = new Intent(FayeService.this,PlayBaiduActivity.class);
 							intent_baidu.putExtra("url", play_info.getRecivedDonwLoadUrls());
 							intent_baidu.putExtra("name", play_info.getName());
 							intent_baidu.putExtra("push_url", play_info.getPush_url());
 							intent_baidu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							startActivity(intent_baidu);
-						}
+//						}
 					}else{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 						Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
@@ -853,7 +853,8 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					}
 					push_type = 1;
 					pincode_md5 = data.getString("md5_code");
-					String baidu_play_url = DesUtils.decode(Constant.DES_KEY, data.getString("downurl"));
+//					String baidu_play_url = DesUtils.decode(Constant.DES_KEY, data.getString("downurl"));
+					String baidu_play_url = data.getString("downurl");
 					String baidu_push_url = data.getString("playurl");
 					Log.d(TAG, "baidu_play_url  -> " + baidu_play_url);
 					
@@ -861,7 +862,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					if(play_info == null){
 						play_info = new MoviePlayHistoryInfo();
 //						play_info.setDownload_url(movie_play_url);
-						play_info.setName(Utils.getBaiduName(baidu_play_url));
+						play_info.setName(Utils.getBaiduName(DesUtils.decode(Constant.DES_KEY, baidu_play_url)));
 						Log.d(TAG, "name ---->" + play_info.getName());
 						play_info.setPush_id(baidu_push_id);
 						play_info.setPush_url(baidu_push_url);
@@ -876,14 +877,14 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					pincode_md5 = data.getString("md5_code");
 					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-						if(baidu_play_url.startsWith("bdhd")){
+//						if(baidu_play_url.startsWith("bdhd")){
 							Intent intent = new Intent(FayeService.this,PlayBaiduActivity.class);
 							intent.putExtra("url", baidu_play_url);
 							intent.putExtra("name", play_info.getName());
 							intent.putExtra("push_url", play_info.getPush_url());
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							startActivity(intent);
-						}
+//						}
 					}else{
 						handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
 					}

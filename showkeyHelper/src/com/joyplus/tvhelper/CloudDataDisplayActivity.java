@@ -160,14 +160,16 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			switch (playInfo.getEdite_state()) {
 			case MoviePlayHistoryInfo.EDITE_STATUE_NOMAL:
 				if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
-					if(playInfo.getRecivedDonwLoadUrls().startsWith("bdhd")){
+//					if(playInfo.getRecivedDonwLoadUrls().startsWith("bdhd")){
+					playInfo.setCreat_time(System.currentTimeMillis());
+					dbService.updateMoviePlayHistory(playInfo);
 						Intent intent_baidu = new Intent(this,PlayBaiduActivity.class);
 						intent_baidu.putExtra("url", playInfo.getRecivedDonwLoadUrls());
 						intent_baidu.putExtra("name", playInfo.getName());
 						intent_baidu.putExtra("push_url", playInfo.getPush_url());
 						intent_baidu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(intent_baidu);
-					}
+//					}
 				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
