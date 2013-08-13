@@ -57,6 +57,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -145,7 +146,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 	
-	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
+	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
 
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
@@ -228,6 +229,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private List<URLS_INDEX> playUrls_mp4 = new ArrayList<URLS_INDEX>();//标清
 	private List<URLS_INDEX> playUrls_flv = new ArrayList<URLS_INDEX>();//流畅
 	ArrayList<Integer> definationStrings = new ArrayList<Integer>();//清晰度选择
+	ArrayList<Integer> zimuStrings = new ArrayList<Integer>();
 
 	private AQuery aq;
 	private MyApp app;
@@ -941,9 +943,48 @@ public class VideoPlayerJPActivity extends Activity implements
 					View view = inflater.inflate(R.layout.video_choose_defination, null);
 					Button btn_ok = (Button) view.findViewById(R.id.btn_ok_def);
 					Button btn_cancel = (Button) view.findViewById(R.id.btn_cancle_def);
+//					final LinearLayout layout_def = (LinearLayout) view.findViewById(R.id.layout_def);
+//					final LinearLayout layout_zimu = (LinearLayout) view.findViewById(R.id.layout_zimu);
 					final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_def);
+					final Gallery gallery_zm = (Gallery) view.findViewById(R.id.gallery_zimu);
 					
 					definationStrings.clear();
+					zimuStrings.clear();
+					
+//					gallery.setOnFocusChangeListener(new OnFocusChangeListener() {
+//						
+//						@Override
+//						public void onFocusChange(View v, boolean hasFocus) {
+//							// TODO Auto-generated method stub
+//							if(hasFocus){
+//								layout_def.setBackgroundColor(Color.DKGRAY);
+//								Log.d(TAG, "layout_def---DKGRAY-->");
+//							}else{
+//								layout_def.setBackgroundColor(Color.TRANSPARENT);
+//							}
+//						}
+//					});
+//					
+//					gallery_zm.setOnFocusChangeListener(new OnFocusChangeListener() {
+//						
+//						@Override
+//						public void onFocusChange(View v, boolean hasFocus) {
+//							// TODO Auto-generated method stub
+//							if(hasFocus){
+//								Log.d(TAG, "layout_zimu---DKGRAY-->");
+//								layout_zimu.setBackgroundColor(Color.DKGRAY);
+//							}else{
+//								layout_zimu.setBackgroundColor(Color.TRANSPARENT);
+//							}
+//						}
+//					});
+//					
+					if(mSubTitleCollection == null){
+						zimuStrings.add(-1);//暂无字幕
+					}else{
+						zimuStrings.add(0);//字幕开
+						zimuStrings.add(1);//字幕关
+					}
 //					definationStrings.add("超    清");
 //					definationStrings.add("高    清");
 //					definationStrings.add("标    清");
@@ -963,6 +1004,14 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
 					gallery.setSelection(definationStrings.indexOf(mDefination));
+					
+					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
+					if(mSubTitleTv.getVisibility()==View.VISIBLE){
+						gallery_zm.setSelection(0);
+					}else{
+						gallery_zm.setSelection(1);
+					}
+					
 					gallery.requestFocus();
 					btn_ok.setOnClickListener(new OnClickListener() {
 						
@@ -970,6 +1019,13 @@ public class VideoPlayerJPActivity extends Activity implements
 						public void onClick(View v) {
 							// TODO Auto-generated method stub
 							dialog.dismiss();
+							if(gallery_zm.getChildCount()>1){
+								if(gallery_zm.getSelectedItemPosition()==0){
+									mSubTitleTv.setVisibility(View.VISIBLE);
+								}else{
+									mSubTitleTv.setVisibility(View.INVISIBLE);
+								}
+							}
 							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
 						}
 					});
@@ -2210,6 +2266,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_hd.clear();
 		playUrls_hd2.clear();
 		playUrls_mp4.clear();
+		mSubTitleCollection = null;
+		mSubTitleTv.setVisibility(View.VISIBLE);
 		initVedioDate();
 	}
 
@@ -2733,6 +2791,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
 			TextView tv = new TextView(c);
+			tv.setBackgroundResource(R.drawable.bg_choose_defination_selector);
 			tv.setTextColor(Color.WHITE);
 			tv.setTextSize(25);
 			switch (list.get(position)) {
@@ -2754,6 +2813,65 @@ public class VideoPlayerJPActivity extends Activity implements
 			tv.setLayoutParams(param);
 			return tv;
 		}
+
 		
 	}
+	
+	
+	
+	class ZimuAdapter extends BaseAdapter{
+
+		List<Integer> list;
+		Context c;
+		
+		public ZimuAdapter(Context c, List<Integer> list){
+			this.c = c;
+			this.list = list;
+		}
+		
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return list.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			TextView tv = new TextView(c);
+			tv.setTextColor(Color.WHITE);
+			tv.setBackgroundResource(R.drawable.bg_choose_defination_selector);
+			tv.setTextSize(25);
+			switch (list.get(position)) {
+			case -1://无字幕
+				tv.setText("暂无字幕");
+				break;
+			case 0://字幕开
+				tv.setText("开");
+				break;
+			case 1://字幕关
+				tv.setText("关");
+				break;
+			}
+			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			tv.setGravity(Gravity.CENTER);
+			tv.setLayoutParams(param);
+			return tv;
+		}
+
+	}
+	
+	
 }
