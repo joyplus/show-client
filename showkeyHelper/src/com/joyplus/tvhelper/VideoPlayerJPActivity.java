@@ -1,5 +1,9 @@
 package com.joyplus.tvhelper;
 
+import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
+import info.monitorenter.cpdetector.io.JChardetFacade;
+import info.monitorenter.cpdetector.io.ParsingDetector;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -536,15 +540,23 @@ public class VideoPlayerJPActivity extends Activity implements
 			
 			Parser parser = new Parser();
 			
-			boolean isUtf8 = Utils.isUTF_8(subTitle);
-			Log.i(TAG, "isUtf8--->" + isUtf8);
-			
-			if(!isUtf8){
+			String charsetName = Utils.getCharset(subTitle, 128);
+			Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
+			if(charsetName.equals("")){
 				
-				parser.setCharset("GBK");
-			} else {
+				boolean isUtf8 = Utils.isUTF_8(subTitle);
+				Log.i(TAG, "isUtf8--->" + isUtf8);
 				
-				parser.setCharset("UTF-8");
+				if(!isUtf8){
+					
+					parser.setCharset("GBK");
+				} else {
+					
+					parser.setCharset("UTF-8");
+				}
+			}else {
+				
+				parser.setCharset(charsetName);
 			}
 			parser.parse(new ByteArrayInputStream(subTitle));
 			
