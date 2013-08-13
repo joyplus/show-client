@@ -145,7 +145,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 	
-	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
+	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
 
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
@@ -260,7 +260,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	/**  Subtitle*/
 	private Collection mSubTitleCollection = null;
 	private int mStartTimeSubTitle,mEndTimeSubTitle;
-	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mPreSubTitleE;
+	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -1136,16 +1136,35 @@ public class VideoPlayerJPActivity extends Activity implements
 					long startTime = mCurSubTitleE.getStartTime().getTime();
 					long endTime = mCurSubTitleE.getEndTime().getTime();
 					
-					if(currentPosition - startTime > SEEKBAR_REFRESH_TIME/2){
+					if(currentPosition - startTime > 0){
 						
-						if(!mSubTitleTv.getText().toString().equals(mCurSubTitleE.getText().replaceAll("<font.*>", ""))){
-							
+						if(mSubTitleTv.getText().toString().equals("")){
+
 							Log.d(TAG, "subtitle start--->startTime:" + startTime);
-							mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
+							if(mBefSubTitleE == null
+									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
+									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
+								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
+							}else {
+								
+								StringBuilder sb = new StringBuilder();
+								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank();i++){
+									org.blaznyoght.subtitles.model.Element element = 
+											mSubTitleCollection.getElements().get(i);
+									sb.append(element.getText().replaceAll("<font.*>", ""));
+//									if(i<=mCurSubTitleE.getRank() -1){
+//										
+//										sb.append("\n");
+//									}
+									mSubTitleTv.setText(sb.toString());
+								}
+							}
+							
+							mBefSubTitleE = mCurSubTitleE;
 						}
 					}
 					
-					if (currentPosition - endTime > SEEKBAR_REFRESH_TIME/2) {
+					if (currentPosition - endTime > 0) {
 						Log.d(TAG, "subtitle over--->endTime:" + endTime);
 						if(!mSubTitleTv.getText().toString().equals("")){
 							
@@ -1163,7 +1182,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
 		mCurSubTitleE = null;//当前
-		mPreSubTitleE = null;//之前
+		mBefSubTitleE = null;//之前
 	}
 
 	private void showControlLayout() {
