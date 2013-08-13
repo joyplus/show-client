@@ -1126,7 +1126,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					if(currentPosition - startTime > SEEKBAR_REFRESH_TIME/2){
 						
-						if(mSubTitleTv.getText().toString().equals(mCurSubTitleE.getText().replaceAll("<font.*>", ""))){
+						if(!mSubTitleTv.getText().toString().equals(mCurSubTitleE.getText().replaceAll("<font.*>", ""))){
 							
 							Log.d(TAG, "subtitle start--->startTime:" + startTime);
 							mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
