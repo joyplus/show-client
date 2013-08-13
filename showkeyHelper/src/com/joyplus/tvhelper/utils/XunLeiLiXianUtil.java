@@ -477,6 +477,46 @@ public class XunLeiLiXianUtil {
 		
 		return null;
 	}
+	
+	
+	public static byte[] getSubtitle4Push(String url,String appkey){
+		
+		Header[] arrayOfHeader = { new BasicHeader("app_key",appkey) };
+		
+		String subTitlesStr = HttpUtils.getContent(url, arrayOfHeader, null);
+		Log.i(TAG, "getSubtitle4Push--->subTitlesStr:" + subTitlesStr);
+		
+		if(subTitlesStr != null && !subTitlesStr.equals("")){
+			
+			try {
+				JSONObject subtitlesJsonObject = (JSONObject) new JSONTokener(subTitlesStr).nextValue();
+				
+				if(subtitlesJsonObject.has("error")){
+					
+					if(!subtitlesJsonObject.getBoolean("error")
+							&& subtitlesJsonObject.has("subtitles")){
+						
+						JSONArray subtitleContents = subtitlesJsonObject.getJSONArray("subtitles");
+						if(subtitleContents != null && subtitleContents.length() > 0){
+							
+							String subTitleUrl = subtitleContents.getString(0);
+							if(subTitleUrl != null && !subTitleUrl.equals("")){
+								
+								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+								return subTitle;
+							}
+						}
+						
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
 
 	public static ArrayList<VideoPlayUrl> getLXPlayUrl4Vod_dl_all(
 			Context context, XLLXFileInfo xllxFileInfo) {

@@ -21,7 +21,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.blaznyoght.subtitles.model.Collection;
 import org.blaznyoght.subtitles.model.Parser;
-import org.blaznyoght.subtitles.model.Time;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -255,8 +254,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	/**  Subtitle*/
 	private Collection mSubTitleCollection = null;
 	private int mStartTimeSubTitle,mEndTimeSubTitle;
-	private org.blaznyoght.subtitles.model.Element mCurSubTitleE;
-//	,mPreSubTitleE;
+	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mPreSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -466,26 +464,7 @@ public class VideoPlayerJPActivity extends Activity implements
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
 						//get subtitle
 						byte[] subTitle = XunLeiLiXianUtil.getSubtitle(VideoPlayerJPActivity.this,xllxFileInfo);
-						
-						if(subTitle != null && subTitle.length > 3){
-							
-							Parser parser = new Parser();
-							
-							boolean isUtf8 = Utils.isUTF_8(subTitle);
-							Log.i(TAG, "isUtf8--->" + isUtf8);
-							
-							if(!isUtf8){
-								
-								parser.setCharset("GBK");
-							} else {
-								
-								parser.setCharset("UTF-8");
-							}
-							parser.parse(new ByteArrayInputStream(subTitle));
-							
-							mSubTitleCollection = parser.getCollection();
-							Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
-						}
+						initSubTitleCollection(subTitle);
 						
 						if(list != null && list.size() > 0) {
 							
@@ -547,6 +526,33 @@ public class VideoPlayerJPActivity extends Activity implements
 			
 		}
 	}
+	
+	private void initSubTitleCollection(byte[] subTitle){
+		
+		if(subTitle != null && subTitle.length > 3
+				&& mSubTitleCollection == null){
+			
+			Parser parser = new Parser();
+			
+			boolean isUtf8 = Utils.isUTF_8(subTitle);
+			Log.i(TAG, "isUtf8--->" + isUtf8);
+			
+			if(!isUtf8){
+				
+				parser.setCharset("GBK");
+			} else {
+				
+				parser.setCharset("UTF-8");
+			}
+			parser.parse(new ByteArrayInputStream(subTitle));
+			
+			mSubTitleCollection = parser.getCollection();
+			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
+			return;
+		}
+		
+//		Utils.showToast(this, "获取字幕失败");
+	}
 
 	private Handler mHandler = new Handler() {
 		@Override
@@ -575,6 +581,30 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 					return;
 				}
+				
+				//字幕获取
+				if(mProd_type == TYPE_PUSH && mSubTitleCollection == null){
+					
+					if(play_info != null && play_info.getPush_url() != null
+							&& !play_info.getPush_url().equals("")){
+						MyApp.pool.execute(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								
+								String subTitleUrl = Constant.BASE_URL + "/xunlei/subtitle/?url="
+										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
+										PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
+								byte[] arraySubTitleBytes = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
+								initSubTitleCollection(arraySubTitleBytes);
+							}
+						});
+
+					}
+					
+				}
+				
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
@@ -647,6 +677,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				break;
 			case MESSAGE_PALY_URL_OK:
+				
 				updateName();
 				updateSourceAndTime();
 				mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
@@ -1044,29 +1075,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
 		
-		if(mSubTitleCollection != null && mVideoView != null
-				&& mVideoView.getCurrentPosition() >= 0
-				&& mCurSubTitleE == null){
-			long currentPosition = mVideoView.getCurrentPosition();
-			for(int i=0;i<mSubTitleCollection.getElementSize();i++){
-				
-				org.blaznyoght.subtitles.model.Element element = 
-						mSubTitleCollection.getElements().get(i);
-				if(currentPosition < element.getStartTime().getTime()){
-					
-					if(i - 1 >= 0 ){
-						
-						mCurSubTitleE = mSubTitleCollection.getElements().get(i-1);
-					}else {
-						
-						mCurSubTitleE = new org.blaznyoght.subtitles.model.Element(element);
-					}
-					
-					return;
-				}
-			}
-		}
-		
 		updateSubtitle();
 		
 		
@@ -1074,50 +1082,46 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void updateSubtitle(){
 		
-		
 		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
 			long currentPosition = mVideoView.getCurrentPosition();
 			if(mSubTitleCollection != null){
 				
-				if(mCurSubTitleE != null ){
-					org.blaznyoght.subtitles.model.Element tempE = null;
+				if(mCurSubTitleE == null) {
+					
 					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
 						
 						org.blaznyoght.subtitles.model.Element element = 
 								mSubTitleCollection.getElements().get(i);
 						if(currentPosition < element.getStartTime().getTime()){
-							tempE = element;
+							
+							mCurSubTitleE = element;
+							
 							break;
 						}
 					}
+				} else {
 					
 					long startTime = mCurSubTitleE.getStartTime().getTime();
 					long endTime = mCurSubTitleE.getEndTime().getTime();
 					
-					if(tempE != null){
+					if(currentPosition - startTime > SEEKBAR_REFRESH_TIME/2){
 						
-						if(tempE.getRank() == mCurSubTitleE.getRank()){//相同的 消失掉字幕
+						if(mSubTitleTv.getText().toString().equals(mCurSubTitleE.getText().replaceAll("<font.*>", ""))){
 							
-							if(Math.abs(endTime - currentPosition) <= SEEKBAR_REFRESH_TIME){
-								Log.d(TAG, "subtitle over--->");
-								mSubTitleTv.setText("");
-								
-								int rank = mCurSubTitleE.getRank();
-								if(rank < mSubTitleCollection.getElementSize()){
-									Log.d(TAG, "subtitle over--->");
-									mCurSubTitleE = new org.blaznyoght.subtitles.model.
-											Element(mSubTitleCollection.getElements().get(rank));
-								}
-							}
-						} else {
-							
-							if(Math.abs(startTime - currentPosition) <= SEEKBAR_REFRESH_TIME ){
-								Log.d(TAG, "subtitle start--->");
-								mSubTitleTv.setText(mCurSubTitleE.getText());
-							}
+							Log.d(TAG, "subtitle start--->startTime:" + startTime);
+							mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
 						}
 					}
-					mCurSubTitleE = tempE;
+					
+					if (currentPosition - endTime > SEEKBAR_REFRESH_TIME/2) {
+						Log.d(TAG, "subtitle over--->endTime:" + endTime);
+						if(!mSubTitleTv.getText().toString().equals("")){
+							
+							mSubTitleTv.setText("");
+							mCurSubTitleE = null;
+						}
+						
+					}
 				}
 			}
 		}
@@ -1126,7 +1130,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void endUpdateSeekBar(){
 		
 		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-		mCurSubTitleE = null;
+		mCurSubTitleE = null;//当前
+		mPreSubTitleE = null;//之前
 	}
 
 	private void showControlLayout() {
