@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.blaznyoght.subtitles.model.Collection;
@@ -566,8 +568,14 @@ public class VideoPlayerJPActivity extends Activity implements
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
 						if(isRequset){
-							if(!isFinishing()){
-								showDialog(0);
+							if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
+								Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
+								intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
+								startActivity( intent_web);
+							}else{
+								if(!isFinishing()){
+									showDialog(0);
+								}
 							}
 						}else{
 							//失效了 接着搞
@@ -632,8 +640,14 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 						else if(mProd_type==TYPE_PUSH){
 							if(isRequset){
-								if(!isFinishing()){
-									showDialog(0);
+								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
+									Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
+									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
+									startActivity( intent_web);
+								}else{
+									if(!isFinishing()){
+										showDialog(0);
+									}
 								}
 								
 							}else{
@@ -660,8 +674,14 @@ public class VideoPlayerJPActivity extends Activity implements
 						Log.e(TAG, "no url can play!");
 						if(mProd_type==TYPE_PUSH){
 							if(isRequset){
-								if(!isFinishing()){
-									showDialog(0);
+								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
+									Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
+									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
+									startActivity(intent_web);
+								}else{
+									if(!isFinishing()){
+										showDialog(0);
+									}
 								}
 							}else{
 								//失效了 接着搞
@@ -2070,7 +2090,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}else if(mProd_type == TYPE_LOCAL){
 			play_info.setLocal_url(currentPlayUrl);
 		}
-		
+		play_info.setCreat_time(System.currentTimeMillis());
 //		MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
 //		info.setDuration((int) duration);
 //		info.setPlayback_time((int) playBackTime);
@@ -2412,8 +2432,10 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			isRequset = true;				 //updateXunleiurl
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + URLEncoder.encode(play_info.getPush_url())
+			isRequset = true;	
+			playUrls.clear();
+			//updateXunleiurl
+			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url()
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
@@ -2428,7 +2450,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
-				playUrls.clear();
+				
 //				playUrls_flv.clear();
 //				playUrls_hd.clear();
 //				playUrls_hd2.clear();

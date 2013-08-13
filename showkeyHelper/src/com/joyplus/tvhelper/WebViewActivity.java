@@ -15,6 +15,7 @@ public class WebViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_webview);
 		url = getIntent().getStringExtra("url");
+		webView = (WebView) findViewById(R.id.webView);
 		webView.loadUrl(url);
 	}
 	

@@ -159,36 +159,48 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			MoviePlayHistoryInfo playInfo = playinfos.get(position);
 			switch (playInfo.getEdite_state()) {
 			case MoviePlayHistoryInfo.EDITE_STATUE_NOMAL:
-				
-				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-//				intent.putExtra("ID", json.getString("prod_id"));
-//				playDate.prod_id = data.getString("id");
-//				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
-//				playDate.prod_type = playInfo.getPlay_type();
-				playDate.prod_name = playInfo.getName();
-				if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
-					playDate.prod_url = playInfo.getLocal_url();
-					playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
-				}else{
-//					playDate.prod_url = playInfo.getDownload_url();
-					playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
-				}
-				playDate.obj = playInfo;
-				Log.d(TAG, "prod_type" + playDate.prod_type);
-//				playDate.prod_src = json.getString("prod_src");
-				playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
-				playDate.prod_qua = playInfo.getDefination();
-//				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
-//					if(json.has("prod_subname")){//旧版android 没有传递该参数
-//						playDate.prod_sub_name = json.getString("prod_subname");
-//					}else{
-//						playDate.prod_type = -1;
+				if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
+//					if(playInfo.getRecivedDonwLoadUrls().startsWith("bdhd")){
+					playInfo.setCreat_time(System.currentTimeMillis());
+					dbService.updateMoviePlayHistory(playInfo);
+						Intent intent_baidu = new Intent(this,PlayBaiduActivity.class);
+						intent_baidu.putExtra("url", playInfo.getRecivedDonwLoadUrls());
+						intent_baidu.putExtra("name", playInfo.getName());
+						intent_baidu.putExtra("push_url", playInfo.getPush_url());
+						intent_baidu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intent_baidu);
 //					}
-//				}
-				app.setmCurrentPlayDetailData(playDate);
-				app.set_ReturnProgramView(null);
-				startActivity(intent);
+				}else{
+					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//					intent.putExtra("ID", json.getString("prod_id"));
+//					playDate.prod_id = data.getString("id");
+//					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+//					playDate.prod_type = playInfo.getPlay_type();
+					playDate.prod_name = playInfo.getName();
+					if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+						playDate.prod_url = playInfo.getLocal_url();
+						playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+					}else{
+//						playDate.prod_url = playInfo.getDownload_url();
+						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+					}
+					playDate.obj = playInfo;
+					Log.d(TAG, "prod_type" + playDate.prod_type);
+//					playDate.prod_src = json.getString("prod_src");
+					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+					playDate.prod_qua = playInfo.getDefination();
+//					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//						if(json.has("prod_subname")){//旧版android 没有传递该参数
+//							playDate.prod_sub_name = json.getString("prod_subname");
+//						}else{
+//							playDate.prod_type = -1;
+//						}
+//					}
+					app.setmCurrentPlayDetailData(playDate);
+					app.set_ReturnProgramView(null);
+					startActivity(intent);
+				}
 				break;
 			case MoviePlayHistoryInfo.EDITE_STATUE_EDIT:
 				playInfo.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
