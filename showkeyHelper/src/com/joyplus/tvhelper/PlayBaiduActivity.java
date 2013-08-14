@@ -14,6 +14,7 @@ import com.joyplus.tvhelper.utils.DesUtils;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PackageUtils;
 import com.joyplus.tvhelper.utils.Utils;
+import com.umeng.analytics.MobclickAgent;
 
 
 public class PlayBaiduActivity extends Activity {
@@ -150,5 +151,19 @@ private void startPlayer(){
 		// TODO Auto-generated method stub
 		unregisterReceiver(receiver1);
 		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
 	}
 }
