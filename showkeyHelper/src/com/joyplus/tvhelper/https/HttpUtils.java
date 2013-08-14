@@ -25,7 +25,7 @@ public class HttpUtils {
 				&& (localHttpResult.getStatuCode() == 200)) {
 			
 			arrayOfByte = localHttpResult.getResponse();
-			Log.d("HttpUtils", "binary= " + arrayOfByte);
+//			Log.d("HttpUtils", "binary= " + arrayOfByte);
 		}
 
 		return arrayOfByte;
@@ -39,13 +39,13 @@ public class HttpUtils {
 		HttpResult localHttpResult = HttpClientHelper.get(paramString,
 				paramArrayOfHeader, paramArrayOfNameValuePair);
 		
-		Log.d(TAG, "getContent--->" + localHttpResult);
+//		Log.d(TAG, "getContent--->" + localHttpResult);
 		
 		if (localHttpResult != null
 				&& localHttpResult.getStatuCode() == 200) {
 			
 			str = localHttpResult.getHtml();
-			Log.d("HttpUtils", "content= " + str);
+//			Log.d("HttpUtils", "content= " + str);
 		}
 
 		return str;

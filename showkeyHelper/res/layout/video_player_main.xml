@@ -3,22 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black" >
+
     <VideoView
         android:id="@+id/surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
+        android:configChanges="orientation"
         android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:configChanges="orientation" />
-   	<RelativeLayout
+        android:focusableInTouchMode="false" />
+
+    <TextView
+        android:id="@+id/tv_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:textColor="#ffffff"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        android:shadowColor="#000000"
+        android:text=""
+        android:textSize="35dp" />
+
+    <RelativeLayout
         android:id="@+id/adsdkContent"
         android:layout_width="600dp"
         android:layout_height="400dp"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-         >
+        android:visibility="gone" >
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/rl_preload"
         android:layout_width="match_parent"
@@ -56,7 +74,7 @@
                 android:gravity="right"
                 android:minEms="4"
                 android:text="(0 Kb/s)"
-                android:textAppearance="?android:attr/textAppearanceMedium" 
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="22dp" />
 
             <TextView
@@ -64,28 +82,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=", 已完成0%"
-                android:textAppearance="?android:attr/textAppearanceMedium" 
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="22dp" />
         </LinearLayout>
 
-		     <TextView
-                android:id="@+id/tv_preload_bofang_record"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:layout_below="@id/ll_preload_network"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="22dp" />
-		     <TextView
-                android:id="@+id/tv_preload_source_laizi"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:gravity="center_horizontal"
-                android:layout_below="@id/tv_preload_bofang_record"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="22dp" />
+        <TextView
+            android:id="@+id/tv_preload_bofang_record"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_preload_network"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/tv_preload_source_laizi"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_preload_bofang_record"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="22dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -99,33 +118,39 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/player_mask_top" />
 
-        <LinearLayout android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:orientation="horizontal">
-            <LinearLayout android:layout_width="0dp"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:paddingLeft="30dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:paddingLeft="30dp" >
+
                 <ImageView
-                android:id="@+id/iv_1080_720"
-                android:layout_width="65dp"
-                android:layout_marginTop="3dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/tv_play_name"/>
-                 <TextView
-                android:id="@+id/tv_play_name"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="Name"
-                android:layout_marginLeft="10dp"
-                android:singleLine="true"
-                android:ellipsize="middle"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/white"
-                android:textSize="24dp" />
+                    android:id="@+id/iv_1080_720"
+                    android:layout_width="65dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="3dp"
+                    android:layout_toRightOf="@+id/tv_play_name" />
+
+                <TextView
+                    android:id="@+id/tv_play_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:text="Name"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white"
+                    android:textSize="24dp" />
             </LinearLayout>
+
             <com.joyplus.tvhelper.ui.ClockTextView
                 android:id="@+id/cv_time"
                 android:layout_width="wrap_content"
@@ -133,12 +158,13 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="30dp"
-                android:textSize="26dp" 
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="26dp" />
         </LinearLayout>
-        
-       <!--  <RelativeLayout
+
+        <!--
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_alignParentTop="true" >
@@ -176,7 +202,8 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_toRightOf="@+id/tv_play_name"/>
-        </RelativeLayout> -->
+        </RelativeLayout>
+        -->
 
         <TextView
             android:layout_width="match_parent"
@@ -233,6 +260,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_time_seekbar"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true" >
@@ -290,13 +318,13 @@
         android:id="@+id/ll_control_buttons"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center" 
+        android:gravity="center"
         android:visibility="gone" >
 
         <RelativeLayout
             android:id="@+id/rl_control_buttons"
             android:layout_width="314dp"
-            android:layout_height="314dp">
+            android:layout_height="314dp" >
 
             <ImageButton
                 android:id="@+id/ib_control_center"
@@ -307,7 +335,7 @@
                 android:nextFocusDown="@+id/ib_control_bottom"
                 android:nextFocusLeft="@+id/ib_control_left"
                 android:nextFocusRight="@+id/ib_control_right"
-                android:nextFocusUp="@+id/ib_control_top"/>
+                android:nextFocusUp="@+id/ib_control_top" />
 
             <ImageButton
                 android:id="@+id/ib_control_left"
@@ -319,7 +347,7 @@
                 android:nextFocusDown="@+id/ib_control_bottom"
                 android:nextFocusLeft="@+id/ib_control_left"
                 android:nextFocusRight="@+id/ib_control_center"
-                android:nextFocusUp="@+id/ib_control_top"/>
+                android:nextFocusUp="@+id/ib_control_top" />
 
             <ImageButton
                 android:id="@+id/ib_control_top"
@@ -331,7 +359,7 @@
                 android:nextFocusDown="@+id/ib_control_center"
                 android:nextFocusLeft="@+id/ib_control_left"
                 android:nextFocusRight="@+id/ib_control_right"
-                android:nextFocusUp="@+id/ib_control_top"/>
+                android:nextFocusUp="@+id/ib_control_top" />
 
             <ImageButton
                 android:id="@+id/ib_control_right"
@@ -343,7 +371,7 @@
                 android:nextFocusDown="@+id/ib_control_bottom"
                 android:nextFocusLeft="@+id/ib_control_center"
                 android:nextFocusRight="@+id/ib_control_right"
-                android:nextFocusUp="@+id/ib_control_top"/>
+                android:nextFocusUp="@+id/ib_control_top" />
 
             <ImageButton
                 android:id="@+id/ib_control_bottom"
@@ -355,7 +383,7 @@
                 android:nextFocusDown="@+id/ib_control_bottom"
                 android:nextFocusLeft="@+id/ib_control_left"
                 android:nextFocusRight="@+id/ib_control_right"
-                android:nextFocusUp="@+id/ib_control_center"/>
+                android:nextFocusUp="@+id/ib_control_center" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -376,6 +404,7 @@
             android:layout_gravity="center"
             android:background="@drawable/player_volume" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_continue"
         android:layout_width="match_parent"
@@ -385,15 +414,16 @@
         android:orientation="horizontal"
         android:padding="0dip"
         android:visibility="gone" >
-        <ImageButton android:layout_width="wrap_content"
+
+        <ImageButton
+            android:id="@+id/btn_continue"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/player_btn_play_play"
-            android:id="@+id/btn_continue"
             android:nextFocusDown="@id/btn_continue"
             android:nextFocusLeft="@id/btn_continue"
             android:nextFocusRight="@id/btn_continue"
-            android:nextFocusUp="@id/btn_continue"
-            />
+            android:nextFocusUp="@id/btn_continue" />
     </LinearLayout>
 
 </RelativeLayout>
