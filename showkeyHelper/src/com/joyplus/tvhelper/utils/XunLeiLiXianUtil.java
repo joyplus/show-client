@@ -9,6 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.blaznyoght.subtitles.model.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -352,7 +353,7 @@ public class XunLeiLiXianUtil {
 							+ xllxFileInfo.src_url.substring(5)
 							+ "/req_num/1000/req_offset/0",
 					new Header[] { localBasicHeader }, null);
-			
+			Log.i(TAG,"getSubFile---->" + btStr);
 			if(btStr != null && !btStr.equals("")) {
 				
 				JSONArray localJSONArray = ((JSONObject) new JSONTokener(
@@ -425,12 +426,96 @@ public class XunLeiLiXianUtil {
 		ArrayList<VideoPlayUrl> localArrayList = getLXPlayUrl4Vod_dl_all(context,xllxFileInfo);//can drag
 		ArrayList<VideoPlayUrl> tempArrayList = getLXPlayUrlReferer(context, xllxFileInfo);//can't drag
 		localArrayList.addAll(tempArrayList);
+
 //		if (localArrayList.size() > 0) {
 			
 			return localArrayList;
 //		}
 			
 //		return getLXPlayUrlReferer(context, xllxFileInfo);
+	}
+	
+	public static byte[] getSubtitle(Context context,XLLXFileInfo xllxFileInfo){
+		
+		Log.i(TAG, "getSubtitle--->xllxFileInfo lx_gcid:" + xllxFileInfo.lx_gcid);
+		
+		Header[] arrayOfHeader = { new BasicHeader("cookie",getCookie(context)) };
+		
+		NameValuePair[] firstNameValuePair = new NameValuePair[4];
+		firstNameValuePair[0]= new BasicNameValuePair("gcid", xllxFileInfo.lx_gcid);
+		firstNameValuePair[1]= new BasicNameValuePair("cid", xllxFileInfo.lx_cid);
+		firstNameValuePair[2]= new BasicNameValuePair("userid", getUID(context));
+		firstNameValuePair[3]= new BasicNameValuePair("t", System.currentTimeMillis() + "");
+		
+		String autoloadStr = HttpUtils.getContent(
+				"http://i.vod.xunlei.com/subtitle/autoload", arrayOfHeader,
+				firstNameValuePair);
+		Log.i(TAG, "getSubtitle--->autoloadStr:" + autoloadStr);
+		if(autoloadStr != null && !autoloadStr.equals("")){
+			
+			try {
+				JSONObject subtitleJsonObject = ((JSONObject) new JSONTokener(autoloadStr)
+					.nextValue()).getJSONObject("subtitle");
+				if(subtitleJsonObject != null){
+					
+					String subTitleUrl = subtitleJsonObject.getString("surl");
+					if(subTitleUrl != null && !subTitleUrl.equals("")){
+						
+						byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+//						Log.i(TAG, "getSubtitle--->subTitle:" + subTitle);
+						return subTitle;
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+//		NameValuePair[] arrayOfNameValuePair = new NameValuePair[1];
+//		arrayOfNameValuePair[0] = new BasicNameValuePair("scid","11702C01977EA74E629A2D56B31843CFDC642E7D");
+
+		
+		return null;
+	}
+	
+	
+	public static byte[] getSubtitle4Push(String url,String appkey){
+		
+		Header[] arrayOfHeader = { new BasicHeader("app_key",appkey) };
+		
+		String subTitlesStr = HttpUtils.getContent(url, arrayOfHeader, null);
+		Log.i(TAG, "getSubtitle4Push--->subTitlesStr:" + subTitlesStr);
+		
+		if(subTitlesStr != null && !subTitlesStr.equals("")){
+			
+			try {
+				JSONObject subtitlesJsonObject = (JSONObject) new JSONTokener(subTitlesStr).nextValue();
+				
+				if(subtitlesJsonObject.has("error")){
+					
+					if(!subtitlesJsonObject.getBoolean("error")
+							&& subtitlesJsonObject.has("subtitles")){
+						
+						JSONArray subtitleContents = subtitlesJsonObject.getJSONArray("subtitles");
+						if(subtitleContents != null && subtitleContents.length() > 0){
+							
+							String subTitleUrl = subtitleContents.getString(0);
+							if(subTitleUrl != null && !subTitleUrl.equals("")){
+								
+								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+								return subTitle;
+							}
+						}
+						
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
 	}
 
 	public static ArrayList<VideoPlayUrl> getLXPlayUrl4Vod_dl_all(
@@ -563,6 +648,14 @@ public class XunLeiLiXianUtil {
 										.getSharp(j);
 								localVideoPlayUrl.isCanDrag = false;
 								localArrayList.add(localVideoPlayUrl);
+							}
+							
+							//subtitle
+							JSONObject src_infoJsonObject = jsonObject.getJSONObject("src_info");
+							if(src_infoJsonObject != null){
+								
+								xllxFileInfo.lx_gcid = src_infoJsonObject.getString("gcid");
+								xllxFileInfo.lx_cid = src_infoJsonObject.getString("cid");
 							}
 
 							return localArrayList;

@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper.adapter;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 import android.content.Context;
@@ -65,7 +66,7 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 			if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
 				holder.name.setText(info.getLocal_url());
 			}else{
-				holder.name.setText(info.getPush_url());
+				holder.name.setText(URLDecoder.decode(info.getPush_url()));
 			}
 		}else{
 			holder.name.setText(info.getName());
@@ -76,12 +77,20 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 //		}else{
 //			holder.name.setText(Utils.getDisPlayFileNameforUrl(info.getPush_url()));
 //		}
-		if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>0){
-			holder.size.setText("已看完");
+		if(info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
+			holder.size.setText("");
 		}else{
-			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
-					"  /  "+ Utils.formatDuration(info.getDuration()*1000));
+			if(info.getDuration()<10){
+				holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
+						"  /  "+ "--:--:--");
+			}else if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>10){
+				holder.size.setText("已看完");
+			}else{
+				holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
+						"  /  "+ Utils.formatDuration(info.getDuration()*1000));
+			}
 		}
+		
 		switch (info.getEdite_state()) {
 		case PushedApkDownLoadInfo.EDITE_STATUE_NOMAL:
 			holder.statue_icon.setImageDrawable(null);

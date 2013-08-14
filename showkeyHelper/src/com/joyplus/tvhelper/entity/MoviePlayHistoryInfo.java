@@ -4,6 +4,7 @@ public class MoviePlayHistoryInfo {
 
 	public static final int PLAY_TYPE_ONLINE = 0;
 	public static final int PLAY_TYPE_LOCAL = PLAY_TYPE_ONLINE + 1;
+	public static final int PLAY_TYPE_BAIDU = PLAY_TYPE_LOCAL + 1;
 	
 	public static final int EDITE_STATUE_NOMAL 			= 0;
 	public static final int EDITE_STATUE_EDIT 			= EDITE_STATUE_NOMAL + 1;
@@ -20,6 +21,7 @@ public class MoviePlayHistoryInfo {
 	private int push_id;
 	private String recivedDonwLoadUrls;
 	private int defination;
+	private long creat_time;
 	private int edite_state = 0;
 	public int getId() {
 		return id;
@@ -92,6 +94,12 @@ public class MoviePlayHistoryInfo {
 	}
 	public void setDefination(int defination) {
 		this.defination = defination;
+	}
+	public long getCreat_time() {
+		return creat_time;
+	}
+	public void setCreat_time(long creat_time) {
+		this.creat_time = creat_time;
 	}
 	
 }

@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 	
 	private TextView seletedView;
 	private TextView pincodeText;
+	private TextView versionName;
 	
 	private LinearLayout layout_refresh,layout_deleteApk, layout_confirm;
 	
@@ -91,6 +93,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 		btn_help= (Button) findViewById(R.id.btn_help);
 		btn_about= (Button) findViewById(R.id.btn_about);
 		pincodeText = (TextView) findViewById(R.id.pincode_text);
+		versionName = (TextView) findViewById(R.id.versionCode);
 		
 		btn_setting.setOnClickListener(this);
 		btn_help.setOnClickListener(this);
@@ -117,6 +120,21 @@ public class SettingActivity extends Activity implements OnClickListener{
 		
 		updateSwitch();
 		displayPincode();
+		String versionName_str = null;
+		try {
+			versionName_str = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(versionName_str != null){
+			versionName.setText("版本号:"+versionName_str);
+		}else{
+			versionName.setVisibility(View.INVISIBLE);
+		}
+			
+		
 		seletedView = btn_setting; 
 		btn_setting.setBackgroundResource(R.drawable.highlight);
 		btn_setting.setTextColor(Color.BLACK);

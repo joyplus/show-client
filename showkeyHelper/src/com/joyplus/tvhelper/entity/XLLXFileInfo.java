@@ -22,6 +22,9 @@ public class XLLXFileInfo implements Serializable {
 	
 	public int playflag;
 	public int recordeNum;
+	
+	public String lx_cid;//subtitle
+	public String lx_gcid;//subtitle
 
 	public String toString() {
 		return "XLLXFileInfo [file_name=" + this.file_name + ", src_url="
