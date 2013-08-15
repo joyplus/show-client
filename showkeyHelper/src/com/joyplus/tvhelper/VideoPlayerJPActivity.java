@@ -629,6 +629,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
+				Log.d(TAG,"MESSAGE_URLS_READY--->currentPlayUrl:" + currentPlayUrl);
 				mProd_src = playUrls.get(currentPlayIndex).source_from;
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
@@ -636,6 +637,9 @@ public class VideoPlayerJPActivity extends Activity implements
 					new Thread(new UrlRedirectTask()).start();
 //					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 					// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
+				}else {
+					
+					mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
 				}
 				break;
 			case MESSAGE_URL_NEXT:
@@ -2528,7 +2532,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
-			Log.d(TAG, response);
+			Log.d(TAG, "response--->" + response);
 			try {
 				JSONObject json = new JSONObject(response);
 				String reciveData = json.getString("downurl");
@@ -2572,6 +2576,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			} catch (Exception e) {
 				// TODO: handle exception
 //				mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
+				e.printStackTrace();
 				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 			}
 		}
@@ -2587,6 +2592,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				Log.d(TAG, "getPlayList----> start");
 				if(play_info!=null){
 					String data = DesUtils.decode(Constant.DES_KEY, play_info.getRecivedDonwLoadUrls());
+					Log.d(TAG, "getPlayList--->data:" + data);
 					String[] urls = data.split("\\{mType\\}");
 //					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 					playUrls.clear();
