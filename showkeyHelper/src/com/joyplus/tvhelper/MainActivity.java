@@ -274,10 +274,10 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		layout_ceshu.setTag(image_ceshu);
 		layout_setting.setTag(image_setting);
 		
-		layout_jiasu.setOnKeyListener(this);
+//		layout_jiasu.setOnKeyListener(this);
 		
-		layout_tuijian.setOnKeyListener(this);
-		layout_zhibo.setOnKeyListener(this);
+//		layout_tuijian.setOnKeyListener(this);
+//		layout_zhibo.setOnKeyListener(this);
 		
 		layout.SetOnViewChangeListener(new OnViewChangeListener() {
 			
@@ -402,7 +402,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.showtui:
-			startActivity(new Intent(this, ManagePushApkActivity.class));
+//			startActivity(new Intent(this, ManagePushApkActivity.class));
 			break;
 		case R.id.layout_yuntui:
 			startActivity(new Intent(this, CloudDataDisplayActivity.class));
@@ -411,25 +411,27 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startActivity(new Intent(this, XunLeiLXActivity.class));
 			break;
 		case R.id.layout_zhibo:
-			startActivity(new Intent(this, TvLiveSrcUpdateActivity.class));
+//			startActivity(new Intent(this, TvLiveSrcUpdateActivity.class));
+			startActivity(new Intent(this, ScanActivity.class));
 			break;
 		case R.id.layout_tuijian:
-			startActivity(new Intent(this, AppRecommendActivity.class));
+//			startActivity(new Intent(this, AppRecommendActivity.class));
+			startActivity(new Intent(this, SettingActivity.class));
 			break;
 		case R.id.layout_jiashu:
-			startActivity(new Intent(this, ScanActivity.class));
+//			startActivity(new Intent(this, ScanActivity.class));
 			break;
 		case R.id.layout_upan:
 			Log.d(TAG, "敬请期待");
 			break;
 		case R.id.layout_appguanli:
-			startActivity(new Intent(this, ManageAppActivity.class));
+//			startActivity(new Intent(this, ManageAppActivity.class));
 			break;
 		case R.id.layout_ceshu:
 			Log.d(TAG, "敬请期待");
 			break;
 		case R.id.layout_setting:
-			startActivity(new Intent(this, SettingActivity.class));
+//			startActivity(new Intent(this, SettingActivity.class));
 			break;
 		case R.id.title_1:
 			layout.snapToScreen(0);

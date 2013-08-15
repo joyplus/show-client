@@ -130,7 +130,8 @@
 	       		                android:focusable="true"
 	       		            	android:id="@+id/layout_deleteApk"
 	       		            	android:background="@drawable/bg_content_setting_selector"
-	       		                android:orientation="horizontal">
+	       		                android:orientation="horizontal"
+	       		                android:visibility="invisible">
 	       		                <TextView android:layout_width="0dp"
 	       		                    android:layout_height="fill_parent"
 	       		                    android:gravity="center_vertical"
