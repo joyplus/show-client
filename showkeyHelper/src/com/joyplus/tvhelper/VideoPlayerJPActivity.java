@@ -1167,7 +1167,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
 		
-		if(time == SEEKBAR_REFRESH_TIME || mStatue == STATUE_PLAYING){
+		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
 			
 			updateSubtitle();
 		}else {
