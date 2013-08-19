@@ -5,6 +5,7 @@ import com.umeng.analytics.MobclickAgent;
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class WebViewActivity extends Activity {
 
@@ -18,6 +19,17 @@ public class WebViewActivity extends Activity {
 		setContentView(R.layout.activity_webview);
 		url = getIntent().getStringExtra("url");
 		webView = (WebView) findViewById(R.id.webView);
+		webView.setWebViewClient(new WebViewClient()
+		   {
+		          @Override
+		          public boolean shouldOverrideUrlLoading(WebView view, String url)
+		          {
+		 
+		            view.loadUrl(url); // 在当前的webview中跳转到新的url
+		 
+		            return true;
+		          }
+		    });
 		webView.loadUrl(url);
 	}
 	
