@@ -1247,7 +1247,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	
 	private void handleDownLoadFile(String uiid){
-		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
+		//Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
 		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
 			//用户推送的apk文件下载失败
 			currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
