@@ -1174,6 +1174,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			
 			mCurSubTitleE = null;//当前
 			mBefSubTitleE = null;//之前
+			mSubTitleTv.setText("");
 		}
 		
 		
