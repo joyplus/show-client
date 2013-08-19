@@ -113,7 +113,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				
 				PreferencesUtils.setPincodeMd5(FayeService.this, pincode_md5);
 //				play_info.setId((int)services.insertMoviePlayHistory(play_info));
-				if(push_type == 0){//apk
+				if(push_type == 0&&apkdownload_info!=null){//apk
 					userPushApkInfos.add(apkdownload_info);
 					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
 					if(currentUserApkInfo==null){
@@ -122,7 +122,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						downloadManager.startTast(apkdownload_info.getTast());
 						services.updateApkInfo(currentUserApkInfo);
 					}
-				}else if(push_type == 1){
+				}else if(push_type == 1&&play_info!=null){
 					if(play_info!=null&&play_info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
 //						if(play_info.getRecivedDonwLoadUrls().startsWith("bdhd")){
 							Intent intent_baidu = new Intent(FayeService.this,PlayBaiduActivity.class);
