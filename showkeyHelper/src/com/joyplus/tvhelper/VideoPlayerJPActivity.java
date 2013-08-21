@@ -1,9 +1,5 @@
 package com.joyplus.tvhelper;
 
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import info.monitorenter.cpdetector.io.JChardetFacade;
-import info.monitorenter.cpdetector.io.ParsingDetector;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,7 +18,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.blaznyoght.subtitles.model.Collection;
@@ -57,7 +52,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -261,7 +255,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	/**  Subtitle*/
 	private Collection mSubTitleCollection = null;
-	private int mStartTimeSubTitle,mEndTimeSubTitle;
+//	private int mStartTimeSubTitle,mEndTimeSubTitle;
 	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -1213,7 +1207,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(mBefSubTitleE == null
 									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
 									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
-								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
+								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
 							}else {
 								
 								StringBuilder sb = new StringBuilder();
@@ -1225,7 +1219,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //										
 //										sb.append("\n");
 //									}
-									mSubTitleTv.setText(sb.toString());
+									mSubTitleTv.setText(sb.toString().trim());
 								}
 							}
 							
@@ -2663,8 +2657,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 
 	private void sortPushUrls(int defination){
-		
-		
 		
 		for(URLS_INDEX url_index_info:playUrls){
 			switch (defination) {
