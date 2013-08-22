@@ -44,6 +44,8 @@
 	                                        android:textColor="#000000"
 	                                        android:textStyle="bold"
 	                                    	android:textSize="30dp"
+	                                    	android:singleLine="true"
+	                                    	android:id="@+id/web_url_text"
 	                                        android:text="tt.showkey.tv"/>
 	                                </LinearLayout>
 	                                <TextView android:layout_width="fill_parent"
