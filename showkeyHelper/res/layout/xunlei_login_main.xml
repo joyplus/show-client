@@ -312,6 +312,19 @@
                 android:text="@string/button_back"
                 android:textColor="@color/common_black_btn_textcolor"
                 android:textSize="@dimen/mid_text_size" />
+            
+            <Button
+                android:id="@+id/bt_refresh_list"
+                android:layout_width="133dp"
+                android:layout_height="45dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="34dp"
+                android:layout_marginTop="25dp"
+                android:layout_toLeftOf="@id/bt_back"
+                android:background="@drawable/xunlei_return_btn_bg"
+                android:text="@string/button_refresh"
+                android:textColor="@color/common_black_btn_textcolor"
+                android:textSize="@dimen/mid_text_size" />
 
             <TextView
                 android:id="@+id/tv_bg_line"
@@ -326,7 +339,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_bg_line"
                 android:divider="@color/light_white" 
-                android:listSelector="@drawable/bg_xunlei_content_setting_selector"/>
+                android:listSelector="@drawable/bg_content_setting_selector"/>
         </RelativeLayout>
     </LinearLayout>
 

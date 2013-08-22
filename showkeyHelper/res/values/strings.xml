@@ -7,6 +7,7 @@
     
     <string name="login_xunlei_usrname_hint">输入账户名</string>
     <string name="login_xunlei_passwd_hint">输入密码</string>
+    <string name="login_xunlei_verify_code_hint">验证码</string>
     
     <string name="login_xunlei_login">登陆</string>
     <string name="login_list_title">云播放列表</string>
@@ -19,6 +20,7 @@
     <string name="logout_logout">注销</string>
     
     <string name="button_back">返  回</string>
+    <string name="button_refresh">刷  新</string>
     <string name="button_edit">编  辑</string>
     <string name="button_canle_edit">取消编辑</string>
     <string name="button_del">删  除</string>

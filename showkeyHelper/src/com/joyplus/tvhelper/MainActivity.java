@@ -511,7 +511,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		unregisterReceiver(reciver);
-		XunLeiLiXianUtil.Logout(getApplicationContext());
+//		XunLeiLiXianUtil.Logout(getApplicationContext());
 	}
 	
 }
