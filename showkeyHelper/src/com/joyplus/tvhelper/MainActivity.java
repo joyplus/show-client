@@ -11,6 +11,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -63,6 +66,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	private TextView title_text_1, title_text_2;
 	
 	private View selectedLayout;
+	
+	private TextView web_url_textview;
 	
 //	private FrameLayout relativeLayout;
 	
@@ -124,7 +129,19 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		
 		MobclickAgent.onError(this);
 		UmengUpdateAgent.update(this);
-		
+		ApplicationInfo info = null;
+		try {
+			info = this.getPackageManager().getApplicationInfo(getPackageName(),
+			        PackageManager.GET_META_DATA);
+			String umengChannel = info.metaData.getString("UMENG_CHANNEL");
+			String online_base_url = MobclickAgent.getConfigParams(this, "URL"+ umengChannel);
+			if(online_base_url!=null&&online_base_url.length()>0){
+				Constant.BASE_URL = online_base_url;
+			}
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		app = (MyApp) getApplication();
 		
 		layout = (MyScrollLayout) findViewById(R.id.layout);
@@ -183,6 +200,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	private void findViews(){
 		
 		pincodeText = (TextView) findViewById(R.id.pincodeText);
+		
+		web_url_textview = (TextView) findViewById(R.id.web_url_text);
 		
 		image_showtui = (ImageView) findViewById(R.id.image_showtui);
 		image_yuntui = (ImageView) findViewById(R.id.image_yuntui);
@@ -298,6 +317,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				}
 			}
 		});
+		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {

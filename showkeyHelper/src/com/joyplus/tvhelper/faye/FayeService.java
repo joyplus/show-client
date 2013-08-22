@@ -729,7 +729,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					services.deleteApkInfo(currentUserApkInfo);
 					userPushApkInfos.remove(currentUserApkInfo);
 					sendBroadcast(intent);
-					if(PreferencesUtils.isautodelete(FayeService.this)){
+					if(!PreferencesUtils.isautodelete(FayeService.this)){
 						if(currentUserApkInfo!=null&&currentUserApkInfo.getFile_path()!=null){
 							File f = new File(currentUserApkInfo.getFile_path());
 							if(f!=null&&f.exists()){

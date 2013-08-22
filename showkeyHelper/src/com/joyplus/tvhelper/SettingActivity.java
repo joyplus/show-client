@@ -302,6 +302,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 	}
 	
 	private void updateSwitch(){
+		Log.d(TAG, "is auto delete --->"  + PreferencesUtils.isautodelete(this));
+		Log.d(TAG, "is isdelete  --->"  + isdelete);
 		if(isdelete){
 			switch_delete.setImageResource(R.drawable.swith_on);
 		}else{
