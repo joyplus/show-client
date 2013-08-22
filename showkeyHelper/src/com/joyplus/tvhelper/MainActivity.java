@@ -172,8 +172,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				exitTime = System.currentTimeMillis();
 			} else {
 				finish();
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
+//				android.os.Process.killProcess(android.os.Process.myPid());
+//				System.exit(0);
 			}
 			return true;
 		}

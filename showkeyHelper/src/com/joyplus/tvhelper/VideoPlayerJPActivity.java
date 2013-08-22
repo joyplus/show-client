@@ -275,7 +275,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	/**  Subtitle*/
 	private Collection mSubTitleCollection = null;
-	private int mStartTimeSubTitle,mEndTimeSubTitle;
+//	private int mStartTimeSubTitle,mEndTimeSubTitle;
 	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -1250,7 +1250,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(mBefSubTitleE == null
 									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
 									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
-								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", ""));
+								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
 							}else {
 								
 								StringBuilder sb = new StringBuilder();
@@ -1262,7 +1262,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //										
 //										sb.append("\n");
 //									}
-									mSubTitleTv.setText(sb.toString());
+									mSubTitleTv.setText(sb.toString().trim());
 								}
 							}
 							
@@ -2669,8 +2669,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 
 	private void sortPushUrls(int defination){
-		
-		
 		
 		for(URLS_INDEX url_index_info:playUrls){
 			switch (defination) {
