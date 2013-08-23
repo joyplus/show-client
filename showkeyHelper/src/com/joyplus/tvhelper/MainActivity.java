@@ -97,6 +97,21 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				image_showtui.setImageBitmap(layout_showtui.getDrawingCache());
 				layout_showtui.requestFocus();
 				startService(new Intent(MainActivity.this, FayeService.class));
+				mHandler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						String online_base_url = MobclickAgent.getConfigParams(MainActivity.this, "URL"+ umeng_channel);
+						Log.d(TAG, "online_base_url----->" + online_base_url);
+						if(online_base_url!=null&&online_base_url.length()>0){
+							web_url_textview.setText(online_base_url);
+							PreferencesUtils.setWebUrl(MainActivity.this, online_base_url);
+						}else{
+							web_url_textview.setText("tt.showkey.tv");
+						}
+					}
+				}, 1000);
 				break;
 			case MESSAGE_GETPINCODE_FAILE:
 				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
@@ -489,11 +504,19 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		}
 		Log.d(TAG, displayString);
 		pincodeText.setText(displayString);
-		String online_base_url = MobclickAgent.getConfigParams(MainActivity.this, "URL"+ umeng_channel);
-		Log.d(TAG, "online_base_url----->" + online_base_url);
-		if(online_base_url!=null&&online_base_url.length()>0){
-			web_url_textview.setText(online_base_url);
-			PreferencesUtils.setWebUrl(MainActivity.this, online_base_url);
+		if(web_url_textview.getText()==null||"".equals(web_url_textview.getText())){
+			if(PreferencesUtils.getWebUrl(this)==null||PreferencesUtils.getWebUrl(this).length()==0){
+				String online_base_url = MobclickAgent.getConfigParams(MainActivity.this, "URL"+ umeng_channel);
+				Log.d(TAG, "online_base_url----->" + online_base_url);
+				if(online_base_url!=null&&online_base_url.length()>0){
+					web_url_textview.setText(online_base_url);
+					PreferencesUtils.setWebUrl(MainActivity.this, online_base_url);
+				}else{
+					web_url_textview.setText("tt.showkey.tv");
+				}
+			}else{
+				web_url_textview.setText(PreferencesUtils.getWebUrl(this));
+			}
 		}
 	}
 	
