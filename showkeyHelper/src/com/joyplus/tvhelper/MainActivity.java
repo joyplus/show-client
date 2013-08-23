@@ -75,6 +75,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	
 	private TextView pincodeText;
 	
+	private String umeng_channel;
+	
 	private Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			switch (msg.what) {
@@ -130,21 +132,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		MobclickAgent.onError(this);
 		UmengUpdateAgent.update(this);
 		MobclickAgent.updateOnlineConfig(this);
-		ApplicationInfo info = null;
-		try {
-			info = this.getPackageManager().getApplicationInfo(getPackageName(),
-			        PackageManager.GET_META_DATA);
-			String umengChannel = info.metaData.getString("UMENG_CHANNEL");
-			Log.d(TAG, "key--->" + "URL"+ umengChannel);
-			String online_base_url = MobclickAgent.getConfigParams(this, "URL"+ umengChannel);
-			Log.d(TAG, "online_base_url----->" + online_base_url);
-			if(online_base_url!=null&&online_base_url.length()>0){
-				Constant.BASE_URL = online_base_url; 
-			}
-		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		app = (MyApp) getApplication();
 		
 		layout = (MyScrollLayout) findViewById(R.id.layout);
@@ -166,6 +154,28 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		app.setHeaders(headers);
 		IntentFilter filter = new IntentFilter(Global.ACTION_PINCODE_REFRESH);
 		registerReceiver(reciver, filter);
+		
+		
+		ApplicationInfo info = null;
+		try {
+			info = this.getPackageManager().getApplicationInfo(getPackageName(),
+			        PackageManager.GET_META_DATA);
+			umeng_channel = info.metaData.getString("UMENG_CHANNEL");
+			Log.d(TAG, "key--->" + "URL"+ umeng_channel);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(umeng_channel==null||umeng_channel.length()==0){
+			umeng_channel = "j001";
+		}
+		
+		if("j001".equals(umeng_channel)){
+			web_url_textview.setText("tt.showkey.tv");
+		}else{
+			web_url_textview.setText(PreferencesUtils.getWebUrl(this));
+		}
 	}
 	
 	private long exitTime = 0;
@@ -320,7 +330,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				}
 			}
 		});
-		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
+//		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
@@ -479,6 +489,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		}
 		Log.d(TAG, displayString);
 		pincodeText.setText(displayString);
+		String online_base_url = MobclickAgent.getConfigParams(MainActivity.this, "URL"+ umeng_channel);
+		Log.d(TAG, "online_base_url----->" + online_base_url);
+		if(online_base_url!=null&&online_base_url.length()>0){
+			web_url_textview.setText(online_base_url);
+			PreferencesUtils.setWebUrl(MainActivity.this, online_base_url);
+		}
 	}
 	
 	@Override

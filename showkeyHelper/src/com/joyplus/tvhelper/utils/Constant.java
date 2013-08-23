@@ -9,7 +9,7 @@ public class Constant {
 	
 	//测试环境控制
 	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
+	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
 	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
 	 
 	 //正式环境

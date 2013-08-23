@@ -14,6 +14,7 @@ public class PreferencesUtils {
 	private static final String ISAUTODELETE = "isautodelete";
 	private static final String PINCODE_MD5 = "md5_code";
 	private static final String MAC_ADDR = "mac_addr";
+	private static final String DISPLAYURL = "web_url";
 	
 	public static void changeAcceptedStatue(Context c ,boolean isAccepted){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
@@ -53,6 +54,18 @@ public class PreferencesUtils {
 		Editor editor = s.edit();
 		editor.putString(CHANNEL, channel);
 		editor.commit();
+	}
+	
+	public static void setWebUrl(Context c ,String url){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(DISPLAYURL, url);
+		editor.commit();
+	}
+	
+	public static String getWebUrl(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(DISPLAYURL, null);
 	}
 	
 	public static boolean isAcceped(Context c){
