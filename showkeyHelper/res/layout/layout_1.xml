@@ -46,7 +46,7 @@
 	                                    	android:textSize="30dp"
 	                                    	android:singleLine="true"
 	                                    	android:id="@+id/web_url_text"
-	                                        android:text="tt.showkey.tv"/>
+	                                        android:text=""/>
 	                                </LinearLayout>
 	                                <TextView android:layout_width="fill_parent"
 	                                    android:layout_height="wrap_content"
