@@ -154,19 +154,19 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="@color/bg_color_zhibo"
+                android:background="@color/bg_color_jiasu"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_zhibo"/>
+	                android:src="@drawable/main_icon_jiasu"/>
 	            <TextView android:layout_width="fill_parent"
                            android:layout_height="wrap_content"
                            android:textColor="#f0f0f0"
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="电视直播源"/>
+                           android:text="电视加速"/>
             </LinearLayout>
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"
@@ -178,19 +178,19 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="@color/bg_color_tuijian"
+                android:background="@color/bg_color_setting"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_tuijian"/>
+	                android:src="@drawable/main_icon_setting"/>
 	            <TextView android:layout_width="fill_parent"
                            android:layout_height="wrap_content"
                            android:textColor="#f0f0f0"
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="应用推荐"/>
+                           android:text="设置"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

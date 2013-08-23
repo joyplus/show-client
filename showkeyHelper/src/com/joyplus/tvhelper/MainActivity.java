@@ -331,18 +331,18 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			@Override
 			public void OnViewChange(int index) {
 				// TODO Auto-generated method stub
-				switch (index) {
-				case 0:
-					title_text_1.setTextColor(getResources().getColor(R.color.main_title_selected));
-					title_text_2.setTextColor(getResources().getColor(R.color.main_title_unselected));
-					updateImageView(layout_tuijian);
-					break;
-				case 1:
-					title_text_2.setTextColor(getResources().getColor(R.color.main_title_selected));
-					title_text_1.setTextColor(getResources().getColor(R.color.main_title_unselected));
-					updateImageView(layout_jiasu);
-					break;
-				}
+//				switch (index) {
+//				case 0:
+//					title_text_1.setTextColor(getResources().getColor(R.color.main_title_selected));
+//					title_text_2.setTextColor(getResources().getColor(R.color.main_title_unselected));
+//					updateImageView(layout_tuijian);
+//					break;
+//				case 1:
+//					title_text_2.setTextColor(getResources().getColor(R.color.main_title_selected));
+//					title_text_1.setTextColor(getResources().getColor(R.color.main_title_unselected));
+//					updateImageView(layout_jiasu);
+//					break;
+//				}
 			}
 		});
 //		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
@@ -428,15 +428,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		case R.id.layout_zhibo:
 		case R.id.layout_tuijian:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showNext();
-				layout_jiasu.requestFocus();
+//				layout.showNext();
+//				layout_jiasu.requestFocus();
 				return true;
 			}
 			break;
 		case R.id.layout_jiashu:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showPre();
-				layout_tuijian.requestFocus();
+//				layout.showPre();
+//				layout_tuijian.requestFocus();
 				return true;
 			}
 		default:
@@ -450,7 +450,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.showtui:
-			startActivity(new Intent(this, ManagePushApkActivity.class));
+//			startActivity(new Intent(this, ManagePushApkActivity.class));
 			break;
 		case R.id.layout_yuntui:
 			startActivity(new Intent(this, CloudDataDisplayActivity.class));
@@ -459,31 +459,33 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			startActivity(new Intent(this, XunLeiLXActivity.class));
 			break;
 		case R.id.layout_zhibo:
-			startActivity(new Intent(this, TvLiveSrcUpdateActivity.class));
+			startActivity(new Intent(this, ScanActivity.class));
+//			startActivity(new Intent(this, TvLiveSrcUpdateActivity.class));
 			break;
 		case R.id.layout_tuijian:
-			startActivity(new Intent(this, AppRecommendActivity.class));
+			startActivity(new Intent(this, SettingActivity.class));
+//			startActivity(new Intent(this, AppRecommendActivity.class));
 			break;
 		case R.id.layout_jiashu:
-			startActivity(new Intent(this, ScanActivity.class));
+//			startActivity(new Intent(this, ScanActivity.class));
 			break;
 		case R.id.layout_upan:
 			Log.d(TAG, "敬请期待");
 			break;
 		case R.id.layout_appguanli:
-			startActivity(new Intent(this, ManageAppActivity.class));
+//			startActivity(new Intent(this, ManageAppActivity.class));
 			break;
 		case R.id.layout_ceshu:
 			Log.d(TAG, "敬请期待");
 			break;
 		case R.id.layout_setting:
-			startActivity(new Intent(this, SettingActivity.class));
+//			startActivity(new Intent(this, SettingActivity.class));
 			break;
 		case R.id.title_1:
-			layout.snapToScreen(0);
+//			layout.snapToScreen(0);
 			break;
 		case R.id.title_2:
-			layout.snapToScreen(1);
+//			layout.snapToScreen(1);
 			break;
 		default:
 			break;
