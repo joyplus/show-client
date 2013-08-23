@@ -50,7 +50,7 @@ public class XunLeiLXActivity extends Activity {
 	private Button loginBt, logoutBt;
 	private TextView nickNameTv, userIdTv, vipRankTv, outDateTv;
 	private ExpandableListView playerListView;
-	private Button returnBt;
+	private Button returnBt,refreshBt;
 
 	private PlayExpandListAdapter playerExpandListAdapter;
 
@@ -62,6 +62,7 @@ public class XunLeiLXActivity extends Activity {
 	private int pageIndex = 1;
 	private boolean isCanCache = false;
 	private boolean isFirstLogin = true;
+	private boolean isTempRefresh = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,7 @@ public class XunLeiLXActivity extends Activity {
 		outDateTv = (TextView) findViewById(R.id.tv_lx_logout_outofdate_content);
 
 		returnBt = (Button) findViewById(R.id.bt_back);
+		refreshBt = (Button) findViewById(R.id.bt_refresh_list);
 
 		playerListView = (ExpandableListView) findViewById(R.id.lv_movie);
 		playerListView.setGroupIndicator(null);
@@ -133,6 +135,24 @@ public class XunLeiLXActivity extends Activity {
 	}
 
 	private void addViewListener() {
+		
+		refreshBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				 pageIndex = 1;
+				 playerList.clear();
+
+				 if (playerExpandListAdapter != null) {
+
+					 playerExpandListAdapter.notifyDataSetChanged();
+				 }
+				 isTempRefresh = true;
+				 showDialog(DIALOG_WAITING);
+				 MyApp.pool.execute(getVideoList);
+			}
+		});
 
 		returnBt.setOnClickListener(new View.OnClickListener() {
 
@@ -681,6 +701,7 @@ public class XunLeiLXActivity extends Activity {
 
 		pageIndex = 1;
 		isFirstLogin = true;
+		refreshBt.setVisibility(View.INVISIBLE);
 
 		passwdEdit.setText("");
 
@@ -757,6 +778,8 @@ public class XunLeiLXActivity extends Activity {
 				setLogin(true);// 跳转到用户信息界面
 
 				isFirstLogin = false;
+				
+				refreshBt.setVisibility(View.VISIBLE);
 
 				XLLXUserInfo xllxUserInfo = (XLLXUserInfo) msg.obj;
 				if (xllxUserInfo != null) {
@@ -773,7 +796,6 @@ public class XunLeiLXActivity extends Activity {
 				break;
 			case REFRESH_LIST:// 刷新用户信息成功
 				// removeDialog(DIALOG_WAITING);
-
 				ArrayList<XLLXFileInfo> list = (ArrayList<XLLXFileInfo>) msg.obj;
 
 				if (list != null && list.size() > 0) {
@@ -781,6 +803,12 @@ public class XunLeiLXActivity extends Activity {
 					playerExpandListAdapter = new PlayExpandListAdapter(
 							XunLeiLXActivity.this, playerList);
 					playerListView.setAdapter(playerExpandListAdapter);
+				}
+				
+				if(isTempRefresh){
+					
+					removeDialog(DIALOG_WAITING);
+					isTempRefresh = false;
 				}
 				break;
 			case START_LOGIN:// 直接进入用户界面
@@ -911,7 +939,7 @@ public class XunLeiLXActivity extends Activity {
 	};
 
 	private Runnable getVideoList = new Runnable() {
-
+		
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
@@ -925,14 +953,6 @@ public class XunLeiLXActivity extends Activity {
 				Message message = handler.obtainMessage(REFRESH_LIST, list);
 				handler.sendMessage(message);
 
-				// for(int i=0;i<list.size();i++) {
-				//
-				// XLLXFileInfo xllxFileInfo = list.get(i);
-				// if(xllxFileInfo != null) {
-				//
-				// Log.d(TAG, "list xllxFileInfo--->" + xllxFileInfo);
-				// }
-				// }
 				if (list.size() >= XunLeiLiXianUtil.CACHE_NUM) {
 
 					isCanCache = true;

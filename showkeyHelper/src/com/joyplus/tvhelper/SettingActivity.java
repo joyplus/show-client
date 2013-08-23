@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -103,6 +104,9 @@ public class SettingActivity extends Activity implements OnClickListener{
 		layout_deleteApk = (LinearLayout) findViewById(R.id.layout_deleteApk);
 		layout_confirm = (LinearLayout) findViewById(R.id.layout_confirm);
 		
+		layout_refresh.setOnFocusChangeListener(itemFoucsListener);
+		layout_deleteApk.setOnFocusChangeListener(itemFoucsListener);
+		
 		layout_refresh.setOnClickListener(this);
 		layout_deleteApk.setOnClickListener(this);
 		layout_confirm.setOnClickListener(this);
@@ -157,6 +161,44 @@ public class SettingActivity extends Activity implements OnClickListener{
 		webView.loadUrl(Constant.URL_FAQ +"?"+System.currentTimeMillis());
 		layout_refresh.requestFocus();
 	}
+	
+	private View.OnFocusChangeListener itemFoucsListener = new View.OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			if(hasFocus){
+				
+				ViewGroup viewGroup = (ViewGroup) v;
+				if(viewGroup != null && viewGroup.getChildCount() > 0){
+					for(int i=0;i<viewGroup.getChildCount();i++){
+						
+						View view = viewGroup.getChildAt(i);
+						if(view instanceof TextView){
+							Log.d(TAG, "onFocusChange--->TextView:");
+							TextView tv = (TextView) view;
+							tv.setTextColor(getResources().getColor(R.color.light_white));
+						}
+					}
+				}
+			}else {
+				
+				ViewGroup viewGroup = (ViewGroup) v;
+				if(viewGroup != null && viewGroup.getChildCount() > 0){
+					for(int i=0;i<viewGroup.getChildCount();i++){
+						
+						View view = viewGroup.getChildAt(i);
+						if(view instanceof TextView){
+							Log.d(TAG, "onFocusChange--->TextView:");
+							TextView tv = (TextView) view;
+							tv.setTextColor(getResources().getColor(R.color.light_black));
+						}
+					}
+				}
+			}
+
+		}
+	};
 
 	@Override
 	public void onClick(View v) {
@@ -260,6 +302,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 	}
 	
 	private void updateSwitch(){
+		Log.d(TAG, "is auto delete --->"  + PreferencesUtils.isautodelete(this));
+		Log.d(TAG, "is isdelete  --->"  + isdelete);
 		if(isdelete){
 			switch_delete.setImageResource(R.drawable.swith_on);
 		}else{
@@ -292,8 +336,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 		public void run() {
 			// TODO Auto-generated method stub
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("app_key", "ijoyplus_android_0001bj");
-			params.put("mac_address", Utils.getMacAdd());
+			params.put("app_key", Constant.APPKEY);
+			params.put("mac_address", Utils.getMacAdd(SettingActivity.this));
 			params.put("client", new Build().MODEL);
 //			Log.d(TAG, "client = " + new Build().MODEL);
 			String str = HttpTools.post(SettingActivity.this, Constant.BASE_URL+"/generatePinCode", params);

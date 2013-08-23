@@ -19,7 +19,7 @@
 	        <TextView android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:singleLine="true"
-	            android:textColor="#000000"
+	            android:textColor="@color/common_list_content_textcolor"
 	            android:textSize="24dp"
 	            android:ellipsize="middle"
 	            android:id="@+id/movie_name"/>
@@ -27,7 +27,7 @@
 	            android:layout_height="wrap_content"
 	            android:layout_marginTop="8dp"
 	            android:singleLine="true"
-	            android:textColor="#7a7a7a"
+	            android:textColor="@color/common_list_content_textcolor"
 	            android:textSize="16dp"
 	            android:id="@+id/movie_size"/>
 	    </LinearLayout>

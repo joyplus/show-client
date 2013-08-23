@@ -22,6 +22,10 @@ public class MoviePlayHistoryInfo {
 	private String recivedDonwLoadUrls;
 	private int defination;
 	private long creat_time;
+	
+	
+	private String time_token;
+	
 	private int edite_state = 0;
 	public int getId() {
 		return id;
@@ -100,6 +104,12 @@ public class MoviePlayHistoryInfo {
 	}
 	public void setCreat_time(long creat_time) {
 		this.creat_time = creat_time;
+	}
+	public String getTime_token() {
+		return time_token;
+	}
+	public void setTime_token(String time_token) {
+		this.time_token = time_token;
 	}
 	
 }

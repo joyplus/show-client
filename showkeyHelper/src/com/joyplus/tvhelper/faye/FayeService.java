@@ -52,7 +52,7 @@ import com.joyplus.tvhelper.utils.Utils;
 import com.lenovo.lsf.installer.PackageInstaller;
 
 
-public class FayeService extends Service implements FayeListener ,Observer, DownLoadListner{
+public class FayeService extends Service implements  Observer, DownLoadListner{
 
 	private static final String TAG = "FayeService";
 	
@@ -83,6 +83,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	private String channel;
 	private FayeClient myClient;
+	private MyFayeListener fayeListener;
 	private DBServices services;
 	private DownloadManager downloadManager;
 	private PackageInstaller packageInstaller;
@@ -100,7 +101,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	private String pincode_md5;
 //	private String currentPackage = null;
 	
-	private boolean isConnect = false;
+//	private boolean isConnect = false;
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
@@ -113,7 +114,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				
 				PreferencesUtils.setPincodeMd5(FayeService.this, pincode_md5);
 //				play_info.setId((int)services.insertMoviePlayHistory(play_info));
-				if(push_type == 0){//apk
+				if(push_type == 0&&apkdownload_info!=null){//apk
 					userPushApkInfos.add(apkdownload_info);
 					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
 					if(currentUserApkInfo==null){
@@ -122,7 +123,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 						downloadManager.startTast(apkdownload_info.getTast());
 						services.updateApkInfo(currentUserApkInfo);
 					}
-				}else if(push_type == 1){
+				}else if(push_type == 1&&play_info!=null){
 					if(play_info!=null&&play_info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
 //						if(play_info.getRecivedDonwLoadUrls().startsWith("bdhd")){
 							Intent intent_baidu = new Intent(FayeService.this,PlayBaiduActivity.class);
@@ -245,7 +246,6 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 				break;
 			case MESSAGE_APK_INSTALLED_FAIL:
 				Log.d(TAG, "MESSAGE_APK_INSTALLED_FAIL -- >");
-				Utils.showToast(FayeService.this, msg.obj + "安装成功");
 				break;
 			case MESSAGE_LISTEN_APP_LOOPER:
 				Log.d(TAG, "MESSAGE_LISTEN_APP_LOOPER-----");
@@ -363,7 +363,12 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		myClient = new FayeClient(handler, url, channel);
 		Log.d(TAG, "Server----->" + Constant.BASE_URL+"/uploadApk");
 		Log.d(TAG, "channel----->" + channel);
-		myClient.setFayeListener(this);
+		
+		if(fayeListener != null){
+			fayeListener.setActive(false);
+		}
+		fayeListener = new MyFayeListener(); 
+		myClient.setFayeListener(fayeListener);
 		myClient.connectToServer(null); 
 //		isNeedReconnect = true;
 		getLostUserPushApk();
@@ -382,7 +387,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				infolist = services.GetPushedApklist(infolist);
 				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
 				String url = Constant.BASE_URL + "/silent_app?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -467,7 +472,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 //				infolist = services.GetPushedApklist(infolist);
 				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
 				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -477,46 +482,64 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					JSONArray array = new JSONArray(str);
 					Log.d(TAG, "miss length ---------------------------->" + array.length());
 					for(int i=0; i<array.length(); i++){
-						JSONObject item = array.getJSONObject(i);
-						int push_id = item.getInt("id");
-						String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
-						String push_url = item.getString("playurl");
-						String push_play_url = item.getString("downurl");
-						int type = item.getInt("type");
-						if(type == 5){//漏掉的播放
-							MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-							if(play_info == null){
-								play_info = new MoviePlayHistoryInfo();
-//								play_info.setDownload_url(movie_play_url);
-								play_info.setName(push_name);
-								play_info.setPush_id(push_id);
-								play_info.setPush_url(push_url);
-								play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-								play_info.setRecivedDonwLoadUrls(push_play_url);
-//								play_info.setId((int)services.insertMoviePlayHistory(play_info));
-								play_info.setDuration(Constant.DEFINATION_HD2);
-								play_info.setCreat_time(System.currentTimeMillis());
-								play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						try {
+							JSONObject item = array.getJSONObject(i);
+							int push_id = item.getInt("id");
+//							String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
+							String push_name = item.getString("name");
+//							String push_url = URLDecoder.decode(item.getString("playurl"), "utf-8");
+							String push_url = item.getString("playurl");
+							String push_play_url = item.getString("downurl");
+							String time_token = item.getString("time_token");
+							int type = item.getInt("type");
+							if(type == 5){//漏掉的播放
+								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+								if(play_info == null){
+									play_info = new MoviePlayHistoryInfo();
+									play_info.setName(push_name);
+									play_info.setPush_id(push_id);
+									play_info.setPush_url(push_url);
+									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+									play_info.setRecivedDonwLoadUrls(push_play_url);
+									play_info.setDuration(Constant.DEFINATION_HD2);
+									play_info.setCreat_time(System.currentTimeMillis());
+									play_info.setTime_token(time_token+",");
+									play_info.setId((int)services.insertMoviePlayHistory(play_info));
+								}else{
+									if(play_info.getTime_token()==null){
+										play_info.setTime_token("");
+									}
+									play_info.setTime_token(play_info.getTime_token() + time_token+",");
+									services.updateMoviePlayHistory(play_info);
+								}
+							}else if(type == 6){//漏掉的下载
+								
+							}else if(type == 11){
+								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+								if(play_info == null){
+									play_info = new MoviePlayHistoryInfo();
+									play_info.setName(push_name);
+									play_info.setPush_id(push_id);
+									play_info.setPush_url(push_url);
+									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+									play_info.setRecivedDonwLoadUrls(push_play_url);
+									play_info.setDuration(Constant.DEFINATION_HD2);
+									play_info.setCreat_time(System.currentTimeMillis());
+									play_info.setTime_token(time_token+",");
+									play_info.setId((int)services.insertMoviePlayHistory(play_info));
+								}else{
+									if(play_info.getTime_token()==null){
+										play_info.setTime_token("");
+									}
+									play_info.setTime_token(play_info.getTime_token() + time_token+",");
+									services.updateMoviePlayHistory(play_info);
+								}
 							}
-						}else if(type == 6){//漏掉的下载
-							
-						}else if(type == 11){
-							MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-							if(play_info == null){
-								play_info = new MoviePlayHistoryInfo();
-//								play_info.setDownload_url(movie_play_url);
-								play_info.setName(push_name);
-								play_info.setPush_id(push_id);
-								play_info.setPush_url(push_url);
-								play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
-								play_info.setRecivedDonwLoadUrls(push_play_url);
-//								play_info.setId((int)services.insertMoviePlayHistory(play_info));
-								play_info.setDuration(Constant.DEFINATION_HD2);
-								play_info.setCreat_time(System.currentTimeMillis());
-								play_info.setId((int)services.insertMoviePlayHistory(play_info));
-							}
+							updateMovieHistory(push_id);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						updateMovieHistory(push_id);
 //						PushedMovieDownLoadInfo info = new PushedMovieDownLoadInfo();
 //						String push_url = "";
 //						try {
@@ -573,7 +596,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 
 				Log.d(TAG, "infolist size" + userPushApkInfos.size());
 				String url = Constant.BASE_URL + "/pushMsgHistories?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -614,293 +637,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 		return null;
 	}
 
-	@Override
-	public void connectedToServer() {
-		// TODO Auto-generated method stub
-		Log.d(TAG, "server connected----->");
-		isConnect = true;
-	}
-
-	@Override
-	public void disconnectedFromServer() {
-		// TODO Auto-generated method stub
-		Log.w(TAG, "server disconnected!----->");
-		isConnect = false;
-		handler.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				if(!isConnect){
-					myClient.connectToServer(null);
-				}
-			}
-		}, 2000);
-	}
-
-	@Override
-	public void subscribedToChannel(String subscription) {
-		// TODO Auto-generated method stub
-		Log.d(TAG, "Channel subscribed success!----->" + subscription);
-	}
-
-	@Override
-	public void subscriptionFailedWithError(String error) {
-		// TODO Auto-generated method stub
-		Log.w(TAG, "Channel subscribed FailedWithError!----->" + error);
-	}
-
-	@Override
-	public void messageReceived(JSONObject json) {
-		// TODO Auto-generated method stub
-		try {
-			if(json!=null){
-				Log.d(TAG, "Receive message:" + json.toString());
-				Message msg = handler.obtainMessage(MESSAGE_SHOW_DIALOG);
-				msg.obj = json.toString();
-				int type =  json.getInt("msg_type");
-				JSONObject data;
-				switch (type) {
-				case 1:
-					data = json.getJSONObject("body");
-					PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
-					final int id = data.getInt("id");
-					info.setName(data.getString("app_name"));
-					String url = data.getString("file_url");
-					String packageName = data.getString("package_name");
-					String file_name = Utils.getFileNameforUrl(url);
-					info.setPush_id(id);
-					DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
-					info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
-					downloadManager.addTast(task);
-					info.setTast(task);
-					info.setPackageName(packageName);
-					info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-					info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-					info.set_id((int) services.insertApkInfo(info));
-					apkdownload_info = info;
-					push_type = 0;
-					pincode_md5 = data.getString("md5_code");
-					for(PushedApkDownLoadInfo info_1: userPushApkInfos){
-						if(packageName!=null&&packageName.equals(info_1.getPackageName())){
-							updateHistory(id);
-							return;
-						}
-						
-						if(getApplicationInfo().packageName.equals(packageName)){
-							updateHistory(id);
-							return;
-						}
-					}
-					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-						userPushApkInfos.add(info);
-						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-						if(currentUserApkInfo==null){
-							currentUserApkInfo = info;
-							currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-							downloadManager.startTast(task);
-							services.updateApkInfo(currentUserApkInfo);
-						}
-					}else{
-						handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
-					}
-					updateHistory(id);
-					break;
-				case 5:
-//					JSONObject data_1 = json.getJSONObject("body");
-					data = json.getJSONObject("body");
-					int push_id = Integer.valueOf(data.getString("id"));
-					long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
-					Log.d(TAG, "time ---->" + time);
-					if(time>TIME_OUT){
-						updateMovieHistory(push_id);
-						return ;
-					}
-//					intent.putExtra("ID", json.getString("prod_id"));
-					
-					
-//					String movie_play_url = null;
-//					try {
-//						movie_play_url = Utils.getUrl(data.getString("downurl"));
-//					} catch (Exception e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//					if(movie_play_url == null){
-//						Log.e(TAG, "movie_play_url error !"); 
-//						return ;
-//					}
-					play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, data.getString("playurl"));
-					if(play_info == null){
-						play_info = new MoviePlayHistoryInfo();
-//						play_info.setDownload_url(movie_play_url);
-						play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
-						play_info.setPush_id(push_id);
-						play_info.setPush_url(data.getString("playurl"));
-						play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-						play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
-//						play_info.setId((int)services.insertMoviePlayHistory(play_info));
-						play_info.setDuration(Constant.DEFINATION_HD2);
-						play_info.setCreat_time(System.currentTimeMillis());
-						play_info.setId((int)services.insertMoviePlayHistory(play_info));
-					}
-					push_type = 1;
-					pincode_md5 = data.getString("md5_code");
-					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						Intent intent = new Intent(this,VideoPlayerJPActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//						playDate.prod_id = data.getString("id");
-						
-//						playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
-						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
-						playDate.prod_name = play_info.getName();
-//						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
-						playDate.obj = play_info;
-//						playDate.prod_name = json.getString("prod_name");
-						
-						
-//						playDate.prod_url = play_info.getDownload_url();
-//						playDate.prod_src = json.getString("prod_src");
-//						playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-						playDate.prod_qua = play_info.getDefination();
-//						if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
-//							if(json.has("prod_subname")){//旧版android 没有传递该参数
-//								playDate.prod_sub_name = json.getString("prod_subname");
-//							}else{
-//								playDate.prod_type = -1;
-//							}
-//						}
-						app.setmCurrentPlayDetailData(playDate);
-						app.set_ReturnProgramView(null);
-						startActivity(intent);
-					}else{
-						handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
-					}
-					updateMovieHistory(push_id);
-					break;
-				case 6:
-//					data = json.getJSONObject("body");
-//					PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
-//					String push_url = null;
-//					try {
-//						push_url = Utils.getUrl(data.getString("downurl"));
-//					} catch (Exception e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//					if(push_url == null){
-//						Log.e(TAG, "push download url error");
-//						return ;
-//					}
-//					movieDownLoadInfo.setPush_url(push_url);
-//					movieDownLoadInfo.setPush_id(data.getInt("id"));
-//					String downLoad_url = Utils.getRedirectUrl(push_url);
-//					Log.d(TAG, "push download url--->" + push_url);
-//					String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
-//					for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
-//						if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
-////							Log.e(TAG, "not support down load m3u8 !");
-//							Utils.showToast(FayeService.this, "本视频不支持下载");
-//							return ; 
-//						}
-//					}
-//					for(int i=0; i<Constant.video_dont_download_sign.length; i++){
-//						if(downLoad_url.contains(Constant.video_dont_download_sign[i])){
-////							Log.e(TAG, "not support down load m3u8 !");
-//							Utils.showToast(FayeService.this, "本视频不支持下载");
-//							return ; 
-//						}
-//					}
-//					movieDownLoadInfo.setName(data.getString("name"));
-//					movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
-//					DownloadTask movieTask = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name);
-//					movieDownLoadInfo.setTast(movieTask);
-//					downloadManager.addTast(movieTask);
-//					movieDownLoadInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-//					movieDownLoadInfo.set_id((int) services.insertMovieDownLoadInfo(movieDownLoadInfo));
-//					movieDownLoadInfos.add(movieDownLoadInfo);
-//					handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-//					updateMovieHistory(movieDownLoadInfo.getPush_id());
-//					if(currentMovieInfo==null){
-//						currentMovieInfo = movieDownLoadInfo;
-//						currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
-//						downloadManager.startTast(movieTask);
-//						services.updateMovieDownLoadInfo(currentMovieInfo);
-//					}
-					break;
-				case 10:
-				case 2:
-					JSONObject json_accept = new JSONObject();
-					try {
-						json_accept.put("msg_type", 3);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					myClient.sendMessage(json_accept);
-					break;
-				case 11://百度
-					data = json.getJSONObject("body");
-					int baidu_push_id = Integer.valueOf(data.getString("id"));
-					long time_1 = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
-					Log.d(TAG, "time ---->" + time_1);
-					if(time_1>TIME_OUT){
-						updateMovieHistory(baidu_push_id);
-						return ;
-					}
-					push_type = 1;
-					pincode_md5 = data.getString("md5_code");
-//					String baidu_play_url = DesUtils.decode(Constant.DES_KEY, data.getString("downurl"));
-					String baidu_play_url = data.getString("downurl");
-					String baidu_push_url = data.getString("playurl");
-					Log.d(TAG, "baidu_play_url  -> " + baidu_play_url);
-					
-					play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, baidu_push_url);
-					if(play_info == null){
-						play_info = new MoviePlayHistoryInfo();
-//						play_info.setDownload_url(movie_play_url);
-						play_info.setName(Utils.getBaiduName(DesUtils.decode(Constant.DES_KEY, baidu_play_url)));
-						Log.d(TAG, "name ---->" + play_info.getName());
-						play_info.setPush_id(baidu_push_id);
-						play_info.setPush_url(baidu_push_url);
-						play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
-						play_info.setRecivedDonwLoadUrls(baidu_play_url);
-//						play_info.setId((int)services.insertMoviePlayHistory(play_info));
-						play_info.setDuration(Constant.DEFINATION_HD2);
-						play_info.setCreat_time(System.currentTimeMillis());
-						play_info.setId((int)services.insertMoviePlayHistory(play_info));
-					}
-					
-					pincode_md5 = data.getString("md5_code");
-					if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-							&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-//						if(baidu_play_url.startsWith("bdhd")){
-							Intent intent = new Intent(FayeService.this,PlayBaiduActivity.class);
-							intent.putExtra("url", baidu_play_url);
-							intent.putExtra("name", play_info.getName());
-							intent.putExtra("push_url", play_info.getPush_url());
-							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivity(intent);
-//						}
-					}else{
-						handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
-					}
-					
-					updateMovieHistory(baidu_push_id);
-					break;
-				default:
-					break;
-				}
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 	
 	
 	private void startNextUserApkDownLoad(){
@@ -962,7 +699,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			public void run() {
 				// TODO Auto-generated method stub
 				String url = Constant.BASE_URL + "/updateHistory?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd()
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this)
 						+ "&id=" + id;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
@@ -979,7 +716,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 			public void run() {
 				// TODO Auto-generated method stub
 				String url = Constant.BASE_URL + "/updateVodHistory?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd()
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this)
 						+ "&id=" + id;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
@@ -1008,7 +745,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 					services.deleteApkInfo(currentUserApkInfo);
 					userPushApkInfos.remove(currentUserApkInfo);
 					sendBroadcast(intent);
-					if(PreferencesUtils.isautodelete(FayeService.this)){
+					if(!PreferencesUtils.isautodelete(FayeService.this)){
 						if(currentUserApkInfo!=null&&currentUserApkInfo.getFile_path()!=null){
 							File f = new File(currentUserApkInfo.getFile_path());
 							if(f!=null&&f.exists()){
@@ -1247,7 +984,7 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	
 	
 	private void handleDownLoadFile(String uiid){
-		Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
+		//Log.d(TAG, downloadManager.findTaksByUUID(uiid).getFileName()+"down load Faile");
 		if(currentUserApkInfo!=null&&uiid.equalsIgnoreCase(currentUserApkInfo.getTast().getUUId())){
 			//用户推送的apk文件下载失败
 			currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOAD_PAUSE);
@@ -1406,5 +1143,333 @@ public class FayeService extends Service implements FayeListener ,Observer, Down
 	class PUSH_URL_INDEX{
 		int defination;
 		String url;
+	}
+	
+	class MyFayeListener implements FayeListener{
+
+		private boolean isactive;
+		
+		public MyFayeListener(){
+			isactive = true;
+		}
+		
+		public void setActive(boolean isActive){
+			this.isactive = isActive;
+		}
+		
+		
+		@Override
+		public void connectedToServer() {
+			// TODO Auto-generated method stub
+			Log.d(TAG, "server connected----->");
+		}
+
+		@Override
+		public void disconnectedFromServer() {
+			// TODO Auto-generated method stub
+			if(isactive){
+				Log.w(TAG, "server disconnected!----->");
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						myClient.connectToServer(null);
+					}
+				}, 2000);
+			}
+		}
+
+		@Override
+		public void subscribedToChannel(String subscription) {
+			// TODO Auto-generated method stub
+			Log.d(TAG, "Channel subscribed success!----->" + subscription);
+		}
+
+		@Override
+		public void subscriptionFailedWithError(String error) {
+			// TODO Auto-generated method stub
+			Log.w(TAG, "Channel subscribed FailedWithError!----->" + error);
+		}
+
+		@Override
+		public void messageReceived(JSONObject json) {
+			// TODO Auto-generated method stub
+			try {
+				if(json!=null){
+					Log.d(TAG, "Receive message:" + json.toString());
+					Message msg = handler.obtainMessage(MESSAGE_SHOW_DIALOG);
+					msg.obj = json.toString();
+					int type =  json.getInt("msg_type");
+					JSONObject data;
+					switch (type) {
+					case 1:
+						data = json.getJSONObject("body");
+						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+						final int id = data.getInt("id");
+						info.setName(data.getString("app_name"));
+						String url = data.getString("file_url");
+						String packageName = data.getString("package_name");
+						String file_name = Utils.getFileNameforUrl(url);
+						info.setPush_id(id);
+						DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
+						info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
+						downloadManager.addTast(task);
+						info.setTast(task);
+						info.setPackageName(packageName);
+						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+						info.set_id((int) services.insertApkInfo(info));
+						apkdownload_info = info;
+						push_type = 0;
+						pincode_md5 = data.getString("md5_code");
+						for(PushedApkDownLoadInfo info_1: userPushApkInfos){
+							if(packageName!=null&&packageName.equals(info_1.getPackageName())){
+								updateHistory(id);
+								return;
+							}
+							
+							if(getApplicationInfo().packageName.equals(packageName)){
+								updateHistory(id);
+								return;
+							}
+						}
+						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+							userPushApkInfos.add(info);
+							handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+							if(currentUserApkInfo==null){
+								currentUserApkInfo = info;
+								currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+								downloadManager.startTast(task);
+								services.updateApkInfo(currentUserApkInfo);
+							}
+						}else{
+							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+						}
+						updateHistory(id);
+						break;
+					case 5:
+//						JSONObject data_1 = json.getJSONObject("body");
+						data = json.getJSONObject("body");
+						int push_id = Integer.valueOf(data.getString("id"));
+						String time_token = data.getString("time");
+//						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+//						Log.d(TAG, "time ---->" + time);
+//						if(time>TIME_OUT){
+//							updateMovieHistory(push_id);
+//							return ;
+//						}
+						if(services.hasMoviePushHistory(time_token)!=null){
+							updateMovieHistory(push_id);
+							return ;
+						}
+//						intent.putExtra("ID", json.getString("prod_id"));
+//						String movie_play_url = null;
+//						try {
+//							movie_play_url = Utils.getUrl(data.getString("downurl"));
+//						} catch (Exception e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+//						if(movie_play_url == null){
+//							Log.e(TAG, "movie_play_url error !"); 
+//							return ;
+//						}
+						play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, data.getString("playurl"));
+						if(play_info == null){
+							play_info = new MoviePlayHistoryInfo();
+//							play_info.setDownload_url(movie_play_url);
+//							play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
+							play_info.setName(data.getString("name"));
+							play_info.setPush_id(push_id);
+							play_info.setPush_url(data.getString("playurl"));
+							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+//							play_info.setId((int)services.insertMoviePlayHistory(play_info));
+							play_info.setDuration(Constant.DEFINATION_HD2);
+							play_info.setCreat_time(System.currentTimeMillis());
+							play_info.setTime_token(time_token+",");
+							play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						}else{
+							if(play_info.getTime_token()==null){
+								play_info.setTime_token("");
+							}
+							play_info.setTime_token(play_info.getTime_token() + time_token+",");
+							services.updateMoviePlayHistory(play_info);
+						}
+						push_type = 1;
+						pincode_md5 = data.getString("md5_code");
+						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+							Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//							playDate.prod_id = data.getString("id");
+							
+//							playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+							playDate.prod_name = play_info.getName();
+//							playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
+							playDate.obj = play_info;
+//							playDate.prod_name = json.getString("prod_name");
+							
+							
+//							playDate.prod_url = play_info.getDownload_url();
+//							playDate.prod_src = json.getString("prod_src");
+//							playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
+							playDate.prod_qua = play_info.getDefination();
+//							if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//								if(json.has("prod_subname")){//旧版android 没有传递该参数
+//									playDate.prod_sub_name = json.getString("prod_subname");
+//								}else{
+//									playDate.prod_type = -1;
+//								}
+//							}
+							app.setmCurrentPlayDetailData(playDate);
+							app.set_ReturnProgramView(null);
+							startActivity(intent);
+						}else{
+							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+						}
+						updateMovieHistory(push_id);
+						break;
+					case 6:
+//						data = json.getJSONObject("body");
+//						PushedMovieDownLoadInfo movieDownLoadInfo = new PushedMovieDownLoadInfo();
+//						String push_url = null;
+//						try {
+//							push_url = Utils.getUrl(data.getString("downurl"));
+//						} catch (Exception e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+//						if(push_url == null){
+//							Log.e(TAG, "push download url error");
+//							return ;
+//						}
+//						movieDownLoadInfo.setPush_url(push_url);
+//						movieDownLoadInfo.setPush_id(data.getInt("id"));
+//						String downLoad_url = Utils.getRedirectUrl(push_url);
+//						Log.d(TAG, "push download url--->" + push_url);
+//						String movie_file_name = Utils.getFileNameforUrl(downLoad_url);
+//						for(int i=0; i<Constant.video_dont_support_extensions.length; i++){
+//							if(downLoad_url.contains(Constant.video_dont_support_extensions[i])){
+////								Log.e(TAG, "not support down load m3u8 !");
+//								Utils.showToast(FayeService.this, "本视频不支持下载");
+//								return ; 
+//							}
+//						}
+//						for(int i=0; i<Constant.video_dont_download_sign.length; i++){
+//							if(downLoad_url.contains(Constant.video_dont_download_sign[i])){
+////								Log.e(TAG, "not support down load m3u8 !");
+//								Utils.showToast(FayeService.this, "本视频不支持下载");
+//								return ; 
+//							}
+//						}
+//						movieDownLoadInfo.setName(data.getString("name"));
+//						movieDownLoadInfo.setFile_path(MOVIE_PATH.getAbsolutePath()+ File.separator + movie_file_name);
+//						DownloadTask movieTask = new DownloadTask(downLoad_url, MOVIE_PATH.getAbsolutePath(), movie_file_name);
+//						movieDownLoadInfo.setTast(movieTask);
+//						downloadManager.addTast(movieTask);
+//						movieDownLoadInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//						movieDownLoadInfo.set_id((int) services.insertMovieDownLoadInfo(movieDownLoadInfo));
+//						movieDownLoadInfos.add(movieDownLoadInfo);
+//						handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+//						updateMovieHistory(movieDownLoadInfo.getPush_id());
+//						if(currentMovieInfo==null){
+//							currentMovieInfo = movieDownLoadInfo;
+//							currentMovieInfo.setDownload_state(PushedMovieDownLoadInfo.STATUE_DOWNLOADING);
+//							downloadManager.startTast(movieTask);
+//							services.updateMovieDownLoadInfo(currentMovieInfo);
+//						}
+						break;
+					case 10:
+					case 2:
+						JSONObject json_accept = new JSONObject();
+						try {
+							json_accept.put("msg_type", 3);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						myClient.sendMessage(json_accept);
+						break;
+					case 11://百度
+						data = json.getJSONObject("body");
+						int baidu_push_id = Integer.valueOf(data.getString("id"));
+						String baidu_time_token = data.getString("time_token");
+//						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+//						Log.d(TAG, "time ---->" + time);
+//						if(time>TIME_OUT){
+//							updateMovieHistory(push_id);
+//							return ;
+//						}
+						if(services.hasMoviePushHistory(baidu_time_token)!=null){
+							updateMovieHistory(baidu_push_id);
+							return ;
+						}
+//						long time_1 = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+//						Log.d(TAG, "time ---->" + time_1);
+//						if(time_1>TIME_OUT){
+//							updateMovieHistory(baidu_push_id);
+//							return ;
+//						}
+						push_type = 1;
+						pincode_md5 = data.getString("md5_code");
+//						String baidu_play_url = DesUtils.decode(Constant.DES_KEY, data.getString("downurl"));
+						String baidu_play_url = data.getString("downurl");
+						String baidu_push_url = data.getString("playurl");
+						Log.d(TAG, "baidu_play_url  -> " + baidu_play_url);
+						
+						play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, baidu_push_url);
+						if(play_info == null){
+							play_info = new MoviePlayHistoryInfo();
+//							play_info.setDownload_url(movie_play_url);
+							play_info.setName(Utils.getBaiduName(DesUtils.decode(Constant.DES_KEY, baidu_play_url)));
+							Log.d(TAG, "name ---->" + play_info.getName());
+							play_info.setPush_id(baidu_push_id);
+							play_info.setPush_url(baidu_push_url);
+							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+							play_info.setRecivedDonwLoadUrls(baidu_play_url);
+//							play_info.setId((int)services.insertMoviePlayHistory(play_info));
+							play_info.setDuration(Constant.DEFINATION_HD2);
+							play_info.setCreat_time(System.currentTimeMillis());
+							play_info.setTime_token(baidu_time_token+",");
+							play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						}else{
+							if(play_info.getTime_token()==null){
+								play_info.setTime_token("");
+							}
+							play_info.setTime_token(play_info.getTime_token() + baidu_time_token+",");
+							services.updateMoviePlayHistory(play_info);
+						}
+						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+//							if(baidu_play_url.startsWith("bdhd")){
+								Intent intent = new Intent(FayeService.this,PlayBaiduActivity.class);
+								intent.putExtra("url", baidu_play_url);
+								intent.putExtra("name", play_info.getName());
+								intent.putExtra("push_url", play_info.getPush_url());
+								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								startActivity(intent);
+//							}
+						}else{
+							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+						}
+						
+						updateMovieHistory(baidu_push_id);
+						break;
+					default:
+						break;
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		
 	}
 }

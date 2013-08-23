@@ -11,6 +11,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,11 +67,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	
 	private View selectedLayout;
 	
+	private TextView web_url_textview;
+	
 //	private FrameLayout relativeLayout;
 	
 	private MyScrollLayout layout;
 	
 	private TextView pincodeText;
+	
+	private String umeng_channel;
 	
 	private Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -77,19 +84,34 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				displayPincode();
 				int width = layout_yuntui.getWidth();
 				int height = layout_yuntui.getHeight();
-				image_showtui.layout(0, 0, width+40, height*2+53);
-				image_yuntui.layout(width+13, 0, width*2+53, height+40);
-				image_xunlei.layout(width+13, height+13, width*2+53, height*2+53);
-				image_zhibo.layout(width*2+26, 0, width*3+66, height+40);
-				image_tuijian.layout(width*2+26, height+13, width*3+66, height*2+53);
-				image_jiasu.layout(0, 0, width+40, height*2+53);
-				image_upan.layout(width+13, 0, width*2+53, height+40);
-				image_appguanli.layout(width+13, height+13, width*2+53, height*2+53);
-				image_ceshu.layout(width*2+26, 0, width*3+66, height+40);
-				image_setting.layout(width*2+26, height+13, width*3+66, height*2+53);
+				image_showtui.layout(0, 0, width+ Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
+				image_yuntui.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
+				image_xunlei.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
+				image_zhibo.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
+				image_tuijian.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+				image_jiasu.layout(0, 0, width+Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
+				image_upan.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
+				image_appguanli.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
+				image_ceshu.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
+				image_setting.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
 				image_showtui.setImageBitmap(layout_showtui.getDrawingCache());
 				layout_showtui.requestFocus();
 				startService(new Intent(MainActivity.this, FayeService.class));
+				mHandler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						String online_base_url = MobclickAgent.getConfigParams(MainActivity.this, "URL"+ umeng_channel);
+						Log.d(TAG, "online_base_url----->" + online_base_url);
+						if(online_base_url!=null&&online_base_url.length()>0){
+							web_url_textview.setText(online_base_url);
+							PreferencesUtils.setWebUrl(MainActivity.this, online_base_url);
+						}else{
+							web_url_textview.setText("tt.showkey.tv");
+						}
+					}
+				}, 1000);
 				break;
 			case MESSAGE_GETPINCODE_FAILE:
 				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
@@ -124,6 +146,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		
 		MobclickAgent.onError(this);
 		UmengUpdateAgent.update(this);
+		MobclickAgent.updateOnlineConfig(this);
 		
 		app = (MyApp) getApplication();
 		
@@ -146,6 +169,28 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		app.setHeaders(headers);
 		IntentFilter filter = new IntentFilter(Global.ACTION_PINCODE_REFRESH);
 		registerReceiver(reciver, filter);
+		
+		
+		ApplicationInfo info = null;
+		try {
+			info = this.getPackageManager().getApplicationInfo(getPackageName(),
+			        PackageManager.GET_META_DATA);
+			umeng_channel = info.metaData.getString("UMENG_CHANNEL");
+			Log.d(TAG, "key--->" + "URL"+ umeng_channel);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(umeng_channel==null||umeng_channel.length()==0){
+			umeng_channel = "j001";
+		}
+		
+		if("j001".equals(umeng_channel)){
+			web_url_textview.setText("tt.showkey.tv");
+		}else{
+			web_url_textview.setText(PreferencesUtils.getWebUrl(this));
+		}
 	}
 	
 	private long exitTime = 0;
@@ -172,8 +217,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				exitTime = System.currentTimeMillis();
 			} else {
 				finish();
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
+//				android.os.Process.killProcess(android.os.Process.myPid());
+//				System.exit(0);
 			}
 			return true;
 		}
@@ -183,6 +228,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	private void findViews(){
 		
 		pincodeText = (TextView) findViewById(R.id.pincodeText);
+		
+		web_url_textview = (TextView) findViewById(R.id.web_url_text);
 		
 		image_showtui = (ImageView) findViewById(R.id.image_showtui);
 		image_yuntui = (ImageView) findViewById(R.id.image_yuntui);
@@ -298,6 +345,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				}
 			}
 		});
+//		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
@@ -456,6 +504,20 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		}
 		Log.d(TAG, displayString);
 		pincodeText.setText(displayString);
+		if(web_url_textview.getText()==null||"".equals(web_url_textview.getText())){
+			if(PreferencesUtils.getWebUrl(this)==null||PreferencesUtils.getWebUrl(this).length()==0){
+				String online_base_url = MobclickAgent.getConfigParams(MainActivity.this, "URL"+ umeng_channel);
+				Log.d(TAG, "online_base_url----->" + online_base_url);
+				if(online_base_url!=null&&online_base_url.length()>0){
+					web_url_textview.setText(online_base_url);
+					PreferencesUtils.setWebUrl(MainActivity.this, online_base_url);
+				}else{
+					web_url_textview.setText("tt.showkey.tv");
+				}
+			}else{
+				web_url_textview.setText(PreferencesUtils.getWebUrl(this));
+			}
+		}
 	}
 	
 	@Override
@@ -481,8 +543,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		public void run() {
 			// TODO Auto-generated method stub
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("app_key", "ijoyplus_android_0001bj");
-			params.put("mac_address", Utils.getMacAdd());
+			params.put("app_key", Constant.APPKEY);
+			params.put("mac_address", Utils.getMacAdd(MainActivity.this));
 			params.put("client", new Build().MODEL);
 			Log.d(TAG, "client = " + new Build().MODEL);
 			String str = HttpTools.post(MainActivity.this, Constant.BASE_URL+"/generatePinCode", params);
@@ -511,7 +573,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		unregisterReceiver(reciver);
-		XunLeiLiXianUtil.Logout(getApplicationContext());
+//		XunLeiLiXianUtil.Logout(getApplicationContext());
 	}
 	
 }

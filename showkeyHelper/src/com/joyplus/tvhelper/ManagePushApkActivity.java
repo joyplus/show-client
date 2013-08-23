@@ -64,13 +64,15 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			Iterator<PushedApkDownLoadInfo> iterator = FayeService.userPushApkInfos.iterator();  
 	         while(iterator.hasNext()) {  
 	        	 PushedApkDownLoadInfo info = iterator.next();  
-	             if(packageName.equals(info.getPackageName())) {  
+	             if(packageName.equals(info.getPackageName())) { 
+	            	 if(!PreferencesUtils.isautodelete(ManagePushApkActivity.this)){
 						File f = new File(info.getFile_path());
 						if(f!=null&&f.exists()){
 							f.delete();
 						}
-						dbService.deleteApkInfo(info);
-						iterator.remove();  
+	            	 }
+					dbService.deleteApkInfo(info);
+					iterator.remove();  
 	             }
 	         }  
 			adpter.notifyDataSetChanged();

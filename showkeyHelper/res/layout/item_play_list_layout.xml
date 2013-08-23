@@ -38,7 +38,7 @@
                 android:layout_toRightOf="@id/iv_movie"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@color/item_list_text_black"
+                android:textColor="@color/common_list_content_textcolor"
                 android:textSize="@dimen/mid_text_size" />
         </RelativeLayout>
 
@@ -49,7 +49,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="@color/item_list_text_black"
+            android:textColor="@color/common_list_content_textcolor"
             android:textSize="@dimen/mid_text_size" 
             android:gravity="center_vertical"/>
     </LinearLayout>
