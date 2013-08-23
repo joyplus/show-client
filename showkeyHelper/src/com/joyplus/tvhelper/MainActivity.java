@@ -129,14 +129,17 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		
 		MobclickAgent.onError(this);
 		UmengUpdateAgent.update(this);
+		MobclickAgent.updateOnlineConfig(this);
 		ApplicationInfo info = null;
 		try {
 			info = this.getPackageManager().getApplicationInfo(getPackageName(),
 			        PackageManager.GET_META_DATA);
 			String umengChannel = info.metaData.getString("UMENG_CHANNEL");
+			Log.d(TAG, "key--->" + "URL"+ umengChannel);
 			String online_base_url = MobclickAgent.getConfigParams(this, "URL"+ umengChannel);
+			Log.d(TAG, "online_base_url----->" + online_base_url);
 			if(online_base_url!=null&&online_base_url.length()>0){
-				Constant.BASE_URL = online_base_url;
+				Constant.BASE_URL = online_base_url; 
 			}
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
