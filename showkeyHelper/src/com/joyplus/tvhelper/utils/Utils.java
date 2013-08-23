@@ -2,7 +2,6 @@ package com.joyplus.tvhelper.utils;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import info.monitorenter.cpdetector.io.JChardetFacade;
-import info.monitorenter.cpdetector.io.ParsingDetector;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -35,16 +34,15 @@ import org.apache.http.conn.util.InetAddressUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.joyplus.tvhelper.entity.URLS_INDEX;
-
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.widget.Toast;
+
+import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.entity.URLS_INDEX;
 
 public class Utils {
 	
@@ -621,4 +619,9 @@ public static InetAddress getLocalIpAddress(){
 		}
 		return name;
     }
+    
+	public static int getStandardValue(Context context,int value){
+		
+		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
+	}
 }
