@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.TvLiveInfo;
+import com.joyplus.tvhelper.utils.Utils;
 
 public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 
@@ -80,7 +81,7 @@ public class TvLiveSrcUpdateAdapter extends BaseAdapter {
 		}
 
 		AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(
-				parent.getHeight() - 10, parent.getHeight() - 10);
+				parent.getHeight() - Utils.getStandardValue(mContext, 10), parent.getHeight() - Utils.getStandardValue(mContext, 10));
 		convertView.setLayoutParams(layoutParams);
 
 		TvLiveInfo info = mList.get(position);

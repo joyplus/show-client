@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.androidquery.AQuery;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.AppRecommendInfo;
+import com.joyplus.tvhelper.utils.Utils;
 
 public class AppRecommendAdapter extends BaseAdapter {
 	
@@ -67,7 +68,8 @@ public class AppRecommendAdapter extends BaseAdapter {
 				R.drawable.default_app_bg);// 默认的图
 		
 		AbsListView.LayoutParams layoutParams = new AbsListView.
-				LayoutParams(parent.getWidth()/4 - 4,parent.getHeight()/2 - 4);
+				LayoutParams(parent.getWidth()/4 - Utils.getStandardValue(mContext,4),
+						parent.getHeight()/2 - Utils.getStandardValue(mContext,4));
 		convertView.setLayoutParams(layoutParams);
 //		convertView.setPadding(4, 4, 4, 4);
 		return convertView;
