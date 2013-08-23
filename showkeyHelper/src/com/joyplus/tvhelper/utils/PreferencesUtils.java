@@ -80,7 +80,7 @@ public class PreferencesUtils {
 	
 	public static boolean isautodelete(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
-		return s.getBoolean(ISAUTODELETE, true);
+		return s.getBoolean(ISAUTODELETE, false);
 	}
 	
 	public static String getPincode(Context c){
