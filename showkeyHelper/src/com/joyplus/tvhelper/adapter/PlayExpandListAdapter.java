@@ -144,7 +144,7 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		}
 
 		LayoutParams params = new AbsListView.LayoutParams(
-				LayoutParams.FILL_PARENT, 72);
+				LayoutParams.FILL_PARENT, Utils.getStandardValue(context, 72));
 		convertView.setLayoutParams(params);
 
 		holder.nameTv.setText(files.get(groupPosition).file_name);
@@ -187,10 +187,10 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		}
 
 		LayoutParams params = new AbsListView.LayoutParams(
-				LayoutParams.FILL_PARENT, 62);
+				LayoutParams.FILL_PARENT, Utils.getStandardValue(context, 62));
 		convertView.setLayoutParams(params);
 		
-		convertView.setPadding(30, 0, 20, 0);
+		convertView.setPadding(Utils.getStandardValue(context, 30), 0, Utils.getStandardValue(context, 20), 0);
 		
 		holder.sizeTv
 		.setText(Utils.byte2Mbyte(files.get(groupPosition).btFiles[childPosition].filesize));

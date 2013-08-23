@@ -111,7 +111,7 @@
 	                <ListView android:layout_width="fill_parent"
 	                    android:layout_height="fill_parent"
 	                    android:divider="@null"
-	                    android:listSelector="@drawable/bg_content_setting_selector"
+	                    android:listSelector="@drawable/bg_xunlei_content_setting_selector"
 	                    android:id="@+id/listView">
 	                    
 	                </ListView>

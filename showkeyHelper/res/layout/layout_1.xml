@@ -44,7 +44,9 @@
 	                                        android:textColor="#000000"
 	                                        android:textStyle="bold"
 	                                    	android:textSize="30dp"
-	                                        android:text="tt.showkey.tv"/>
+	                                    	android:singleLine="true"
+	                                    	android:id="@+id/web_url_text"
+	                                        android:text=""/>
 	                                </LinearLayout>
 	                                <TextView android:layout_width="fill_parent"
 	                                    android:layout_height="wrap_content"
@@ -53,7 +55,7 @@
 	                                    android:textSize="20dp"
 	                                    android:text="并输入PIN"/>
 	                            </LinearLayout>
-	                            <TextView android:layout_width="190dp"
+	                            <TextView android:layout_width="210dp"
 	                                android:layout_height="wrap_content"
 	                                android:background="#22ffffff"
 	                                android:gravity="center_horizontal"

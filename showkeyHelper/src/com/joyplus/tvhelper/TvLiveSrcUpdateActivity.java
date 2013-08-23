@@ -263,7 +263,15 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					} else {
 						
 						switch (info.getStatus()) {
-						case 0:
+						case 0://已是最新直播源
+							if(info.getPackage_name() != null && !info.getPackage_name().equals("")){
+								
+								Intent intent = getPackageManager().getLaunchIntentForPackage(info.getPackage_name());
+								if(intent != null){
+									
+									startActivity(intent);
+								}
+							}
 							
 							break;
 						case 1://点击更新

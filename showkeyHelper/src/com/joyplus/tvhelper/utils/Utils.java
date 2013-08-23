@@ -2,7 +2,6 @@ package com.joyplus.tvhelper.utils;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import info.monitorenter.cpdetector.io.JChardetFacade;
-import info.monitorenter.cpdetector.io.ParsingDetector;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -34,16 +34,15 @@ import org.apache.http.conn.util.InetAddressUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.joyplus.tvhelper.entity.URLS_INDEX;
-
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.widget.Toast;
+
+import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.entity.URLS_INDEX;
 
 public class Utils {
 	
@@ -185,24 +184,50 @@ public static InetAddress getLocalIpAddress(){
 		return null; 
 	}
   
-  public static String getMacAdd(){
-	  String  str = "";
-	  try {
-		  byte[] b = null;
-		  b = NetworkInterface.getByInetAddress(getLocalIpAddress()).getHardwareAddress();
-		  for(int i =0; i<b.length; i++){
-			  if(i!=0){
-				  str += ":";
-			  }
-			  str += Integer.toHexString(0xFF & b[i]);
-		  }
-//		  str = new String(b);
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+  public static String getMacAdd(Context c){
 	  
-	  return str;
+	  String mac_add = getMac();
+	  
+	  if(mac_add == null){
+		  mac_add = PreferencesUtils.getMac(c);
+		  if(mac_add==null||mac_add.length()==0){
+			  mac_add = "";
+			  Random r = new Random();
+			  for(int i=0; i<6; i++){
+				  int num = r.nextInt(16*16);
+				  if(i!=0){
+					  mac_add += ":";
+				  }
+				  mac_add += Integer.toHexString(num);
+			  }
+			  PreferencesUtils.setMac(c, mac_add);
+		  }
+	  }
+	  Log.d(TAG, "mac --->" + mac_add);
+	  return mac_add;
+  }
+  
+  private static String getMac(){
+	  String mac = "";
+		  try {
+			  byte[] b = null;
+			  b = NetworkInterface.getByInetAddress(getLocalIpAddress()).getHardwareAddress();
+			  for(int i =0; i<b.length; i++){
+				  if(i!=0){
+					  mac += ":";
+				  }
+				  mac += Integer.toHexString(0xFF & b[i]);
+			  }
+//			  str = new String(b);
+		  } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		  }
+		  
+	 if(mac.length() == 0){
+		 mac = null;
+	 }
+	 return mac;
   }
   
 	public static String getFilenameFromUrl(String url){
@@ -594,4 +619,9 @@ public static InetAddress getLocalIpAddress(){
 		}
 		return name;
     }
+    
+	public static int getStandardValue(Context context,int value){
+		
+		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
+	}
 }

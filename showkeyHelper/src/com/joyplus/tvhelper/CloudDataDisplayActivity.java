@@ -3,6 +3,11 @@ package com.joyplus.tvhelper;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -11,6 +16,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -31,8 +37,11 @@ import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
+import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
+import com.joyplus.tvhelper.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener {
@@ -54,7 +63,30 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private ImageView defult_img;
 	private MyApp app;
 	
+	private ExecutorService pool = Executors.newFixedThreadPool(5);
+	
 	private Button selectedButon;
+	
+	private static final int MESSAGE_UPDATE = 0;
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case MESSAGE_UPDATE:
+				playinfos = dbService.queryMoviePlayHistoryList();
+				adpter_play_history = new MoviePlayHistoryAdapter(CloudDataDisplayActivity.this, playinfos);
+				if(selectedIndex == 0){
+					listView.setAdapter(adpter_play_history);
+					listView.requestFocus();
+					listView.setSelection(0);
+				}
+				break;
+
+			default:
+				break;
+			}
+		};
+	};
 	
 	private BroadcastReceiver receiver = new BroadcastReceiver(){
 
@@ -149,6 +181,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE);
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
 		registerReceiver(receiver, filter);
+		getLostUserPushMovie();
 	}
 	
 	public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -523,4 +556,91 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		MobclickAgent.onPause(this);
 	}
 	
+	
+	private void getLostUserPushMovie(){
+		pool.execute(new Runnable() {	
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+//				infolist = services.GetPushedApklist(infolist);
+				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
+						+ "&mac_address=" + Utils.getMacAdd(CloudDataDisplayActivity.this) 
+						+ "&page_num=" + 1
+						+ "&page_size=" + 50;
+				Log.d(TAG, url);
+				String str = HttpTools.get(CloudDataDisplayActivity.this, url);
+				Log.d(TAG, "pushMsgHistories response-->" + str);
+				try {
+					JSONArray array = new JSONArray(str);
+					Log.d(TAG, "miss length ---------------------------->" + array.length());
+					for(int i=0; i<array.length(); i++){
+						try {
+							JSONObject item = array.getJSONObject(i);
+							int push_id = item.getInt("id");
+//							String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
+							String push_name = item.getString("name");
+							String push_url = item.getString("playurl");
+							String push_play_url = item.getString("downurl");
+							int type = item.getInt("type");
+							if(type == 5){//漏掉的播放
+								MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+								if(play_info == null){
+									play_info = new MoviePlayHistoryInfo();
+									play_info.setName(push_name);
+									play_info.setPush_id(push_id);
+									play_info.setPush_url(push_url);
+									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+									play_info.setRecivedDonwLoadUrls(push_play_url);
+									play_info.setDuration(Constant.DEFINATION_HD2);
+									play_info.setCreat_time(System.currentTimeMillis());
+									play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+								}
+							}else if(type == 6){//漏掉的下载
+								
+							}else if(type == 11){
+								MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+								if(play_info == null){
+									play_info = new MoviePlayHistoryInfo();
+									play_info.setName(push_name);
+									play_info.setPush_id(push_id);
+									play_info.setPush_url(push_url);
+									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+									play_info.setRecivedDonwLoadUrls(push_play_url);
+									play_info.setDuration(Constant.DEFINATION_HD2);
+									play_info.setCreat_time(System.currentTimeMillis());
+									play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+								}
+							}
+							updateMovieHistory(push_id);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				handler.sendEmptyMessage(MESSAGE_UPDATE);
+			}
+			
+		});
+	}
+	
+	private void updateMovieHistory(final int id){
+		
+		pool.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				String url = Constant.BASE_URL + "/updateVodHistory?app_key=" + Constant.APPKEY 
+						+ "&mac_address=" + Utils.getMacAdd(CloudDataDisplayActivity.this)
+						+ "&id=" + id;
+				Log.d(TAG, url);
+				String str = HttpTools.get(CloudDataDisplayActivity.this, url);
+				Log.d(TAG, "updateHistory response-->" + str);
+			}
+		});
+	}
 }

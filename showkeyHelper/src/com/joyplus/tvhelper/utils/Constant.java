@@ -15,11 +15,11 @@ public class Constant {
 	 //正式环境
 	 
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
-//	 public static final String BASE_URL = "http://tt.showkey.tv";//视频直播源
+//	 public static String BASE_URL = "http://tt.showkey.tv";//视频直播源
 //	 public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
 	//刘洋环境
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
-//	 public static final String BASE_URL = "http://172.16.31.64:8030";//视频直播源
+//	 public static String BASE_URL = "http://172.16.31.64:8030";//视频直播源
 //	 public static final String URL_FAQ = "http://172.16.31.64:8030/helptv.html";//视频直播源
 	
 	 public static final String DES_KEY = "ilovejoy";

@@ -66,7 +66,13 @@ public class MoviePlayHistoryAdapter extends BaseAdapter {
 			if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
 				holder.name.setText(info.getLocal_url());
 			}else{
-				holder.name.setText(URLDecoder.decode(info.getPush_url()));
+				String str = info.getPush_url();
+				try{
+					str = URLDecoder.decode(str, "utf-8");
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+				holder.name.setText(str);
 			}
 		}else{
 			holder.name.setText(info.getName());
