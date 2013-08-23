@@ -55,7 +55,7 @@
 	                                    android:textSize="20dp"
 	                                    android:text="并输入PIN"/>
 	                            </LinearLayout>
-	                            <TextView android:layout_width="190dp"
+	                            <TextView android:layout_width="210dp"
 	                                android:layout_height="wrap_content"
 	                                android:background="#22ffffff"
 	                                android:gravity="center_horizontal"
