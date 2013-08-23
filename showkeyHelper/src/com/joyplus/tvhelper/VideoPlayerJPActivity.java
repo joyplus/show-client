@@ -2808,7 +2808,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("流    畅");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165), Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;
@@ -2865,7 +2865,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				tv.setText("关");
 				break;
 			}
-			Gallery.LayoutParams param = new Gallery.LayoutParams(165, 40);
+			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165), Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);
 			tv.setLayoutParams(param);
 			return tv;

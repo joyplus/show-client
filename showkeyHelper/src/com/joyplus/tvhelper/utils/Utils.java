@@ -34,6 +34,8 @@ import org.apache.http.conn.util.InetAddressUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.example.downloaddemo.MainActivity;
+import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 
 
@@ -594,4 +596,9 @@ public static InetAddress getLocalIpAddress(){
 		}
 		return name;
     }
+    
+	public static int getStandardValue(Context context,int value){
+		
+		return (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
+	}
 }
