@@ -564,7 +564,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				// TODO Auto-generated method stub
 //				infolist = services.GetPushedApklist(infolist);
 				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(CloudDataDisplayActivity.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -635,7 +635,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			public void run() {
 				// TODO Auto-generated method stub
 				String url = Constant.BASE_URL + "/updateVodHistory?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd()
+						+ "&mac_address=" + Utils.getMacAdd(CloudDataDisplayActivity.this)
 						+ "&id=" + id;
 				Log.d(TAG, url);
 				String str = HttpTools.get(CloudDataDisplayActivity.this, url);

@@ -336,8 +336,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 		public void run() {
 			// TODO Auto-generated method stub
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("app_key", "ijoyplus_android_0001bj");
-			params.put("mac_address", Utils.getMacAdd());
+			params.put("app_key", Constant.APPKEY);
+			params.put("mac_address", Utils.getMacAdd(SettingActivity.this));
 			params.put("client", new Build().MODEL);
 //			Log.d(TAG, "client = " + new Build().MODEL);
 			String str = HttpTools.post(SettingActivity.this, Constant.BASE_URL+"/generatePinCode", params);

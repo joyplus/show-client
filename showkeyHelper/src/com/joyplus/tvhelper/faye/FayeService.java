@@ -387,7 +387,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //				infolist = services.GetPushedApklist(infolist);
 				Log.d(TAG, "infolist size" + notuserPushedApkInfos.size());
 				String url = Constant.BASE_URL + "/silent_app?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -472,7 +472,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //				infolist = services.GetPushedApklist(infolist);
 				Log.d(TAG, "infolist size" + movieDownLoadInfos.size());
 				String url = Constant.BASE_URL + "/pushVodHistories?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -596,7 +596,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 
 				Log.d(TAG, "infolist size" + userPushApkInfos.size());
 				String url = Constant.BASE_URL + "/pushMsgHistories?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd() 
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this) 
 						+ "&page_num=" + 1
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
@@ -699,7 +699,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 			public void run() {
 				// TODO Auto-generated method stub
 				String url = Constant.BASE_URL + "/updateHistory?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd()
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this)
 						+ "&id=" + id;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
@@ -716,7 +716,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 			public void run() {
 				// TODO Auto-generated method stub
 				String url = Constant.BASE_URL + "/updateVodHistory?app_key=" + Constant.APPKEY 
-						+ "&mac_address=" + Utils.getMacAdd()
+						+ "&mac_address=" + Utils.getMacAdd(FayeService.this)
 						+ "&id=" + id;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);

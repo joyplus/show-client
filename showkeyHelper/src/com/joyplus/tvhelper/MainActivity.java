@@ -501,8 +501,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		public void run() {
 			// TODO Auto-generated method stub
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("app_key", "ijoyplus_android_0001bj");
-			params.put("mac_address", Utils.getMacAdd());
+			params.put("app_key", Constant.APPKEY);
+			params.put("mac_address", Utils.getMacAdd(MainActivity.this));
 			params.put("client", new Build().MODEL);
 			Log.d(TAG, "client = " + new Build().MODEL);
 			String str = HttpTools.post(MainActivity.this, Constant.BASE_URL+"/generatePinCode", params);

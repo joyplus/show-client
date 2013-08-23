@@ -13,6 +13,7 @@ public class PreferencesUtils {
 	private static final String ISNEEDCONFIRM = "isneedconfirm";
 	private static final String ISAUTODELETE = "isautodelete";
 	private static final String PINCODE_MD5 = "md5_code";
+	private static final String MAC_ADDR = "mac_addr";
 	
 	public static void changeAcceptedStatue(Context c ,boolean isAccepted){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
@@ -25,6 +26,12 @@ public class PreferencesUtils {
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
 		Editor editor = s.edit();
 		editor.putString(PINCODE, pincode);
+		editor.commit();
+	}
+	public static void setMac(Context c ,String macAddr){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(MAC_ADDR, macAddr);
 		editor.commit();
 	}
 	public static void setIsneedConfirm(Context c , boolean isneedConfirm){
@@ -66,6 +73,11 @@ public class PreferencesUtils {
 	public static String getPincode(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
 		return s.getString(PINCODE, null);
+	}
+	
+	public static String getMac(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(MAC_ADDR, null);
 	}
 	public static String getChannel(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
