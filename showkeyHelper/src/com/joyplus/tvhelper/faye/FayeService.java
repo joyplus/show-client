@@ -487,8 +487,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							int push_id = item.getInt("id");
 //							String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
 							String push_name = item.getString("name");
+//							String push_url = URLDecoder.decode(item.getString("playurl"), "utf-8");
 							String push_url = item.getString("playurl");
 							String push_play_url = item.getString("downurl");
+							String time_token = item.getString("time_token");
 							int type = item.getInt("type");
 							if(type == 5){//漏掉的播放
 								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
@@ -501,7 +503,14 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 									play_info.setRecivedDonwLoadUrls(push_play_url);
 									play_info.setDuration(Constant.DEFINATION_HD2);
 									play_info.setCreat_time(System.currentTimeMillis());
+									play_info.setTime_token(time_token+",");
 									play_info.setId((int)services.insertMoviePlayHistory(play_info));
+								}else{
+									if(play_info.getTime_token()==null){
+										play_info.setTime_token("");
+									}
+									play_info.setTime_token(play_info.getTime_token() + time_token+",");
+									services.updateMoviePlayHistory(play_info);
 								}
 							}else if(type == 6){//漏掉的下载
 								
@@ -516,7 +525,14 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 									play_info.setRecivedDonwLoadUrls(push_play_url);
 									play_info.setDuration(Constant.DEFINATION_HD2);
 									play_info.setCreat_time(System.currentTimeMillis());
+									play_info.setTime_token(time_token+",");
 									play_info.setId((int)services.insertMoviePlayHistory(play_info));
+								}else{
+									if(play_info.getTime_token()==null){
+										play_info.setTime_token("");
+									}
+									play_info.setTime_token(play_info.getTime_token() + time_token+",");
+									services.updateMoviePlayHistory(play_info);
 								}
 							}
 							updateMovieHistory(push_id);
@@ -1237,15 +1253,18 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						JSONObject data_1 = json.getJSONObject("body");
 						data = json.getJSONObject("body");
 						int push_id = Integer.valueOf(data.getString("id"));
-						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
-						Log.d(TAG, "time ---->" + time);
-						if(time>TIME_OUT){
+						String time_token = data.getString("time");
+//						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+//						Log.d(TAG, "time ---->" + time);
+//						if(time>TIME_OUT){
+//							updateMovieHistory(push_id);
+//							return ;
+//						}
+						if(services.hasMoviePushHistory(time_token)!=null){
 							updateMovieHistory(push_id);
 							return ;
 						}
 //						intent.putExtra("ID", json.getString("prod_id"));
-						
-						
 //						String movie_play_url = null;
 //						try {
 //							movie_play_url = Utils.getUrl(data.getString("downurl"));
@@ -1261,7 +1280,8 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						if(play_info == null){
 							play_info = new MoviePlayHistoryInfo();
 //							play_info.setDownload_url(movie_play_url);
-							play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
+//							play_info.setName(URLDecoder.decode(data.getString("name"), "utf-8"));
+							play_info.setName(data.getString("name"));
 							play_info.setPush_id(push_id);
 							play_info.setPush_url(data.getString("playurl"));
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
@@ -1269,7 +1289,14 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 							play_info.setDuration(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
+							play_info.setTime_token(time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						}else{
+							if(play_info.getTime_token()==null){
+								play_info.setTime_token("");
+							}
+							play_info.setTime_token(play_info.getTime_token() + time_token+",");
+							services.updateMoviePlayHistory(play_info);
 						}
 						push_type = 1;
 						pincode_md5 = data.getString("md5_code");
@@ -1371,12 +1398,23 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					case 11://百度
 						data = json.getJSONObject("body");
 						int baidu_push_id = Integer.valueOf(data.getString("id"));
-						long time_1 = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
-						Log.d(TAG, "time ---->" + time_1);
-						if(time_1>TIME_OUT){
+						String baidu_time_token = data.getString("time_token");
+//						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+//						Log.d(TAG, "time ---->" + time);
+//						if(time>TIME_OUT){
+//							updateMovieHistory(push_id);
+//							return ;
+//						}
+						if(services.hasMoviePushHistory(baidu_time_token)!=null){
 							updateMovieHistory(baidu_push_id);
 							return ;
 						}
+//						long time_1 = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
+//						Log.d(TAG, "time ---->" + time_1);
+//						if(time_1>TIME_OUT){
+//							updateMovieHistory(baidu_push_id);
+//							return ;
+//						}
 						push_type = 1;
 						pincode_md5 = data.getString("md5_code");
 //						String baidu_play_url = DesUtils.decode(Constant.DES_KEY, data.getString("downurl"));
@@ -1397,10 +1435,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 							play_info.setDuration(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
+							play_info.setTime_token(baidu_time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
+						}else{
+							if(play_info.getTime_token()==null){
+								play_info.setTime_token("");
+							}
+							play_info.setTime_token(play_info.getTime_token() + baidu_time_token+",");
+							services.updateMoviePlayHistory(play_info);
 						}
-						
-						pincode_md5 = data.getString("md5_code");
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 //							if(baidu_play_url.startsWith("bdhd")){
