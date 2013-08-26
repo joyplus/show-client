@@ -37,8 +37,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -146,7 +144,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	 */
 	private static final int STATUE_FAST_DRAG = STATUE_PAUSE + 1;
 
-	private static final int OFFSET = 33;
+	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
@@ -374,6 +372,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
 
+		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
 	}
 	
 	private void dismissView(View v){
@@ -1556,7 +1556,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = 20 + 10;
+		parms.bottomMargin = Utils.getStandardValue(getApplicationContext(),(20 + 10));
 		mTimeLayout.setLayoutParams(parms);
 
 		mCurrentTimeTextView.setText(Utils.formatDuration(progress));
