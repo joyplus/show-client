@@ -768,8 +768,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private long getLoadingData(){
 		ApplicationInfo ai = getApplicationInfo();
-		return TrafficStats.getUidRxBytes(ai.uid) == TrafficStats.UNSUPPORTED ? 0
-				: (TrafficStats.getTotalRxBytes() / 1024);
+//		return TrafficStats.getUidRxBytes(ai.uid) == TrafficStats.UNSUPPORTED ? 0
+//				: (TrafficStats.getTotalRxBytes() / 1024);
+		return TrafficStats.getTotalRxBytes() / 1024;
 	}
 	
 	private void updateName() {
@@ -2333,6 +2334,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		rxByteslast = 0;
 		mLoadingPreparedPercent = 0;
 		mEpisodeIndex = -1;
+		removeDialog(0);
 		mPercentTextView.setText(", 已完成"
 				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 		play_info = null;

@@ -1167,17 +1167,18 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		@Override
 		public void disconnectedFromServer() {
 			// TODO Auto-generated method stub
-			if(isactive){
+			
 				Log.w(TAG, "server disconnected!----->");
 				handler.postDelayed(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						myClient.connectToServer(null);
+						if(isactive){
+							myClient.connectToServer(null);
+						}
 					}
 				}, 2000);
-			}
 		}
 
 		@Override
@@ -1398,7 +1399,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					case 11://百度
 						data = json.getJSONObject("body");
 						int baidu_push_id = Integer.valueOf(data.getString("id"));
-						String baidu_time_token = data.getString("time_token");
+						String baidu_time_token = data.getString("time");
 //						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
 //						Log.d(TAG, "time ---->" + time);
 //						if(time>TIME_OUT){
