@@ -408,11 +408,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				iterator = playinfos.iterator();  
 		         while(iterator.hasNext()) {  
 		        	 MoviePlayHistoryInfo info = iterator.next();  
-		             if(info.getEdite_state()==PushedMovieDownLoadInfo.EDITE_STATUE_SELETED) {  
-							dbService.deleteMoviePlayHistory(info);
-							iterator.remove();  
+		             if(info.getEdite_state()==MoviePlayHistoryInfo.EDITE_STATUE_SELETED) {  
+		            	 info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_HIDE);
+		            	 dbService.updateMoviePlayHistory(info);
+						 iterator.remove();  
 		             }else{
-		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+		            	 info.setEdite_state(MoviePlayHistoryInfo.EDITE_STATUE_NOMAL);
 		             }
 		               
 		         }

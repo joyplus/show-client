@@ -1,5 +1,7 @@
 package com.joyplus.tvhelper;
 
+import java.net.URLEncoder;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ public class ThirdPlayActivity extends Activity {
 		app = (MyApp) getApplication();
 		
 		String url = getIntent().getStringExtra("url");
+		url = URLEncoder.encode(url);
 		String name  = getIntent().getStringExtra("name");
 		MoviePlayHistoryInfo info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, url);
 		if(info == null){
