@@ -501,7 +501,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 									play_info.setPush_url(push_url);
 									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
+									play_info.setDefination(Constant.DEFINATION_HD2);
 									play_info.setCreat_time(System.currentTimeMillis());
 									play_info.setTime_token(time_token+",");
 									play_info.setId((int)services.insertMoviePlayHistory(play_info));
@@ -523,7 +523,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 									play_info.setPush_url(push_url);
 									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
 									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
+									play_info.setDefination(Constant.DEFINATION_HD2);
 									play_info.setCreat_time(System.currentTimeMillis());
 									play_info.setTime_token(time_token+",");
 									play_info.setId((int)services.insertMoviePlayHistory(play_info));
@@ -1288,7 +1288,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
-							play_info.setDuration(Constant.DEFINATION_HD2);
+							play_info.setDefination(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
 							play_info.setTime_token(time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
@@ -1434,7 +1434,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
 							play_info.setRecivedDonwLoadUrls(baidu_play_url);
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
-							play_info.setDuration(Constant.DEFINATION_HD2);
+							play_info.setDefination(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
 							play_info.setTime_token(baidu_time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));

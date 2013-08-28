@@ -73,6 +73,14 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
+            android:name="ThirdPlayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="com.joyplus.tv.video" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="XunLeiLXActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:screenOrientation="landscape">

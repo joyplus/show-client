@@ -162,6 +162,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	        public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
 	            switch (updateStatus) {
 	            case 0: // has update
+	            case 2:
 	            	Log.d(TAG, "hasUpdate---->" + updateInfo.hasUpdate);
 	            	Log.d(TAG, "path ------>" + updateInfo.path);
 	            	Log.d(TAG, "log---->" + updateInfo.updateLog);
@@ -170,7 +171,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	            	if(f.exists()){
 	            		PackageInfo info = PackageUtils.getAppPackageInfo(MainActivity.this, f.getAbsolutePath());
 	            		if(info != null&&info.versionName!=null&&info.versionName.equals(updateInfo.version)){
-	            			Toast.makeText(MainActivity.this, "可以更新啦", Toast.LENGTH_SHORT).show();
+	            			//Toast.makeText(MainActivity.this, "可以更新啦", Toast.LENGTH_SHORT).show();
 	            			AlertDialog.Builder builder = new Builder(MainActivity.this);
 	            			  builder.setMessage(updateInfo.updateLog);
 
@@ -210,16 +211,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 //	                UmengUpdateAgent.showUpdateDialog(MainActivity.this, updateInfo);
 	                break;
 	            case 1: // has no update
-	                Toast.makeText(MainActivity.this, "没有更新", Toast.LENGTH_SHORT)
-	                        .show();
+	                //Toast.makeText(MainActivity.this, "没有更新", Toast.LENGTH_SHORT).show();
 	                break;
-	            case 2: // none wifi
-	                Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT)
-	                        .show();
-	                break;
+//	            case 2: // none wifi
+	                //Toast.makeText(MainActivity.this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
+//	                break;
 	            case 3: // time out
-	                Toast.makeText(MainActivity.this, "超时", Toast.LENGTH_SHORT)
-	                        .show();
+	                //Toast.makeText(MainActivity.this, "超时", Toast.LENGTH_SHORT).show();
 	                break;
 	            }
 	        }
