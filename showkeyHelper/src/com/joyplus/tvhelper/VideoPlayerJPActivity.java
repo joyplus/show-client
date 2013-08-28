@@ -631,7 +631,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							public void run() {
 								// TODO Auto-generated method stub
 								
-								String subTitleUrl = Constant.BASE_URL + "/xunlei/subtitle/?url="
+								String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
 										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
 										PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 								byte[] arraySubTitleBytes = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
@@ -1653,30 +1653,30 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case R.id.ib_control_bottom:
 			if (!isShoucang) {
-				String url = Constant.BASE_URL + "program/favority";
-
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("prod_id", mProd_id);
-
-				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-				cb.SetHeader(app.getHeaders());
-
-				cb.params(params).url(url).type(JSONObject.class)
-						.weakHandler(this, "favorityResult");
-				aq.ajax(cb);
+//				String url = Constant.BASE_URL + "program/favority";
+//
+//				Map<String, Object> params = new HashMap<String, Object>();
+//				params.put("prod_id", mProd_id);
+//
+//				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//				cb.SetHeader(app.getHeaders());
+//
+//				cb.params(params).url(url).type(JSONObject.class)
+//						.weakHandler(this, "favorityResult");
+//				aq.ajax(cb);
 			} else {// 取消收藏
-				String url = Constant.BASE_URL + "program/unfavority";
-
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("prod_id", mProd_id);
-
-				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-				cb.SetHeader(app.getHeaders());
-
-				cb.params(params).url(url).type(JSONObject.class)
-						.weakHandler(this, "unfavorityResult");
-
-				aq.ajax(cb);
+//				String url = Constant.BASE_URL + "program/unfavority";
+//
+//				Map<String, Object> params = new HashMap<String, Object>();
+//				params.put("prod_id", mProd_id);
+//
+//				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//				cb.SetHeader(app.getHeaders());
+//
+//				cb.params(params).url(url).type(JSONObject.class)
+//						.weakHandler(this, "unfavorityResult");
+//
+//				aq.ajax(cb);
 			}
 			break;
 		default:
@@ -2547,7 +2547,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			isRequset = true;	
 			playUrls.clear();
 			//updateXunleiurl
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url()
+			String url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
 					+ "&id=" + play_info.getPush_id()
 					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
