@@ -491,48 +491,51 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							String push_url = item.getString("playurl");
 							String push_play_url = item.getString("downurl");
 							String time_token = item.getString("time_token");
+							String md5_code = item.getString("md5_code");
 							int type = item.getInt("type");
-							if(type == 5){//漏掉的播放
-								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDefination(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setTime_token(time_token+",");
-									play_info.setId((int)services.insertMoviePlayHistory(play_info));
-								}else{
-									if(play_info.getTime_token()==null){
-										play_info.setTime_token("");
+							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null &&PreferencesUtils.getPincodeMd5(FayeService.this).equals(md5_code)){
+								if(type == 5){//漏掉的播放
+									MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)services.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										services.updateMoviePlayHistory(play_info);
 									}
-									play_info.setTime_token(play_info.getTime_token() + time_token+",");
-									services.updateMoviePlayHistory(play_info);
-								}
-							}else if(type == 6){//漏掉的下载
-								
-							}else if(type == 11){
-								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDefination(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setTime_token(time_token+",");
-									play_info.setId((int)services.insertMoviePlayHistory(play_info));
-								}else{
-									if(play_info.getTime_token()==null){
-										play_info.setTime_token("");
+								}else if(type == 6){//漏掉的下载
+									
+								}else if(type == 11){
+									MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)services.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										services.updateMoviePlayHistory(play_info);
 									}
-									play_info.setTime_token(play_info.getTime_token() + time_token+",");
-									services.updateMoviePlayHistory(play_info);
 								}
 							}
 							updateMovieHistory(push_id);

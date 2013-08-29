@@ -41,6 +41,7 @@ import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
+import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
@@ -580,36 +581,55 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 							int push_id = item.getInt("id");
 //							String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
 							String push_name = item.getString("name");
+//							String push_url = URLDecoder.decode(item.getString("playurl"), "utf-8");
 							String push_url = item.getString("playurl");
 							String push_play_url = item.getString("downurl");
+							String time_token = item.getString("time_token");
+							String md5_code = item.getString("md5_code");
 							int type = item.getInt("type");
-							if(type == 5){//漏掉的播放
-								MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
-								}
-							}else if(type == 6){//漏掉的下载
-								
-							}else if(type == 11){
-								MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+							if(PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this)!=null &&PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this).equals(md5_code)){
+								if(type == 5){//漏掉的播放
+									MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										dbService.updateMoviePlayHistory(play_info);
+									}
+								}else if(type == 6){//漏掉的下载
+									
+								}else if(type == 11){
+									MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										dbService.updateMoviePlayHistory(play_info);
+									}
 								}
 							}
 							updateMovieHistory(push_id);

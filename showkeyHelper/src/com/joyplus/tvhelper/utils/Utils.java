@@ -543,12 +543,23 @@ public static InetAddress getLocalIpAddress(){
 		//
 		// install the apk.
 		// 安装安全支付服务APK
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setDataAndType(Uri.parse("file://" + path),
-				"application/vnd.android.package-archive");
-		Log.d(TAG, "file://" + path);
-		context.startActivity(intent);
+		try{
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setDataAndType(Uri.parse("file://" + path),
+					"application/vnd.android.package-archive");
+			Log.d(TAG, "file://" + path);
+			context.startActivity(intent);
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			
+			Uri packageURI =Uri.parse("file://"+path);
+			Intent intent = new Intent("com.tcl.packageinstaller.service.PackageInstallerService", packageURI);
+			Log.d(TAG, "file://" + path);
+			context.sendBroadcast(intent);
+		}
+		
 		return bRet;
 	}
 	
