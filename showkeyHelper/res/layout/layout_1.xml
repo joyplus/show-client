@@ -11,7 +11,7 @@
         <LinearLayout android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:id="@+id/showtui"
+            android:id="@+id/layout_1_1"
             android:focusable="true"
             android:background="@color/bg_color_showtui">
             <RelativeLayout android:layout_width="fill_parent"
@@ -80,7 +80,7 @@
 	                            android:textSize="35dp"
 	                            android:gravity="center_horizontal"
 	                            android:layout_alignParentBottom="true"
-	                            android:text="Show推"/>
+	                            android:text="软件推送记录"/>
 	                    </RelativeLayout>
         </LinearLayout>
         <TextView android:layout_width="13dp"
@@ -94,12 +94,32 @@
             >
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:id="@+id/layout_1_2"
+                android:focusable="true"
+                android:layout_weight="1"
+                android:background="@color/bg_color_tuisong"
+                android:gravity="center">
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/main_icon_yuntui"/>
+                 <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="35dp"
+	                            android:layout_marginTop="20dp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:text="视频推送记录"/>
+            </LinearLayout>
+            <!-- <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:background="@color/bg_color_tuisong"
                 android:focusable="true"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:id="@+id/layout_yuntui"
+                android:id="@+id/layout_1_2"
                 android:layout_weight="1">
                 <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
@@ -111,15 +131,16 @@
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="视频云推送"/>
-            </LinearLayout>
+                           android:text="推送记录"/>
+            </LinearLayout> -->
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"
-            android:visibility="invisible"/>
+            android:visibility="gone"/>
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:focusable="true"
-                android:id="@+id/layout_xunlei"
+                android:visibility="gone"
+                android:id="@+id/layout_1_3"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
@@ -150,23 +171,23 @@
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:focusable="true"
-                android:id="@+id/layout_zhibo"
+                android:id="@+id/layout_1_4"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="@color/bg_color_zhibo"
+                android:background="@color/bg_color_xunlei"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_zhibo"/>
+	                android:src="@drawable/main_icon_xunlei"/>
 	            <TextView android:layout_width="fill_parent"
                            android:layout_height="wrap_content"
                            android:textColor="#f0f0f0"
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="电视直播源"/>
+                           android:text="迅雷离线"/>
             </LinearLayout>
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"
@@ -174,23 +195,23 @@
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:focusable="true"
-                android:id="@+id/layout_tuijian"
+                android:id="@+id/layout_1_5"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="@color/bg_color_tuijian"
+                android:background="@color/bg_color_setting"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_tuijian"/>
+	                android:src="@drawable/main_icon_setting"/>
 	            <TextView android:layout_width="fill_parent"
                            android:layout_height="wrap_content"
                            android:textColor="#f0f0f0"
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="应用推荐"/>
+                           android:text="设置"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -203,31 +224,31 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:id="@+id/image_showtui"/>
+            android:id="@+id/image_1_1"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:id="@+id/image_yuntui"/>
+            android:id="@+id/image_1_2"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:id="@+id/image_xunlei"/>
+            android:id="@+id/image_1_3"/>
 		<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:id="@+id/image_zhibo"/>
+            android:id="@+id/image_1_4"/>
 		<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:id="@+id/image_tuijian"/>
+            android:id="@+id/image_1_5"/>
     </FrameLayout>
     
 </RelativeLayout>

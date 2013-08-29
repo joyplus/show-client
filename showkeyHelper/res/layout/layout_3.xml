@@ -12,7 +12,7 @@
         <LinearLayout android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:id="@+id/layout_jiashu"
+            android:id="@+id/layout_3_1"
             android:focusable="true"
             android:gravity="center"
             android:background="@color/bg_color_jiasu">
@@ -41,44 +41,40 @@
             android:layout_weight="1"
             android:orientation="vertical"
             >
-            <RelativeLayout android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/bg_color_upan"
-                android:focusable="true"
-                android:id="@+id/layout_upan"
-                android:layout_weight="1">
-                <LinearLayout android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical"
-                    android:paddingBottom="10dp"
-                    android:gravity="center_horizontal">
-                    <ImageView android:layout_width="wrap_content"
-	                android:layout_height="fill_parent"
-	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_upan"/>
-	            <TextView android:layout_width="fill_parent"
-                           android:layout_height="wrap_content"
-                           android:textColor="#f0f0f0"
-                           android:textSize="35dp"
-                           android:gravity="center_horizontal"
-                           android:layout_alignParentBottom="true"
-                           android:text="U盘助手"/>
-                </LinearLayout>
-                <ImageView android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/unrealized"/>
-            </RelativeLayout>
-            
-            <TextView android:layout_width="fill_parent"
-            android:layout_height="13dp"
-            android:visibility="invisible"/>
+<!--             <RelativeLayout android:layout_width="fill_parent" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:background="@color/bg_color_upan" -->
+<!--                 android:focusable="true" -->
+<!--                 android:id="@+id/layout_upan" -->
+<!--                 android:layout_weight="1"> -->
+<!--                 <LinearLayout android:layout_width="fill_parent" -->
+<!--                     android:layout_height="fill_parent" -->
+<!--                     android:orientation="vertical" -->
+<!--                     android:paddingBottom="10dp" -->
+<!--                     android:gravity="center_horizontal"> -->
+<!--                     <ImageView android:layout_width="wrap_content" -->
+<!-- 	                android:layout_height="fill_parent" -->
+<!-- 	                android:layout_weight="1" -->
+<!-- 	                android:src="@drawable/main_icon_upan"/> -->
+<!-- 	            <TextView android:layout_width="fill_parent" -->
+<!--                            android:layout_height="wrap_content" -->
+<!--                            android:textColor="#f0f0f0" -->
+<!--                            android:textSize="35dp" -->
+<!--                            android:gravity="center_horizontal" -->
+<!--                            android:layout_alignParentBottom="true" -->
+<!--                            android:text="U盘助手"/> -->
+<!--                 </LinearLayout> -->
+<!--                 <ImageView android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:scaleType="fitXY" -->
+<!--                     android:layout_alignParentRight="true" -->
+<!--                     android:layout_alignParentTop="true" -->
+<!--                     android:src="@drawable/unrealized"/> -->
+<!--             </RelativeLayout> -->
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:focusable="true"
-                android:id="@+id/layout_appguanli"
+                android:id="@+id/layout_3_2"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
@@ -95,6 +91,30 @@
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
                            android:text="软件管理"/>
+            </LinearLayout>
+            <TextView android:layout_width="fill_parent"
+            android:layout_height="13dp"
+            android:visibility="invisible"/>
+            <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:focusable="true"
+                android:id="@+id/layout_3_3"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:background="@color/bg_color_tuijian"
+                android:layout_weight="1">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:src="@drawable/main_icon_tuijian"/>
+	            <TextView android:layout_width="fill_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="#f0f0f0"
+                           android:textSize="35dp"
+                           android:gravity="center_horizontal"
+                           android:layout_alignParentBottom="true"
+                           android:text="应用推荐"/>
             </LinearLayout>
         </LinearLayout>
         <TextView android:layout_width="13dp"
@@ -128,9 +148,9 @@
 <!--             </LinearLayout> -->
             <RelativeLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/bg_color_cesu"
+                android:background="@color/bg_color_upan"
                 android:focusable="true"
-                android:id="@+id/layout_ceshu"
+                android:id="@+id/layout_3_4"
                 android:layout_weight="1">
                 <LinearLayout android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -140,14 +160,14 @@
                     <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_cesu"/>
+	                android:src="@drawable/main_icon_upan"/>
 	            <TextView android:layout_width="fill_parent"
                            android:layout_height="wrap_content"
                            android:textColor="#f0f0f0"
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="网络测速"/>
+                           android:text="U盘助手"/>
                 </LinearLayout>
                 <ImageView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -162,23 +182,23 @@
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:focusable="true"
-                android:id="@+id/layout_setting"
+                android:id="@+id/layout_3_5"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:background="@color/bg_color_setting"
+                android:background="@color/bg_color_zhibo"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
-	                android:src="@drawable/main_icon_setting"/>
+	                android:src="@drawable/main_icon_zhibo"/>
 	            <TextView android:layout_width="fill_parent"
                            android:layout_height="wrap_content"
                            android:textColor="#f0f0f0"
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="助手设置"/>
+                           android:text="电视直播源"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -189,31 +209,31 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:id="@+id/image_jiasu"/>
+            android:id="@+id/image_3_1"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:scaleType="fitXY"
-            android:id="@+id/image_upan"/>
+            android:id="@+id/image_3_2"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:scaleType="fitXY"
-            android:id="@+id/image_appguanli"/>
+            android:id="@+id/image_3_3"/>
 		<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:scaleType="fitXY"
-            android:id="@+id/image_ceshu"/>
+            android:id="@+id/image_3_4"/>
 		<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:scaleType="fitXY"
-            android:id="@+id/image_setting"/>
+            android:id="@+id/image_3_5"/>
     </FrameLayout>
 
 </RelativeLayout>
