@@ -392,7 +392,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
+				Log.d(TAG, "PushApkHistories response-->" + str);
 				try {
 					JSONObject json = new JSONObject(str);
 					
@@ -477,7 +477,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
+				Log.d(TAG, "pushMovieHistories response-->" + str);
 				try {
 					JSONArray array = new JSONArray(str);
 					Log.d(TAG, "miss length ---------------------------->" + array.length());
@@ -604,7 +604,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
+				Log.d(TAG, "pushMsg_USER_APK_Histories response-->" + str);
 				try {
 					JSONArray array = new JSONArray(str);
 					Log.d(TAG, "miss length ---------------------------->" + array.length());
@@ -1296,6 +1296,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setTime_token(time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						}else{
+							play_info.setDefination(Constant.DEFINATION_HD2);
+							play_info.setName(data.getString("name"));
+							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							if(play_info.getTime_token()==null){
 								play_info.setTime_token("");
 							}
@@ -1442,6 +1446,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setTime_token(baidu_time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						}else{
+							play_info.setDefination(Constant.DEFINATION_HD2);
+							play_info.setName(data.getString("name"));
+							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							if(play_info.getTime_token()==null){
 								play_info.setTime_token("");
 							}

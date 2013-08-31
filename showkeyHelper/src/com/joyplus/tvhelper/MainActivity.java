@@ -91,21 +91,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			switch (msg.what) {
 			case MESSAGE_GETPINCODE_SUCCESS:
 				displayPincode();
-				int width = layout_1_4.getWidth();
-				int height = layout_1_4.getHeight();
-				image_1_1.layout(0, 0, width+ Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
-				image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
-//				image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
-//				image_1_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
-				image_1_4.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
-				image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
-				image_3_1.layout(0, 0, width+Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
-				image_3_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
-				image_3_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
-				image_3_4.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
-				image_3_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
-				image_1_1.setImageBitmap(layout_1_1.getDrawingCache());
-				layout_1_1.requestFocus();
+				reSetImages();
 				startService(new Intent(MainActivity.this, FayeService.class));
 				mHandler.postDelayed(new Runnable() {
 					
@@ -125,6 +111,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				break;
 			case MESSAGE_GETPINCODE_FAILE:
 				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+				reSetImages();
 				break;
 			default:
 				break;
@@ -132,6 +119,24 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			
 		};
 	};
+	
+	private void reSetImages(){
+		int width = layout_1_4.getWidth();
+		int height = layout_1_4.getHeight();
+		image_1_1.layout(0, 0, width+ Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
+		image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
+//		image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
+//		image_1_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
+		image_1_4.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
+		image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		image_3_1.layout(0, 0, width+Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
+		image_3_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
+		image_3_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
+		image_3_4.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
+		image_3_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		image_1_1.setImageBitmap(layout_1_1.getDrawingCache());
+		layout_1_1.requestFocus();
+	}
 	
 	private BroadcastReceiver reciver = new BroadcastReceiver(){
 
