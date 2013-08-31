@@ -315,7 +315,7 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
                 mMediaController.setEnabled(true);
             }
             mVideoWidth = mp.getVideoWidth();
-            mVideoHeight = mp.getVideoHeight();
+            mVideoHeight = mp.getVideoHeight()-1;
 
             int seekToPosition = mSeekWhenPrepared;  // mSeekWhenPrepared may be changed after seekTo() call
             if (seekToPosition != 0) {

@@ -84,6 +84,7 @@ import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
+import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.ArcView;
 import com.joyplus.tvhelper.ui.VideoView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
@@ -275,6 +276,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	private Collection mSubTitleCollection = null;
 //	private int mStartTimeSubTitle,mEndTimeSubTitle;
 	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
+	
+	private List<String> subTitleUrlList = new ArrayList<String>();
+	private int currentSubtitleIndex = 0;//默认为第一个
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -485,8 +489,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
 						//get subtitle
-						byte[] subTitle = XunLeiLiXianUtil.getSubtitle(VideoPlayerJPActivity.this,xllxFileInfo);
-						initSubTitleCollection(subTitle);
+						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
+						currentSubtitleIndex = 0;
+						initSubTitleCollection();
 						
 						if(list != null && list.size() > 0) {
 							
@@ -549,41 +554,43 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 	}
 	
-	private void initSubTitleCollection(byte[] subTitle){
-		
-		if(subTitle != null && subTitle.length > 3
-				&& mSubTitleCollection == null){
+	private void initSubTitleCollection(){
+		Log.i(TAG, "subTitleUrlList--->" + subTitleUrlList.size() + "currentSubtitleIndex--->" + currentSubtitleIndex);
+		if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
+			byte[] subTitle = HttpUtils.getBinary(subTitleUrlList.get(currentSubtitleIndex), null,null);
 			
-			Parser parser = new Parser();
-			
-			String charsetName = Utils.getCharset(subTitle, 128);
-			Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
-			if(charsetName.equals("")){
+			if(subTitle != null && subTitle.length > 3
+					&& mSubTitleCollection == null){
 				
-				boolean isUtf8 = Utils.isUTF_8(subTitle);
-				Log.i(TAG, "isUtf8--->" + isUtf8);
+				Parser parser = new Parser();
 				
-				if(!isUtf8){
+				String charsetName = Utils.getCharset(subTitle, 512);
+				Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
+				if(charsetName.equals("")){
 					
-					parser.setCharset("GBK");
-				} else {
+					boolean isUtf8 = Utils.isUTF_8(subTitle);
+					Log.i(TAG, "isUtf8--->" + isUtf8);
 					
-					parser.setCharset("UTF-8");
+					if(!isUtf8){
+						
+						parser.setCharset("GBK");
+					} else {
+						
+						parser.setCharset("UTF-8");
+					}
+				}else {
+					
+					parser.setCharset(charsetName);
 				}
-			}else {
+				parser.parse(new ByteArrayInputStream(subTitle));
 				
-				parser.setCharset(charsetName);
+				if(parser.getCollection().getElements().size() > 2){
+					mSubTitleCollection = parser.getCollection();
+				}
+				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
+				return;
 			}
-			parser.parse(new ByteArrayInputStream(subTitle));
-			
-			if(parser.getCollection().getElements().size() > 2){
-				mSubTitleCollection = parser.getCollection();
-			}
-			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
-			return;
 		}
-		
-//		Utils.showToast(this, "获取字幕失败");
 	}
 
 	private Handler mHandler = new Handler() {
@@ -634,8 +641,9 @@ public class VideoPlayerJPActivity extends Activity implements
 								String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
 										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
 										PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
-								byte[] arraySubTitleBytes = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
-								initSubTitleCollection(arraySubTitleBytes);
+								subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
+								currentSubtitleIndex = 0;
+								initSubTitleCollection();
 							}
 						});
 
@@ -1023,11 +1031,14 @@ public class VideoPlayerJPActivity extends Activity implements
 //						}
 //					});
 //					
-					if(mSubTitleCollection == null){
+					if(subTitleUrlList.size() == 0){
 						zimuStrings.add(-1);//暂无字幕
 					}else{
-						zimuStrings.add(0);//字幕开
-						zimuStrings.add(1);//字幕关
+						for(int i=0; i<=subTitleUrlList.size(); i++){
+							zimuStrings.add(i);
+						}
+//						zimuStrings.add(0);//字幕关
+//						zimuStrings.add(1);//字幕开
 					}
 //					definationStrings.add("超    清");
 //					definationStrings.add("高    清");
@@ -1050,10 +1061,14 @@ public class VideoPlayerJPActivity extends Activity implements
 					gallery.setSelection(definationStrings.indexOf(mDefination));
 					
 					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
-					if(mSubTitleTv.getVisibility()==View.VISIBLE){
+					if(mSubTitleTv.getVisibility()==View.INVISIBLE){
 						gallery_zm.setSelection(0);
 					}else{
-						gallery_zm.setSelection(1);
+						if(zimuStrings.size()==1&&zimuStrings.get(0)==-1){
+							gallery_zm.setSelection(0);
+						}else{
+							gallery_zm.setSelection(currentSubtitleIndex+1);
+						}
 					}
 					
 					gallery.requestFocus();
@@ -1065,9 +1080,24 @@ public class VideoPlayerJPActivity extends Activity implements
 							dialog.dismiss();
 							if(gallery_zm.getChildCount()>1){
 								if(gallery_zm.getSelectedItemPosition()==0){
-									mSubTitleTv.setVisibility(View.VISIBLE);
-								}else{
 									mSubTitleTv.setVisibility(View.INVISIBLE);
+								}else{
+									mSubTitleTv.setVisibility(View.VISIBLE);
+									Log.i(TAG, "currentSubtitleIndex--->" + currentSubtitleIndex
+											+ " gallery_zm.getSelectedItemPosition()-->" + gallery_zm.getSelectedItemPosition());
+									if(currentSubtitleIndex + 1 !=  gallery_zm.getSelectedItemPosition()){
+										final int selection = gallery_zm.getSelectedItemPosition();
+										MyApp.pool.execute(new Runnable() {
+											
+											@Override
+											public void run() {
+												// TODO Auto-generated method stub
+												currentSubtitleIndex = selection;
+												currentSubtitleIndex -=1;
+												initSubTitleCollection();
+											}
+										});
+									}
 								}
 							}
 							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
@@ -1222,9 +1252,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 	
 	private void updateSubtitle(){
-		
-		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
-			long currentPosition = mVideoView.getCurrentPosition();
+		long currentPosition = mVideoView.getCurrentPosition();
+		if(mVideoView != null && currentPosition >= 0){
+			
 			if(mSubTitleCollection != null){
 				
 				if(mCurSubTitleE == null) {
@@ -2346,6 +2376,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_hd2.clear();
 		playUrls_mp4.clear();
 		mSubTitleCollection = null;
+		currentSubtitleIndex = 0;
+		subTitleUrlList.clear();
 		mSubTitleTv.setVisibility(View.VISIBLE);
 		initVedioDate();
 	}
@@ -2848,6 +2880,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Context c;
 		
 		public ZimuAdapter(Context c, List<Integer> list){
+			Log.i(TAG, "ZimuAdapter list--->" + list.size());
 			this.c = c;
 			this.list = list;
 		}
@@ -2855,6 +2888,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			Log.i(TAG, "ZimuAdapter getCount--->" + list.size());
 			return list.size();
 		}
 
@@ -2877,16 +2911,23 @@ public class VideoPlayerJPActivity extends Activity implements
 			tv.setTextColor(Color.WHITE);
 			tv.setBackgroundResource(R.drawable.bg_choose_defination_selector);
 			tv.setTextSize(25);
-			switch (list.get(position)) {
-			case -1://无字幕
-				tv.setText("暂无字幕");
-				break;
-			case 0://字幕开
-				tv.setText("开");
-				break;
-			case 1://字幕关
-				tv.setText("关");
-				break;
+			Log.i(TAG, "ZimuAdapter position--->" + position);
+			if(position>=0&&position<list.size()){
+				switch (list.get(position)) {
+				case -1://无字幕
+					tv.setText("暂无字幕");
+					break;
+				case 0://字幕关
+					tv.setText("关");
+					break;
+					
+				default:
+					tv.setText("字幕" + list.get(position));
+					break;
+//				case 1://字幕开
+//					tv.setText("");
+//					break;
+				}
 			}
 			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165), Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);

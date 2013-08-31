@@ -3,6 +3,7 @@ package com.joyplus.tvhelper.utils;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
@@ -19,6 +20,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import com.joyplus.tvhelper.entity.SharpnessEnum;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
@@ -511,9 +513,62 @@ public class XunLeiLiXianUtil {
 		return null;
 	}
 	
-	
-	public static byte[] getSubtitle4Push(String url,String appkey){
+	public static List<String> getSubtitleList(Context context,XLLXFileInfo xllxFileInfo){
 		
+		Log.i(TAG, "getSubtitle--->xllxFileInfo lx_gcid:" + xllxFileInfo.lx_gcid);
+		List<String> list = new ArrayList<String>();
+		Header[] arrayOfHeader = { new BasicHeader("cookie",getCookie(context)) };
+		
+		NameValuePair[] firstNameValuePair = new NameValuePair[4];
+		firstNameValuePair[0]= new BasicNameValuePair("gcid", xllxFileInfo.lx_gcid);
+		firstNameValuePair[1]= new BasicNameValuePair("cid", xllxFileInfo.lx_cid);
+		firstNameValuePair[2]= new BasicNameValuePair("userid", getUID(context));
+		firstNameValuePair[3]= new BasicNameValuePair("t", System.currentTimeMillis() + "");
+		
+		String subtitleList = HttpUtils.getContent(
+				"http://i.vod.xunlei.com/subtitle/list", arrayOfHeader,
+				firstNameValuePair);
+		Log.i(TAG, "getSubtitle--->autoloadStr:" + subtitleList);
+		if(subtitleList != null && !subtitleList.equals("")){
+			
+			try {
+				JSONArray subtitleJsonArray = ((JSONObject) new JSONTokener(subtitleList)
+					.nextValue()).getJSONArray("sublist");
+				if(subtitleJsonArray != null && subtitleJsonArray.length() > 0){
+					for(int i=0;i<subtitleJsonArray.length();i++){
+						
+						JSONObject subtitleJsonObject = subtitleJsonArray.getJSONObject(i);
+						if(subtitleJsonObject != null){
+							String subTitleUrl = subtitleJsonObject.getString("surl");
+							if(subTitleUrl != null && !subTitleUrl.equals("")
+									&& URLUtil.isNetworkUrl(subTitleUrl)){
+								if(subTitleUrl.contains("scid=")){
+									
+									list.add(subTitleUrl);
+								}else {
+									if(subTitleUrl.length() == subTitleUrl.indexOf(".srt") + 4){
+										list.add(subTitleUrl);
+									}
+								}
+//								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+//							Log.i(TAG, "getSubtitle--->subTitle:" + subTitle);
+							}
+						}
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
+	
+	public static List<String> getSubtitle4Push(String url,String appkey){
+		Log.i(TAG, "getSubtitle4Push---url--->" + url);
+		List<String> list = new ArrayList<String>();
 		Header[] arrayOfHeader = { new BasicHeader("app_key",appkey) };
 		
 		String subTitlesStr = HttpUtils.getContent(url, arrayOfHeader, null);
@@ -532,11 +587,16 @@ public class XunLeiLiXianUtil {
 						JSONArray subtitleContents = subtitlesJsonObject.getJSONArray("subtitles");
 						if(subtitleContents != null && subtitleContents.length() > 0){
 							
-							String subTitleUrl = subtitleContents.getString(0);
-							if(subTitleUrl != null && !subTitleUrl.equals("")){
+//							String subTitleUrl = subtitleContents.getString(0);
+							for(int i=0;i<subtitleContents.length();i++){
 								
-								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
-								return subTitle;
+								String subTitleUrl = subtitleContents.getString(i);
+								if(subTitleUrl != null && !subTitleUrl.equals("")
+										&& URLUtil.isNetworkUrl(subTitleUrl)){
+									list.add(subTitleUrl);
+//								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+//								return subTitle;
+								}
 							}
 						}
 						
@@ -548,7 +608,7 @@ public class XunLeiLiXianUtil {
 			}
 		}
 		
-		return null;
+		return list;
 	}
 
 	public static ArrayList<VideoPlayUrl> getLXPlayUrl4Vod_dl_all(
