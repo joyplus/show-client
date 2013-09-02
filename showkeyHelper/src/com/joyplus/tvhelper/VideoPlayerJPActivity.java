@@ -114,6 +114,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
+	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
+	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
@@ -603,11 +605,42 @@ public class VideoPlayerJPActivity extends Activity implements
 				
 				if(parser.getCollection().getElements().size() > 2){
 					mSubTitleCollection = parser.getCollection();
+					if(mVideoView != null){
+						long currentPosition = mVideoView.getCurrentPosition();
+						org.blaznyoght.subtitles.model.Element element = getPreElement(currentPosition);
+						if(element != null){
+							Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
+							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
+							mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+							mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
+						}
+					}
 				}
-				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
+				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
 				return;
 			}
 		}
+	}
+	
+	/**获取将要显示的元素**/
+	private org.blaznyoght.subtitles.model.Element getPreElement(long currentPosition){
+		
+		if(mSubTitleCollection != null){
+			
+			for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+				
+				org.blaznyoght.subtitles.model.Element element = 
+						mSubTitleCollection.getElements().get(i);
+				if(currentPosition < element.getStartTime().getTime()){
+					Log.i(TAG, "mSubTitleCollection.getElementSize()--->" + mSubTitleCollection.getElementSize() 
+							+ " i--->" + i
+							+ " element--->" + element.toString());
+					return element;
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	private Handler mHandler = new Handler() {
@@ -779,6 +812,44 @@ public class VideoPlayerJPActivity extends Activity implements
 				break;
 			case MESSAGE_DATALOADING_UPDATE_NETSPEED:
 				updateDataLoadingSpeed();
+				break;
+			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
+				org.blaznyoght.subtitles.model.Element element_show = 
+				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				if(element_show != null){
+					long currentPositionShow = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					//在字幕的显示时间段内
+					if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
+							&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+						mSubTitleTv.setText(element_show.getText().replaceAll("<font.*>", "").trim());
+					}
+					if(element_show.getEndTime().getTime() < currentPositionShow){
+						mSubTitleTv.setText("");
+						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
+						if(preElement_show != null){
+							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
+							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
+						}
+					}
+					if(preElement_show != null){
+						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
+						mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+					}
+				}
+				break;
+			case MESSAGE_SUBTITLE_END_HIDEN:
+				org.blaznyoght.subtitles.model.Element element_end = 
+				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				if(element_end != null){
+					long currentPositionShow = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					if(preElement_show != null){
+						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
+						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
+					}
+				}
+				mSubTitleTv.setText("");
 				break;
 			default:
 				break;
@@ -1254,18 +1325,15 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
 		
-		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
-			
-			updateSubtitle();
-		}else {
-			
-			mCurSubTitleE = null;//当前
-			mBefSubTitleE = null;//之前
-			mSubTitleTv.setText("");
-		}
-		
-		
-		
+//		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
+//			
+//			updateSubtitle();
+//		}else {
+//			
+//			mCurSubTitleE = null;//当前
+//			mBefSubTitleE = null;//之前
+//			mSubTitleTv.setText("");
+//		}
 	}
 	
 	private void updateSubtitle(){
@@ -1337,8 +1405,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void endUpdateSeekBar(){
 		
 		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-		mCurSubTitleE = null;//当前
-		mBefSubTitleE = null;//之前
+//		mCurSubTitleE = null;//当前
+//		mBefSubTitleE = null;//之前
 	}
 
 	private void showControlLayout() {
