@@ -2415,6 +2415,8 @@ public class VideoPlayerJPActivity extends Activity implements
 			Utils.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
 		}
 		
+		mHandler.removeCallbacksAndMessages(null);
+		
 		super.onDestroy();
 	}
 	
