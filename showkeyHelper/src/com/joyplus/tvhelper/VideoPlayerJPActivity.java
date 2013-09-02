@@ -9,9 +9,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -378,6 +376,25 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
 		seekBarWidthOffset = Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
+		
+	}
+	
+	private String getUmengMd5(){
+		
+		String md5 = "";
+		if (PreferencesUtils.getPincodeMd5(this) == null ||
+				"".equals(PreferencesUtils.getPincodeMd5(this))) {
+			if (Constant.TestEnv) {
+				md5 = MobclickAgent.getConfigParams(this, "TEST_P2P_TV_MD5");
+			} else {
+				md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
+			}
+
+		}else{
+			md5 = PreferencesUtils.getPincodeMd5(this);
+		}
+		Log.i(TAG, "md5--->" + md5);
+		return md5;
 	}
 	
 	private void dismissView(View v){
@@ -640,7 +657,7 @@ public class VideoPlayerJPActivity extends Activity implements
 								
 								String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
 										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
-										PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
+										getUmengMd5();
 								subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
 								currentSubtitleIndex = 0;
 								initSubTitleCollection();
@@ -2581,7 +2598,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			//updateXunleiurl
 			String url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
 					+ "&id=" + play_info.getPush_id()
-					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
+					+ "&md5_code=" + getUmengMd5();
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {

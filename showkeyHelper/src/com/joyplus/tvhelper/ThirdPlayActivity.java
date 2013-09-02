@@ -10,6 +10,7 @@ import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.utils.Constant;
+import com.umeng.analytics.MobclickAgent;
 
 public class ThirdPlayActivity extends Activity {
 
@@ -22,6 +23,7 @@ public class ThirdPlayActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
+		MobclickAgent.updateOnlineConfig(this);
 		dbService = DBServices.getInstance(this);
 		app = (MyApp) getApplication();
 		
