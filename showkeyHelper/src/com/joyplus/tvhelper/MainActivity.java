@@ -160,9 +160,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		setContentView(R.layout.activity_main);
 		
 		MobclickAgent.onError(this);
-		UmengUpdateAgent.update(this);
-		MobclickAgent.updateOnlineConfig(this);
+		UmengUpdateAgent.setUpdateOnlyWifi(false);
 		UmengUpdateAgent.setUpdateAutoPopup(false);
+		UmengUpdateAgent.update(this);
+		MobclickAgent.setDebugMode(true);
+		;
+		MobclickAgent.updateOnlineConfig(this);
+		
 		UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
 	        @Override
 	        public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
