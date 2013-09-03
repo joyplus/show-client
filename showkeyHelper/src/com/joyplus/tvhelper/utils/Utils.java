@@ -40,6 +40,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joyplus.tvhelper.R;
@@ -51,7 +55,15 @@ public class Utils {
 	
 	public static void showToast(Context context,String str) {
 		
-		Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+		Toast toast = new Toast(context);
+		View v = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).
+				inflate(R.layout.toast_textview, null);
+		TextView tv = (TextView) v.findViewById(R.id.message);
+		tv.setText(str);
+		toast.setView(v);
+		toast.setDuration(Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
 	}
 	
 	public static String formatDuration(long duration) {

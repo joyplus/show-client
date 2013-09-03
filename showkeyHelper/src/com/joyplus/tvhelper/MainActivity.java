@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -110,7 +111,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				}, 1000);
 				break;
 			case MESSAGE_GETPINCODE_FAILE:
-				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+//				Toast.makeText(MainActivity.this, "请求pinCode失败", 100).show();
+				Utils.showToast(MainActivity.this,"请求pinCode失败" );
 				reSetImages();
 				break;
 			default:
@@ -294,11 +296,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
 //				Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
 
-				Toast toast = new Toast(this);
-				View v = getLayoutInflater().inflate(R.layout.toast_textview, null);
-				toast.setView(v);
-				toast.setDuration(Toast.LENGTH_SHORT);
-				toast.show();
+//				Toast toast = new Toast(this);
+//				View v = getLayoutInflater().inflate(R.layout.toast_textview, null);
+//				toast.setView(v);
+//				toast.setDuration(Toast.LENGTH_SHORT);
+//				toast.setGravity(Gravity.CENTER, 0, 0);
+//				toast.show();
+				Utils.showToast(this, "再按一次退出程序");
 				exitTime = System.currentTimeMillis();
 			} else {
 				finish();
