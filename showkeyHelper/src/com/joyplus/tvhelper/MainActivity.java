@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,12 +37,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 import com.joyplus.tvhelper.ui.MyScrollLayout.OnViewChangeListener;
+import com.joyplus.tvhelper.ui.NotificationView;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
@@ -86,6 +85,38 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	private TextView pincodeText;
 	
 	private String umeng_channel;
+	
+	private NotificationView connectStatueText;
+	
+	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(Global.ACTION_CONNECT_SUCCESS.equals(action)){
+				connectStatueText.setText("已连接");
+				mHandler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						connectStatueText.setText("");
+					}
+				}, 2000);
+			}else if(Global.ACTION_DISCONNECT_SERVER.equals(action)){
+				connectStatueText.setText("正在连接");
+				mHandler.removeCallbacksAndMessages(null);
+			}if(Global.ACTION_PINCODE_REFRESH.equals(action)){
+				image_1_1.setImageBitmap(null);
+				layout_1_1.setDrawingCacheEnabled(false);
+				displayPincode();
+				layout_1_1.setDrawingCacheEnabled(true);
+				image_1_1.setImageBitmap(layout_1_1.getDrawingCache());
+			}
+		}
+		
+	};
 	
 	private Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -139,20 +170,6 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		image_1_1.setImageBitmap(layout_1_1.getDrawingCache());
 		layout_1_1.requestFocus();
 	}
-	
-	private BroadcastReceiver reciver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			image_1_1.setImageBitmap(null);
-			layout_1_1.setDrawingCacheEnabled(false);
-			displayPincode();
-			layout_1_1.setDrawingCacheEnabled(true);
-			image_1_1.setImageBitmap(layout_1_1.getDrawingCache());
-		}
-		
-	};
 	
 	private MyApp app;
 	private Map<String, String> headers;
@@ -255,7 +272,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		headers.put("app_key", Constant.APPKEY);
 		app.setHeaders(headers);
 		IntentFilter filter = new IntentFilter(Global.ACTION_PINCODE_REFRESH);
-		registerReceiver(reciver, filter);
+		filter.addAction(Global.ACTION_CONNECT_SUCCESS);
+		filter.addAction(Global.ACTION_DISCONNECT_SERVER);
+		registerReceiver(mReceiver, filter);
 		
 		
 		ApplicationInfo info = null;
@@ -318,6 +337,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		
 		pincodeText = (TextView) findViewById(R.id.pincodeText);
 		
+		connectStatueText = (NotificationView) findViewById(R.id.statue_connect);
 		web_url_textview = (TextView) findViewById(R.id.web_url_text);
 		
 		image_1_1 = (ImageView) findViewById(R.id.image_1_1);
@@ -666,7 +686,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		unregisterReceiver(reciver);
+		unregisterReceiver(mReceiver);
 //		XunLeiLiXianUtil.Logout(getApplicationContext());
 	}
 	

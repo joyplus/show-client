@@ -200,7 +200,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private LinearLayout mContinueLayout;
 	
 	/**
-	 * 暂停继续层
+	 * 缓冲速度
 	 */
 	private LinearLayout mDateLoadingLayout;
 	/**
@@ -413,6 +413,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mNoticeLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
 		mControlLayout.setVisibility(View.GONE);
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
 		if (mStartRX == TrafficStats.UNSUPPORTED) {
 			mSpeedTextView
@@ -1147,7 +1148,8 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
 					gallery.setSelection(definationStrings.indexOf(mDefination));
-					
+//					gallery.setOnKeyListener(new MenuKeyListener(dialog));
+//					gallery_zm.setOnKeyListener(new MenuKeyListener(dialog));
 					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
 					if(mSubTitleTv.getVisibility()==View.INVISIBLE){
 						gallery_zm.setSelection(0);
@@ -1811,6 +1813,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
 		mPercentTextView.setText("已完成0%");
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
 //		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
@@ -2493,9 +2496,15 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		switch (id) {
 		case 0:
+			String message = "";
+			if(mProd_type == TYPE_PUSH || mProd_type == TYPE_XUNLEI){
+				message = "服务器小忙，请稍后重试";
+			}else{
+				message = "该视频无法播放";
+			}
 			Dialog alertDialog = new AlertDialog.Builder(this). 
             setTitle("提示"). 
-            setMessage("该视频无法播放"). 
+            setMessage(message). 
             setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 				@Override
@@ -3023,6 +3032,4 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 
 	}
-	
-	
 }

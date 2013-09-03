@@ -156,7 +156,7 @@
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="迅雷离线"/>
+                           android:text="迅雷云播"/>
             </LinearLayout>
         </LinearLayout>
         <TextView android:layout_width="13dp"
@@ -187,7 +187,7 @@
                            android:textSize="35dp"
                            android:gravity="center_horizontal"
                            android:layout_alignParentBottom="true"
-                           android:text="迅雷离线"/>
+                           android:text="迅雷云播"/>
             </LinearLayout>
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"

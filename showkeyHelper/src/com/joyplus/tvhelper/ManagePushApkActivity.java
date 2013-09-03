@@ -392,7 +392,11 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 //			}
 //		}
 //		Log.d(TAG, displayString);
-		pincodeTextView.setText("PIN:\t" + pincode);
+		if(pincode!=null){
+			pincodeTextView.setText("PIN:\t" + pincode);
+		}else{
+			pincodeTextView.setText("PIN:\t未获取到");
+		}
 	}
 	private void updateEditBottn(){
 		if(FayeService.userPushApkInfos.size()>0){

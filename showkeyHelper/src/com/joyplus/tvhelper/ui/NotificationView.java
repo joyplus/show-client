@@ -53,10 +53,10 @@ public class NotificationView extends RelativeLayout{
 			textView2.setTextColor(a.getColor(R.styleable.NotificationView_textColor, Color.GRAY));
 			textView2.setTextSize(a.getDimension(R.styleable.NotificationView_textSize, 20));
 		}else{
-			textView1.setTextColor(Color.GRAY);
-			textView1.setTextSize(20);
-			textView2.setTextColor(Color.GRAY);
-			textView2.setTextSize(20);
+			textView1.setTextColor(Color.WHITE);
+			textView1.setTextSize(24);
+			textView2.setTextColor(Color.WHITE);
+			textView2.setTextSize(24);
 		}
 		textView1.setGravity(Gravity.LEFT);
 		textView2.setGravity(Gravity.LEFT);
