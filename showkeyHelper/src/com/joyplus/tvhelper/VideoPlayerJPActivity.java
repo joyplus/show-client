@@ -603,7 +603,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					parser.setCharset(charsetName);
 				}
 				parser.parse(new ByteArrayInputStream(subTitle));
-				
+				Log.d(TAG, "getElements().size()--->" + parser.getCollection().getElements().size());
 				if(parser.getCollection().getElements().size() > 2){
 					mSubTitleCollection = parser.getCollection();
 					if(mVideoView != null){
