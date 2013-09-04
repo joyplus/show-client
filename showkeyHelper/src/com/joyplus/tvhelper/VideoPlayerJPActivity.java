@@ -3019,7 +3019,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					break;
 					
 				default:
-					tv.setText("字幕" + list.get(position));
+					tv.setText("字幕  " + list.get(position));
 					break;
 //				case 1://字幕开
 //					tv.setText("");

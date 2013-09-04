@@ -278,15 +278,6 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			mHandler.sendEmptyMessageDelayed((MESSAGE_GETPINCODE_SUCCESS),200);
 		}
 		
-		headers = new HashMap<String, String>();
-		headers.put("app_key", Constant.APPKEY);
-		app.setHeaders(headers);
-		IntentFilter filter = new IntentFilter(Global.ACTION_PINCODE_REFRESH);
-		filter.addAction(Global.ACTION_CONNECT_SUCCESS);
-		filter.addAction(Global.ACTION_DISCONNECT_SERVER);
-		registerReceiver(mReceiver, filter);
-		
-		
 		ApplicationInfo info = null;
 		try {
 			info = this.getPackageManager().getApplicationInfo(getPackageName(),
@@ -301,6 +292,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		if(umeng_channel==null||umeng_channel.length()==0){
 			umeng_channel = "j001";
 		}
+		
+		headers = new HashMap<String, String>();
+		headers.put("app_key", Constant.APPKEY);
+		headers.put("app_channel", umeng_channel);
+		app.setHeaders(headers);
+		IntentFilter filter = new IntentFilter(Global.ACTION_PINCODE_REFRESH);
+		filter.addAction(Global.ACTION_CONNECT_SUCCESS);
+		filter.addAction(Global.ACTION_DISCONNECT_SERVER);
+		registerReceiver(mReceiver, filter);
 		
 		if("j001".equals(umeng_channel)){
 			web_url_textview.setText("tt.showkey.tv");
