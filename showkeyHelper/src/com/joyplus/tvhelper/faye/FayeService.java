@@ -360,6 +360,9 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		// TODO Auto-generated method stub
 		URI url = URI.create(Constant.BASE_URL+"/uploadApk");
 		channel = "/" + PreferencesUtils.getChannel(this);
+		if(myClient!=null){
+			myClient.disconnectFromServer();
+		}
 		myClient = new FayeClient(handler, url, channel);
 		Log.d(TAG, "Server----->" + Constant.BASE_URL+"/uploadApk");
 		Log.d(TAG, "channel----->" + channel);
@@ -392,7 +395,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
+				Log.d(TAG, "PushApkHistories response-->" + str);
 				try {
 					JSONObject json = new JSONObject(str);
 					
@@ -477,7 +480,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
+				Log.d(TAG, "pushMovieHistories response-->" + str);
 				try {
 					JSONArray array = new JSONArray(str);
 					Log.d(TAG, "miss length ---------------------------->" + array.length());
@@ -491,48 +494,51 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							String push_url = item.getString("playurl");
 							String push_play_url = item.getString("downurl");
 							String time_token = item.getString("time_token");
+							String md5_code = item.getString("md5_code");
 							int type = item.getInt("type");
-							if(type == 5){//漏掉的播放
-								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setTime_token(time_token+",");
-									play_info.setId((int)services.insertMoviePlayHistory(play_info));
-								}else{
-									if(play_info.getTime_token()==null){
-										play_info.setTime_token("");
+							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null &&PreferencesUtils.getPincodeMd5(FayeService.this).equals(md5_code)){
+								if(type == 5){//漏掉的播放
+									MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)services.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										services.updateMoviePlayHistory(play_info);
 									}
-									play_info.setTime_token(play_info.getTime_token() + time_token+",");
-									services.updateMoviePlayHistory(play_info);
-								}
-							}else if(type == 6){//漏掉的下载
-								
-							}else if(type == 11){
-								MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setTime_token(time_token+",");
-									play_info.setId((int)services.insertMoviePlayHistory(play_info));
-								}else{
-									if(play_info.getTime_token()==null){
-										play_info.setTime_token("");
+								}else if(type == 6){//漏掉的下载
+									
+								}else if(type == 11){
+									MoviePlayHistoryInfo play_info = services.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)services.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										services.updateMoviePlayHistory(play_info);
 									}
-									play_info.setTime_token(play_info.getTime_token() + time_token+",");
-									services.updateMoviePlayHistory(play_info);
 								}
 							}
 							updateMovieHistory(push_id);
@@ -601,7 +607,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						+ "&page_size=" + 50;
 				Log.d(TAG, url);
 				String str = HttpTools.get(FayeService.this, url);
-				Log.d(TAG, "pushMsgHistories response-->" + str);
+				Log.d(TAG, "pushMsg_USER_APK_Histories response-->" + str);
 				try {
 					JSONArray array = new JSONArray(str);
 					Log.d(TAG, "miss length ---------------------------->" + array.length());
@@ -1162,22 +1168,27 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		public void connectedToServer() {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "server connected----->");
+			Intent intent = new Intent(Global.ACTION_CONNECT_SUCCESS);
+			sendBroadcast(intent);
 		}
 
 		@Override
 		public void disconnectedFromServer() {
 			// TODO Auto-generated method stub
-			if(isactive){
+			
 				Log.w(TAG, "server disconnected!----->");
 				handler.postDelayed(new Runnable() {
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						myClient.connectToServer(null);
+						if(isactive){
+							myClient.connectToServer(null);
+							Intent intent = new Intent(Global.ACTION_DISCONNECT_SERVER);
+							sendBroadcast(intent);
+						}
 					}
 				}, 2000);
-			}
 		}
 
 		@Override
@@ -1205,47 +1216,53 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					switch (type) {
 					case 1:
 						data = json.getJSONObject("body");
-						PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
 						final int id = data.getInt("id");
-						info.setName(data.getString("app_name"));
-						String url = data.getString("file_url");
-						String packageName = data.getString("package_name");
-						String file_name = Utils.getFileNameforUrl(url);
-						info.setPush_id(id);
-						DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
-						info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
-						downloadManager.addTast(task);
-						info.setTast(task);
-						info.setPackageName(packageName);
-						info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-						info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-						info.set_id((int) services.insertApkInfo(info));
-						apkdownload_info = info;
-						push_type = 0;
-						pincode_md5 = data.getString("md5_code");
-						for(PushedApkDownLoadInfo info_1: userPushApkInfos){
-							if(packageName!=null&&packageName.equals(info_1.getPackageName())){
-								updateHistory(id);
-								return;
+						try{
+							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+							info.setName(data.getString("app_name"));
+							String url = data.getString("file_url");
+							String packageName = data.getString("package_name");
+							String file_name = Utils.getFileNameforUrl(url);
+							info.setPush_id(id);
+							DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
+							info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
+							downloadManager.addTast(task);
+							info.setTast(task);
+							info.setPackageName(packageName);
+							info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+							info.set_id((int) services.insertApkInfo(info));
+							apkdownload_info = info;
+							push_type = 0;
+							pincode_md5 = data.getString("md5_code");
+							Log.d(TAG, pincode_md5);
+							for(PushedApkDownLoadInfo info_1: userPushApkInfos){
+								if(packageName!=null&&packageName.equals(info_1.getPackageName())){
+									updateHistory(id);
+									return;
+								}
+								
+								if(getApplicationInfo().packageName.equals(packageName)){
+									updateHistory(id);
+									return;
+								}
 							}
-							
-							if(getApplicationInfo().packageName.equals(packageName)){
-								updateHistory(id);
-								return;
+							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+									&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+								userPushApkInfos.add(info);
+								handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+								if(currentUserApkInfo==null){
+									currentUserApkInfo = info;
+									currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+									downloadManager.startTast(task);
+									services.updateApkInfo(currentUserApkInfo);
+								}
+							}else{
+								handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
 							}
-						}
-						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-							userPushApkInfos.add(info);
-							handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-							if(currentUserApkInfo==null){
-								currentUserApkInfo = info;
-								currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-								downloadManager.startTast(task);
-								services.updateApkInfo(currentUserApkInfo);
-							}
-						}else{
-							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+						}catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
 						}
 						updateHistory(id);
 						break;
@@ -1287,11 +1304,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
-							play_info.setDuration(Constant.DEFINATION_HD2);
+							play_info.setDefination(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
 							play_info.setTime_token(time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						}else{
+							play_info.setDefination(Constant.DEFINATION_HD2);
+							play_info.setName(data.getString("name"));
+							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							if(play_info.getTime_token()==null){
 								play_info.setTime_token("");
 							}
@@ -1300,6 +1321,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						}
 						push_type = 1;
 						pincode_md5 = data.getString("md5_code");
+						Log.d(TAG, pincode_md5);
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
@@ -1398,7 +1420,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					case 11://百度
 						data = json.getJSONObject("body");
 						int baidu_push_id = Integer.valueOf(data.getString("id"));
-						String baidu_time_token = data.getString("time_token");
+						String baidu_time_token = data.getString("time");
 //						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
 //						Log.d(TAG, "time ---->" + time);
 //						if(time>TIME_OUT){
@@ -1433,11 +1455,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
 							play_info.setRecivedDonwLoadUrls(baidu_play_url);
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
-							play_info.setDuration(Constant.DEFINATION_HD2);
+							play_info.setDefination(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
 							play_info.setTime_token(baidu_time_token+",");
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						}else{
+							play_info.setDefination(Constant.DEFINATION_HD2);
+							play_info.setName(data.getString("name"));
+							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
+							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							if(play_info.getTime_token()==null){
 								play_info.setTime_token("");
 							}

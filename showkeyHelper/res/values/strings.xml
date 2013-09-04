@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">转屏助手</string>
     
-    <string name="login_xunlei_title">迅雷离线</string>
+    <string name="login_xunlei_title">迅雷云播</string>
     <string name="login_xunlei_vipname">白金账户</string>
     
     <string name="login_xunlei_usrname_hint">输入账户名</string>

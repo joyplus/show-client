@@ -34,11 +34,16 @@ import org.apache.http.conn.util.InetAddressUtils;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joyplus.tvhelper.R;
@@ -50,7 +55,15 @@ public class Utils {
 	
 	public static void showToast(Context context,String str) {
 		
-		Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+		Toast toast = new Toast(context);
+		View v = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).
+				inflate(R.layout.toast_textview, null);
+		TextView tv = (TextView) v.findViewById(R.id.message);
+		tv.setText(str);
+		toast.setView(v);
+		toast.setDuration(Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
 	}
 	
 	public static String formatDuration(long duration) {
@@ -514,12 +527,11 @@ public static InetAddress getLocalIpAddress(){
 		boolean bRet = false;
 		File cacheDir = context.getCacheDir();
 		String path = cacheDir.getAbsolutePath() + "/temp.apk";
-		
+		File file = new File(path);
 		try {
 //			InputStream is = context.getAssets().open(fileName);
 			Log.d(TAG, path);
 			InputStream is = context.getAssets().open(fileName);
-			File file = new File(path);
 			file.createNewFile();
 			FileOutputStream fos = new FileOutputStream(file);
 
@@ -543,12 +555,27 @@ public static InetAddress getLocalIpAddress(){
 		//
 		// install the apk.
 		// 安装安全支付服务APK
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setDataAndType(Uri.parse("file://" + path),
-				"application/vnd.android.package-archive");
-		Log.d(TAG, "file://" + path);
-		context.startActivity(intent);
+		try{
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setDataAndType(Uri.parse("file://" + path),
+					"application/vnd.android.package-archive");
+			Log.d(TAG, "file://" + path);
+			context.startActivity(intent);
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Toast.makeText(context, "您的设备暂不支持安装应用", Toast.LENGTH_LONG).show();
+			((Activity)context).finish();
+//			Intent intent = new Intent("com.tcl.packageinstaller.service.PackageInstallerService");
+//			intent.putExtra("uri", Uri.fromFile(file).toString());
+//			Log.d(TAG, Uri.fromFile(file).toString());
+//
+//			
+////			Uri packageURI =Uri.parse("file://"+path);
+//			
+//			context.startService(intent);
+		}
 		return bRet;
 	}
 	

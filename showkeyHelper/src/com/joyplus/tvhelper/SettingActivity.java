@@ -72,7 +72,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 				removeDialog(0);
 				break;
 			case MESSAGE_GETPINCODE_FAILE:
-				Toast.makeText(SettingActivity.this, "请求pinCode失败", 100).show();
+//				Toast.makeText(SettingActivity.this, "请求pinCode失败", 100).show();
+				Utils.showToast(SettingActivity.this, "请求pinCode失败");
 				removeDialog(0);
 				break;
 			default:

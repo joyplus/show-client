@@ -81,4 +81,22 @@ public class Global {
 	
 	public static final String ACTION_NEW_APK_DWONLOAD= "action_new_apk_dwonload";
 	
+	/**
+	 * 连接
+	 */
+	public static final String ACTION_CONNECT_SUCCESS= "action_connect_server_success";
+	/**
+	 * 断开
+	 */
+	public static final String ACTION_DISCONNECT_SERVER= "action_disconnect_server";
+	
+	/**
+	 * 连接
+	 */
+	public static final String ACTION_CONNECT_SUCCESS_MAIN= "action_connect_server_success_main";
+	/**
+	 * 断开
+	 */
+	public static final String ACTION_DISCONNECT_SERVER_MAIN= "action_disconnect_server_main";
+	
 }

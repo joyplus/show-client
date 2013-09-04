@@ -34,6 +34,9 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -140,6 +143,20 @@ public class HttpTools {
 //					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
 //			reqeust.setHeaders(headers);
 			reqeust.setHeader("app_key", Constant.APPKEY);
+			String umeng_channel = null;
+			ApplicationInfo info = null;
+			try {
+				info = c.getPackageManager().getApplicationInfo(c.getPackageName(),
+				        PackageManager.GET_META_DATA);
+				umeng_channel = info.metaData.getString("UMENG_CHANNEL");
+			} catch (NameNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(umeng_channel==null){
+				umeng_channel = "j001";
+			}
+			reqeust.setHeader("app_channel", umeng_channel);
 			reqeust.setEntity(p_entity);
 			res = getHttpClient().execute(reqeust);
 			if (res != null
@@ -185,6 +202,20 @@ public class HttpTools {
 		HttpResponse res;
 		HttpGet reqeust = new HttpGet(url);
 		reqeust.setHeader("app_key", Constant.APPKEY);
+		String umeng_channel = null;
+		ApplicationInfo info = null;
+		try {
+			info = c.getPackageManager().getApplicationInfo(c.getPackageName(),
+			        PackageManager.GET_META_DATA);
+			umeng_channel = info.metaData.getString("UMENG_CHANNEL");
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(umeng_channel==null){
+			umeng_channel = "j001";
+		}
+		reqeust.setHeader("app_channel", umeng_channel);
 		try {
 			res = getHttpClient().execute(reqeust);
 			if (res != null
