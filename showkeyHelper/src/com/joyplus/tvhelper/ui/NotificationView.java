@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -49,9 +51,11 @@ public class NotificationView extends RelativeLayout{
 		if(a!=null){
 			textView1.setText(a.getString(R.styleable.NotificationView_text));
 			textView1.setTextColor(a.getColor(R.styleable.NotificationView_textColor, Color.GRAY));
-			textView1.setTextSize(a.getDimension(R.styleable.NotificationView_textSize, 20));
+//			textView1.setTextSize(a.getDimensionPixelSize(R.styleable.NotificationView_textSize, 20));
+			textView1.setTextSize(24);
 			textView2.setTextColor(a.getColor(R.styleable.NotificationView_textColor, Color.GRAY));
-			textView2.setTextSize(a.getDimension(R.styleable.NotificationView_textSize, 20));
+//			textView2.setTextSize(a.getDimensionPixelSize(R.styleable.NotificationView_textSize, 20));
+			textView2.setTextSize(24);
 		}else{
 			textView1.setTextColor(Color.WHITE);
 			textView1.setTextSize(24);

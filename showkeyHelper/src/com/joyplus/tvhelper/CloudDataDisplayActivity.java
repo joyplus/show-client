@@ -37,6 +37,7 @@ import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.ui.NotificationView;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
@@ -63,6 +64,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private List<MoviePlayHistoryInfo> playinfos;
 	private ImageView defult_img;
 	private MyApp app;
+	private NotificationView connectStatueText;
 	
 	private ExecutorService pool = Executors.newFixedThreadPool(5);
 	
@@ -132,6 +134,21 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			}else if(Global.ACTION_MOVIE_DOWNLOAD_FAILE.equals(action)){
 				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
 				adpter_downloading.notifyDataSetChanged();
+			}else if(Global.ACTION_CONNECT_SUCCESS_MAIN.equals(action)){
+				connectStatueText.setText("已连接");
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						connectStatueText.setText("");
+					}
+				}, 2000);
+			}else if(Global.ACTION_DISCONNECT_SERVER_MAIN.equals(action)){
+				if(!"正在连接服务器···".equals(connectStatueText.getText())){
+					connectStatueText.setText("正在连接服务器···");
+					handler.removeCallbacksAndMessages(null);
+				}
 			}
 		}
 		
@@ -171,6 +188,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		selectedButon = title_playHistory;
 		selectedButon.setBackgroundResource(R.drawable.highlight);
 		selectedButon.setTextColor(Color.BLACK);
+		connectStatueText = (NotificationView) findViewById(R.id.statue_connect);
+		if(MainActivity.isConnect){
+			connectStatueText.setText("");
+		}else{
+			connectStatueText.setText("正在连接服务器···");
+		}
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
 		updateEditBottn();
@@ -181,6 +204,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_FAILE);
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE);
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
+		filter.addAction(Global.ACTION_CONNECT_SUCCESS_MAIN);
+		filter.addAction(Global.ACTION_DISCONNECT_SERVER_MAIN);
 		registerReceiver(receiver, filter);
 		getLostUserPushMovie();
 	}

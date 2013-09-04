@@ -617,7 +617,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					}
 				}
-				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
+//				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
 				return;
 			}
 		}
@@ -2879,6 +2879,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = defination;
 		mVideoView.stopPlayback();
 		mStatue = STATUE_PRE_LOADING;
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");

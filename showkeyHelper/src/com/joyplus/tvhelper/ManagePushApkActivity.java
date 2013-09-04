@@ -29,6 +29,7 @@ import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.ui.NotificationView;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -48,6 +49,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 	private DBServices dbService;
 	private PushedApkAdapter adpter;
 	private ImageView defult_img;
+	private NotificationView connectStatueText;
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -150,6 +152,21 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 				layout2.setVisibility(View.GONE);
 				layout1.setVisibility(View.VISIBLE);
 				adpter.notifyDataSetChanged();
+			}else if(Global.ACTION_CONNECT_SUCCESS_MAIN.equals(action)){
+				connectStatueText.setText("已连接");
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						connectStatueText.setText("");
+					}
+				}, 2000);
+			}else if(Global.ACTION_DISCONNECT_SERVER_MAIN.equals(action)){
+				if(!"正在连接服务器···".equals(connectStatueText.getText())){
+					connectStatueText.setText("正在连接服务器···");
+					handler.removeCallbacksAndMessages(null);
+				}
 			}
 		}
 		
@@ -184,7 +201,12 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		deleteButton.setOnClickListener(this);
 		cancleButton.setOnClickListener(this);
 		editeButton.setOnClickListener(this);
-		
+		connectStatueText = (NotificationView) findViewById(R.id.statue_connect);
+		if(MainActivity.isConnect){
+			connectStatueText.setText("");
+		}else{
+			connectStatueText.setText("正在连接服务器···");
+		}
 		downloadManager = DownloadManager.getInstance(this);
 		dbService = DBServices.getInstance(this);
 		IntentFilter filter = new IntentFilter(Global.ACTION_DOWNLOAD_PROGRESS);
@@ -195,6 +217,8 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 		filter.addAction(Global.ACTION_DOWNL_INSTALL_FAILE);
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
 		filter.addAction(Global.ACTION_APK_DOWNLOAD_FAILE);
+		filter.addAction(Global.ACTION_CONNECT_SUCCESS_MAIN);
+		filter.addAction(Global.ACTION_DISCONNECT_SERVER_MAIN);
 		registerReceiver(receiver, filter);
 		if(!FayeService.isSystemApp){
 			IntentFilter filter1 = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);

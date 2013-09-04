@@ -59,6 +59,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 
 	private static final String TAG = "MainActivity";
 	
+	public static boolean isConnect = false;
+	
 	private static final int MESSAGE_GETPINCODE_SUCCESS = 0;
 	private static final int MESSAGE_GETPINCODE_FAILE = MESSAGE_GETPINCODE_SUCCESS+1;
 	
@@ -96,6 +98,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			String action = intent.getAction();
 			if(Global.ACTION_CONNECT_SUCCESS.equals(action)){
 				connectStatueText.setText("已连接");
+				isConnect = true;
+				Intent intent_local = new Intent(Global.ACTION_CONNECT_SUCCESS_MAIN);
+				sendBroadcast(intent_local);
 				mHandler.postDelayed(new Runnable() {
 					
 					@Override
@@ -105,8 +110,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 					}
 				}, 2000);
 			}else if(Global.ACTION_DISCONNECT_SERVER.equals(action)){
-				connectStatueText.setText("正在连接");
-				mHandler.removeCallbacksAndMessages(null);
+				if(!"正在连接服务器···".equals(connectStatueText.getText())){
+					connectStatueText.setText("正在连接服务器···");
+					mHandler.removeCallbacksAndMessages(null);
+				}
+				Intent intent_local = new Intent(Global.ACTION_DISCONNECT_SERVER);
+				sendBroadcast(intent_local);
+				isConnect = false;
 			}if(Global.ACTION_PINCODE_REFRESH.equals(action)){
 				image_1_1.setImageBitmap(null);
 				layout_1_1.setDrawingCacheEnabled(false);

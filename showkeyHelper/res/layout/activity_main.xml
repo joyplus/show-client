@@ -48,7 +48,7 @@
     android:paddingLeft="147dp"
    	app:textColor="#f0f0f0"
    	app:textSize="24dp"
-   	app:text="正在连接"
+   	app:text="正在连接服务器···"
     android:id="@+id/statue_connect"/>
 <TextView android:layout_width="fill_parent"
     android:paddingBottom="20dp"
