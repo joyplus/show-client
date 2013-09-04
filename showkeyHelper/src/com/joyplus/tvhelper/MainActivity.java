@@ -192,8 +192,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
 		UmengUpdateAgent.setUpdateAutoPopup(false);
 		UmengUpdateAgent.update(this);
-		MobclickAgent.setDebugMode(true);
-		;
+		MobclickAgent.setDebugMode(false);
 		MobclickAgent.updateOnlineConfig(this);
 		
 		UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
@@ -456,11 +455,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 					title_text_2.setTextColor(getResources().getColor(R.color.main_title_unselected));
 					updateImageView(layout_1_5);
 					break;
-				case 1:
-					title_text_2.setTextColor(getResources().getColor(R.color.main_title_selected));
-					title_text_1.setTextColor(getResources().getColor(R.color.main_title_unselected));
-					updateImageView(layout_3_1);
-					break;
+//				case 1:
+//					title_text_2.setTextColor(getResources().getColor(R.color.main_title_selected));
+//					title_text_1.setTextColor(getResources().getColor(R.color.main_title_unselected));
+//					updateImageView(layout_3_1);
+//					break;
 				}
 			}
 		});
@@ -546,18 +545,18 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		switch (v.getId()) {
 		case R.id.layout_1_4:
 		case R.id.layout_1_5:
-			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showNext();
-				layout_3_1.requestFocus();
-				return true;
-			}
+//			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
+//				layout.showNext();
+//				layout_3_1.requestFocus();
+//				return true;
+//			}
 			break;
 		case R.id.layout_3_1:
-			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showPre();
-				layout_1_5.requestFocus();
-				return true;
-			}
+//			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
+//				layout.showPre();
+//				layout_1_5.requestFocus();
+//				return true;
+//			}
 		default:
 			break;
 		}
@@ -569,7 +568,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.layout_1_1:
-			startActivity(new Intent(this, ManagePushApkActivity.class));
+//			startActivity(new Intent(this, ManagePushApkActivity.class));
 			break;
 		case R.id.layout_1_2:
 			startActivity(new Intent(this, CloudDataDisplayActivity.class));
