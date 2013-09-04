@@ -374,11 +374,11 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		myClient.setFayeListener(fayeListener);
 		myClient.connectToServer(null); 
 //		isNeedReconnect = true;
-		getLostUserPushApk();
+//		getLostUserPushApk();
 		getLostUserPushMovie();
-		if(isSystemApp()){
-			getNotUsrPushApk();
-		}
+//		if(isSystemApp()){
+//			getNotUsrPushApk();
+//		}
 		return super.onStartCommand(intent, START_STICKY, startId); 
 	}
 	
@@ -1215,57 +1215,57 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					JSONObject data;
 					switch (type) {
 					case 1:
-						data = json.getJSONObject("body");
-						final int id = data.getInt("id");
-						try{
-							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
-							info.setName(data.getString("app_name"));
-							String url = data.getString("file_url");
-							String packageName = data.getString("package_name");
-							String file_name = Utils.getFileNameforUrl(url);
-							info.setPush_id(id);
-							DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
-							info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
-							downloadManager.addTast(task);
-							info.setTast(task);
-							info.setPackageName(packageName);
-							info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-							info.set_id((int) services.insertApkInfo(info));
-							apkdownload_info = info;
-							push_type = 0;
-							pincode_md5 = data.getString("md5_code");
-							Log.d(TAG, pincode_md5);
-							for(PushedApkDownLoadInfo info_1: userPushApkInfos){
-								if(packageName!=null&&packageName.equals(info_1.getPackageName())){
-									updateHistory(id);
-									return;
-								}
-								
-								if(getApplicationInfo().packageName.equals(packageName)){
-									updateHistory(id);
-									return;
-								}
-							}
-							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-									&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-								userPushApkInfos.add(info);
-								handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-								if(currentUserApkInfo==null){
-									currentUserApkInfo = info;
-									currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-									downloadManager.startTast(task);
-									services.updateApkInfo(currentUserApkInfo);
-								}
-							}else{
-								handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
-							}
-						}catch (Exception e) {
-							// TODO: handle exception
-							e.printStackTrace();
-						}
-						updateHistory(id);
-						break;
+//						data = json.getJSONObject("body");
+//						final int id = data.getInt("id");
+//						try{
+//							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+//							info.setName(data.getString("app_name"));
+//							String url = data.getString("file_url");
+//							String packageName = data.getString("package_name");
+//							String file_name = Utils.getFileNameforUrl(url);
+//							info.setPush_id(id);
+//							DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
+//							info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
+//							downloadManager.addTast(task);
+//							info.setTast(task);
+//							info.setPackageName(packageName);
+//							info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+//							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//							info.set_id((int) services.insertApkInfo(info));
+//							apkdownload_info = info;
+//							push_type = 0;
+//							pincode_md5 = data.getString("md5_code");
+//							Log.d(TAG, pincode_md5);
+//							for(PushedApkDownLoadInfo info_1: userPushApkInfos){
+//								if(packageName!=null&&packageName.equals(info_1.getPackageName())){
+//									updateHistory(id);
+//									return;
+//								}
+//								
+//								if(getApplicationInfo().packageName.equals(packageName)){
+//									updateHistory(id);
+//									return;
+//								}
+//							}
+//							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+//									&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+//								userPushApkInfos.add(info);
+//								handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+//								if(currentUserApkInfo==null){
+//									currentUserApkInfo = info;
+//									currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+//									downloadManager.startTast(task);
+//									services.updateApkInfo(currentUserApkInfo);
+//								}
+//							}else{
+//								handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+//							}
+//						}catch (Exception e) {
+//							// TODO: handle exception
+//							e.printStackTrace();
+//						}
+//						updateHistory(id);
+//						break;
 					case 5:
 //						JSONObject data_1 = json.getJSONObject("body");
 						data = json.getJSONObject("body");
