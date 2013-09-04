@@ -24,7 +24,7 @@
 	            <TextView android:layout_width="0dp"
 	                    android:layout_height="fill_parent"
 	                    android:layout_weight="1"
-	                    android:text="Show推"
+	                    android:text="推应用"
 	                    android:gravity="center"
 	                    android:background="@color/bg_color_showtui"
 	                    android:textColor="#f0f0f0"

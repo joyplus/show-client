@@ -80,7 +80,7 @@
 	                            android:textSize="35dp"
 	                            android:gravity="center_horizontal"
 	                            android:layout_alignParentBottom="true"
-	                            android:text="软件推送记录"/>
+	                            android:text="应用推送记录"/>
 	                    </RelativeLayout>
         </LinearLayout>
         <TextView android:layout_width="13dp"
