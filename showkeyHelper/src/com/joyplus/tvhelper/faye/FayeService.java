@@ -360,6 +360,9 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		// TODO Auto-generated method stub
 		URI url = URI.create(Constant.BASE_URL+"/uploadApk");
 		channel = "/" + PreferencesUtils.getChannel(this);
+		if(myClient!=null){
+			myClient.disconnectFromServer();
+		}
 		myClient = new FayeClient(handler, url, channel);
 		Log.d(TAG, "Server----->" + Constant.BASE_URL+"/uploadApk");
 		Log.d(TAG, "channel----->" + channel);

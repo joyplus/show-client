@@ -114,7 +114,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 					connectStatueText.setText("正在连接服务器···");
 					mHandler.removeCallbacksAndMessages(null);
 				}
-				Intent intent_local = new Intent(Global.ACTION_DISCONNECT_SERVER);
+				Intent intent_local = new Intent(Global.ACTION_DISCONNECT_SERVER_MAIN);
 				sendBroadcast(intent_local);
 				isConnect = false;
 			}if(Global.ACTION_PINCODE_REFRESH.equals(action)){
