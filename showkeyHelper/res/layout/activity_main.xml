@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
 
     <LinearLayout android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -43,6 +43,13 @@
 <!--     <include layout="@layout/layout_2"/> -->
     <include layout="@layout/layout_3"/>
 </com.joyplus.tvhelper.ui.MyScrollLayout>
+<com.joyplus.tvhelper.ui.NotificationView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="147dp"
+   	app:textColor="#f0f0f0"
+   	app:textSize="24dp"
+   	app:text="正在连接服务器···"
+    android:id="@+id/statue_connect"/>
 <TextView android:layout_width="fill_parent"
     android:paddingBottom="20dp"
     android:layout_height="90dp"

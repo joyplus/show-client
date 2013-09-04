@@ -2,6 +2,8 @@ package com.joyplus.tvhelper.entity;
 
 public class MoviePlayHistoryInfo {
 
+	
+	public static final int PLAY_TYPE_HIDE 	= -1;
 	public static final int PLAY_TYPE_ONLINE = 0;
 	public static final int PLAY_TYPE_LOCAL = PLAY_TYPE_ONLINE + 1;
 	public static final int PLAY_TYPE_BAIDU = PLAY_TYPE_LOCAL + 1;

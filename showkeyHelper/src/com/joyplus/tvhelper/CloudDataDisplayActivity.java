@@ -37,10 +37,12 @@ import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.ui.NotificationView;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
+import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
@@ -62,6 +64,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private List<MoviePlayHistoryInfo> playinfos;
 	private ImageView defult_img;
 	private MyApp app;
+	private NotificationView connectStatueText;
 	
 	private ExecutorService pool = Executors.newFixedThreadPool(5);
 	
@@ -131,6 +134,21 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			}else if(Global.ACTION_MOVIE_DOWNLOAD_FAILE.equals(action)){
 				Log.d(TAG, "CloudDataDisplayActivity onReceive" + action);
 				adpter_downloading.notifyDataSetChanged();
+			}else if(Global.ACTION_CONNECT_SUCCESS_MAIN.equals(action)){
+				connectStatueText.setText("已连接");
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						connectStatueText.setText("");
+					}
+				}, 2000);
+			}else if(Global.ACTION_DISCONNECT_SERVER_MAIN.equals(action)){
+				if(!"正在连接服务器···".equals(connectStatueText.getText())){
+					connectStatueText.setText("正在连接服务器···");
+					handler.removeCallbacksAndMessages(null);
+				}
 			}
 		}
 		
@@ -170,6 +188,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		selectedButon = title_playHistory;
 		selectedButon.setBackgroundResource(R.drawable.highlight);
 		selectedButon.setTextColor(Color.BLACK);
+		connectStatueText = (NotificationView) findViewById(R.id.statue_connect);
+		if(MainActivity.isConnect){
+			connectStatueText.setText("");
+		}else{
+			connectStatueText.setText("正在连接服务器···");
+		}
 		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
 		updateEditBottn();
@@ -180,6 +204,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_FAILE);
 		filter.addAction(Global.ACTION_MOVIE_DOWNLOAD_COMPLETE);
 		filter.addAction(Global.ACTION_DOWNLOAD_START);
+		filter.addAction(Global.ACTION_CONNECT_SUCCESS_MAIN);
+		filter.addAction(Global.ACTION_DISCONNECT_SERVER_MAIN);
 		registerReceiver(receiver, filter);
 		getLostUserPushMovie();
 	}
@@ -408,11 +434,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				iterator = playinfos.iterator();  
 		         while(iterator.hasNext()) {  
 		        	 MoviePlayHistoryInfo info = iterator.next();  
-		             if(info.getEdite_state()==PushedMovieDownLoadInfo.EDITE_STATUE_SELETED) {  
-							dbService.deleteMoviePlayHistory(info);
-							iterator.remove();  
+		             if(info.getEdite_state()==MoviePlayHistoryInfo.EDITE_STATUE_SELETED) {  
+		            	 info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_HIDE);
+		            	 dbService.updateMoviePlayHistory(info);
+						 iterator.remove();  
 		             }else{
-		            	 info.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_NOMAL);
+		            	 info.setEdite_state(MoviePlayHistoryInfo.EDITE_STATUE_NOMAL);
 		             }
 		               
 		         }
@@ -579,36 +606,55 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 							int push_id = item.getInt("id");
 //							String push_name = URLDecoder.decode(item.getString("name"), "utf-8");
 							String push_name = item.getString("name");
+//							String push_url = URLDecoder.decode(item.getString("playurl"), "utf-8");
 							String push_url = item.getString("playurl");
 							String push_play_url = item.getString("downurl");
+							String time_token = item.getString("time_token");
+							String md5_code = item.getString("md5_code");
 							int type = item.getInt("type");
-							if(type == 5){//漏掉的播放
-								MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
-								}
-							}else if(type == 6){//漏掉的下载
-								
-							}else if(type == 11){
-								MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
-								if(play_info == null){
-									play_info = new MoviePlayHistoryInfo();
-									play_info.setName(push_name);
-									play_info.setPush_id(push_id);
-									play_info.setPush_url(push_url);
-									play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
-									play_info.setRecivedDonwLoadUrls(push_play_url);
-									play_info.setDuration(Constant.DEFINATION_HD2);
-									play_info.setCreat_time(System.currentTimeMillis());
-									play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+							if(PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this)!=null &&PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this).equals(md5_code)){
+								if(type == 5){//漏掉的播放
+									MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										dbService.updateMoviePlayHistory(play_info);
+									}
+								}else if(type == 6){//漏掉的下载
+									
+								}else if(type == 11){
+									MoviePlayHistoryInfo play_info = dbService.hasMoviePlayHistory(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE, push_url);
+									if(play_info == null){
+										play_info = new MoviePlayHistoryInfo();
+										play_info.setName(push_name);
+										play_info.setPush_id(push_id);
+										play_info.setPush_url(push_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BAIDU);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setCreat_time(System.currentTimeMillis());
+										play_info.setTime_token(time_token+",");
+										play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
+									}else{
+										if(play_info.getTime_token()==null){
+											play_info.setTime_token("");
+										}
+										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										dbService.updateMoviePlayHistory(play_info);
+									}
 								}
 							}
 							updateMovieHistory(push_id);

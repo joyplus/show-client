@@ -9,9 +9,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -37,8 +35,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -86,6 +82,7 @@ import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
+import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.ArcView;
 import com.joyplus.tvhelper.ui.VideoView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
@@ -117,6 +114,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
+	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
+	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
@@ -146,7 +145,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	 */
 	private static final int STATUE_FAST_DRAG = STATUE_PAUSE + 1;
 
-	private static final int OFFSET = 33;
+	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
@@ -201,7 +200,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private LinearLayout mContinueLayout;
 	
 	/**
-	 * 暂停继续层
+	 * 缓冲速度
 	 */
 	private LinearLayout mDateLoadingLayout;
 	/**
@@ -277,6 +276,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	private Collection mSubTitleCollection = null;
 //	private int mStartTimeSubTitle,mEndTimeSubTitle;
 	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
+	
+	private List<String> subTitleUrlList = new ArrayList<String>();
+	private int currentSubtitleIndex = 0;//默认为第一个
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -374,6 +376,27 @@ public class VideoPlayerJPActivity extends Activity implements
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
 		registerReceiver(mReceiver, intentFilter);
 
+		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
+		seekBarWidthOffset = Utils.getStandardValue(getApplicationContext(), seekBarWidthOffset);
+		
+	}
+	
+	private String getUmengMd5(){
+		
+		String md5 = "";
+		if (PreferencesUtils.getPincodeMd5(this) == null ||
+				"".equals(PreferencesUtils.getPincodeMd5(this))) {
+			if (Constant.TestEnv) {
+				md5 = MobclickAgent.getConfigParams(this, "TEST_P2P_TV_MD5");
+			} else {
+				md5 = MobclickAgent.getConfigParams(this, "P2P_TV_MD5");
+			}
+
+		}else{
+			md5 = PreferencesUtils.getPincodeMd5(this);
+		}
+		Log.i(TAG, "md5--->" + md5);
+		return md5;
 	}
 	
 	private void dismissView(View v){
@@ -390,6 +413,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mNoticeLayout.setVisibility(View.VISIBLE);
 		mContinueLayout.setVisibility(View.GONE);
 		mControlLayout.setVisibility(View.GONE);
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
 		if (mStartRX == TrafficStats.UNSUPPORTED) {
 			mSpeedTextView
@@ -485,8 +509,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
 						//get subtitle
-						byte[] subTitle = XunLeiLiXianUtil.getSubtitle(VideoPlayerJPActivity.this,xllxFileInfo);
-						initSubTitleCollection(subTitle);
+						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
+						currentSubtitleIndex = 0;
+						initSubTitleCollection();
 						
 						if(list != null && list.size() > 0) {
 							
@@ -549,39 +574,74 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 	}
 	
-	private void initSubTitleCollection(byte[] subTitle){
-		
-		if(subTitle != null && subTitle.length > 3
-				&& mSubTitleCollection == null){
+	private void initSubTitleCollection(){
+		Log.i(TAG, "subTitleUrlList--->" + subTitleUrlList.size() + "currentSubtitleIndex--->" + currentSubtitleIndex);
+		if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
+			byte[] subTitle = HttpUtils.getBinary(subTitleUrlList.get(currentSubtitleIndex), null,null);
 			
-			Parser parser = new Parser();
-			
-			String charsetName = Utils.getCharset(subTitle, 128);
-			Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
-			if(charsetName.equals("")){
+			if(subTitle != null && subTitle.length > 3
+					&& mSubTitleCollection == null){
 				
-				boolean isUtf8 = Utils.isUTF_8(subTitle);
-				Log.i(TAG, "isUtf8--->" + isUtf8);
+				Parser parser = new Parser();
 				
-				if(!isUtf8){
+				String charsetName = Utils.getCharset(subTitle, 512);
+				Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
+				if(charsetName.equals("")){
 					
-					parser.setCharset("GBK");
-				} else {
+					boolean isUtf8 = Utils.isUTF_8(subTitle);
+					Log.i(TAG, "isUtf8--->" + isUtf8);
 					
-					parser.setCharset("UTF-8");
+					if(!isUtf8){
+						
+						parser.setCharset("GBK");
+					} else {
+						
+						parser.setCharset("UTF-8");
+					}
+				}else {
+					
+					parser.setCharset(charsetName);
 				}
-			}else {
-				
-				parser.setCharset(charsetName);
+				parser.parse(new ByteArrayInputStream(subTitle));
+				Log.d(TAG, "getElements().size()--->" + parser.getCollection().getElements().size());
+				if(parser.getCollection().getElements().size() > 2){
+					mSubTitleCollection = parser.getCollection();
+					if(mVideoView != null){
+						long currentPosition = mVideoView.getCurrentPosition();
+						org.blaznyoght.subtitles.model.Element element = getPreElement(currentPosition);
+						if(element != null){
+							Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
+							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
+							mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+							mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
+						}
+					}
+				}
+//				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
+				return;
 			}
-			parser.parse(new ByteArrayInputStream(subTitle));
+		}
+	}
+	
+	/**获取将要显示的元素**/
+	private org.blaznyoght.subtitles.model.Element getPreElement(long currentPosition){
+		
+		if(mSubTitleCollection != null){
 			
-			mSubTitleCollection = parser.getCollection();
-			Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.toString());
-			return;
+			for(int i=0;i<mSubTitleCollection.getElementSize();i++){
+				
+				org.blaznyoght.subtitles.model.Element element = 
+						mSubTitleCollection.getElements().get(i);
+				if(currentPosition < element.getStartTime().getTime()){
+					Log.i(TAG, "mSubTitleCollection.getElementSize()--->" + mSubTitleCollection.getElementSize() 
+							+ " i--->" + i
+							+ " element--->" + element.toString());
+					return element;
+				}
+			}
 		}
 		
-//		Utils.showToast(this, "获取字幕失败");
+		return null;
 	}
 
 	private Handler mHandler = new Handler() {
@@ -629,11 +689,12 @@ public class VideoPlayerJPActivity extends Activity implements
 							public void run() {
 								// TODO Auto-generated method stub
 								
-								String subTitleUrl = Constant.BASE_URL + "/xunlei/subtitle/?url="
+								String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
 										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
-										PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
-								byte[] arraySubTitleBytes = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
-								initSubTitleCollection(arraySubTitleBytes);
+										getUmengMd5();
+								subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
+								currentSubtitleIndex = 0;
+								initSubTitleCollection();
 							}
 						});
 
@@ -753,6 +814,44 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_DATALOADING_UPDATE_NETSPEED:
 				updateDataLoadingSpeed();
 				break;
+			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
+				org.blaznyoght.subtitles.model.Element element_show = 
+				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				if(element_show != null){
+					long currentPositionShow = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					//在字幕的显示时间段内
+					if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
+							&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+						mSubTitleTv.setText(element_show.getText().replaceAll("<font.*>", "").trim());
+					}
+					if(element_show.getEndTime().getTime() < currentPositionShow){
+						mSubTitleTv.setText("");
+						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
+						if(preElement_show != null){
+							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
+							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
+						}
+					}
+					if(preElement_show != null){
+						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
+						mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+					}
+				}
+				break;
+			case MESSAGE_SUBTITLE_END_HIDEN:
+				org.blaznyoght.subtitles.model.Element element_end = 
+				(org.blaznyoght.subtitles.model.Element) msg.obj;
+				if(element_end != null){
+					long currentPositionShow = mVideoView.getCurrentPosition();
+					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					if(preElement_show != null){
+						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
+						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
+					}
+				}
+				mSubTitleTv.setText("");
+				break;
 			default:
 				break;
 			}
@@ -768,8 +867,9 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private long getLoadingData(){
 		ApplicationInfo ai = getApplicationInfo();
-		return TrafficStats.getUidRxBytes(ai.uid) == TrafficStats.UNSUPPORTED ? 0
-				: (TrafficStats.getTotalRxBytes() / 1024);
+//		return TrafficStats.getUidRxBytes(ai.uid) == TrafficStats.UNSUPPORTED ? 0
+//				: (TrafficStats.getTotalRxBytes() / 1024);
+		return TrafficStats.getTotalRxBytes() / 1024;
 	}
 	
 	private void updateName() {
@@ -1020,11 +1120,14 @@ public class VideoPlayerJPActivity extends Activity implements
 //						}
 //					});
 //					
-					if(mSubTitleCollection == null){
+					if(subTitleUrlList.size() == 0){
 						zimuStrings.add(-1);//暂无字幕
 					}else{
-						zimuStrings.add(0);//字幕开
-						zimuStrings.add(1);//字幕关
+						for(int i=0; i<=subTitleUrlList.size(); i++){
+							zimuStrings.add(i);
+						}
+//						zimuStrings.add(0);//字幕关
+//						zimuStrings.add(1);//字幕开
 					}
 //					definationStrings.add("超    清");
 //					definationStrings.add("高    清");
@@ -1045,12 +1148,17 @@ public class VideoPlayerJPActivity extends Activity implements
 					
 					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
 					gallery.setSelection(definationStrings.indexOf(mDefination));
-					
+//					gallery.setOnKeyListener(new MenuKeyListener(dialog));
+//					gallery_zm.setOnKeyListener(new MenuKeyListener(dialog));
 					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
-					if(mSubTitleTv.getVisibility()==View.VISIBLE){
+					if(mSubTitleTv.getVisibility()==View.INVISIBLE){
 						gallery_zm.setSelection(0);
 					}else{
-						gallery_zm.setSelection(1);
+						if(zimuStrings.size()==1&&zimuStrings.get(0)==-1){
+							gallery_zm.setSelection(0);
+						}else{
+							gallery_zm.setSelection(currentSubtitleIndex+1);
+						}
 					}
 					
 					gallery.requestFocus();
@@ -1062,9 +1170,24 @@ public class VideoPlayerJPActivity extends Activity implements
 							dialog.dismiss();
 							if(gallery_zm.getChildCount()>1){
 								if(gallery_zm.getSelectedItemPosition()==0){
-									mSubTitleTv.setVisibility(View.VISIBLE);
-								}else{
 									mSubTitleTv.setVisibility(View.INVISIBLE);
+								}else{
+									mSubTitleTv.setVisibility(View.VISIBLE);
+									Log.i(TAG, "currentSubtitleIndex--->" + currentSubtitleIndex
+											+ " gallery_zm.getSelectedItemPosition()-->" + gallery_zm.getSelectedItemPosition());
+									if(currentSubtitleIndex + 1 !=  gallery_zm.getSelectedItemPosition()){
+										final int selection = gallery_zm.getSelectedItemPosition();
+										MyApp.pool.execute(new Runnable() {
+											
+											@Override
+											public void run() {
+												// TODO Auto-generated method stub
+												currentSubtitleIndex = selection;
+												currentSubtitleIndex -=1;
+												initSubTitleCollection();
+											}
+										});
+									}
 								}
 							}
 							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
@@ -1204,24 +1327,21 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
 		
-		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
-			
-			updateSubtitle();
-		}else {
-			
-			mCurSubTitleE = null;//当前
-			mBefSubTitleE = null;//之前
-			mSubTitleTv.setText("");
-		}
-		
-		
-		
+//		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
+//			
+//			updateSubtitle();
+//		}else {
+//			
+//			mCurSubTitleE = null;//当前
+//			mBefSubTitleE = null;//之前
+//			mSubTitleTv.setText("");
+//		}
 	}
 	
 	private void updateSubtitle(){
-		
-		if(mVideoView != null && mVideoView.getCurrentPosition() >= 0){
-			long currentPosition = mVideoView.getCurrentPosition();
+		long currentPosition = mVideoView.getCurrentPosition();
+		if(mVideoView != null && currentPosition >= 0){
+			
 			if(mSubTitleCollection != null){
 				
 				if(mCurSubTitleE == null) {
@@ -1254,7 +1374,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							}else {
 								
 								StringBuilder sb = new StringBuilder();
-								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank();i++){
+								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank()&&i<mSubTitleCollection.getElementSize();i++){
 									org.blaznyoght.subtitles.model.Element element = 
 											mSubTitleCollection.getElements().get(i);
 									sb.append(element.getText().replaceAll("<font.*>", ""));
@@ -1287,8 +1407,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void endUpdateSeekBar(){
 		
 		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-		mCurSubTitleE = null;//当前
-		mBefSubTitleE = null;//之前
+//		mCurSubTitleE = null;//当前
+//		mBefSubTitleE = null;//之前
 	}
 
 	private void showControlLayout() {
@@ -1556,7 +1676,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			parms.leftMargin = (int) mLeft;
 		else
 			parms.leftMargin = OFFSET;
-		parms.bottomMargin = 20 + 10;
+		parms.bottomMargin = Utils.getStandardValue(getApplicationContext(),(20 + 10));
 		mTimeLayout.setLayoutParams(parms);
 
 		mCurrentTimeTextView.setText(Utils.formatDuration(progress));
@@ -1650,30 +1770,30 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		case R.id.ib_control_bottom:
 			if (!isShoucang) {
-				String url = Constant.BASE_URL + "program/favority";
-
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("prod_id", mProd_id);
-
-				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-				cb.SetHeader(app.getHeaders());
-
-				cb.params(params).url(url).type(JSONObject.class)
-						.weakHandler(this, "favorityResult");
-				aq.ajax(cb);
+//				String url = Constant.BASE_URL + "program/favority";
+//
+//				Map<String, Object> params = new HashMap<String, Object>();
+//				params.put("prod_id", mProd_id);
+//
+//				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//				cb.SetHeader(app.getHeaders());
+//
+//				cb.params(params).url(url).type(JSONObject.class)
+//						.weakHandler(this, "favorityResult");
+//				aq.ajax(cb);
 			} else {// 取消收藏
-				String url = Constant.BASE_URL + "program/unfavority";
-
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("prod_id", mProd_id);
-
-				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-				cb.SetHeader(app.getHeaders());
-
-				cb.params(params).url(url).type(JSONObject.class)
-						.weakHandler(this, "unfavorityResult");
-
-				aq.ajax(cb);
+//				String url = Constant.BASE_URL + "program/unfavority";
+//
+//				Map<String, Object> params = new HashMap<String, Object>();
+//				params.put("prod_id", mProd_id);
+//
+//				AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//				cb.SetHeader(app.getHeaders());
+//
+//				cb.params(params).url(url).type(JSONObject.class)
+//						.weakHandler(this, "unfavorityResult");
+//
+//				aq.ajax(cb);
 			}
 			break;
 		default:
@@ -1693,6 +1813,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.postDelayed(mLoadingRunnable, 500);
 		}
 		mPercentTextView.setText("已完成0%");
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mPreLoadLayout.setVisibility(View.VISIBLE);
 		mNoticeLayout.setVisibility(View.VISIBLE);
 //		mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
@@ -2333,6 +2454,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		rxByteslast = 0;
 		mLoadingPreparedPercent = 0;
 		mEpisodeIndex = -1;
+		removeDialog(0);
 		mPercentTextView.setText(", 已完成"
 				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 		play_info = null;
@@ -2342,6 +2464,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_hd2.clear();
 		playUrls_mp4.clear();
 		mSubTitleCollection = null;
+		currentSubtitleIndex = 0;
+		subTitleUrlList.clear();
 		mSubTitleTv.setVisibility(View.VISIBLE);
 		initVedioDate();
 	}
@@ -2362,6 +2486,8 @@ public class VideoPlayerJPActivity extends Activity implements
 			Utils.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
 		}
 		
+		mHandler.removeCallbacksAndMessages(null);
+		
 		super.onDestroy();
 	}
 	
@@ -2370,9 +2496,15 @@ public class VideoPlayerJPActivity extends Activity implements
 		// TODO Auto-generated method stub
 		switch (id) {
 		case 0:
+			String message = "";
+			if(mProd_type == TYPE_PUSH || mProd_type == TYPE_XUNLEI){
+				message = "服务器小忙，请稍后重试";
+			}else{
+				message = "该视频无法播放";
+			}
 			Dialog alertDialog = new AlertDialog.Builder(this). 
             setTitle("提示"). 
-            setMessage("该视频无法播放"). 
+            setMessage(message). 
             setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 				@Override
@@ -2543,9 +2675,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			isRequset = true;	
 			playUrls.clear();
 			//updateXunleiurl
-			String url = Constant.BASE_URL + "/updateXunleiurl?url=" + play_info.getPush_url()
+			String url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
 					+ "&id=" + play_info.getPush_id()
-					+ "&md5_code=" + PreferencesUtils.getPincodeMd5(VideoPlayerJPActivity.this);
+					+ "&md5_code=" + getUmengMd5();
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {
@@ -2747,6 +2879,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = defination;
 		mVideoView.stopPlayback();
 		mStatue = STATUE_PRE_LOADING;
+		mDateLoadingLayout.setVisibility(View.GONE);
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -2844,6 +2977,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		Context c;
 		
 		public ZimuAdapter(Context c, List<Integer> list){
+			Log.i(TAG, "ZimuAdapter list--->" + list.size());
 			this.c = c;
 			this.list = list;
 		}
@@ -2851,6 +2985,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			Log.i(TAG, "ZimuAdapter getCount--->" + list.size());
 			return list.size();
 		}
 
@@ -2873,16 +3008,23 @@ public class VideoPlayerJPActivity extends Activity implements
 			tv.setTextColor(Color.WHITE);
 			tv.setBackgroundResource(R.drawable.bg_choose_defination_selector);
 			tv.setTextSize(25);
-			switch (list.get(position)) {
-			case -1://无字幕
-				tv.setText("暂无字幕");
-				break;
-			case 0://字幕开
-				tv.setText("开");
-				break;
-			case 1://字幕关
-				tv.setText("关");
-				break;
+			Log.i(TAG, "ZimuAdapter position--->" + position);
+			if(position>=0&&position<list.size()){
+				switch (list.get(position)) {
+				case -1://无字幕
+					tv.setText("暂无字幕");
+					break;
+				case 0://字幕关
+					tv.setText("关");
+					break;
+					
+				default:
+					tv.setText("字幕  " + list.get(position));
+					break;
+//				case 1://字幕开
+//					tv.setText("");
+//					break;
+				}
 			}
 			Gallery.LayoutParams param = new Gallery.LayoutParams(Utils.getStandardValue(VideoPlayerJPActivity.this,165), Utils.getStandardValue(VideoPlayerJPActivity.this,40));
 			tv.setGravity(Gravity.CENTER);
@@ -2891,6 +3033,4 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 
 	}
-	
-	
 }

@@ -28,7 +28,7 @@
         android:shadowRadius="2"
         android:text=""
         android:textColor="#ffffff"
-        android:textSize="35dp" />
+        android:textSize="36dp" />
 
     <RelativeLayout
         android:id="@+id/adsdkContent"
@@ -413,6 +413,7 @@
         android:id="@+id/ll_data_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="200dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone" >

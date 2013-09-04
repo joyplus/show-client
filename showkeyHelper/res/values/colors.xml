@@ -97,10 +97,13 @@
 	<color name="bg_color_tuisong">#60a239</color>
 	<color name="bg_color_zhibo">#d76c6a</color>
 	<color name="bg_color_xunlei">#636DF0</color>
-	<color name="bg_color_tuijian">#a16de9</color>
+	<!-- <color name="bg_color_tuijian">#a16de9</color> -->
+	<color name="bg_color_tuijian">#be7955</color>
+	<!-- <color name="bg_color_tuijian">#468966</color> -->
 	<color name="bg_color_jiasu">#87cd91</color>
-	<color name="bg_color_upan">#be7955</color>
-	<color name="bg_color_cesu">#468966</color>
+	<color name="bg_color_upan">#468966</color>
+	<!-- <color name="bg_color_upan">#be7955</color> -->
+	<!-- <color name="bg_color_cesu">#468966</color> -->
 	<color name="bg_color_guanli">#AA66CC</color>
 	<color name="bg_color_setting">#5e5f63</color>
 </resources>

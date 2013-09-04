@@ -7,6 +7,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,14 +45,16 @@ public class XunLeiLXActivity extends Activity {
 	private static final int REFESH_USERINFO = 3;
 	private static final int REFRESH_LIST = 4;
 	private static final int START_LOGIN = 5;
+	private static final int VERIFY_CODE_SUCCESS = 6;
+	private static final int VERIFY_CODE_FAIL = 7;
 
-	private View loginLayout, logoutLayout;
+	private View loginLayout, logoutLayout,verifyEtLayout,verifyBtLayout,verifyLayout;
 	private View userNameLayout, passwdLayout;
-	private EditText userNameEdit, passwdEdit;
+	private EditText userNameEdit, passwdEdit,verifyEdit;
 	private Button loginBt, logoutBt;
 	private TextView nickNameTv, userIdTv, vipRankTv, outDateTv;
 	private ExpandableListView playerListView;
-	private Button returnBt,refreshBt;
+	private Button returnBt,refreshBt,verifyBt;
 
 	private PlayExpandListAdapter playerExpandListAdapter;
 
@@ -110,6 +114,14 @@ public class XunLeiLXActivity extends Activity {
 
 		returnBt = (Button) findViewById(R.id.bt_back);
 		refreshBt = (Button) findViewById(R.id.bt_refresh_list);
+		
+		verifyEdit = (EditText) findViewById(R.id.et_verify_code);
+		verifyBt = (Button) findViewById(R.id.bt_verify_code);
+		
+		verifyEtLayout = findViewById(R.id.ll_et_verify_code);
+		verifyBtLayout = findViewById(R.id.ll_bt_verify_code);
+		
+		verifyLayout = findViewById(R.id.ll_verify_code);
 
 		playerListView = (ExpandableListView) findViewById(R.id.lv_movie);
 		playerListView.setGroupIndicator(null);
@@ -135,6 +147,18 @@ public class XunLeiLXActivity extends Activity {
 	}
 
 	private void addViewListener() {
+		
+		verifyBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(userNameEdit.getText().toString() != null 
+						&& !"".equals(userNameEdit.getText().toString())){
+					MyApp.pool.execute(getVerifyBitmap);
+				}
+			}
+		});
 		
 		refreshBt.setOnClickListener(new View.OnClickListener() {
 			
@@ -194,6 +218,38 @@ public class XunLeiLXActivity extends Activity {
 				}
 			}
 		});
+		
+		verifyEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if (hasFocus) {
+
+					verifyEtLayout
+							.setBackgroundResource(R.drawable.edit_focused);
+				} else {
+
+					verifyEtLayout.setBackgroundDrawable(null);
+				}
+			}
+		});
+		
+		verifyBt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if (hasFocus) {
+					
+					verifyBtLayout
+					.setBackgroundResource(R.drawable.edit_focused);
+				} else {
+					
+					verifyBtLayout.setBackgroundDrawable(null);
+				}
+			}
+		});
 
 		loginBt.setOnClickListener(new View.OnClickListener() {
 
@@ -227,6 +283,7 @@ public class XunLeiLXActivity extends Activity {
 				// TODO Auto-generated method stub
 
 				reset2Login();
+				verifyLayout.setVisibility(View.INVISIBLE);
 			}
 		});
 
@@ -819,7 +876,12 @@ public class XunLeiLXActivity extends Activity {
 				int loginErrorFlag = msg.arg1;
 				switch (loginErrorFlag) {
 				case 1:
-					Utils.showToast(XunLeiLXActivity.this, "获取验证码失败,稍后重试");
+					Utils.showToast(XunLeiLXActivity.this, "自动获取验证码失败");
+					verifyLayout.setVisibility(View.VISIBLE);
+					if(userNameEdit.getText().toString() != null 
+							&& !"".equals(userNameEdit.getText().toString())){
+						MyApp.pool.execute(getVerifyBitmap);
+					}
 					break;
 				case 2:
 					Utils.showToast(XunLeiLXActivity.this, "密码错误");
@@ -846,7 +908,19 @@ public class XunLeiLXActivity extends Activity {
 				reset2Login();
 				removeDialog(DIALOG_WAITING);
 				break;
-
+			case VERIFY_CODE_SUCCESS:
+				Bitmap bitmap = (Bitmap) msg.obj;
+				if(bitmap != null){
+					verifyBt.setBackgroundDrawable(new BitmapDrawable(getResources(),bitmap));
+				}else{
+					
+					verifyBt.setBackgroundDrawable(null);
+					Utils.showToast(XunLeiLXActivity.this, "获取验证码图片失败,检查网络是否连接");
+				}
+				
+				break;
+			case VERIFY_CODE_FAIL:
+				Utils.showToast(XunLeiLXActivity.this, "获取验证码图片失败,检查网络是否连接");
 			default:
 				break;
 			}
@@ -863,20 +937,18 @@ public class XunLeiLXActivity extends Activity {
 			int loginFlag = -10;
 
 			if (passwdEdit.getText().toString() != null
-					&& passwdEdit
-							.getText()
-							.toString()
+					&& passwdEdit.getText().toString()
 							.equals(XunLeiLiXianUtil
 									.getLoginUserPasswd(getApplicationContext()))) {
 
 				loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
 						userNameEdit.getText().toString(), passwdEdit.getText()
-								.toString(), true);
+								.toString(), verifyEdit.getText().toString());
 			} else {
 
 				loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
 						userNameEdit.getText().toString(), passwdEdit.getText()
-								.toString());
+								.toString(), verifyEdit.getText().toString());
 			}
 
 			if (loginFlag == 0) {
@@ -967,6 +1039,27 @@ public class XunLeiLXActivity extends Activity {
 			}
 		}
 	};
+	
+	private Runnable getVerifyBitmap = new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			if(userNameEdit.getText().toString() != null 
+					&& !"".equals(userNameEdit.getText().toString())){
+				Bitmap bitmap = XunLeiLiXianUtil.getVerifyCodeBitmap(getApplicationContext(),
+						userNameEdit.getText().toString());
+				if(bitmap != null){
+					
+					Message message = handler.obtainMessage(VERIFY_CODE_SUCCESS, bitmap);
+					handler.sendMessage(message);
+					return;
+				}
+			}
+			Message message = handler.obtainMessage(VERIFY_CODE_FAIL);
+			handler.sendMessage(message);
+		}
+	};
 
 	@Override
 	protected void onPause() {
@@ -980,6 +1073,13 @@ public class XunLeiLXActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		XunLeiLiXianUtil.saveVerifyCookies(getApplicationContext(), "");
+		super.onDestroy();
 	}
 
 }

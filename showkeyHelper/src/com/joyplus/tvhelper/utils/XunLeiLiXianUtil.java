@@ -3,13 +3,13 @@ package com.joyplus.tvhelper.utils;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
-import org.blaznyoght.subtitles.model.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +17,10 @@ import org.json.JSONTokener;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import com.joyplus.tvhelper.entity.SharpnessEnum;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
@@ -54,105 +57,137 @@ public class XunLeiLiXianUtil {
 	private static final String VER_CODE_URL = "http://login.xunlei.com/check";
 	
 	public static int CACHE_NUM = 7;
-	
-	public static int Login(Context context,String username,String password) {
+
+	public static int Login(Context context,String username,String password,String verifyCode) {
 		
-		return Login(context,username,password,false);
+		return Login(context,username,password,verifyCode,false);
 	}
 
-	public static int Login(Context context, String username, String password,boolean isMd5) {
+	public static int Login(Context context, String username, String password,String verifycode,boolean isMd5) {
 
 		int i = -1;// 登陆状态
+		boolean isVerifyCodeNull = true;
+		HttpResult localHttpResult = null;
+		Log.i(TAG, "verifycode--->" + verifycode);
+		if (verifycode == null || verifycode.equals("")) {
+			isVerifyCodeNull = true;
 
-		NameValuePair[] arrayOfNameValuePair = new NameValuePair[2];
+			NameValuePair[] arrayOfNameValuePair = new NameValuePair[2];
+			arrayOfNameValuePair[0] = new BasicNameValuePair("u", username);
+			arrayOfNameValuePair[1] = new BasicNameValuePair("cachetime",
+					String.valueOf(System.currentTimeMillis()));
+			localHttpResult = HttpClientHelper.get(VER_CODE_URL,
+					null, arrayOfNameValuePair);
 
-		arrayOfNameValuePair[0] = new BasicNameValuePair("u", username);
-		arrayOfNameValuePair[1] = new BasicNameValuePair("cachetime",
-				String.valueOf(System.currentTimeMillis()));
+			Cookie localCookie = null;
 
-		HttpResult localHttpResult = HttpClientHelper.get(VER_CODE_URL, null,
-				arrayOfNameValuePair);
+			if (localHttpResult != null) {
+				Log.i(TAG, "localHttpResult--->" + localHttpResult.toString());
+				localCookie = localHttpResult.getCookie("CHECK_RESULT");
+				Log.i(TAG, "localCookie--->" + localCookie);
+				if (localCookie != null) {
+					String cookieValue = localCookie.getValue();
+					Log.i(TAG,"localCookie.getValue()--->"+ localCookie.getValue());
 
-		Cookie localCookie = null;
-
-		if (localHttpResult != null) {
-
-			localCookie = localHttpResult.getCookie("CHECK_RESULT");
-		}
-
-		Log.i(TAG, "localCookie--->" + localCookie);
-
-		if (localCookie != null) {
-
-			String cookieValue = localCookie.getValue();
-			Log.i(TAG, "localCookie.getValue()--->" + localCookie.getValue());
-
-			if (cookieValue != null && cookieValue.length() >= 1) {
-
-				Log.i(TAG, "cookieValue.charAt(0)--->" + cookieValue.charAt(0));
-
-				if (cookieValue.charAt(0) == '1') {// 暂时不知道是0能够获取，还是非0能够获取
-
-					i = 1;// 获取验证码失败，请稍后再试
-				} else {
-
-					// [version: 0][name: check_result][value:0:!ZRw][domain:
-					// xunlei.com][path: /][expiry:null]
-					if (cookieValue.length() >= 2) {
-
-						String verifycode = cookieValue.substring(2);// [value:0:!ZRw]
-																		// 去冒号以后的值
-						// verifycode = "!2AW";网上获取，密码与预想一样
-						if (verifycode != null && !verifycode.equals("")) {// 成功获取验证码
-
-							NameValuePair[] arrayOfNameValuePair2 = new NameValuePair[5];
-							arrayOfNameValuePair2[0] = new BasicNameValuePair(
-									"u", username);
-							arrayOfNameValuePair2[1] = new BasicNameValuePair(
-									"login_enable", "1");
-							arrayOfNameValuePair2[2] = new BasicNameValuePair(
-									"login_hour", "720");
-							
-							if(!isMd5){
-								
-								arrayOfNameValuePair2[3] = new BasicNameValuePair(
-										"p", MD5Util.getMD5String(MD5Util
-												.getMD5String(MD5Util
-														.getMD5String(password))
-												+ verifycode.toUpperCase()));
-							}else {
-								
-								arrayOfNameValuePair2[3] = new BasicNameValuePair(
-										"p", MD5Util.getMD5String(MD5Util
-												.getMD5String(password)
-												+ verifycode.toUpperCase()));
-							}
-							
-							// Log.i(TAG, "UserPassword"+ password +
-							// " MD5 Password---->"+ arrayOfNameValuePair2[3]);
-							arrayOfNameValuePair2[4] = new BasicNameValuePair(
-									"verifycode", verifycode);
-
-							// post发送密码
-							HttpResult httpResult = HttpClientHelper.post(
-									LOGIN_URL, null, arrayOfNameValuePair2,
-									localHttpResult.getCookies());
-
-							if (httpResult != null
-									&& httpResult.getCookies() != null
-									&& httpResult.getCookies().length > 0) {
-
-								return getLoginFlag(context,
-										httpResult.getCookies());
+					if (cookieValue != null && cookieValue.length() >= 1) {
+						Log.i(TAG,"cookieValue.charAt(0)--->"+ cookieValue.charAt(0));
+						if (cookieValue.charAt(0) == '1') {// 暂时不知道是0能够获取，还是非0能够获取
+							i = 1;// 获取验证码失败，请稍后再试
+						} else {
+							// [version: 0][name:
+							// check_result][value:0:!ZRw][domain:
+							// xunlei.com][path: /][expiry:null]
+							if (cookieValue.length() >= 2) {
+								verifycode = cookieValue.substring(2);// [value:0:!ZRw] // 去冒号以后的值
 							}
 						}
 					}
 				}
 			}
+		} else {
+			isVerifyCodeNull = false;
+		}
 
+		Log.i(TAG, "username--->" + username);
+		// verifycode = "!2AW";网上获取，密码与预想一样
+		if (verifycode != null && !verifycode.equals("")) {// 成功获取验证码
+
+			NameValuePair[] arrayOfNameValuePair2 = new NameValuePair[5];
+			arrayOfNameValuePair2[0] = new BasicNameValuePair("u", username);
+			arrayOfNameValuePair2[1] = new BasicNameValuePair("login_enable","1");
+			arrayOfNameValuePair2[2] = new BasicNameValuePair("login_hour","720");
+
+			if (!isMd5) {
+				arrayOfNameValuePair2[3] = new BasicNameValuePair("p",
+						MD5Util.getMD5String(MD5Util.getMD5String(MD5Util
+								.getMD5String(password))
+								+ verifycode.toUpperCase()));
+			} else {
+				arrayOfNameValuePair2[3] = new BasicNameValuePair("p",
+						MD5Util.getMD5String(MD5Util.getMD5String(password)
+								+ verifycode.toUpperCase()));
+			}
+
+			// Log.i(TAG, "UserPassword"+ password +
+			// " MD5 Password---->"+ arrayOfNameValuePair2[3]);
+			arrayOfNameValuePair2[4] = new BasicNameValuePair("verifycode",
+					verifycode);
+			HttpResult httpResult = null;
+			if (isVerifyCodeNull) {
+
+				// post发送密码
+				if(localHttpResult != null){
+					
+					httpResult = HttpClientHelper.post(LOGIN_URL, null,
+							arrayOfNameValuePair2, localHttpResult.getCookies());
+				}
+			} else {
+
+				// post发送密码
+				Header[] arrayOfHeader = new Header[1];
+				arrayOfHeader[0] = new BasicHeader("cookie",
+						getVerifyCookie(context));
+				httpResult = HttpClientHelper.post(LOGIN_URL, arrayOfHeader,
+						arrayOfNameValuePair2, null);
+			}
+			
+			if (httpResult != null && httpResult.getCookies() != null
+					&& httpResult.getCookies().length > 0) {
+
+				return getLoginFlag(context, httpResult.getCookies());
+			}
 		}
 
 		return 1;// 获取验证码失败
+	}
+	
+	//获取验证码
+	public static Bitmap getVerifyCodeBitmap(Context context,String username){
+		
+		Header[] arrayOfHeader = new Header[2];
+		arrayOfHeader[0] = new BasicHeader("cookie", getVerifyCookie(context));
+		arrayOfHeader[1] = new BasicHeader("Referer","http://vod.xunlei.com/home.html");
+		byte[] bytes = null;
+		
+		HttpResult localHttpResult = HttpClientHelper.get("http://verify.xunlei.com/image?cachetime="
+				+ System.currentTimeMillis(),arrayOfHeader, null, null, 0);
+		
+		if ((localHttpResult != null)
+				&& (localHttpResult.getStatuCode() == 200)) {
+			
+			bytes = localHttpResult.getResponse();
+			saveVerifyCookies(context, localHttpResult.getCookies());
+//			Log.d("HttpUtils", "localHttpResult bitmap--->" + localHttpResult.toString());
+		}
+
+		if (bytes != null) {
+			Log.i(TAG, "bytes length-->" + bytes.length);
+			Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0,
+					bytes.length);
+			return bitmap;
+		}
+			
+		return null;
 	}
 
 	public static XLLXUserInfo getUser(Context context, Header header) {
@@ -478,9 +513,62 @@ public class XunLeiLiXianUtil {
 		return null;
 	}
 	
-	
-	public static byte[] getSubtitle4Push(String url,String appkey){
+	public static List<String> getSubtitleList(Context context,XLLXFileInfo xllxFileInfo){
 		
+		Log.i(TAG, "getSubtitle--->xllxFileInfo lx_gcid:" + xllxFileInfo.lx_gcid);
+		List<String> list = new ArrayList<String>();
+		Header[] arrayOfHeader = { new BasicHeader("cookie",getCookie(context)) };
+		
+		NameValuePair[] firstNameValuePair = new NameValuePair[4];
+		firstNameValuePair[0]= new BasicNameValuePair("gcid", xllxFileInfo.lx_gcid);
+		firstNameValuePair[1]= new BasicNameValuePair("cid", xllxFileInfo.lx_cid);
+		firstNameValuePair[2]= new BasicNameValuePair("userid", getUID(context));
+		firstNameValuePair[3]= new BasicNameValuePair("t", System.currentTimeMillis() + "");
+		
+		String subtitleList = HttpUtils.getContent(
+				"http://i.vod.xunlei.com/subtitle/list", arrayOfHeader,
+				firstNameValuePair);
+		Log.i(TAG, "getSubtitle--->autoloadStr:" + subtitleList);
+		if(subtitleList != null && !subtitleList.equals("")){
+			
+			try {
+				JSONArray subtitleJsonArray = ((JSONObject) new JSONTokener(subtitleList)
+					.nextValue()).getJSONArray("sublist");
+				if(subtitleJsonArray != null && subtitleJsonArray.length() > 0){
+					for(int i=0;i<subtitleJsonArray.length();i++){
+						
+						JSONObject subtitleJsonObject = subtitleJsonArray.getJSONObject(i);
+						if(subtitleJsonObject != null){
+							String subTitleUrl = subtitleJsonObject.getString("surl");
+							if(subTitleUrl != null && !subTitleUrl.equals("")
+									&& URLUtil.isNetworkUrl(subTitleUrl)){
+								if(subTitleUrl.contains("scid=")){
+									
+									list.add(subTitleUrl);
+								}else {
+									if(subTitleUrl.length() == subTitleUrl.indexOf(".srt") + 4){
+										list.add(subTitleUrl);
+									}
+								}
+//								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+//							Log.i(TAG, "getSubtitle--->subTitle:" + subTitle);
+							}
+						}
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+	
+	
+	public static List<String> getSubtitle4Push(String url,String appkey){
+		Log.i(TAG, "getSubtitle4Push---url--->" + url);
+		List<String> list = new ArrayList<String>();
 		Header[] arrayOfHeader = { new BasicHeader("app_key",appkey) };
 		
 		String subTitlesStr = HttpUtils.getContent(url, arrayOfHeader, null);
@@ -499,11 +587,16 @@ public class XunLeiLiXianUtil {
 						JSONArray subtitleContents = subtitlesJsonObject.getJSONArray("subtitles");
 						if(subtitleContents != null && subtitleContents.length() > 0){
 							
-							String subTitleUrl = subtitleContents.getString(0);
-							if(subTitleUrl != null && !subTitleUrl.equals("")){
+//							String subTitleUrl = subtitleContents.getString(0);
+							for(int i=0;i<subtitleContents.length();i++){
 								
-								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
-								return subTitle;
+								String subTitleUrl = subtitleContents.getString(i);
+								if(subTitleUrl != null && !subTitleUrl.equals("")
+										&& URLUtil.isNetworkUrl(subTitleUrl)){
+									list.add(subTitleUrl);
+//								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
+//								return subTitle;
+								}
 							}
 						}
 						
@@ -515,7 +608,7 @@ public class XunLeiLiXianUtil {
 			}
 		}
 		
-		return null;
+		return list;
 	}
 
 	public static ArrayList<VideoPlayUrl> getLXPlayUrl4Vod_dl_all(
@@ -732,6 +825,78 @@ public class XunLeiLiXianUtil {
 
 		return context.getSharedPreferences(XL_PREFERENCES,
 				Context.MODE_PRIVATE).getString("cookie", null);
+	}
+	
+	public static String getCookie(Cookie[] cookies){
+		
+		String str = null;
+		StringBuilder localStringBuilder = null;
+
+		if ((cookies != null) && (cookies.length > 0)) {
+			
+			localStringBuilder = new StringBuilder();
+			for (int i = 0; i < cookies.length; i++) {
+				Log.i(TAG, "cookies[]--->" +  cookies[i].toString());
+				if (cookies[i] != null) {
+
+					String[] tempStrs = new String[2];
+					tempStrs[0] = cookies[i].getName();
+					tempStrs[1] = cookies[i].getValue();
+					localStringBuilder.append(String.format("%s=%s", tempStrs));
+					if (i != cookies.length - 1) {
+
+						localStringBuilder.append(";");
+					}
+
+				}
+			}
+
+			str = localStringBuilder.toString();
+		}
+		Log.i(TAG, "cookies---->" + str);
+		
+		return str;
+	}
+	
+	public static void saveVerifyCookies(Context context, Cookie[] cookies) {
+
+		SharedPreferences localSharedPreferences = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE);
+		String cookie = getCookie(cookies);
+		Log.i(TAG, "head cookie--->" + cookie);
+		if(cookie != null && !cookie.equals("")){
+			
+			 SharedPreferences.Editor localEditor = localSharedPreferences
+			 .edit();
+			 localEditor.putString("verifycookie", cookie);
+			 localEditor.commit();
+		}
+	}
+	
+	public static void saveVerifyCookies(Context context, String cookie) {
+
+		SharedPreferences localSharedPreferences = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE);
+		Log.i(TAG, "head cookie--->" + cookie);
+		if(cookie != null && !cookie.equals("")){
+			
+			 SharedPreferences.Editor localEditor = localSharedPreferences
+			 .edit();
+			 localEditor.putString("verifycookie", cookie);
+			 localEditor.commit();
+		}else {
+			
+			 SharedPreferences.Editor localEditor = localSharedPreferences
+			 .edit();
+			 localEditor.putString("verifycookie", "");
+			 localEditor.commit();
+		}
+	}
+
+	public static String getVerifyCookie(Context context) {
+
+		return context.getSharedPreferences(XL_PREFERENCES,
+				Context.MODE_PRIVATE).getString("verifycookie", null);
 	}
 
 	private static void saveUsrname(Context context, String usrname) {

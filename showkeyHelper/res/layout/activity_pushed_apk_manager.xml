@@ -111,7 +111,7 @@
 	                <ListView android:layout_width="fill_parent"
 	                    android:layout_height="fill_parent"
 	                    android:divider="@null"
-	                    android:listSelector="@drawable/bg_xunlei_content_setting_selector"
+	                    android:listSelector="@drawable/bg_content_setting_selector"
 	                    android:id="@+id/listView">
 	                    
 	                </ListView>
@@ -125,16 +125,12 @@
 	    <LinearLayout android:layout_width="fill_parent"
 	        android:layout_height="117dp"
 	        android:orientation="horizontal">
-	        <com.joyplus.tvhelper.ui.NotificationView 
-	            android:layout_width="700dp"
-	            android:layout_height="wrap_content"
-	            android:id="@+id/notification"
-	            app:textColor="#f0f0f0"
-	            app:textSize="18dp"
-	            android:visibility="gone"
-	            app:text="今天已有推推    123 次"
-	            >
-	        </com.joyplus.tvhelper.ui.NotificationView>
+	        <com.joyplus.tvhelper.ui.NotificationView android:layout_width="300dp"
+			    android:layout_height="wrap_content"
+			   	app:textColor="#f0f0f0"
+			   	app:textSize="24dp"
+			   	app:text=""
+			    android:id="@+id/statue_connect"/>
 	        <LinearLayout android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:gravity="right|center_vertical"

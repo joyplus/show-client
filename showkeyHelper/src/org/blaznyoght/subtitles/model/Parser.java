@@ -98,7 +98,13 @@ public class Parser {
 		int match = 0;
 		while (m.find()) {
 			++match;
-			collection.getElements().add(getElement(m));
+			Element e = getElement(m);
+			if(collection.getElementSize() >= 1 && e.getStartTime().getTime() < 
+					collection.getElements().get(collection.getElementSize()-1)
+					.getStartTime().getTime()){
+				collection.getElements().remove(collection.getElementSize()-1);
+			}
+			collection.getElements().add(e);
 		}
 		collection.setCharset(getCharset());
 	}
