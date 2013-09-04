@@ -616,7 +616,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					}
 				}
-				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
+//				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
 				return;
 			}
 		}
