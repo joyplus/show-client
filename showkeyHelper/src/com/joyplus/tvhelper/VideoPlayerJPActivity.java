@@ -149,6 +149,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int seekBarWidthOffset = 40;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
+	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
@@ -612,9 +613,24 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(element != null){
 							Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
 							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
-							mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+							if(element.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
+								mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
+							}else {
+								
+								mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
+							}
 							mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
 						}
+					}
+				}else {
+					Log.i(TAG, "restart init");
+					if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
+						mHandler.removeMessages(MESSAGE_SUBTITLE_BEGAIN_SHOW);
+						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
+						subTitleUrlList.remove(currentSubtitleIndex);
+						currentSubtitleIndex = 0;
+						mSubTitleCollection = null;
+						initSubTitleCollection();
 					}
 				}
 //				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
@@ -625,6 +641,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	/**获取将要显示的元素**/
 	private org.blaznyoght.subtitles.model.Element getPreElement(long currentPosition){
+		Log.i(TAG, "getPreElement--->position:" + currentPosition);
 		
 		if(mSubTitleCollection != null){
 			
@@ -821,9 +838,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					long currentPositionShow = mVideoView.getCurrentPosition();
 					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
 					//在字幕的显示时间段内
-					if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
-							&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
-						mSubTitleTv.setText(element_show.getText().replaceAll("<font.*>", "").trim());
+					if(!element_show.getText().equals(mSubTitleTv.getText())){
+						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
+								&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+							mSubTitleTv.setText(element_show.getText());
+						}
 					}
 					if(element_show.getEndTime().getTime() < currentPositionShow){
 						mSubTitleTv.setText("");
@@ -835,7 +854,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 					if(preElement_show != null){
 						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
-						mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+						if(preElement_show.getStartTime().getTime() - currentPositionShow > SUBTITLE_DELAY_TIME_MAX){
+							mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
+						}else {
+							mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
+						}
 					}
 				}
 				break;
@@ -845,12 +868,14 @@ public class VideoPlayerJPActivity extends Activity implements
 				if(element_end != null){
 					long currentPositionShow = mVideoView.getCurrentPosition();
 					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
+					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
+						mSubTitleTv.setText("");
+					}
 					if(preElement_show != null){
 						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
 						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
 					}
 				}
-				mSubTitleTv.setText("");
 				break;
 			default:
 				break;
