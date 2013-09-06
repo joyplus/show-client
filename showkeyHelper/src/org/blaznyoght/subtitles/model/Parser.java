@@ -99,14 +99,18 @@ public class Parser {
 		while (m.find()) {
 			++match;
 			Element e = getElement(m);
-			if(collection.getElementSize() >= 1 && e.getStartTime().getTime() < 
+			if(collection.getElementSize() >= 1 ){
+				if(e.getStartTime().getTime() !=
 					collection.getElements().get(collection.getElementSize()-1)
 					.getStartTime().getTime()){
-				collection.getElements().remove(collection.getElementSize()-1);
+					collection.getElements().add(e);
+				}
+			}else {
+				collection.getElements().add(e);
 			}
-			collection.getElements().add(e);
 		}
 		collection.setCharset(getCharset());
+		java.util.Collections.sort(collection.getElements(), new SubTitleElementComparator());
 	}
 
 	public Collection getCollection() {

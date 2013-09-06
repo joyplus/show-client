@@ -842,15 +842,24 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
 								&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
 							mSubTitleTv.setText(element_show.getText());
+							mSubTitleTv.setTag(element_show.getEndTime().getTime());
 						}
 					}
 					if(element_show.getEndTime().getTime() < currentPositionShow){
 						mSubTitleTv.setText("");
+						mSubTitleTv.setTag(-1L);
 						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
 						if(preElement_show != null){
 							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
 							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
 						}
+					}
+					
+					long tagEndTime = (Long) mSubTitleTv.getTag();
+					if(!element_show.getText().equals(mSubTitleTv.getText()) && tagEndTime != -1
+							&& tagEndTime < currentPositionShow){
+						mSubTitleTv.setText("");
+						mSubTitleTv.setTag(-1L);
 					}
 					if(preElement_show != null){
 						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
@@ -870,6 +879,7 @@ public class VideoPlayerJPActivity extends Activity implements
 					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
 					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
 						mSubTitleTv.setText("");
+						mSubTitleTv.setTag(-1L);
 					}
 					if(preElement_show != null){
 						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
@@ -1352,88 +1362,11 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, time);
 		
-//		if(time == SEEKBAR_REFRESH_TIME && mStatue == STATUE_PLAYING){
-//			
-//			updateSubtitle();
-//		}else {
-//			
-//			mCurSubTitleE = null;//当前
-//			mBefSubTitleE = null;//之前
-//			mSubTitleTv.setText("");
-//		}
-	}
-	
-	private void updateSubtitle(){
-		long currentPosition = mVideoView.getCurrentPosition();
-		if(mVideoView != null && currentPosition >= 0){
-			
-			if(mSubTitleCollection != null){
-				
-				if(mCurSubTitleE == null) {
-					
-					for(int i=0;i<mSubTitleCollection.getElementSize();i++){
-						
-						org.blaznyoght.subtitles.model.Element element = 
-								mSubTitleCollection.getElements().get(i);
-						if(currentPosition < element.getStartTime().getTime()){
-							
-							mCurSubTitleE = element;
-							
-							break;
-						}
-					}
-				} else {
-					
-					long startTime = mCurSubTitleE.getStartTime().getTime();
-					long endTime = mCurSubTitleE.getEndTime().getTime();
-					
-					if(currentPosition - startTime > 0){
-						
-						if(mSubTitleTv.getText().toString().equals("")){
-
-							Log.d(TAG, "subtitle start--->startTime:" + startTime);
-							if(mBefSubTitleE == null
-									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 0
-									|| mCurSubTitleE.getRank() - mBefSubTitleE.getRank() == 1){
-								mSubTitleTv.setText(mCurSubTitleE.getText().replaceAll("<font.*>", "").trim());
-							}else {
-								
-								StringBuilder sb = new StringBuilder();
-								for(int i=mBefSubTitleE.getRank();i<mCurSubTitleE.getRank()&&i<mSubTitleCollection.getElementSize();i++){
-									org.blaznyoght.subtitles.model.Element element = 
-											mSubTitleCollection.getElements().get(i);
-									sb.append(element.getText().replaceAll("<font.*>", ""));
-//									if(i<=mCurSubTitleE.getRank() -1){
-//										
-//										sb.append("\n");
-//									}
-									mSubTitleTv.setText(sb.toString().trim());
-								}
-							}
-							
-							mBefSubTitleE = mCurSubTitleE;
-						}
-					}
-					
-					if (currentPosition - endTime > 0) {
-						Log.d(TAG, "subtitle over--->endTime:" + endTime);
-						if(!mSubTitleTv.getText().toString().equals("")){
-							
-							mSubTitleTv.setText("");
-							mCurSubTitleE = null;
-						}
-						
-					}
-				}
-			}
-		}
 	}
 	
 	private void endUpdateSeekBar(){
 		
 		mHandler.removeMessages(MESSAGE_UPDATE_PROGRESS);
-//		mCurSubTitleE = null;//当前
-//		mBefSubTitleE = null;//之前
 	}
 
 	private void showControlLayout() {
