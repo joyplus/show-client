@@ -855,7 +855,14 @@ public class VideoPlayerJPActivity extends Activity implements
 						}
 					}
 					
-					long tagEndTime = (Long) mSubTitleTv.getTag();
+					long tagEndTime = -1;
+					try {
+						if(mSubTitleTv.getTag() != null)
+						tagEndTime = (Long) mSubTitleTv.getTag();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if(!element_show.getText().equals(mSubTitleTv.getText()) && tagEndTime != -1
 							&& tagEndTime < currentPositionShow){
 						mSubTitleTv.setText("");
