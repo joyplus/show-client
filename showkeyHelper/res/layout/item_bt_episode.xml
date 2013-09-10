@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="fill_parent"
-    android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="fill_parent" 
+    android:paddingLeft="20dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 	<LinearLayout android:layout_width="fill_parent"
-	    android:layout_height="105dp" 
+	    android:layout_height="85dp" 
 	    android:gravity="center_vertical"
 	    android:paddingLeft="10dp"
 	    android:paddingRight="10dp"
@@ -38,6 +40,7 @@
 	        android:layout_marginLeft="30dp"
 	        android:layout_marginRight="30dp"
 	        android:id="@+id/movie_statue_icon"
+	        android:visibility="invisible"
 	        android:src="@drawable/icon_continue"/>
 	</LinearLayout>
 	<ImageView android:layout_width="fill_parent"

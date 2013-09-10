@@ -307,6 +307,7 @@ public class DBServices {
 //		values.put(DBConstant.KEY_SYN_C1, info.getDownload_url());
 		values.put(DBConstant.KEY_SYN_C2, info.getRecivedDonwLoadUrls());
 		values.put(DBConstant.KEY_SYN_C3, info.getTime_token());
+		values.put(DBConstant.KEY_SYN_C4, info.getBtEpisodesString());
 		
 		long _id = db.insert(DBConstant.TABLE_PLAY_INFO, null, values);
 		db.close();
@@ -324,6 +325,7 @@ public class DBServices {
 		values.put(DBConstant.KEY_SYN2, info.getDefination());
 		values.put(DBConstant.KEY_SYN3, info.getCreat_time());
 		values.put(DBConstant.KEY_SYN_C3, info.getTime_token());
+		values.put(DBConstant.KEY_SYN_C4, info.getBtEpisodesString());
 		if(info.getPlayback_time()>0){
 			values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
 		}
@@ -393,6 +395,7 @@ public class DBServices {
 //    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
     		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
     		info.setTime_token(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C3)));
+			info.setBtEpisodes(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C4)));
         	taskes.add(info);
         }
         cr.close();

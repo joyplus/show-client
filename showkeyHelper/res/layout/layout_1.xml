@@ -66,7 +66,6 @@
 	                            <LinearLayout android:layout_width="fill_parent"
 	                                android:layout_height="fill_parent"
 	                                android:gravity="center"
-	                                android:paddingBottom="45dp"
 	                                android:layout_weight="1">
 	                                <ImageView android:layout_width="wrap_content"
 		                                android:src="@drawable/main_icon_showtui"
@@ -78,6 +77,7 @@
 	                            android:layout_height="wrap_content"
 	                            android:textColor="#f0f0f0"
 	                            android:textSize="35dp"
+	                            android:visibility="gone"
 	                            android:gravity="center_horizontal"
 	                            android:layout_alignParentBottom="true"
 	                            android:text="软件推送记录"/>

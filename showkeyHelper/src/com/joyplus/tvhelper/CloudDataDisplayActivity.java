@@ -23,15 +23,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.adapter.MovieDownLoadedAdapter;
 import com.joyplus.tvhelper.adapter.MoviePlayHistoryAdapter;
 import com.joyplus.tvhelper.adapter.PushedMovieDownLoadAdapter;
 import com.joyplus.tvhelper.db.DBServices;
+import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
@@ -46,11 +49,11 @@ import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
-public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener {
+public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener, OnGroupClickListener, OnChildClickListener {
 
 	private static final String TAG = "CloudDataDisplayActivity";
 	
-	private ListView listView;
+	private ExpandableListView listView;
 	private PushedMovieDownLoadAdapter adpter_downloading;
 	private MovieDownLoadedAdapter adpter_downloaded;
 	private MoviePlayHistoryAdapter adpter_play_history;
@@ -163,7 +166,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		deleteButton = (Button) findViewById(R.id.del_Button);
 		cancleButton = (Button) findViewById(R.id.cancel_Button);
 		editeButton = (Button) findViewById(R.id.edit_Button);
-		listView = (ListView) findViewById(R.id.movieList);
+		listView = (ExpandableListView) findViewById(R.id.movieList);
 		title_playHistory = (Button) findViewById(R.id.title_play_history);
 		title_downloading = (Button) findViewById(R.id.title_downloading);
 		title_downloaded = (Button) findViewById(R.id.title_downloaded);
@@ -184,6 +187,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		adpter_downloaded = new MovieDownLoadedAdapter(this, downloadedMovies);
 		adpter_play_history = new MoviePlayHistoryAdapter(this, playinfos);
 		listView.setAdapter(adpter_play_history);
+		listView.setGroupIndicator(null);
+		listView.setOnGroupClickListener(this);
+		listView.setOnChildClickListener(this);
 		selectedIndex = 0;
 		selectedButon = title_playHistory;
 		selectedButon.setBackgroundResource(R.drawable.highlight);
@@ -194,7 +200,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		}else{
 			connectStatueText.setText("正在连接服务器···");
 		}
-		listView.setOnItemClickListener(this);
+//		listView.setOnItemClickListener(this);
 		downloadManager = DownloadManager.getInstance(this);
 		updateEditBottn();
 		app = (MyApp) getApplication();
@@ -688,5 +694,111 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				Log.d(TAG, "updateHistory response-->" + str);
 			}
 		});
+	}
+
+	@Override
+	public boolean onGroupClick(ExpandableListView parent, View v,
+			int groupPosition, long id) {
+		// TODO Auto-generated method stub
+		if(playinfos.get(groupPosition).getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
+			return false;
+		}else{
+			MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
+			switch (playInfo.getEdite_state()) {
+			case MoviePlayHistoryInfo.EDITE_STATUE_NOMAL:
+				if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
+//					if(playInfo.getRecivedDonwLoadUrls().startsWith("bdhd")){
+					playInfo.setCreat_time(System.currentTimeMillis());
+					dbService.updateMoviePlayHistory(playInfo);
+						Intent intent_baidu = new Intent(this,PlayBaiduActivity.class);
+						intent_baidu.putExtra("url", playInfo.getRecivedDonwLoadUrls());
+						intent_baidu.putExtra("name", playInfo.getName());
+						intent_baidu.putExtra("push_url", playInfo.getPush_url());
+						intent_baidu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intent_baidu);
+//					}
+				}else{
+					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//					intent.putExtra("ID", json.getString("prod_id"));
+//					playDate.prod_id = data.getString("id");
+//					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+//					playDate.prod_type = playInfo.getPlay_type();
+					playDate.prod_name = playInfo.getName();
+					if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+						playDate.prod_url = playInfo.getLocal_url();
+						playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+					}else{
+//						playDate.prod_url = playInfo.getDownload_url();
+						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+					}
+					playDate.obj = playInfo;
+					Log.d(TAG, "prod_type" + playDate.prod_type);
+//					playDate.prod_src = json.getString("prod_src");
+					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+					playDate.prod_qua = playInfo.getDefination();
+//					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//						if(json.has("prod_subname")){//旧版android 没有传递该参数
+//							playDate.prod_sub_name = json.getString("prod_subname");
+//						}else{
+//							playDate.prod_type = -1;
+//						}
+//					}
+					app.setmCurrentPlayDetailData(playDate);
+					app.set_ReturnProgramView(null);
+					startActivity(intent);
+				}
+				break;
+			case MoviePlayHistoryInfo.EDITE_STATUE_EDIT:
+				playInfo.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
+				adpter_play_history.notifyDataSetChanged();
+				break;
+			case MoviePlayHistoryInfo.EDITE_STATUE_SELETED:
+				playInfo.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
+				adpter_play_history.notifyDataSetChanged();
+				break;
+			}
+			return true;
+		}
+		
+	}
+
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v,
+			int groupPosition, int childPosition, long id) {
+		// TODO Auto-generated method stub
+		MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
+		BTEpisode epInfo = playInfo.getBtEpisodes().get(childPosition);
+		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//		intent.putExtra("ID", json.getString("prod_id"));
+//		playDate.prod_id = data.getString("id");
+//		playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
+//		playDate.prod_type = playInfo.getPlay_type();
+		playDate.prod_name = playInfo.getName();
+//		if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
+//			playDate.prod_url = playInfo.getLocal_url();
+//			playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+//		}else{
+//			playDate.prod_url = playInfo.getDownload_url();
+		playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
+		playDate.prod_sub_name = epInfo.getName();
+//		}
+		playDate.obj = playInfo;
+		Log.d(TAG, "prod_type" + playDate.prod_type);
+//		playDate.prod_src = json.getString("prod_src");
+		playDate.prod_time = Math.round(epInfo.getPlayback_time()*1000);
+		playDate.prod_qua = epInfo.getDefination();
+//		if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
+//			if(json.has("prod_subname")){//旧版android 没有传递该参数
+//				playDate.prod_sub_name = json.getString("prod_subname");
+//			}else{
+//				playDate.prod_type = -1;
+//			}
+//		}
+		app.setmCurrentPlayDetailData(playDate);
+		app.set_ReturnProgramView(null);
+		startActivity(intent);
+		return true;
 	}
 }
