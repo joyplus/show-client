@@ -76,6 +76,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tvhelper.db.DBServices;
+import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
@@ -120,6 +121,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
 	public static final int TYPE_LOCAL = TYPE_PUSH -1;
+	public static final int TYPE_PUSH_BT_EPISODE = TYPE_LOCAL -1;
 	
 	private MoviePlayHistoryInfo play_info;
 	private boolean isRequset = false;
@@ -441,7 +443,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
 		
-		if(mProd_type == TYPE_PUSH || mProd_type == TYPE_LOCAL){
+		if(mProd_type == TYPE_PUSH || mProd_type == TYPE_LOCAL|| mProd_type == TYPE_PUSH_BT_EPISODE){
 			play_info = (MoviePlayHistoryInfo) playDate.obj;
 		}
 
@@ -456,46 +458,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
-		if(mProd_type != TYPE_XUNLEI) {
-			
-			if(mProd_type == TYPE_LOCAL){
-				if(currentPlayUrl!=null){
-					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-				}
-				return;
-			}
-			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
-				if (mProd_type<0) {
-//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-					if(mProd_type == TYPE_PUSH){
-						new Thread(new UrlRedirectTask()).start();
-					}
-					return ;
-				} else {
-					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
-
-						m_ReturnProgramView = app.get_ReturnProgramView();
-						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-					} else {// 如果为空，就重新获取
-
-						getProgramViewDetailServiceData();
-					}
-				}
-			} else {
-				if(mProd_type == TYPE_PUSH){
-					MyApp.pool.execute(new getPlayList());
-				}else{
-					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
-
-						m_ReturnProgramView = app.get_ReturnProgramView();
-						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-					} else {// 如果为空，就重新获取
-
-						getProgramViewDetailServiceData();
-					}
-				}
-			}
-		}else {//迅雷 传递-10
+		switch (mProd_type) {
+		case TYPE_XUNLEI://迅雷 传递-10
 			
 			//取list
 			MyApp.pool.execute(new Runnable() {
@@ -557,7 +521,6 @@ public class VideoPlayerJPActivity extends Activity implements
 									playUrls.add(url);
 								}
 							}
-							
 						}
 					}
 					initFourList();
@@ -565,14 +528,153 @@ public class VideoPlayerJPActivity extends Activity implements
 					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}
 			});
-//			URLS_INDEX url = new URLS_INDEX();
-//			url.defination_from_server ="hd2";
-//			url.source_from = "xunlei";
-//			url.url ="";
-			
-//			playUrls = new ArrayList<URLS_INDEX>
-			
+			break;
+		case TYPE_LOCAL: //本地
+			if(currentPlayUrl!=null){
+				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			}else{
+				finish();
+			}
+			break;
+		case TYPE_PUSH: //推送
+			MyApp.pool.execute(new getPlayList());
+			break;
+		case TYPE_PUSH_BT_EPISODE:// BT聚集
+			MyApp.pool.execute(new getEpisodePlayUrls());
+			break;
+		default:
+			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
+				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			}else{
+				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+
+					m_ReturnProgramView = app.get_ReturnProgramView();
+					mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+				} else {// 如果为空，就重新获取
+					getProgramViewDetailServiceData();
+				}
+			}
+			break;
 		}
+//		if(mProd_type != TYPE_XUNLEI) {
+//			
+//			if(mProd_type == TYPE_LOCAL){
+//				if(currentPlayUrl!=null){
+//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//				}
+//				return;
+//			}
+//			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
+//				if (mProd_type<0) {
+////					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//					if(mProd_type == TYPE_PUSH){
+//						new Thread(new UrlRedirectTask()).start();
+//					}
+//					return ;
+//				} else {
+//					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+//
+//						m_ReturnProgramView = app.get_ReturnProgramView();
+//						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+//					} else {// 如果为空，就重新获取
+//
+//						getProgramViewDetailServiceData();
+//					}
+//				}
+//			} else {
+//				if(mProd_type == TYPE_PUSH){
+//					MyApp.pool.execute(new getPlayList());
+//				}else if(){
+//					
+//				}else{
+//					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+//
+//						m_ReturnProgramView = app.get_ReturnProgramView();
+//						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+//					} else {// 如果为空，就重新获取
+//
+//						getProgramViewDetailServiceData();
+//					}
+//				}
+//			}
+//		}else {//迅雷 传递-10
+//			
+//			//取list
+//			MyApp.pool.execute(new Runnable() {
+//				
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					
+//					XLLXFileInfo xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
+//					if(xllxFileInfo != null && !xllxFileInfo.isDir) {
+//						
+//						ArrayList<VideoPlayUrl> list = 
+//								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
+//						//get subtitle
+//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
+//						currentSubtitleIndex = 0;
+//						initSubTitleCollection();
+//						
+//						if(list != null && list.size() > 0) {
+//							
+//							if(playUrls != null && playUrls.size() > 0) {
+//								
+//								playUrls.clear();
+//							}
+//							for(int i=0;i<list.size();i++) {
+//								
+//								VideoPlayUrl videoPlayUrl = list.get(i);
+//								Log.i(TAG, "VideoPlayUrl--->" + videoPlayUrl.toString());
+//								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
+//									
+//									URLS_INDEX url = new URLS_INDEX();
+//									url.url = videoPlayUrl.playurl;
+//									url.source_from = "XUNLEI";
+//									if(videoPlayUrl.isCanDrag){// can drag hd2 hd mp4 
+//										
+//										if(videoPlayUrl.sharp != null) {
+//											
+//											int index = videoPlayUrl.sharp.getIndex();
+//											switch (index) {
+//											case 0:
+//												url.defination_from_server ="mp4";
+//												break;
+//											case 2:
+//												url.defination_from_server ="hd";
+//												break;
+//											case 3:
+//												url.defination_from_server ="hd2";
+//												break;
+//
+//											default:
+//												break;
+//											}
+//										}
+//									}else {//can't drag flv
+//										url.defination_from_server ="flv";
+////										playUrls_flv.a
+//									}
+//								
+//									playUrls.add(url);
+//								}
+//							}
+//							
+//						}
+//					}
+//					initFourList();
+//					sortPushUrls(mDefination);
+//					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+//				}
+//			});
+////			URLS_INDEX url = new URLS_INDEX();
+////			url.defination_from_server ="hd2";
+////			url.source_from = "xunlei";
+////			url.url ="";
+//			
+////			playUrls = new ArrayList<URLS_INDEX>
+			
+//		}
 	}
 	
 	private void initSubTitleCollection(){
@@ -927,6 +1029,9 @@ public class VideoPlayerJPActivity extends Activity implements
 		case 3:
 			mVideoNameText.setText(mProd_name + " " + mProd_sub_name);
 			break;
+		case TYPE_PUSH_BT_EPISODE:
+			mVideoNameText.setText(mProd_sub_name);
+			break;
 		default:
 			mVideoNameText.setText(mProd_name);
 		}
@@ -1118,7 +1223,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
-			if(mStatue == STATUE_PLAYING&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI)&&mDateLoadingLayout.getVisibility()!=View.VISIBLE){
+			if(mStatue == STATUE_PLAYING&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE)&&mDateLoadingLayout.getVisibility()!=View.VISIBLE){
 				try{
 					final Dialog dialog = new AlertDialog.Builder(this).create();
 					dialog.show();
@@ -1924,7 +2029,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
 			Log.d(TAG, "type---->" + playUrls.get(currentPlayIndex).defination_from_server);
-			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_XUNLEI){
+			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE){
 				mDefinationIcon.setVisibility(View.VISIBLE);
 				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
 					mDefinationIcon.setImageResource(R.drawable.icon_def_hd2);
@@ -2316,7 +2421,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_LOCAL){
+			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_LOCAL||mProd_type == TYPE_PUSH_BT_EPISODE){
 				if(duration-curretnPosition<10*1000&&duration>0){
 					saveToDB(duration / 1000, (duration / 1000) -10);
 				}else{
@@ -2330,36 +2435,45 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void saveToDB(long duration, long playBackTime) {
 		//save play date
 		Log.d(TAG, "mProd_type---------------->" + mProd_type);
-		play_info.setDuration((int) duration);
-		play_info.setPlayback_time((int) playBackTime);
-		if(mProd_type == TYPE_PUSH){
-			play_info.setDefination(mDefination);
-//			play_info.setDownload_url(currentPlayUrl);
-		}else if(mProd_type == TYPE_LOCAL){
-			play_info.setLocal_url(currentPlayUrl);
-		}
-		play_info.setCreat_time(System.currentTimeMillis());
-//		MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
-//		info.setDuration((int) duration);
-//		info.setPlayback_time((int) playBackTime);
-//		info.setName(mProd_name);
+		Log.d(TAG, "mEpisodeIndex---------------->" + mEpisodeIndex);
 		DBServices services = DBServices.getInstance(this);
-//		if(mProd_type == TYPE_PUSH){
-//			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
-//			info.setPush_url(currentPlayUrl);
-////			services.insertMoviePlayHistory(info);
-//		}else if(mProd_type == TYPE_LOCAL){
-//			info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
-//			info.setLocal_url(currentPlayUrl);
-////			services.insertMoviePlayHistory(info);
-//		}
-//		if(services.hasMoviePlayHistory(info)){
-//			Log.d(TAG, "updateMoviePlayHistory");
+		if(mProd_type == TYPE_PUSH_BT_EPISODE){
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int) duration);
+			play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
+			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
-//		}else{
-//			Log.d(TAG, "insertMoviePlayHistory");
-//			services.insertMoviePlayHistory(info);
-//		}
+		}else{
+			play_info.setDuration((int) duration);
+			play_info.setPlayback_time((int) playBackTime);
+			if(mProd_type == TYPE_PUSH){
+				play_info.setDefination(mDefination);
+//				play_info.setDownload_url(currentPlayUrl);
+			}else if(mProd_type == TYPE_LOCAL){
+				play_info.setLocal_url(currentPlayUrl);
+			}
+			play_info.setCreat_time(System.currentTimeMillis());
+//			MoviePlayHistoryInfo info = new MoviePlayHistoryInfo();
+//			info.setDuration((int) duration);
+//			info.setPlayback_time((int) playBackTime);
+//			info.setName(mProd_name);
+//			if(mProd_type == TYPE_PUSH){
+//				info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
+//				info.setPush_url(currentPlayUrl);
+////				services.insertMoviePlayHistory(info);
+//			}else if(mProd_type == TYPE_LOCAL){
+//				info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_LOCAL);
+//				info.setLocal_url(currentPlayUrl);
+////				services.insertMoviePlayHistory(info);
+//			}
+//			if(services.hasMoviePlayHistory(info)){
+//				Log.d(TAG, "updateMoviePlayHistory");
+				services.updateMoviePlayHistory(play_info);
+//			}else{
+//				Log.d(TAG, "insertMoviePlayHistory");
+//				services.insertMoviePlayHistory(info);
+//			}
+		}
 	}
 	
 	@Override
@@ -2997,5 +3111,68 @@ public class VideoPlayerJPActivity extends Activity implements
 			return tv;
 		}
 
+	}
+	
+	class getEpisodePlayUrls implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+			for(int i=0 ; i<play_info.getBtEpisodes().size(); i++){
+				BTEpisode e = play_info.getBtEpisodes().get(i);
+				if(mProd_sub_name!=null&&mProd_sub_name.equals(e.getName())){
+					mEpisodeIndex = i;
+				}
+			}
+			Log.d(TAG, "mEpisodeIndex---------------->" + mEpisodeIndex);
+			String url = Constant.BASE_URL + "/joyplus/produrl?id=" + play_info.getPush_id()
+					+ "&name=" + URLEncoder.encode(mProd_sub_name) 
+					+ "&md5_code=" + getUmengMd5()
+					+ "&mac_address=" + Utils.getMacAdd(VideoPlayerJPActivity.this);
+			String date_str = HttpTools.get(VideoPlayerJPActivity.this, url);
+			Log.d(TAG, date_str);
+			try{
+				JSONObject date = new JSONObject(date_str);
+				boolean haserror = date.getBoolean("error");
+				if(!haserror){
+					String downurls = date.getString("downurl");
+					String data = DesUtils.decode(Constant.DES_KEY, downurls);
+					Log.d(TAG, "getPlayList--->data:" + data);
+					String[] urls = data.split("\\{mType\\}");
+//					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+					playUrls.clear();
+//					playUrls_flv.clear();
+//					playUrls_hd.clear();
+//					playUrls_hd2.clear();
+//					playUrls_mp4.clear();
+					for(String str : urls){
+						URLS_INDEX url_index_info = new URLS_INDEX();
+						String[] p = str.split("\\{m\\}");
+						if(p.length<2){
+							continue;
+						}
+						url_index_info.defination_from_server = p[0];
+						url_index_info.url = p[1];
+//						if("hd2".equalsIgnoreCase(p[0])){
+//							playUrls_hd2.add(url_index_info);
+//						}else if("hd".equalsIgnoreCase(p[0])){
+//							playUrls_hd.add(url_index_info);
+//						}else if("mp4".equalsIgnoreCase(p[0])){
+//							playUrls_mp4.add(url_index_info);
+//						}else{
+//							playUrls_flv.add(url_index_info);;
+//						}
+						playUrls.add(url_index_info);
+					}
+					initFourList();
+					sortPushUrls(mDefination);
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		
 	}
 }

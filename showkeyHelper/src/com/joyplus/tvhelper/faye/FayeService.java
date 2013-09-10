@@ -36,6 +36,7 @@ import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.ApkDownloadInfoParcel;
 import com.joyplus.tvhelper.entity.ApkInfo;
+import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
@@ -1271,6 +1272,20 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						data = json.getJSONObject("body");
 						int push_id = Integer.valueOf(data.getString("id"));
 						String time_token = data.getString("time");
+						List<BTEpisode> es = null; 
+						if(data.has("prodName")){
+							es = new ArrayList<BTEpisode>();
+							JSONArray array = data.getJSONArray("prodName");
+							Log.d(TAG, array.toString());
+							for(int i = 0; i< array.length() ; i++){
+								BTEpisode e = new BTEpisode();
+								e.setDefination(Constant.DEFINATION_HD2);
+								e.setName(array.getString(i));
+								es.add(e);
+								Log.d(TAG, array.getString(i));
+							}
+							
+						}
 //						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
 //						Log.d(TAG, "time ---->" + time);
 //						if(time>TIME_OUT){
@@ -1307,6 +1322,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setDefination(Constant.DEFINATION_HD2);
 							play_info.setCreat_time(System.currentTimeMillis());
 							play_info.setTime_token(time_token+",");
+							if(es!=null && es.size()>0){
+								play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+								play_info.setBtEpisodes(es);
+							}
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						}else{
 							play_info.setDefination(Constant.DEFINATION_HD2);
@@ -1317,6 +1336,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 								play_info.setTime_token("");
 							}
 							play_info.setTime_token(play_info.getTime_token() + time_token+",");
+							if(es!=null && es.size()>0){
+								play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+								play_info.setBtEpisodes(es);
+							}
 							services.updateMoviePlayHistory(play_info);
 						}
 						push_type = 1;
