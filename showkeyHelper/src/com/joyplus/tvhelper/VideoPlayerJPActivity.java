@@ -1340,7 +1340,12 @@ public class VideoPlayerJPActivity extends Activity implements
 							gallery_zm.setSelection(0);
 						}else{
 //							gallery_zm.setSelection(currentSubtitleIndex+1);
-							gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
+							if(mSubTitleView.getVisibility() == View.INVISIBLE){
+								gallery_zm.setSelection(0);
+							}else{
+								
+								gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
+							}
 						}
 					}
 					
