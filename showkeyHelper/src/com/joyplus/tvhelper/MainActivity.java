@@ -192,7 +192,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
 		UmengUpdateAgent.setUpdateAutoPopup(false);
 		UmengUpdateAgent.update(this);
-		MobclickAgent.setDebugMode(true);
+		MobclickAgent.setDebugMode(false);
 		;
 		MobclickAgent.updateOnlineConfig(this);
 		
