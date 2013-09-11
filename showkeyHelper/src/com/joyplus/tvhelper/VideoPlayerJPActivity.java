@@ -483,6 +483,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo));
+						mSubTitleView.displaySubtitle();
 //						currentSubtitleIndex = 0;
 //						initSubTitleCollection();
 						
