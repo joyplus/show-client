@@ -1364,7 +1364,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //									mSubTitleTv.setVisibility(View.VISIBLE);
 									Log.i(TAG, "currentSubtitleIndex--->" + mJoyplusSubManager.getCurrentSubIndex()
 											+ " gallery_zm.getSelectedItemPosition()-->" + gallery_zm.getSelectedItemPosition());
-									if(mJoyplusSubManager.getCurrentSubIndex() + 1 !=  gallery_zm.getSelectedItemPosition()){
+									if((gallery_zm.getSelectedItemPosition()==0 && mSubTitleView.getVisibility() == View.INVISIBLE)||
+											mJoyplusSubManager.getCurrentSubIndex() + 1 !=  gallery_zm.getSelectedItemPosition()){
 										final int selection = gallery_zm.getSelectedItemPosition();
 										MyApp.pool.execute(new Runnable() {
 											
