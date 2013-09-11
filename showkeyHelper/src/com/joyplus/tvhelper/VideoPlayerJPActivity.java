@@ -1113,6 +1113,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		mSubTitleView = (SubTitleView) findViewById(R.id.tv_subtitle);
 		mDataLoadingSpeedText = (TextView) findViewById(R.id.tv_dataloading_network_kb);
 		
+		mSubTitleView.Init(this);
+		
 		mPreButton.setOnClickListener(this);
 		mNextButton.setOnClickListener(this);
 		mTopButton.setOnClickListener(this);
@@ -1351,14 +1353,8 @@ public class VideoPlayerJPActivity extends Activity implements
 //												currentSubtitleIndex = selection;
 //												currentSubtitleIndex -=1;
 												mJoyplusSubManager.SwitchSub(selection -1);
-												VideoPlayerJPActivity.this.runOnUiThread(new Runnable() {
-													
-													@Override
-													public void run() {
-														// TODO Auto-generated method stub
-														mSubTitleView.displaySubtitle();
-													}
-												});
+												mSubTitleView.displaySubtitle();
+										
 //												initSubTitleCollection();
 											}
 										});
