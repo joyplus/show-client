@@ -26,6 +26,7 @@
 	       		    android:layout_height="fill_parent"
 	       		    android:background="@color/bg_color_tuisong"
 	       		    android:orientation="vertical"
+	       		    android:visibility="gone"
 	       		    android:layout_weight="1">
 	       		    <TextView android:layout_width="fill_parent"
 	       		        android:layout_height="62dp"
@@ -68,12 +69,27 @@
 	       		            android:text="已下载"/>
 	       		    </LinearLayout>
 	       		</LinearLayout>
-	       		<LinearLayout android:layout_width="0dp"
+	       		<LinearLayout android:layout_width="fill_parent"
 	       		    android:layout_height="fill_parent"
-	       		    android:layout_weight="4.3"
 	       		    android:orientation="vertical">
-	       		    <TextView android:layout_width="fill_parent"
-	       		        android:layout_height="62dp"/>
+	       		    <!-- <TextView android:layout_width="fill_parent"
+	       		        android:layout_height="62dp"/> -->
+	       		    <LinearLayout android:layout_width="fill_parent"
+	       		        android:layout_height="62dp"
+	       		        android:orientation="horizontal">
+	       		        <TextView android:layout_width="0dp"
+	       		            android:layout_weight="1"
+		       		        android:layout_height="62dp"
+		       		        android:text="视频云推送"
+		       		        android:gravity="center"
+		       		        android:background="@color/bg_color_tuisong"
+		                    android:textColor="#f0f0f0"
+		                    android:textSize="30dp"/>
+	       		        <TextView android:layout_width="0dp"
+	       		            android:layout_weight="4.3"
+	       		            android:layout_height="fill_parent"/>
+	       		    </LinearLayout>
+	       		    
 	       		    <LinearLayout android:layout_width="fill_parent"
 	       		        android:layout_height="fill_parent"
 	       		        android:orientation="vertical"
@@ -83,6 +99,7 @@
 	       		            android:layout_height="95dp">
 	       		            <LinearLayout android:layout_width="fill_parent"
 	       		                android:layout_height="fill_parent"
+	       		                android:background="@color/bg_color_tuisong"
 	       		                android:orientation="horizontal">
 	       		                <TextView android:layout_width="fill_parent"
 	       		                android:layout_height="fill_parent"
@@ -91,7 +108,7 @@
 	       		                android:gravity="left|center_vertical"
                 				android:paddingLeft="@dimen/list_padding_left"
 	       		                android:textSize="@dimen/max_text_size"
-	       		                android:textColor="#414850"/>
+	       		                android:textColor="#f0f0f0"/>
 	       		            <RelativeLayout android:layout_width="wrap_content"
 	                        android:layout_height="fill_parent">
 	                        <LinearLayout android:layout_width="wrap_content"
@@ -102,7 +119,7 @@
 		                        android:text="@string/button_edit"
 		                        android:id="@+id/edit_Button"
 		                        android:textSize="@dimen/mid_text_size"
-		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:textColor="#ffffff"
 		                        android:layout_marginRight="30dp"
 		                        android:layout_gravity="center_vertical"
 		                        android:background="@drawable/xunlei_return_btn_bg"/>
@@ -111,7 +128,7 @@
 		                        android:text="@string/button_back"
 		                        android:id="@+id/back_Button"
 		                        android:textSize="@dimen/mid_text_size"
-		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:textColor="#ffffff"
 		                        android:layout_marginRight="30dp"
 		                        android:layout_gravity="center_vertical"
 		                        android:background="@drawable/xunlei_return_btn_bg"/>
@@ -125,7 +142,7 @@
 		                        android:text="@string/button_canle_edit"
 		                        android:id="@+id/cancel_Button"
 		                        android:textSize="@dimen/mid_text_size"
-		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:textColor="#ffffff"
 		                        android:layout_marginRight="30dp"
 		                        android:layout_gravity="center_vertical"
 		                        android:background="@drawable/xunlei_return_btn_bg"/>
@@ -134,7 +151,7 @@
 		                        android:text="@string/button_del"
 		                        android:id="@+id/del_Button"
 		                        android:textSize="@dimen/mid_text_size"
-		                        android:textColor="@color/common_black_btn_textcolor"
+		                        android:textColor="#ffffff"
 		                        android:layout_marginRight="30dp"
 		                        android:layout_gravity="center_vertical"
 		                        android:background="@drawable/xunlei_return_btn_bg"/>
@@ -149,11 +166,12 @@
 	       		        <RelativeLayout android:layout_width="fill_parent"
 	       		            android:layout_height="fill_parent"
 	       		            >
-	       		            <ListView android:layout_width="fill_parent"
+	       		            <ExpandableListView android:layout_width="fill_parent"
 	       		            android:layout_height="fill_parent"
-	       		            android:listSelector="@drawable/bg_xunlei_content_setting_selector"
+	       		            android:divider="@color/light_white" 
+	       		            android:listSelector="@null"
 	       		            android:id="@+id/movieList">
-	       		            </ListView>
+	       		            </ExpandableListView>
 	       		            <ImageView android:layout_width="fill_parent"
 			                    android:layout_height="fill_parent"
 			                    android:visibility="gone"

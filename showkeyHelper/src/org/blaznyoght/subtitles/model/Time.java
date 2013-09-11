@@ -48,7 +48,7 @@ public class Time {
 	
 	private long stringTimeToLong(String time) {
 		Scanner scanner = new Scanner(time);
-		scanner.findInLine("(\\d+):(\\d+):(\\d+),(\\d+)");
+		scanner.findInLine("(\\d+):(\\d+):(\\d+)[,.](\\d+)");
 		MatchResult result = scanner.match();
 		int h = Integer.parseInt(result.group(0));
 		int m = Integer.parseInt(result.group(1));
