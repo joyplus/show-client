@@ -20,7 +20,7 @@ public class SubTitleView extends TextView {
 	
 	private static final int MESSAGE_SUBTITLE_DISPLAY = 0;
 	private static final int MESSAGE_SUBTITLE_HIDEN = MESSAGE_SUBTITLE_DISPLAY + 1;
-	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW =  MESSAGE_SUBTITLE_DISPLAY + 1;
+	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW =  MESSAGE_SUBTITLE_HIDEN + 1;
 	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 //	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW =  MESSAGE_SUBTITLE_HIDEN + 1;
 //	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
@@ -96,6 +96,9 @@ public class SubTitleView extends TextView {
 						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
 					}
 				}
+				break;
+			case MESSAGE_SUBTITLE_HIDEN:
+				setVisibility(INVISIBLE);
 				break;
 			default:
 				break;
