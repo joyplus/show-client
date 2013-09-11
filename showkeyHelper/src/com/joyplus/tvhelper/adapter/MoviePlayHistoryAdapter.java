@@ -207,12 +207,12 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 			
 			if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
 				if(isExpanded){
-					holder.type_icon.setImageResource(R.drawable.icon_bt_file_open);
+					holder.type_icon.setImageResource(R.drawable.icon_tt_file_open);
 				}else{
-					holder.type_icon.setImageResource(R.drawable.icon_bt_file);
+					holder.type_icon.setImageResource(R.drawable.icon_tt_file);
 				}
 			}else{
-				holder.type_icon.setImageResource(R.drawable.icon_movie);
+				holder.type_icon.setImageResource(R.drawable.icon_tt_movie);
 			}
 			switch (info.getPlay_type()) {
 			case MoviePlayHistoryInfo.PLAY_TYPE_BAIDU:
@@ -282,7 +282,7 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 //		}
 		
 
-		holder.type_icon.setImageResource(R.drawable.icon_movie);
+		holder.type_icon.setImageResource(R.drawable.icon_tt_movie);
  
 		if(info.getDuration()<10){
 			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+

@@ -3219,11 +3219,11 @@ public class VideoPlayerJPActivity extends Activity implements
 					}
 					initFourList();
 					sortPushUrls(mDefination);
-					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 				}
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
+			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
 		
 	}

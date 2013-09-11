@@ -29,7 +29,7 @@
                 android:layout_marginRight="29dp"
                 android:layout_width="90dp"
                 android:layout_height="60dp"
-                android:src="@drawable/icon_movie" />
+                android:src="@drawable/icon_bt_movie" />
 
             <TextView
                 android:id="@+id/tv_movie_name"

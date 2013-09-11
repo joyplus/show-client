@@ -162,7 +162,7 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 			
 			holder.sizeTv
 			.setText(Utils.byte2Mbyte(files.get(groupPosition).filesize));
-			holder.imageView.setImageResource(R.drawable.icon_movie);
+			holder.imageView.setImageResource(R.drawable.icon_bt_movie);
 		}
 		
 		return convertView;
@@ -198,7 +198,7 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		
 		holder.sizeTv
 		.setText(Utils.byte2Mbyte(files.get(groupPosition).btFiles[childPosition].filesize));
-		holder.imageView.setImageResource(R.drawable.icon_movie);
+		holder.imageView.setImageResource(R.drawable.icon_bt_movie);
 
 		holder.nameTv.setText(files.get(groupPosition).btFiles[childPosition].file_name);
 		

@@ -10,7 +10,7 @@
 	    <ImageView android:layout_width="72dp"
 	        android:layout_height="72dp"
 	        android:id="@+id/app_icon"
-	        android:src="@drawable/icon_movie"/>
+	        android:src="@drawable/icon_tt_movie"/>
 	    
 	    <LinearLayout android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
