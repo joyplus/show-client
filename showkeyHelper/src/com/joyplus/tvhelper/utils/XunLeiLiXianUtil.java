@@ -22,6 +22,8 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import com.joyplus.Sub.SUBTYPE;
+import com.joyplus.Sub.SubURI;
 import com.joyplus.tvhelper.entity.SharpnessEnum;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
@@ -513,10 +515,10 @@ public class XunLeiLiXianUtil {
 		return null;
 	}
 	
-	public static List<String> getSubtitleList(Context context,XLLXFileInfo xllxFileInfo){
+	public static List<SubURI> getSubtitleList(Context context,XLLXFileInfo xllxFileInfo){
 		
 		Log.i(TAG, "getSubtitle--->xllxFileInfo lx_gcid:" + xllxFileInfo.lx_gcid);
-		List<String> list = new ArrayList<String>();
+		List<SubURI> list = new ArrayList<SubURI>();
 		Header[] arrayOfHeader = { new BasicHeader("cookie",getCookie(context)) };
 		
 		NameValuePair[] firstNameValuePair = new NameValuePair[4];
@@ -542,14 +544,18 @@ public class XunLeiLiXianUtil {
 							String subTitleUrl = subtitleJsonObject.getString("surl");
 							if(subTitleUrl != null && !subTitleUrl.equals("")
 									&& URLUtil.isNetworkUrl(subTitleUrl)){
-								if(subTitleUrl.contains("scid=")){
-									
-									list.add(subTitleUrl);
-								}else {
-									if(subTitleUrl.length() == subTitleUrl.indexOf(".srt") + 4){
-										list.add(subTitleUrl);
-									}
-								}
+//								if(subTitleUrl.contains("scid=")){
+//									
+//									list.add(subTitleUrl);
+//								}else {
+//									if(subTitleUrl.length() == subTitleUrl.indexOf(".srt") + 4){
+//										list.add(subTitleUrl);
+//									}
+//								}
+								SubURI subURI = new SubURI();
+								subURI.SubType = SUBTYPE.NETWORK;
+								subURI.Uri = subTitleUrl;
+								list.add(subURI);
 //								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
 //							Log.i(TAG, "getSubtitle--->subTitle:" + subTitle);
 							}
@@ -566,9 +572,9 @@ public class XunLeiLiXianUtil {
 	}
 	
 	
-	public static List<String> getSubtitle4Push(String url,String appkey){
+	public static List<SubURI> getSubtitle4Push(String url,String appkey){
 		Log.i(TAG, "getSubtitle4Push---url--->" + url);
-		List<String> list = new ArrayList<String>();
+		List<SubURI> list = new ArrayList<SubURI>();
 		Header[] arrayOfHeader = { new BasicHeader("app_key",appkey) };
 		
 		String subTitlesStr = HttpUtils.getContent(url, arrayOfHeader, null);
@@ -593,7 +599,11 @@ public class XunLeiLiXianUtil {
 								String subTitleUrl = subtitleContents.getString(i);
 								if(subTitleUrl != null && !subTitleUrl.equals("")
 										&& URLUtil.isNetworkUrl(subTitleUrl)){
-									list.add(subTitleUrl);
+//									list.add(subTitleUrl);
+									SubURI subURI = new SubURI();
+									subURI.SubType = SUBTYPE.NETWORK;
+									subURI.Uri = subTitleUrl;
+									list.add(subURI);
 //								byte[] subTitle = HttpUtils.getBinary(subTitleUrl, null,null);
 //								return subTitle;
 								}
