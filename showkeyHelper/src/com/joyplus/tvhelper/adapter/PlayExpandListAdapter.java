@@ -152,8 +152,12 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		if(files.get(groupPosition).isDir) {
 			
 			holder.sizeTv.setText("文件夹");
+			if(isExpanded){
+				holder.imageView.setImageResource(R.drawable.icon_bt_file_open);
+			}else{
+				holder.imageView.setImageResource(R.drawable.icon_bt_file);
+			}
 			
-			holder.imageView.setImageResource(R.drawable.icon_bt_file);
 		} else {
 			
 			holder.sizeTv

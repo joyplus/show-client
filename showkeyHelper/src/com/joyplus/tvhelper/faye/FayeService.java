@@ -138,8 +138,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 						Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 						intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						
-						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+						if(play_info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
+							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
+							if(play_info.getBtEpisodes().size()>0){
+								playDate.prod_sub_name = play_info.getBtEpisodes().get(0).getName();
+							}
+						}else{
+							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+							
+						}
 						playDate.prod_name = play_info.getName();
 //						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
@@ -375,11 +382,11 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		myClient.setFayeListener(fayeListener);
 		myClient.connectToServer(null); 
 //		isNeedReconnect = true;
-		getLostUserPushApk();
+//		getLostUserPushApk();
 		getLostUserPushMovie();
-		if(isSystemApp()){
-			getNotUsrPushApk();
-		}
+//		if(isSystemApp()){
+//			getNotUsrPushApk();
+//		}
 		return super.onStartCommand(intent, START_STICKY, startId); 
 	}
 	
@@ -496,6 +503,20 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							String push_play_url = item.getString("downurl");
 							String time_token = item.getString("time_token");
 							String md5_code = item.getString("md5_code");
+							List<BTEpisode> es = null; 
+							if(item.has("prodName")){
+								es = new ArrayList<BTEpisode>();
+								JSONArray array_name = item.getJSONArray("prodName");
+								Log.d(TAG, array_name.toString());
+								for(int j = 0; j< array_name.length() ; j++){
+									BTEpisode e = new BTEpisode();
+									e.setDefination(Constant.DEFINATION_HD2);
+									e.setName(array_name.getString(j));
+									es.add(e);
+									Log.d(TAG, array_name.getString(j));
+								}
+								
+							}
 							int type = item.getInt("type");
 							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null &&PreferencesUtils.getPincodeMd5(FayeService.this).equals(md5_code)){
 								if(type == 5){//漏掉的播放
@@ -510,13 +531,31 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 										play_info.setDefination(Constant.DEFINATION_HD2);
 										play_info.setCreat_time(System.currentTimeMillis());
 										play_info.setTime_token(time_token+",");
+										if(es!=null && es.size()>0){
+											play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+											play_info.setBtEpisodes(es);
+										}
 										play_info.setId((int)services.insertMoviePlayHistory(play_info));
 									}else{
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setName(push_name);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 										if(play_info.getTime_token()==null){
 											play_info.setTime_token("");
 										}
 										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										if(es!=null && es.size()>0){
+											play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+											play_info.setBtEpisodes(es);
+										}
+//										play_info.setPush_id(push_id);
 										services.updateMoviePlayHistory(play_info);
+//										if(play_info.getTime_token()==null){
+//											play_info.setTime_token("");
+//										}
+//										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+//										services.updateMoviePlayHistory(play_info);
 									}
 								}else if(type == 6){//漏掉的下载
 									
@@ -1216,56 +1255,56 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 					JSONObject data;
 					switch (type) {
 					case 1:
-						data = json.getJSONObject("body");
-						final int id = data.getInt("id");
-						try{
-							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
-							info.setName(data.getString("app_name"));
-							String url = data.getString("file_url");
-							String packageName = data.getString("package_name");
-							String file_name = Utils.getFileNameforUrl(url);
-							info.setPush_id(id);
-							DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
-							info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
-							downloadManager.addTast(task);
-							info.setTast(task);
-							info.setPackageName(packageName);
-							info.setIsUser(PushedApkDownLoadInfo.IS_USER);
-							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
-							info.set_id((int) services.insertApkInfo(info));
-							apkdownload_info = info;
-							push_type = 0;
-							pincode_md5 = data.getString("md5_code");
-							Log.d(TAG, pincode_md5);
-							for(PushedApkDownLoadInfo info_1: userPushApkInfos){
-								if(packageName!=null&&packageName.equals(info_1.getPackageName())){
-									updateHistory(id);
-									return;
-								}
-								
-								if(getApplicationInfo().packageName.equals(packageName)){
-									updateHistory(id);
-									return;
-								}
-							}
-							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-									&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
-								userPushApkInfos.add(info);
-								handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
-								if(currentUserApkInfo==null){
-									currentUserApkInfo = info;
-									currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
-									downloadManager.startTast(task);
-									services.updateApkInfo(currentUserApkInfo);
-								}
-							}else{
-								handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
-							}
-						}catch (Exception e) {
-							// TODO: handle exception
-							e.printStackTrace();
-						}
-						updateHistory(id);
+//						data = json.getJSONObject("body");
+//						final int id = data.getInt("id");
+//						try{
+//							PushedApkDownLoadInfo info = new PushedApkDownLoadInfo();
+//							info.setName(data.getString("app_name"));
+//							String url = data.getString("file_url");
+//							String packageName = data.getString("package_name");
+//							String file_name = Utils.getFileNameforUrl(url);
+//							info.setPush_id(id);
+//							DownloadTask task = new DownloadTask(url, APK_PATH.getAbsolutePath(), file_name);
+//							info.setFile_path(APK_PATH.getAbsolutePath()+ File.separator + file_name);
+//							downloadManager.addTast(task);
+//							info.setTast(task);
+//							info.setPackageName(packageName);
+//							info.setIsUser(PushedApkDownLoadInfo.IS_USER);
+//							info.setDownload_state(PushedApkDownLoadInfo.STATUE_WAITING_DOWNLOAD);
+//							info.set_id((int) services.insertApkInfo(info));
+//							apkdownload_info = info;
+//							push_type = 0;
+//							pincode_md5 = data.getString("md5_code");
+//							Log.d(TAG, pincode_md5);
+//							for(PushedApkDownLoadInfo info_1: userPushApkInfos){
+//								if(packageName!=null&&packageName.equals(info_1.getPackageName())){
+//									updateHistory(id);
+//									return;
+//								}
+//								
+//								if(getApplicationInfo().packageName.equals(packageName)){
+//									updateHistory(id);
+//									return;
+//								}
+//							}
+//							if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
+//									&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+//								userPushApkInfos.add(info);
+//								handler.sendEmptyMessage(MESSAGE_NEW_DOWNLOAD_ADD);
+//								if(currentUserApkInfo==null){
+//									currentUserApkInfo = info;
+//									currentUserApkInfo.setDownload_state(PushedApkDownLoadInfo.STATUE_DOWNLOADING);
+//									downloadManager.startTast(task);
+//									services.updateApkInfo(currentUserApkInfo);
+//								}
+//							}else{
+//								handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
+//							}
+//						}catch (Exception e) {
+//							// TODO: handle exception
+//							e.printStackTrace();
+//						}
+//						updateHistory(id);
 						break;
 					case 5:
 //						JSONObject data_1 = json.getJSONObject("body");
@@ -1340,6 +1379,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 								play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
 								play_info.setBtEpisodes(es);
 							}
+							play_info.setPush_id(push_id);
 							services.updateMoviePlayHistory(play_info);
 						}
 						push_type = 1;
@@ -1353,7 +1393,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //							playDate.prod_id = data.getString("id");
 							
 //							playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
-							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+							if(play_info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
+								playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
+								if(play_info.getBtEpisodes().size()>0){
+									playDate.prod_sub_name = play_info.getBtEpisodes().get(0).getName();
+								}
+							}else{
+								playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+								
+							}
 							playDate.prod_name = play_info.getName();
 //							playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 							playDate.obj = play_info;

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -49,7 +50,7 @@ import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
-public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener, OnGroupClickListener, OnChildClickListener {
+public class CloudDataDisplayActivity extends Activity implements OnItemClickListener, OnClickListener, OnGroupClickListener, OnChildClickListener, OnGroupExpandListener {
 
 	private static final String TAG = "CloudDataDisplayActivity";
 	
@@ -72,6 +73,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private ExecutorService pool = Executors.newFixedThreadPool(5);
 	
 	private Button selectedButon;
+	
+//	private int expandGroupIndex = -1;
 	
 	private static final int MESSAGE_UPDATE = 0;
 	
@@ -190,6 +193,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		listView.setGroupIndicator(null);
 		listView.setOnGroupClickListener(this);
 		listView.setOnChildClickListener(this);
+		listView.setOnGroupExpandListener(this);
 		selectedIndex = 0;
 		selectedButon = title_playHistory;
 		selectedButon.setBackgroundResource(R.drawable.highlight);
@@ -519,6 +523,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				break;
 			}
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
+			for(int i = 0; i < adpter_play_history.getGroupCount(); i++){
+				   listView.collapseGroup(i);
+			}
 			cancleButton.requestFocus();
 			break;
 		case R.id.cancel_Button:
@@ -700,10 +707,24 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	public boolean onGroupClick(ExpandableListView parent, View v,
 			int groupPosition, long id) {
 		// TODO Auto-generated method stub
-		if(playinfos.get(groupPosition).getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
+		MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
+		if(playInfo.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
+			switch (playInfo.getEdite_state()) {
+			case MoviePlayHistoryInfo.EDITE_STATUE_NOMAL:
+				
+				return false;
+			case MoviePlayHistoryInfo.EDITE_STATUE_EDIT:
+				playInfo.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_SELETED);
+				adpter_play_history.notifyDataSetChanged();
+				return true;
+			case MoviePlayHistoryInfo.EDITE_STATUE_SELETED:
+				playInfo.setEdite_state(PushedMovieDownLoadInfo.EDITE_STATUE_EDIT);
+				adpter_play_history.notifyDataSetChanged();
+				return true;
+			};
 			return false;
 		}else{
-			MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
+			
 			switch (playInfo.getEdite_state()) {
 			case MoviePlayHistoryInfo.EDITE_STATUE_NOMAL:
 				if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BAIDU){
@@ -800,5 +821,15 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		app.set_ReturnProgramView(null);
 		startActivity(intent);
 		return true;
+	}
+
+	@Override
+	public void onGroupExpand(int groupPosition) {
+		// TODO Auto-generated method stub
+//		if(expandGroupIndex < playinfos.size() && expandGroupIndex>=0&&expandGroupIndex!=groupPosition){
+//			listView.collapseGroup(expandGroupIndex);
+//		}
+//		expandGroupIndex = groupPosition;
+//		listView.setSelection(groupPosition);
 	}
 }

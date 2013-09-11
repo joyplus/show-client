@@ -68,7 +68,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-
+import android.widget.VideoView;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
@@ -85,7 +85,6 @@ import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.ui.ArcView;
-import com.joyplus.tvhelper.ui.VideoView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
@@ -793,6 +792,14 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(!isFinishing()){
 							showDialog(0);
 						}
+					}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+						if(isRequset){
+							if(!isFinishing()){
+								showDialog(0);
+							}
+						}else{
+							new Thread(new RequestNewUrl()).start();
+						}
 					}
 					return;
 				}
@@ -864,6 +871,14 @@ public class VideoPlayerJPActivity extends Activity implements
 								
 							}else{
 								//失效了 接着搞
+								new Thread(new RequestNewUrl()).start();
+							}
+						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+							if(isRequset){
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}else{
 								new Thread(new RequestNewUrl()).start();
 							}
 						}
@@ -1132,7 +1147,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mVideoView.setOnErrorListener(this);
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
-		mVideoView.setOnInfoListener(this);
+//		mVideoView.setOnInfoListener(this);
 		mVideoView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -2438,8 +2453,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		Log.d(TAG, "mEpisodeIndex---------------->" + mEpisodeIndex);
 		DBServices services = DBServices.getInstance(this);
 		if(mProd_type == TYPE_PUSH_BT_EPISODE){
-			play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int) duration);
-			play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
+			if(duration>0){
+				play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int) duration);
+			}
+			if(playBackTime>0){
+				play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
+			}
 			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
 			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
@@ -2564,7 +2583,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			
 			Utils.recycleBitmap(((BitmapDrawable)mPreLoadLayout.getBackground()).getBitmap());
 		}
-		
 		mHandler.removeCallbacksAndMessages(null);
 		
 		super.onDestroy();
@@ -2576,7 +2594,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		switch (id) {
 		case 0:
 			String message = "";
-			if(mProd_type == TYPE_PUSH || mProd_type == TYPE_XUNLEI){
+			if(mProd_type == TYPE_PUSH || mProd_type == TYPE_XUNLEI||mProd_type==TYPE_PUSH_BT_EPISODE){
 				message = "服务器小忙，请稍后重试";
 			}else{
 				message = "该视频无法播放";
@@ -2754,9 +2772,18 @@ public class VideoPlayerJPActivity extends Activity implements
 			isRequset = true;	
 			playUrls.clear();
 			//updateXunleiurl
-			String url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
-					+ "&id=" + play_info.getPush_id()
-					+ "&md5_code=" + getUmengMd5();
+			String url = null;
+			if(mProd_type==TYPE_PUSH_BT_EPISODE){
+				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
+						+ "&id=" + play_info.getPush_id()
+						+ "&md5_code=" + getUmengMd5()
+						+ "&name=" + mProd_sub_name;
+			}else{
+				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
+						+ "&id=" + play_info.getPush_id()
+						+ "&md5_code=" + getUmengMd5();
+			}
+			
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {
@@ -2952,7 +2979,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		lastTime = mVideoView.getCurrentPosition();
 		rxByteslast = 0;
 		mLoadingPreparedPercent = 0;
-		mEpisodeIndex = -1;
+//		mEpisodeIndex = -1;
 		mPercentTextView.setText(", 已完成"
 				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
 		mDefination = defination;

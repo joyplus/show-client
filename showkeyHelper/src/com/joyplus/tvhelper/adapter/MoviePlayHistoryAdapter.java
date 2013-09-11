@@ -206,7 +206,11 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 	//		}
 			
 			if(info.getPlay_type() == MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
-				holder.type_icon.setImageResource(R.drawable.icon_bt_file);
+				if(isExpanded){
+					holder.type_icon.setImageResource(R.drawable.icon_bt_file_open);
+				}else{
+					holder.type_icon.setImageResource(R.drawable.icon_bt_file);
+				}
 			}else{
 				holder.type_icon.setImageResource(R.drawable.icon_movie);
 			}
@@ -227,7 +231,7 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 				}
 				break;
 			case MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES:
-//				holder.size.setText("");
+				holder.size.setText("");
 				break;
 			}
 			
