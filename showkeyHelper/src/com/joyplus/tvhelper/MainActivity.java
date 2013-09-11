@@ -546,18 +546,18 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		switch (v.getId()) {
 		case R.id.layout_1_4:
 		case R.id.layout_1_5:
-			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showNext();
-				layout_3_1.requestFocus();
-				return true;
-			}
+//			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
+//				layout.showNext();
+//				layout_3_1.requestFocus();
+//				return true;
+//			}
 			break;
 		case R.id.layout_3_1:
-			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showPre();
-				layout_1_5.requestFocus();
-				return true;
-			}
+//			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
+//				layout.showPre();
+//				layout_1_5.requestFocus();
+//				return true;
+//			}
 		default:
 			break;
 		}

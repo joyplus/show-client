@@ -105,13 +105,13 @@ private void startPlayer(){
 			AlertDialog.Builder tDialog = new AlertDialog.Builder(this);
 			tDialog.setTitle("安装提示");
 			tDialog.setMessage("该视频需要百度影音支持播放，是否安装百度影音播放器");
-			tDialog.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							Utils.retrieveApkFromAssets(PlayBaiduActivity.this, "baidushipin_1040402251.apk");
-//							finish();
-						}
-					});
+//			tDialog.setPositiveButton("确定",
+//					new DialogInterface.OnClickListener() {
+//						public void onClick(DialogInterface dialog, int which) {
+//							Utils.retrieveApkFromAssets(PlayBaiduActivity.this, "baidushipin_1040402251.apk");
+////							finish();
+//						}
+//					});
 
 			tDialog.setNegativeButton(
 					"取消",
