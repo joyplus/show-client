@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/black" >
 
-    <com.joyplus.tvhelper.ui.VideoView
+    <VideoView
         android:id="@+id/surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,7 +13,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
-    <TextView
+    <com.joyplus.tvhelper.ui.SubTitleView
         android:id="@+id/tv_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

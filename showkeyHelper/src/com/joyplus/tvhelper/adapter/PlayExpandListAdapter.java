@@ -152,13 +152,17 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		if(files.get(groupPosition).isDir) {
 			
 			holder.sizeTv.setText("文件夹");
+			if(isExpanded){
+				holder.imageView.setImageResource(R.drawable.icon_bt_file_open);
+			}else{
+				holder.imageView.setImageResource(R.drawable.icon_bt_file);
+			}
 			
-			holder.imageView.setImageResource(R.drawable.icon_bt_file);
 		} else {
 			
 			holder.sizeTv
 			.setText(Utils.byte2Mbyte(files.get(groupPosition).filesize));
-			holder.imageView.setImageResource(R.drawable.icon_movie);
+			holder.imageView.setImageResource(R.drawable.icon_bt_movie);
 		}
 		
 		return convertView;
@@ -194,7 +198,7 @@ public class PlayExpandListAdapter extends BaseExpandableListAdapter {
 		
 		holder.sizeTv
 		.setText(Utils.byte2Mbyte(files.get(groupPosition).btFiles[childPosition].filesize));
-		holder.imageView.setImageResource(R.drawable.icon_movie);
+		holder.imageView.setImageResource(R.drawable.icon_bt_movie);
 
 		holder.nameTv.setText(files.get(groupPosition).btFiles[childPosition].file_name);
 		

@@ -14,10 +14,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="85dp"
         android:gravity="center_vertical" >
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="@dimen/zero_value"
             android:layout_height="match_parent"
             android:layout_weight="4.9" 
@@ -25,22 +25,21 @@
 
             <ImageView
                 android:id="@+id/iv_movie"
-                android:layout_marginLeft="23dp"
-                android:layout_marginRight="29dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_movie" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="90dp"
+                android:layout_height="60dp"
+                android:src="@drawable/icon_bt_movie" />
 
             <TextView
                 android:id="@+id/tv_movie_name"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_movie"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/common_list_content_textcolor"
-                android:textSize="@dimen/mid_text_size" />
-        </RelativeLayout>
+                android:textSize="@dimen/mid_text_size"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_size"

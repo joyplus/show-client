@@ -6,10 +6,13 @@
 	    android:gravity="center_vertical"
 	    android:paddingLeft="10dp"
 	    android:paddingRight="10dp"
+	    android:background="@drawable/bg_xunlei_content_setting_selector"
+	    android:id="@+id/layout_item"
 	    android:orientation="horizontal">
-	    <ImageView android:layout_width="72dp"
-	        android:layout_height="72dp"
-	        android:src="@drawable/icon_movie"/>
+	    <ImageView android:layout_width="90dp"
+	        android:layout_height="60dp"
+	        android:id="@+id/movie_type"
+	        android:src="@drawable/icon_tt_movie"/>
 	    <LinearLayout android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:layout_marginLeft="10dp"
@@ -38,4 +41,9 @@
 	        android:id="@+id/movie_statue_icon"
 	        android:src="@drawable/icon_continue"/>
 	</LinearLayout>
+	<ImageView android:layout_width="fill_parent"
+	    android:layout_height="1px"
+	    android:id="@+id/divider_line"
+	    android:layout_below="@id/layout_item"
+	    android:background="@drawable/divider_line"/>
 </RelativeLayout>

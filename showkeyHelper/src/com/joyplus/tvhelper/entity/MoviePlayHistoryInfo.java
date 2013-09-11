@@ -1,5 +1,11 @@
 package com.joyplus.tvhelper.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 public class MoviePlayHistoryInfo {
 
 	
@@ -7,6 +13,7 @@ public class MoviePlayHistoryInfo {
 	public static final int PLAY_TYPE_ONLINE = 0;
 	public static final int PLAY_TYPE_LOCAL = PLAY_TYPE_ONLINE + 1;
 	public static final int PLAY_TYPE_BAIDU = PLAY_TYPE_LOCAL + 1;
+	public static final int PLAY_TYPE_BT_EPISODES = PLAY_TYPE_BAIDU + 1;
 	
 	public static final int EDITE_STATUE_NOMAL 			= 0;
 	public static final int EDITE_STATUE_EDIT 			= EDITE_STATUE_NOMAL + 1;
@@ -24,8 +31,7 @@ public class MoviePlayHistoryInfo {
 	private String recivedDonwLoadUrls;
 	private int defination;
 	private long creat_time;
-	
-	
+	private List<BTEpisode> btEpisodes = new ArrayList<BTEpisode>();
 	private String time_token;
 	
 	private int edite_state = 0;
@@ -114,4 +120,40 @@ public class MoviePlayHistoryInfo {
 		this.time_token = time_token;
 	}
 	
+	public List<BTEpisode> getBtEpisodes() {
+		return btEpisodes;
+	}
+	public void setBtEpisodes(List<BTEpisode> btEpisodes) {
+		if(play_type!=PLAY_TYPE_BT_EPISODES){
+			return ;
+		}
+		this.btEpisodes = btEpisodes;
+	}
+	
+	public String getBtEpisodesString(){
+		if(play_type != PLAY_TYPE_BT_EPISODES){
+			return "";
+		}
+		JSONArray array = new JSONArray();
+		for(BTEpisode b : btEpisodes){
+			array.put(b.toJSONOSObject());
+		}
+		return array.toString();
+	}
+	
+	public void setBtEpisodes(String data){
+		if(play_type != PLAY_TYPE_BT_EPISODES){
+			return ;
+		}
+		btEpisodes.clear();
+		try {
+			JSONArray array = new JSONArray(data);
+			for(int i=0; i<array.length(); i++){
+				btEpisodes.add(new BTEpisode(array.getJSONObject(i)));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

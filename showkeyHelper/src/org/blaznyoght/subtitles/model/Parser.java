@@ -18,7 +18,7 @@ import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 public class Parser {
 	private static final String SEP = "\r?\n";
 	private static final String RANK_REGEX = "(\\d+)";
-	private static final String TIME_REGEX = "(\\d{1,2}):(\\d{1,2}):(\\d{1,2}),(\\d{1,3})";
+	private static final String TIME_REGEX = "(\\d{1,2}):(\\d{1,2}):(\\d{1,2})[,.](\\d{1,3})";
 	private static final String TEXT_REGEX = "(.*?)^" + SEP;
 	private static final String SRT_REGEX = RANK_REGEX + SEP + TIME_REGEX
 			+ " --> " + TIME_REGEX + SEP + TEXT_REGEX;
@@ -99,14 +99,18 @@ public class Parser {
 		while (m.find()) {
 			++match;
 			Element e = getElement(m);
-			if(collection.getElementSize() >= 1 && e.getStartTime().getTime() < 
+			if(collection.getElementSize() >= 1 ){
+				if(e.getStartTime().getTime() !=
 					collection.getElements().get(collection.getElementSize()-1)
 					.getStartTime().getTime()){
-				collection.getElements().remove(collection.getElementSize()-1);
+					collection.getElements().add(e);
+				}
+			}else {
+				collection.getElements().add(e);
 			}
-			collection.getElements().add(e);
 		}
 		collection.setCharset(getCharset());
+		java.util.Collections.sort(collection.getElements(), new SubTitleElementComparator());
 	}
 
 	public Collection getCollection() {
@@ -130,7 +134,7 @@ public class Parser {
 			final long ms = Long.parseLong(matcher.group(9));
 			e.setEndTime(new Time(h, m, s, ms));
 		}
-		e.setText(matcher.group(10));
+		e.setText(matcher.group(10).replaceAll("<.*>", "").trim().replaceAll("\\\\N", "\n"));
 		return e;
 	}
 

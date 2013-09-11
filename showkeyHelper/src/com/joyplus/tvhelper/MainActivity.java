@@ -569,7 +569,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.layout_1_1:
-			startActivity(new Intent(this, ManagePushApkActivity.class));
+//			startActivity(new Intent(this, ManagePushApkActivity.class));
 			break;
 		case R.id.layout_1_2:
 			startActivity(new Intent(this, CloudDataDisplayActivity.class));
