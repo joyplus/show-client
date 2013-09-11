@@ -565,7 +565,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			defult_img.setVisibility(View.GONE);
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
-			defult_img.setVisibility(View.VISIBLE);
+			defult_img.setVisibility(View.GONE);
 		}
 	}
 	
