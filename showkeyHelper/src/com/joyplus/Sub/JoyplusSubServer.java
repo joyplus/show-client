@@ -110,7 +110,7 @@ public class JoyplusSubServer {
 	}
    
     public void SwitchSub(int index){
-    	if(index>0 && index<SubUri.size()){
+    	if(index>=0 && index<SubUri.size()){
     		if(!InstanceSub(SubUri.get(index))){
     			SubUri.remove(index);
     			CheckSubUriList();

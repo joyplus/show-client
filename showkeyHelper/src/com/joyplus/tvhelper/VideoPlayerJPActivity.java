@@ -1343,7 +1343,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(mSubTitleView.getVisibility() == View.INVISIBLE){
 								gallery_zm.setSelection(0);
 							}else{
-								
+								Log.d(TAG, "current -->" + mJoyplusSubManager.getCurrentSubIndex());
 								gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
 							}
 						}
