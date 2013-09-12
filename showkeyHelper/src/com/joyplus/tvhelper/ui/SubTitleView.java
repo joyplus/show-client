@@ -18,17 +18,20 @@ public class SubTitleView extends TextView {
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
 	private static final int SUBTITLE_DELAY_TIME_MAX = 500;
 	
+	/* subtitle display */
 	private static final int MESSAGE_SUBTITLE_DISPLAY = 0;
+	/* subtitle hidden */
 	private static final int MESSAGE_SUBTITLE_HIDEN = MESSAGE_SUBTITLE_DISPLAY + 1;
+	/* subtitle start recycle */
 	private static final int MESSAGE_SUBTITLE_START = MESSAGE_SUBTITLE_HIDEN + 1;
+	/* subtitle show text */
 	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW =  MESSAGE_SUBTITLE_START + 1;
+	/* subtitle text over*/
 	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
+	/* subtitle show text cache and check current time */
 	private static final int MESSAGE_SUBTITLE_SHOW_CACHE = MESSAGE_SUBTITLE_END_HIDEN + 1;
+	/* subtitle text over and check current time */
 	private static final int MESSAGE_SUBTITLE_HIDEN_CACHE = MESSAGE_SUBTITLE_SHOW_CACHE + 1;
-//	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW =  MESSAGE_SUBTITLE_HIDEN + 1;
-//	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
-//	private static final int MESSAGE_SUBTITLE_BEGAIN_CACHE = MESSAGE_SUBTITLE_END_HIDEN + 1;
-//	private static final int MESSAGE_SUBTITLE_END_CACHE = MESSAGE_SUBTITLE_BEGAIN_CACHE + 1;
 	
 	private Handler mHandler = new Handler(){
 
@@ -67,15 +70,15 @@ public class SubTitleView extends TextView {
 		if(getTag() == null || !(getTag() instanceof Element)) return;
 		Element currElement = (Element) getTag();
 		long currTime = getCurrentTime();
-		if(currTime >= currElement.getEndTime().getTime() + SUBTITLE_DELAY_TIME_MAX / 10){
-			setTag("");
+		long endTime = currElement.getEndTime().getTime();
+		if(currTime >= endTime + SUBTITLE_DELAY_TIME_MAX / 10){
+			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}else {
-			if(currElement.getEndTime().getTime() - currTime > SUBTITLE_DELAY_TIME_MAX){
-				
+			if(endTime - currTime > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_HIDEN_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
-				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, currElement.getEndTime().getTime() - currTime);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, endTime - currTime);
 			}
 		}
 	}
@@ -84,14 +87,15 @@ public class SubTitleView extends TextView {
 		if(getTag() == null || !(getTag() instanceof Element)) return;
 		Element currElement = (Element) getTag();
 		long currTime = getCurrentTime();
-		if(currTime >= currElement.getStartTime().getTime() + SUBTITLE_DELAY_TIME_MAX / 10){
+		long startTime =  currElement.getStartTime().getTime();
+		if(currTime >= startTime + SUBTITLE_DELAY_TIME_MAX / 10){
 			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}else {
-			if(currElement.getStartTime().getTime() - currTime > SUBTITLE_DELAY_TIME_MAX){
+			if(startTime - currTime > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
-				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, currElement.getStartTime().getTime() - currTime);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currTime);
 			}
 		}
 	}
@@ -101,23 +105,25 @@ public class SubTitleView extends TextView {
 		Element elementShow = (Element) getTag();
 		setText(elementShow.getText());
 		long tempShowTime = getCurrentTime();
-		if(elementShow.getEndTime().getTime() - tempShowTime > SUBTITLE_DELAY_TIME_MAX){
-			
+		long endTime = elementShow.getEndTime().getTime();
+		if(endTime - tempShowTime > SUBTITLE_DELAY_TIME_MAX){
 			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_HIDEN_CACHE, SUBTITLE_DELAY_TIME_MAX);
 		}else {
-			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, elementShow.getEndTime().getTime() - tempShowTime);
+			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN,endTime - tempShowTime);
 		}
 	}
 	
 	private void startSubtitle(){
 		long currentPosition = getCurrentTime();
 		Element preElement = getElement(currentPosition);
+		setText("");
+		long startTime = preElement.getStartTime().getTime();
 		if(preElement != null){
 			setTag(preElement);
-			if(preElement.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
+			if( startTime - currentPosition > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
-				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement.getStartTime().getTime() - currentPosition);
+				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currentPosition);
 			}
 		}
 	}
