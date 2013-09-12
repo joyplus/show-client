@@ -16,7 +16,7 @@ public class SubTitleView extends TextView {
 	private static final String TAG = "SubTitleView";
 	
 	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
-	private static final int SUBTITLE_DELAY_TIME_MAX = 500;
+	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 	
 	/* subtitle display */
 	private static final int MESSAGE_SUBTITLE_DISPLAY = 0;
@@ -71,11 +71,18 @@ public class SubTitleView extends TextView {
 		Element currElement = (Element) getTag();
 		long currTime = getCurrentTime();
 		long endTime = currElement.getEndTime().getTime();
-		if(currTime >= endTime + SUBTITLE_DELAY_TIME_MAX / 10){
+		
+		if(currTime >= endTime + SUBTITLE_DELAY_TIME_MAX / 10){//for Fast Forward
 			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}else {
 			if(endTime - currTime > SUBTITLE_DELAY_TIME_MAX){
+				Element preElement = getElement(currTime);
+				if(preElement.getStartTime().getTime() < endTime - SUBTITLE_DELAY_TIME_MAX){//for Fast back
+					mHandler.removeCallbacksAndMessages(null);
+					mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
+					return;
+				}
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_HIDEN_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_END_HIDEN, endTime - currTime);
@@ -88,11 +95,17 @@ public class SubTitleView extends TextView {
 		Element currElement = (Element) getTag();
 		long currTime = getCurrentTime();
 		long startTime =  currElement.getStartTime().getTime();
-		if(currTime >= startTime + SUBTITLE_DELAY_TIME_MAX / 10){
+		if(currTime >= startTime + SUBTITLE_DELAY_TIME_MAX / 10){//for Fast Forward
 			mHandler.removeCallbacksAndMessages(null);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}else {
 			if(startTime - currTime > SUBTITLE_DELAY_TIME_MAX){
+				Element preElement = getElement(currTime);
+				if(preElement.getStartTime().getTime() < startTime - SUBTITLE_DELAY_TIME_MAX){//for Fast back
+					mHandler.removeCallbacksAndMessages(null);
+					mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
+					return;
+				}
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
 			}else {
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currTime);
