@@ -1343,7 +1343,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							if(mSubTitleView.getVisibility() == View.INVISIBLE){
 								gallery_zm.setSelection(0);
 							}else{
-								Log.d(TAG, "current -->" + mJoyplusSubManager.getCurrentSubIndex());
+								
 								gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
 							}
 						}
@@ -2806,12 +2806,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			//updateXunleiurl
 			String url = null;
 			if(mProd_type==TYPE_PUSH_BT_EPISODE){
-				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
+				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
 						+ "&id=" + play_info.getPush_id()
 						+ "&md5_code=" + getUmengMd5()
-						+ "&name=" + mProd_sub_name;
+						+ "&name=" + URLEncoder.encode(mProd_sub_name);
 			}else{
-				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
+				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
 						+ "&id=" + play_info.getPush_id()
 						+ "&md5_code=" + getUmengMd5();
 			}
