@@ -63,7 +63,7 @@ public class JoyplusSubManager {
 	   }
 	   
 	   /*Interface of parser uri to get download sub uri*/
-	public static List<SubURI> getNetworkSubURI(String url, String MD5,
+	public List<SubURI> getNetworkSubURI(String url, String MD5,
 			Context context) {
 		List<SubURI> list = new ArrayList<SubURI>();
 		String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
