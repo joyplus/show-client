@@ -15,15 +15,16 @@ import com.joyplus.tvhelper.VideoPlayerJPActivity;
 public class SubTitleView extends TextView {
 	private static final String TAG = "SubTitleView";
 	
-	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
-	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
+	private static final int SUBTITLE_DELAY_TIME_MAX = 500;
 	
 	/* subtitle display */
 	private static final int MESSAGE_SUBTITLE_DISPLAY = 0;
 	/* subtitle hidden */
 	private static final int MESSAGE_SUBTITLE_HIDEN = MESSAGE_SUBTITLE_DISPLAY + 1;
+	/* subtitle waiting for videoview pause*/
+	private static final int MESSAGE_SUBTITLE_PAUSE = MESSAGE_SUBTITLE_HIDEN + 1;
 	/* subtitle start recycle */
-	private static final int MESSAGE_SUBTITLE_START = MESSAGE_SUBTITLE_HIDEN + 1;
+	private static final int MESSAGE_SUBTITLE_START = MESSAGE_SUBTITLE_PAUSE + 1;
 	/* subtitle show text */
 	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW =  MESSAGE_SUBTITLE_START + 1;
 	/* subtitle text over*/
@@ -46,13 +47,12 @@ public class SubTitleView extends TextView {
 				setVisibility(INVISIBLE);
 				break;
 			case MESSAGE_SUBTITLE_START:
+			case MESSAGE_SUBTITLE_END_HIDEN:
+			case MESSAGE_SUBTITLE_PAUSE:
 				startSubtitle();
 				break;
 			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
 				showStartSubtitle();
-				break;
-			case MESSAGE_SUBTITLE_END_HIDEN:
-				startSubtitle();
 				break;
 			case MESSAGE_SUBTITLE_SHOW_CACHE:
 				cacheShowSubtitle();
@@ -126,8 +126,14 @@ public class SubTitleView extends TextView {
 		}
 	}
 	
+	private long lastTime = -SUBTITLE_DELAY_TIME_MAX;
+	
 	private void startSubtitle(){
 		long currentPosition = getCurrentTime();
+		if(Math.abs(lastTime - currentPosition) < SUBTITLE_DELAY_TIME_MAX/10){
+			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_PAUSE, SUBTITLE_DELAY_TIME_MAX/2);
+			return;
+		}
 		Element preElement = getElement(currentPosition);
 		setText("");
 		long startTime = preElement.getStartTime().getTime();
@@ -139,6 +145,7 @@ public class SubTitleView extends TextView {
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currentPosition);
 			}
 		}
+		lastTime = currentPosition;
 	}
 	
 	private void messageDisplay(){

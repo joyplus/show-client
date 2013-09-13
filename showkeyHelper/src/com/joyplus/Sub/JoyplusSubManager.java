@@ -54,6 +54,12 @@ public class JoyplusSubManager {
 	   public boolean CheckSubAviable(){
 		   return mSubServer.CheckSubAviable();
 	   }
+	   public boolean IsSubEnable(){
+	    	return mSubServer.IsSubEnable();
+	   }
+	   public void setSubEnable(boolean EN){
+	    	mSubServer.setSubEnable(EN);
+	   }
 	   public void SwitchSub(int index){
 		   if(getSubList().size()<0 || index<0 || index>getSubList().size())return;
 		   mSubServer.SwitchSub(index);
@@ -66,7 +72,7 @@ public class JoyplusSubManager {
 	public List<SubURI> getNetworkSubURI(String url, String MD5,
 			Context context) {
 		List<SubURI> list = new ArrayList<SubURI>();
-		String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
+		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="
 				+ URLEncoder.encode(url) + "&md5_code=" + MD5;
 		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
@@ -75,26 +81,20 @@ public class JoyplusSubManager {
 		headers.put("app_key", Constant.APPKEY);
 		cb.SetHeader(headers);
 		(new AQuery(context)).sync(cb);
-
 		JSONObject jo = cb.getResult();
 		if (jo != null && jo.toString() != null && !"".equals(jo.toString())) {
 			Log.i(TAG, "subtitles--->" + jo.toString());
 			try {
 				JSONObject subtitlesJsonObject = (JSONObject) new JSONTokener(
 						jo.toString()).nextValue();
-
 				if (subtitlesJsonObject.has("error")) {
-
 					if (!subtitlesJsonObject.getBoolean("error")
 							&& subtitlesJsonObject.has("subtitles")) {
-
 						JSONArray subtitleContents = subtitlesJsonObject
 								.getJSONArray("subtitles");
 						if (subtitleContents != null
 								&& subtitleContents.length() > 0) {
-
 							for (int i = 0; i < subtitleContents.length(); i++) {
-
 								String tempsubTitleUrl = subtitleContents.getString(i);
 								SubURI subURI = new SubURI();
 								subURI.SubType = SUBTYPE.NETWORK;
@@ -102,7 +102,6 @@ public class JoyplusSubManager {
 								list.add(subURI);
 							}
 						}
-
 					}
 				}
 			} catch (JSONException e) {
