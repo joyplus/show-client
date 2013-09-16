@@ -251,4 +251,21 @@ public class HttpTools {
 			return SERVER_ERR;
 		}
 	}
+	
+	public static boolean isNetConenct(){
+		HttpGet reqeust = new HttpGet("http://www.baidu.com/");
+		HttpResponse res;
+		try{
+			res = getHttpClient().execute(reqeust);
+			if (res != null&& res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				return true;
+			}else{
+				return false;
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

@@ -1,7 +1,10 @@
 package com.joyplus.tvhelper;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -40,6 +43,7 @@ import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -113,6 +117,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
+	private static final int MESSAGE_NO_NETCONNECT = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
 //	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
 //	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
@@ -123,6 +128,8 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private MoviePlayHistoryInfo play_info;
 	private boolean isRequset = false;
+	private long lastPlayTime = -1; 
+	private int loadingCount;
 
 	/**
 	 * 数据初始化
@@ -148,7 +155,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 	
-	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
+	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
 	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 
 	private TextView mVideoNameText; // 名字
@@ -305,6 +312,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				case 403:
 					if (!mVideoView.isPlaying()) {
 						mStatue = STATUE_PLAYING;
+						lastPlayTime = -1;
 						mSeekBar.setEnabled(true);
 						mVideoView.start();
 						mContinueLayout.setVisibility(View.GONE);
@@ -785,6 +793,12 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_RETURN_DATE_OK:
 				new Thread(new PrepareTask()).start();
 				break;
+			case MESSAGE_NO_NETCONNECT:
+				mVideoView.pause();
+				mDateLoadingLayout.setVisibility(View.GONE);
+				mHandler.removeCallbacksAndMessages(null);
+				showDialog(2);
+				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
@@ -1037,7 +1051,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void updateDataLoadingSpeed(){
 		long speed = getLoadingData() - mCurrentLoadingbytes;
-		mDataLoadingSpeedText.setText("（" + speed + "kb/s）");
+		mDataLoadingSpeedText.setText("(" + speed*2 + "kb/s)");
 		mCurrentLoadingbytes += speed;
 		mHandler.sendEmptyMessageDelayed(MESSAGE_DATALOADING_UPDATE_NETSPEED, 1000);
 	}
@@ -1216,6 +1230,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				endUpdateSeekBar();
 				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
+				lastPlayTime = -1;
 				mSeekBar.setProgress(mVideoView.getCurrentPosition());
 				mSeekBar.setEnabled(true);
 				return true;
@@ -1253,6 +1268,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				endUpdateSeekBar();
 				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
+				lastPlayTime = -1;
 				mSeekBar.setEnabled(true);
 				break;
 			}
@@ -1746,6 +1762,41 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(!isSeekBarIntoch){
 				long current1 = mVideoView.getCurrentPosition();// 当前进度
 				mSeekBar.setProgress((int) current1);
+				if(current1-lastPlayTime>0){
+					lastPlayTime = current1;
+					mDateLoadingLayout.setVisibility(View.GONE);
+					loadingCount=0;
+					mHandler.removeMessages(MESSAGE_DATALOADING_UPDATE_NETSPEED);
+				}else{
+					if(mDateLoadingLayout.getVisibility()!=View.VISIBLE&&loadingCount>0){
+						mDateLoadingLayout.setVisibility(View.VISIBLE);
+						mCurrentLoadingbytes = getLoadingData();
+						if (mStartRX == TrafficStats.UNSUPPORTED) {
+							mDataLoadingSpeedText.setText("");
+						} else {
+							mDataLoadingSpeedText.setText("(0kb/s)");
+							mHandler.sendEmptyMessageDelayed(MESSAGE_DATALOADING_UPDATE_NETSPEED, 500);
+						}
+					}
+					loadingCount++;
+					if(loadingCount>(10*1000)/SEEKBAR_REFRESH_TIME){
+						app.pool.execute(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								if(HttpTools.isNetConenct()){
+									loadingCount = 0;
+								}else{
+									//没网啦
+									mHandler.sendEmptyMessage(MESSAGE_NO_NETCONNECT);
+									Log.d(TAG, "net disconnect--------------------->");
+								}
+							}
+						});
+					}
+				}
+				
 				// updateTimeNoticeView(mSeekBar.getProgress());
 			}
 //			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
@@ -1859,6 +1910,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			dismissView(mControlLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
+			lastPlayTime = -1;
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
@@ -1869,6 +1921,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			dismissView(mContinueLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
+			lastPlayTime = -1;
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
@@ -2657,6 +2710,30 @@ public class VideoPlayerJPActivity extends Activity implements
 		case 1:
 			ProgressDialog d = ProgressDialog.show(this, null, "正在加载");
 			return d;
+		case 2:
+			Dialog alertDialog_1 = new AlertDialog.Builder(this). 
+            setTitle("提示"). 
+            setMessage("您的网络有问题，请检查网络"). 
+            setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+
+			}).
+            create();
+			alertDialog_1.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			alertDialog_1.show(); 
+		    return alertDialog_1;
 		default:
 			return super.onCreateDialog(id);
 		}
@@ -3019,6 +3096,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mPreLoadLayout.setVisibility(View.GONE);
 		mHandler.removeCallbacks(mLoadingRunnable);
 		mStatue = STATUE_PLAYING;
+		lastPlayTime = -1;
 		mSeekBar.setEnabled(true);
 		startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 //		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
