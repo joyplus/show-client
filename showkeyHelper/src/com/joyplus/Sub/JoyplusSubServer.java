@@ -102,7 +102,6 @@ public class JoyplusSubServer {
 		cb.SetHeader(headers); 		
 		(new AQuery(mContext)).sync(cb);
 		byte[] subTitle = cb.getResult();
-		Log.i(TAG, "subTitle byte[] length--->" + subTitle.length);
 		return subTitle;
 	}
    
