@@ -19,6 +19,7 @@ public class JoyplusSubServer {
 
 	private List<SubURI> SubUri = new ArrayList<SubURI>();
 	
+	private boolean    SubEnable = true;
 	private JoyplusSub mSub;
     private Context mContext;
     private JoyplusSub getJoyplusSub(SubContentType type , SubURI uri){
@@ -56,10 +57,6 @@ public class JoyplusSubServer {
 			if(InstanceSub(it.next()))return;
 			it.remove();
 		}
-//		for(SubURI uri : SubUri){
-//			if(InstanceSub(uri))return;
-//			SubUri.remove(uri);
-//		}
 		SubUri = new ArrayList<SubURI>();
 		mSub   = null;
 	}
@@ -105,27 +102,32 @@ public class JoyplusSubServer {
 		cb.SetHeader(headers); 		
 		(new AQuery(mContext)).sync(cb);
 		byte[] subTitle = cb.getResult();
-		Log.i(TAG, "subTitle byte[] length--->" + subTitle.length);
 		return subTitle;
 	}
    
     public void SwitchSub(int index){
-    	if(index>0 && index<SubUri.size()){
+    	if(index>=0 && index<SubUri.size()){
     		if(!InstanceSub(SubUri.get(index))){
     			SubUri.remove(index);
     			CheckSubUriList();
     		}
     	}
     }
+    public boolean IsSubEnable(){
+    	return SubEnable;
+    }
+    public void setSubEnable(boolean EN){
+    	SubEnable = EN;
+    }
     public int getCurrentSubIndex(){
-    	if(mSub == null)return -1;
+    	if(mSub == null || !IsSubEnable())return -1;
     	return SubUri.indexOf(mSub.getUri());
     }
 	public Element getElement(long time) {
 		// TODO Auto-generated method stub
-		if(mSub == null) return null;
+		if(mSub == null || !IsSubEnable()) return null;
 		int start = 0;
-		int end   = mSub.elements.size();
+		int end   = mSub.elements.size()-1;
 		if(end<start || end==0)return null;
 		while(start < end){			
 			if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()>time){
@@ -138,14 +140,15 @@ public class JoyplusSubServer {
 			if(start >end )return null;
 			if(start == end ){
 				if( mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()<time 
-						&& (getMiddle(start,end)+1)<mSub.elements.size())					
+						&& (getMiddle(start,end)+1)<mSub.elements.size()){	
 					 return mSub.elements.get(getMiddle(start,end)+1);
-				else
+				}else
 					 return mSub.elements.get(getMiddle(start,end)); 
 			}else if((end - start)==1){
-				if(mSub.elements.get(end).getStartTime().getTime()<time)
+				if(mSub.elements.get(end).getStartTime().getTime()<time){
+					 if(end>=(mSub.elements.size()-1))end=mSub.elements.size()-2;
 					 return mSub.elements.get(end+1);
-				else if(mSub.elements.get(start).getStartTime().getTime()<time)
+				}else if(mSub.elements.get(start).getStartTime().getTime()<time)
 					 return mSub.elements.get(end);
 				else return mSub.elements.get(start);
 			}
@@ -156,6 +159,7 @@ public class JoyplusSubServer {
 		if(index%2 != 0){
 			index++;
 		}
+		if(index/2>=mSub.elements.size())return (mSub.elements.size()-1);
 		return index/2;
 	}
 	private int getMiddle(int Start , int End){
