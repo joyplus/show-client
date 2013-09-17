@@ -164,7 +164,7 @@
         <service android:name="com.joyplus.tvhelper.faye.FayeService" >
         </service>
 		<meta-data android:value="51e75b5956240ba99502e874" android:name="UMENG_APPKEY"></meta-data>
-		<meta-data android:value="t001001" android:name="UMENG_CHANNEL"/>
+		<meta-data android:value="t015001" android:name="UMENG_CHANNEL"/>
         <service
             android:name="com.umeng.common.net.DownloadingService"
             android:exported="true"
