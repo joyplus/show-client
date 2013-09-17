@@ -648,7 +648,7 @@ public static InetAddress getLocalIpAddress(){
     }
     
 	public static int getStandardValue(Context context,int value){
-		value = (int) (context.getResources().getDimension(R.dimen.standard_1_dp) * value);
-		return  value!= 0 ? value:1;
+		float standardDp = context.getResources().getDimension(R.dimen.standard_1_dp);
+		return standardDp == 0 ? value:(int)(value * standardDp);
 	}
 }
