@@ -32,6 +32,7 @@ public class MoviePlayHistoryInfo {
 	private int defination;
 	private long creat_time;
 	private List<BTEpisode> btEpisodes = new ArrayList<BTEpisode>();
+	private List<SubInfo> subList;
 	private String time_token;
 	
 	private int edite_state = 0;
@@ -155,5 +156,11 @@ public class MoviePlayHistoryInfo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public List<SubInfo> getSubList() {
+		return subList;
+	}
+	public void setSubList(List<SubInfo> subList) {
+		this.subList = subList;
 	}
 }
