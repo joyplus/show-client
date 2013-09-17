@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.joyplus.Sub.SubURI;
+
 public class MoviePlayHistoryInfo {
 
 	
@@ -32,6 +34,7 @@ public class MoviePlayHistoryInfo {
 	private int defination;
 	private long creat_time;
 	private List<BTEpisode> btEpisodes = new ArrayList<BTEpisode>();
+	private List<SubURI> subList;
 	private String time_token;
 	
 	private int edite_state = 0;
@@ -155,5 +158,11 @@ public class MoviePlayHistoryInfo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public List<SubURI> getSubList() {
+		return subList;
+	}
+	public void setSubList(List<SubURI> subList) {
+		this.subList = subList;
 	}
 }

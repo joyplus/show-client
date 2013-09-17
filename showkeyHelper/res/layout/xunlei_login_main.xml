@@ -140,7 +140,7 @@
                     android:layout_marginRight="@dimen/lx_padding_left"
                     android:layout_marginTop="3dp"
                     android:orientation="horizontal"
-                    android:visibility="invisible" >
+					android:visibility="invisible" >
 
                     <RelativeLayout
                         android:layout_width="@dimen/zero_value"
@@ -176,7 +176,7 @@
                         android:id="@+id/rl_bt_verify_code"
                         android:layout_width="@dimen/zero_value"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" >
+                        android:layout_weight="2" >
 
                         <LinearLayout
                             android:id="@+id/ll_bt_verify_code"
