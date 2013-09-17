@@ -79,6 +79,7 @@
 	       		            android:textSize="24dp"
 	       		            android:paddingLeft="15dp"
 	       		            android:id="@+id/btn_about"
+	       		            android:visibility="gone"
 	       		            android:background="@drawable/bg_title_setting_selector"
 	       		            android:text="关于"/>
 	       		    </LinearLayout>

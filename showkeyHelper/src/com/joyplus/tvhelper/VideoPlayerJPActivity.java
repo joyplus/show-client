@@ -1,8 +1,6 @@
 package com.joyplus.tvhelper;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -17,6 +15,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -66,6 +65,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.VideoView;
+
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
@@ -73,6 +73,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.Sub.SUBTYPE;
+import com.joyplus.Sub.SubURI;
 import com.joyplus.manager.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
@@ -113,6 +115,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
+	private static final int MESSAGE_NO_NETCONNECT = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
 //	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
 //	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
@@ -122,8 +125,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	public static final int TYPE_PUSH_BT_EPISODE = TYPE_LOCAL -1;
 	
 	private MoviePlayHistoryInfo play_info;
-	private boolean isRequset = false;
+	private int isRequset = 0;
+	private long lastPlayTime = -1; 
+	private int loadingCount;
 
+	private boolean isOnline;
 	/**
 	 * 数据初始化
 	 */
@@ -148,7 +154,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int OFFSET = 33;
 	private int seekBarWidthOffset = 40;
 	
-	private static final int SEEKBAR_REFRESH_TIME = 200;//refresh time
+	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
 	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 
 	private TextView mVideoNameText; // 名字
@@ -305,6 +311,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				case 403:
 					if (!mVideoView.isPlaying()) {
 						mStatue = STATUE_PLAYING;
+						lastPlayTime = -1;
 						mSeekBar.setEnabled(true);
 						mVideoView.start();
 						mContinueLayout.setVisibility(View.GONE);
@@ -415,6 +422,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void initVedioDate() {
 		mStatue = STATUE_PRE_LOADING;
+		isRequset = 0;
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -785,10 +793,16 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_RETURN_DATE_OK:
 				new Thread(new PrepareTask()).start();
 				break;
+			case MESSAGE_NO_NETCONNECT:
+				mVideoView.pause();
+				mDateLoadingLayout.setVisibility(View.GONE);
+				mHandler.removeCallbacksAndMessages(null);
+				showDialog(2);
+				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
-						if(isRequset){
+						if(isRequset==2){
 							if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 								Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 								intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
@@ -808,7 +822,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							showDialog(0);
 						}
 					}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
-						if(isRequset){
+						if(isRequset>1){
 							if(!isFinishing()){
 								showDialog(0);
 							}
@@ -820,31 +834,40 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				
 				//字幕获取
-				if(mProd_type == TYPE_PUSH && !mJoyplusSubManager.CheckSubAviable()){
-					
-					if(play_info != null && play_info.getPush_url() != null
-							&& !play_info.getPush_url().equals("")){
-						MyApp.pool.execute(new Runnable() {
-							
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								
-								String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
-										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
-										getUmengMd5();
-//								subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
-								mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
-										getSubtitle4Push(subTitleUrl, Constant.APPKEY));
-								mSubTitleView.displaySubtitle();
-//								currentSubtitleIndex = 0;
-//								initSubTitleCollection();
-							}
-						});
+				if((mProd_type == TYPE_PUSH || mProd_type == TYPE_PUSH_BT_EPISODE) && 
+						!mJoyplusSubManager.CheckSubAviable()){
+					MyApp.pool.execute(new Runnable() {
 
-					}
-					
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (play_info != null
+									&& play_info.getPush_url() != null
+									&& !play_info.getPush_url().equals("")) {
+								if (play_info.getSubList() != null) {
+									mJoyplusSubManager.setSubUri(play_info.getSubList());
+									mSubTitleView.displaySubtitle();
+								} else {
+									String subTitleUrl = Constant.BASE_URL
+											+ "/joyplus/subtitle/?url="
+											+ URLEncoder.encode(play_info.getPush_url())
+											+ "&md5_code=" + getUmengMd5();
+									// subTitleUrlList =
+									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
+									// Constant.APPKEY);
+									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
+													.getSubtitle4Push(subTitleUrl,
+															Constant.APPKEY));
+									mSubTitleView.displaySubtitle();
+									// currentSubtitleIndex = 0;
+									// initSubTitleCollection();
+								}
+							}
+						}
+					});
 				}
+				
+				if(mProd_type == TYPE_PUSH_BT_EPISODE)
 				
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
@@ -876,7 +899,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							}
 						}
 						else if(mProd_type==TYPE_PUSH){
-							if(isRequset){
+							if(isRequset==1){
 								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 									Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
@@ -892,7 +915,7 @@ public class VideoPlayerJPActivity extends Activity implements
 								new Thread(new RequestNewUrl()).start();
 							}
 						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
-							if(isRequset){
+							if(isRequset>1){
 								if(!isFinishing()){
 									showDialog(0);
 								}
@@ -918,11 +941,11 @@ public class VideoPlayerJPActivity extends Activity implements
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!");
 						if(mProd_type==TYPE_PUSH){
-							if(isRequset){
+							if(isRequset==1){
 								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 									Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
-									startActivity(intent_web);
+									startActivity( intent_web);
 								}else{
 									if(!isFinishing()){
 										showDialog(0);
@@ -932,11 +955,14 @@ public class VideoPlayerJPActivity extends Activity implements
 								//失效了 接着搞
 								new Thread(new RequestNewUrl()).start();
 							}
-						}else if(!VideoPlayerJPActivity.this.isFinishing()){
-							showDialog(0);
-							
-							//所有url不能播放，向服务器传递-1
-//							saveToServer(-1, 0);
+						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+							if(isRequset>1){
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}else{
+								new Thread(new RequestNewUrl()).start();
+							}
 						}
 					}
 				}
@@ -1037,7 +1063,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private void updateDataLoadingSpeed(){
 		long speed = getLoadingData() - mCurrentLoadingbytes;
-		mDataLoadingSpeedText.setText("（" + speed + "kb/s）");
+		mDataLoadingSpeedText.setText("(" + speed*2 + "kb/s)");
 		mCurrentLoadingbytes += speed;
 		mHandler.sendEmptyMessageDelayed(MESSAGE_DATALOADING_UPDATE_NETSPEED, 1000);
 	}
@@ -1216,6 +1242,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				endUpdateSeekBar();
 				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
+				lastPlayTime = -1;
 				mSeekBar.setProgress(mVideoView.getCurrentPosition());
 				mSeekBar.setEnabled(true);
 				return true;
@@ -1253,6 +1280,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				endUpdateSeekBar();
 				startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 				mStatue = STATUE_PLAYING;
+				lastPlayTime = -1;
 				mSeekBar.setEnabled(true);
 				break;
 			}
@@ -1746,6 +1774,41 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(!isSeekBarIntoch){
 				long current1 = mVideoView.getCurrentPosition();// 当前进度
 				mSeekBar.setProgress((int) current1);
+				if(current1-lastPlayTime>0){
+					lastPlayTime = current1;
+					mDateLoadingLayout.setVisibility(View.GONE);
+					loadingCount=0;
+					mHandler.removeMessages(MESSAGE_DATALOADING_UPDATE_NETSPEED);
+				}else{
+					if(mDateLoadingLayout.getVisibility()!=View.VISIBLE&&loadingCount>0){
+						mDateLoadingLayout.setVisibility(View.VISIBLE);
+						mCurrentLoadingbytes = getLoadingData();
+						if (mStartRX == TrafficStats.UNSUPPORTED) {
+							mDataLoadingSpeedText.setText("");
+						} else {
+							mDataLoadingSpeedText.setText("(0kb/s)");
+							mHandler.sendEmptyMessageDelayed(MESSAGE_DATALOADING_UPDATE_NETSPEED, 500);
+						}
+					}
+					loadingCount++;
+					if(loadingCount>(10*1000)/SEEKBAR_REFRESH_TIME){
+						app.pool.execute(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								if(HttpTools.isNetConenct()){
+									loadingCount = 0;
+								}else{
+									//没网啦
+									mHandler.sendEmptyMessage(MESSAGE_NO_NETCONNECT);
+									Log.d(TAG, "net disconnect--------------------->");
+								}
+							}
+						});
+					}
+				}
+				
 				// updateTimeNoticeView(mSeekBar.getProgress());
 			}
 //			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
@@ -1859,6 +1922,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			dismissView(mControlLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
+			lastPlayTime = -1;
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
@@ -1869,6 +1933,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			dismissView(mContinueLayout);
 			mHandler.sendEmptyMessageDelayed(MESSAGE_HIDE_PROGRESSBAR, 2500);
 			mStatue = STATUE_PLAYING;
+			lastPlayTime = -1;
 			mSeekBar.setEnabled(true);
 			mVideoView.requestFocus();
 			mVideoView.start();
@@ -2657,6 +2722,30 @@ public class VideoPlayerJPActivity extends Activity implements
 		case 1:
 			ProgressDialog d = ProgressDialog.show(this, null, "正在加载");
 			return d;
+		case 2:
+			Dialog alertDialog_1 = new AlertDialog.Builder(this). 
+            setTitle("提示"). 
+            setMessage("您的网络有问题，请检查网络"). 
+            setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+
+			}).
+            create();
+			alertDialog_1.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+			alertDialog_1.show(); 
+		    return alertDialog_1;
 		default:
 			return super.onCreateDialog(id);
 		}
@@ -2728,71 +2817,47 @@ public class VideoPlayerJPActivity extends Activity implements
 		URL url;
 		try {
 			url = new URL(urlStr);
-//			URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(),null);
-//			HttpGet mHttpGet = new HttpGet(uri);
 			HttpGet mHttpGet = new HttpGet(url.toURI());
 			HttpResponse response = mAndroidHttpClient.execute(mHttpGet);
 			StatusLine statusLine = response.getStatusLine();
 			
 			int status = statusLine.getStatusCode();
-			Log.i(TAG, "HTTP STATUS : " + status);
 			
 			if (status == HttpStatus.SC_OK) {
-				Log.i(TAG, "HttpStatus.SC_OK--->" + urlStr);
 				// 正确的话直接返回，不进行下面的步骤
 				mAndroidHttpClient.close();
 				list.add(urlStr);
-				
 				return;//后面不执行
 			} else {
-				
-				Log.i(TAG, "NOT HttpStatus.SC_OK--->" + urlStr);
-				
 				if (status == HttpStatus.SC_MOVED_PERMANENTLY || // 网址被永久移除
 						status == HttpStatus.SC_MOVED_TEMPORARILY || // 网址暂时性移除
 						status == HttpStatus.SC_SEE_OTHER || // 重新定位资源
 						status == HttpStatus.SC_TEMPORARY_REDIRECT) {// 暂时定向
-					
 					Header header = response.getFirstHeader("Location");// 拿到重新定位后的header
-					
 					if(header != null) {
-						
 						String location = header.getValue();// 从header重新取出信息
 						Log.i(TAG, "Location: " + location);
 						if(location != null && !location.equals("")) {
-							
 							urlRedirect(location, list);
-							
 							mAndroidHttpClient.close();// 关闭此次连接
 							return;//后面不执行
 						}
 					}
-					
 					list.add(null);
 					mAndroidHttpClient.close();
-					
 					return;
-
 				} else {//地址真的不存在
-					
 					mAndroidHttpClient.close();
 					list.add(null);
-					
 					return;//后面不执行
 				}
 			}
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
+			mAndroidHttpClient.close();
+			list.add(null);
+		} 
 	}
 	
 	
@@ -2801,31 +2866,76 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			isRequset = true;	
+			isRequset +=1;	
 			playUrls.clear();
 			//updateXunleiurl
 			String url = null;
 			if(mProd_type==TYPE_PUSH_BT_EPISODE){
-				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
-						+ "&id=" + play_info.getPush_id()
-						+ "&md5_code=" + getUmengMd5()
-						+ "&name=" + mProd_sub_name;
+				if(isOnline){
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+							+ "&id=" + play_info.getPush_id()
+							+ "&md5_code=" + getUmengMd5()
+							+ "&name=" + URLEncoder.encode(mProd_sub_name);
+				}else{
+					if(isRequset==1){
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5()
+								+ "&name=" + URLEncoder.encode(mProd_sub_name);
+					}else{
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5()
+								+ "&name=" + URLEncoder.encode(mProd_sub_name);
+					}
+				}
 			}else{
-				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + play_info.getPush_url()
-						+ "&id=" + play_info.getPush_id()
-						+ "&md5_code=" + getUmengMd5();
+				if(isOnline){
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+							+ "&id=" + play_info.getPush_id()
+							+ "&md5_code=" + getUmengMd5();
+				}else{
+					if(isRequset==1){
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5();
+					}else{
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5();
+					}
+				}
+				
 			}
 			
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {
-				JSONObject json = new JSONObject(response);
-				String reciveData = json.getString("downurl");
+				JSONObject data = new JSONObject(response);
+				String reciveData = data.getString("downurl");
 				if(play_info!=null){
 					play_info.setRecivedDonwLoadUrls(reciveData);
 				}
 				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
+				List<SubURI> subList = null;
+				if(data.has("subtitle")){
+					Log.d(TAG, data.get("subtitle").toString());
+					if(!"".equals(data.get("subtitle").toString())){
+						JSONArray array_sub = data.getJSONArray("subtitle");
+						subList = new ArrayList<SubURI>();
+						for(int i = 0; i< array_sub.length() ; i++){
+							JSONObject subObj = array_sub.getJSONObject(i);
+							SubURI subInfo = new SubURI();
+							subInfo.setName(subObj.getString("name"));
+							subInfo.setUrl(subObj.getString("url"));
+							subInfo.SubType = SUBTYPE.NETWORK;
+							subList.add(subInfo);
+						}
+					}
+					
+				}
+				play_info.setSubList(subList);
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 				
@@ -3043,6 +3153,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mPreLoadLayout.setVisibility(View.GONE);
 		mHandler.removeCallbacks(mLoadingRunnable);
 		mStatue = STATUE_PLAYING;
+		lastPlayTime = -1;
 		mSeekBar.setEnabled(true);
 		startUpdateSeekBar(SEEKBAR_REFRESH_TIME);
 //		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
@@ -3192,13 +3303,31 @@ public class VideoPlayerJPActivity extends Activity implements
 			String date_str = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, date_str);
 			try{
-				JSONObject date = new JSONObject(date_str);
-				boolean haserror = date.getBoolean("error");
+				JSONObject data = new JSONObject(date_str);
+				boolean haserror = data.getBoolean("error");
 				if(!haserror){
-					String downurls = date.getString("downurl");
-					String data = DesUtils.decode(Constant.DES_KEY, downurls);
-					Log.d(TAG, "getPlayList--->data:" + data);
-					String[] urls = data.split("\\{mType\\}");
+					String downurls = data.getString("downurl");
+					List<SubURI> subList = null;
+					if(data.has("subtitle")){
+						Log.d(TAG, data.get("subtitle").toString());
+						if(!"".equals(data.get("subtitle").toString())){
+							JSONArray array_sub = data.getJSONArray("subtitle");
+							subList = new ArrayList<SubURI>();
+							for(int i = 0; i< array_sub.length() ; i++){
+								JSONObject subObj = array_sub.getJSONObject(i);
+								SubURI subInfo = new SubURI();
+								subInfo.setName(subObj.getString("name"));
+								subInfo.setUrl(subObj.getString("url"));
+								subInfo.SubType = SUBTYPE.NETWORK;
+								subList.add(subInfo);
+							}
+						}
+						
+					}
+					play_info.setSubList(subList);
+					String donwLoad_url_data = DesUtils.decode(Constant.DES_KEY, downurls);
+					Log.d(TAG, "getPlayList--->data:" + donwLoad_url_data);
+					String[] urls = donwLoad_url_data.split("\\{mType\\}");
 //					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 					playUrls.clear();
 //					playUrls_flv.clear();

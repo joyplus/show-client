@@ -21,6 +21,8 @@ public class Constant {
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
 //	 public static String BASE_URL = "http://172.16.31.64:8030";//视频直播源
 //	 public static final String URL_FAQ = "http://172.16.31.64:8030/helptv.html";//视频直播源
+	 
+	public static final String SUBTITLE_PARSE_URL_URL = BASE_URL + "/joyplus/subtitle/";
 	
 	 public static final String DES_KEY = "ilovejoy";
 	 

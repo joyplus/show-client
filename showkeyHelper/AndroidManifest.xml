@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joyplus.tvhelper"
-    android:versionCode="17"
-    android:versionName="1.4alpha" >
+    android:versionCode="19"
+    android:versionName="1.4.2apha" >
 
     <uses-sdk
         android:minSdkVersion="14"
