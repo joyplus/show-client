@@ -1325,17 +1325,18 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 								Log.d(TAG, array.getString(i));
 							}
 						}
+						List<SubURI> subList = null;
 						if(data.has("subtitle")){
+							Log.d(TAG, data.get("subtitle").toString());
 							JSONArray array_sub = data.getJSONArray("subtitle");
-							List<SubURI> subList = new ArrayList<SubURI>();
+							subList = new ArrayList<SubURI>();
 							for(int i = 0; i< array_sub.length() ; i++){
 								JSONObject subObj = array_sub.getJSONObject(i);
 								SubURI subInfo = new SubURI();
 								subInfo.setName(subObj.getString("name"));
-								subInfo.setUrl(subObj.getString("url"));
+								subInfo.setUrl(subObj.getString("url"));	
 								subList.add(subInfo);
 							}
-							play_info.setSubList(subList);
 						}
 //						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
 //						Log.d(TAG, "time ---->" + time);
@@ -1394,6 +1395,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setPush_id(push_id);
 							services.updateMoviePlayHistory(play_info);
 						}
+						if(subList!=null){
+							Log.d(TAG, "subList size = " +subList.size());
+						}
+						play_info.setSubList(subList);
 						push_type = 1;
 						pincode_md5 = data.getString("md5_code");
 						Log.d(TAG, pincode_md5);

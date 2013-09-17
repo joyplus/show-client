@@ -124,10 +124,11 @@ public class VideoPlayerJPActivity extends Activity implements
 	public static final int TYPE_PUSH_BT_EPISODE = TYPE_LOCAL -1;
 	
 	private MoviePlayHistoryInfo play_info;
-	private boolean isRequset = false;
+	private int isRequset = 0;
 	private long lastPlayTime = -1; 
 	private int loadingCount;
 
+	private boolean isOnline;
 	/**
 	 * 数据初始化
 	 */
@@ -420,6 +421,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private void initVedioDate() {
 		mStatue = STATUE_PRE_LOADING;
+		isRequset = 0;
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -799,7 +801,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
-						if(isRequset){
+						if(isRequset==1){
 							if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 								Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 								intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
@@ -819,7 +821,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							showDialog(0);
 						}
 					}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
-						if(isRequset){
+						if(isRequset>1){
 							if(!isFinishing()){
 								showDialog(0);
 							}
@@ -893,7 +895,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							}
 						}
 						else if(mProd_type==TYPE_PUSH){
-							if(isRequset){
+							if(isRequset==1){
 								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 									Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
@@ -909,7 +911,7 @@ public class VideoPlayerJPActivity extends Activity implements
 								new Thread(new RequestNewUrl()).start();
 							}
 						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
-							if(isRequset){
+							if(isRequset>1){
 								if(!isFinishing()){
 									showDialog(0);
 								}
@@ -935,11 +937,11 @@ public class VideoPlayerJPActivity extends Activity implements
 						// 所有的片源都不能播放
 						Log.e(TAG, "no url can play!");
 						if(mProd_type==TYPE_PUSH){
-							if(isRequset){
+							if(isRequset==1){
 								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 									Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
-									startActivity(intent_web);
+									startActivity( intent_web);
 								}else{
 									if(!isFinishing()){
 										showDialog(0);
@@ -949,11 +951,14 @@ public class VideoPlayerJPActivity extends Activity implements
 								//失效了 接着搞
 								new Thread(new RequestNewUrl()).start();
 							}
-						}else if(!VideoPlayerJPActivity.this.isFinishing()){
-							showDialog(0);
-							
-							//所有url不能播放，向服务器传递-1
-//							saveToServer(-1, 0);
+						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+							if(isRequset>1){
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}else{
+								new Thread(new RequestNewUrl()).start();
+							}
 						}
 					}
 				}
@@ -2857,19 +2862,46 @@ public class VideoPlayerJPActivity extends Activity implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			isRequset = true;	
+			isRequset +=1;	
 			playUrls.clear();
 			//updateXunleiurl
 			String url = null;
 			if(mProd_type==TYPE_PUSH_BT_EPISODE){
-				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
-						+ "&id=" + play_info.getPush_id()
-						+ "&md5_code=" + getUmengMd5()
-						+ "&name=" + URLEncoder.encode(mProd_sub_name);
+				if(isOnline){
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+							+ "&id=" + play_info.getPush_id()
+							+ "&md5_code=" + getUmengMd5()
+							+ "&name=" + URLEncoder.encode(mProd_sub_name);
+				}else{
+					if(isRequset==1){
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5()
+								+ "&name=" + URLEncoder.encode(mProd_sub_name);
+					}else{
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5()
+								+ "&name=" + URLEncoder.encode(mProd_sub_name);
+					}
+				}
 			}else{
-				url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
-						+ "&id=" + play_info.getPush_id()
-						+ "&md5_code=" + getUmengMd5();
+				if(isOnline){
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+							+ "&id=" + play_info.getPush_id()
+							+ "&md5_code=" + getUmengMd5();
+				}else{
+					if(isRequset==1){
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5();
+					}else{
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5();
+					}
+				}
+				
 			}
 			
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
@@ -2882,6 +2914,18 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
+				if(json.has("subtitle")){
+					JSONArray array_sub = json.getJSONArray("subtitle");
+					List<SubURI> subList = new ArrayList<SubURI>();
+					for(int i = 0; i< array_sub.length() ; i++){
+						JSONObject subObj = array_sub.getJSONObject(i);
+						SubURI subInfo = new SubURI();
+						subInfo.setName(subObj.getString("name"));
+						subInfo.setUrl(subObj.getString("url"));
+						subList.add(subInfo);
+					}
+					play_info.setSubList(subList);
+				}
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 				
@@ -3261,6 +3305,7 @@ public class VideoPlayerJPActivity extends Activity implements
 							SubURI subInfo = new SubURI();
 							subInfo.setName(subObj.getString("name"));
 							subInfo.setUrl(subObj.getString("url"));
+							Log.d(TAG, subObj.getString("url"));
 							subList.add(subInfo);
 						}
 						play_info.setSubList(subList);
