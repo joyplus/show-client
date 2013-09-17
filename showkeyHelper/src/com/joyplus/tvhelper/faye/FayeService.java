@@ -41,6 +41,7 @@ import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
+import com.joyplus.tvhelper.entity.SubInfo;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DesUtils;
@@ -1323,7 +1324,18 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 								es.add(e);
 								Log.d(TAG, array.getString(i));
 							}
-							
+						}
+						if(data.has("subtitle")){
+							JSONArray array_sub = data.getJSONArray("subtitle");
+							List<SubInfo> subList = new ArrayList<SubInfo>();
+							for(int i = 0; i< array_sub.length() ; i++){
+								JSONObject subObj = array_sub.getJSONObject(i);
+								SubInfo subInfo = new SubInfo();
+								subInfo.setName(subObj.getString("name"));
+								subInfo.setUrl(subObj.getString("url"));
+								subList.add(subInfo);
+							}
+							play_info.setSubList(subList);
 						}
 //						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
 //						Log.d(TAG, "time ---->" + time);

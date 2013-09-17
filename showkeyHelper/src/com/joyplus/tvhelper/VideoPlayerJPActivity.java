@@ -20,6 +20,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -82,6 +83,7 @@ import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
+import com.joyplus.tvhelper.entity.SubInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
@@ -3246,13 +3248,25 @@ public class VideoPlayerJPActivity extends Activity implements
 			String date_str = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, date_str);
 			try{
-				JSONObject date = new JSONObject(date_str);
-				boolean haserror = date.getBoolean("error");
+				JSONObject data = new JSONObject(date_str);
+				boolean haserror = data.getBoolean("error");
 				if(!haserror){
-					String downurls = date.getString("downurl");
-					String data = DesUtils.decode(Constant.DES_KEY, downurls);
-					Log.d(TAG, "getPlayList--->data:" + data);
-					String[] urls = data.split("\\{mType\\}");
+					String downurls = data.getString("downurl");
+					if(data.has("subtitle")){
+						JSONArray array_sub = data.getJSONArray("subtitle");
+						List<SubInfo> subList = new ArrayList<SubInfo>();
+						for(int i = 0; i< array_sub.length() ; i++){
+							JSONObject subObj = array_sub.getJSONObject(i);
+							SubInfo subInfo = new SubInfo();
+							subInfo.setName(subObj.getString("name"));
+							subInfo.setUrl(subObj.getString("url"));
+							subList.add(subInfo);
+						}
+						play_info.setSubList(subList);
+					}
+					String donwLoad_url_data = DesUtils.decode(Constant.DES_KEY, downurls);
+					Log.d(TAG, "getPlayList--->data:" + donwLoad_url_data);
+					String[] urls = donwLoad_url_data.split("\\{mType\\}");
 //					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 					playUrls.clear();
 //					playUrls_flv.clear();
