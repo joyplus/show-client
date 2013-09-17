@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.joyplus.Sub.SubURI;
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.network.filedownload.model.DownloadTask;
@@ -41,7 +42,6 @@ import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
-import com.joyplus.tvhelper.entity.SubInfo;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DesUtils;
@@ -1327,10 +1327,10 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						}
 						if(data.has("subtitle")){
 							JSONArray array_sub = data.getJSONArray("subtitle");
-							List<SubInfo> subList = new ArrayList<SubInfo>();
+							List<SubURI> subList = new ArrayList<SubURI>();
 							for(int i = 0; i< array_sub.length() ; i++){
 								JSONObject subObj = array_sub.getJSONObject(i);
-								SubInfo subInfo = new SubInfo();
+								SubURI subInfo = new SubURI();
 								subInfo.setName(subObj.getString("name"));
 								subInfo.setUrl(subObj.getString("url"));
 								subList.add(subInfo);

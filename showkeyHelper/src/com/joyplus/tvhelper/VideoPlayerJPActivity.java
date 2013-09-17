@@ -1,11 +1,6 @@
 package com.joyplus.tvhelper;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -44,7 +39,6 @@ import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -71,6 +65,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.VideoView;
+
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
@@ -78,12 +73,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.Sub.SubURI;
 import com.joyplus.manager.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
-import com.joyplus.tvhelper.entity.SubInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
@@ -836,31 +831,37 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				
 				//字幕获取
-				if(mProd_type == TYPE_PUSH && !mJoyplusSubManager.CheckSubAviable()){
+				if((mProd_type == TYPE_PUSH || mProd_type == TYPE_PUSH_BT_EPISODE) && 
+						!mJoyplusSubManager.CheckSubAviable()){
 					
 					if(play_info != null && play_info.getPush_url() != null
 							&& !play_info.getPush_url().equals("")){
-						MyApp.pool.execute(new Runnable() {
-							
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
+						if(play_info.getSubList() != null){
+							mJoyplusSubManager.setSubUri(play_info.getSubList());
+							mSubTitleView.displaySubtitle();
+						}else{
+							MyApp.pool.execute(new Runnable() {
 								
-								String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
-										+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
-										getUmengMd5();
-//								subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
-								mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
-										getSubtitle4Push(subTitleUrl, Constant.APPKEY));
-								mSubTitleView.displaySubtitle();
-//								currentSubtitleIndex = 0;
-//								initSubTitleCollection();
-							}
-						});
-
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									
+									String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
+											+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
+											getUmengMd5();
+//									subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
+									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
+											getSubtitle4Push(subTitleUrl, Constant.APPKEY));
+									mSubTitleView.displaySubtitle();
+//									currentSubtitleIndex = 0;
+//									initSubTitleCollection();
+								}
+							});
+						}
 					}
-					
 				}
+				
+				if(mProd_type == TYPE_PUSH_BT_EPISODE)
 				
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
@@ -3254,10 +3255,10 @@ public class VideoPlayerJPActivity extends Activity implements
 					String downurls = data.getString("downurl");
 					if(data.has("subtitle")){
 						JSONArray array_sub = data.getJSONArray("subtitle");
-						List<SubInfo> subList = new ArrayList<SubInfo>();
+						List<SubURI> subList = new ArrayList<SubURI>();
 						for(int i = 0; i< array_sub.length() ; i++){
 							JSONObject subObj = array_sub.getJSONObject(i);
-							SubInfo subInfo = new SubInfo();
+							SubURI subInfo = new SubURI();
 							subInfo.setName(subObj.getString("name"));
 							subInfo.setUrl(subObj.getString("url"));
 							subList.add(subInfo);
