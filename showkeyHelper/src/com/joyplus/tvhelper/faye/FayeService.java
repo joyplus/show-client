@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.joyplus.Sub.SUBTYPE;
 import com.joyplus.Sub.SubURI;
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
@@ -1328,15 +1329,19 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						List<SubURI> subList = null;
 						if(data.has("subtitle")){
 							Log.d(TAG, data.get("subtitle").toString());
-							JSONArray array_sub = data.getJSONArray("subtitle");
-							subList = new ArrayList<SubURI>();
-							for(int i = 0; i< array_sub.length() ; i++){
-								JSONObject subObj = array_sub.getJSONObject(i);
-								SubURI subInfo = new SubURI();
-								subInfo.setName(subObj.getString("name"));
-								subInfo.setUrl(subObj.getString("url"));	
-								subList.add(subInfo);
+							if(!"".equals(data.get("subtitle").toString())){
+								JSONArray array_sub = data.getJSONArray("subtitle");
+								subList = new ArrayList<SubURI>();
+								for(int i = 0; i< array_sub.length() ; i++){
+									JSONObject subObj = array_sub.getJSONObject(i);
+									SubURI subInfo = new SubURI();
+									subInfo.setName(subObj.getString("name"));
+									subInfo.setUrl(subObj.getString("url"));
+									subInfo.SubType = SUBTYPE.NETWORK;
+									subList.add(subInfo);
+								}
 							}
+							
 						}
 //						long time = System.currentTimeMillis() - Long.valueOf(data.getString("time"));
 //						Log.d(TAG, "time ---->" + time);

@@ -73,6 +73,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.Sub.SUBTYPE;
 import com.joyplus.Sub.SubURI;
 import com.joyplus.manager.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.db.DBServices;
@@ -801,7 +802,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
 					if(mProd_type==TYPE_PUSH){
-						if(isRequset==1){
+						if(isRequset==2){
 							if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
 								Intent intent_web = new Intent(VideoPlayerJPActivity.this, WebViewActivity.class);
 								intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
@@ -835,32 +836,35 @@ public class VideoPlayerJPActivity extends Activity implements
 				//字幕获取
 				if((mProd_type == TYPE_PUSH || mProd_type == TYPE_PUSH_BT_EPISODE) && 
 						!mJoyplusSubManager.CheckSubAviable()){
-					
-					if(play_info != null && play_info.getPush_url() != null
-							&& !play_info.getPush_url().equals("")){
-						if(play_info.getSubList() != null){
-							mJoyplusSubManager.setSubUri(play_info.getSubList());
-							mSubTitleView.displaySubtitle();
-						}else{
-							MyApp.pool.execute(new Runnable() {
-								
-								@Override
-								public void run() {
-									// TODO Auto-generated method stub
-									
-									String subTitleUrl = Constant.BASE_URL + "/joyplus/subtitle/?url="
-											+ URLEncoder.encode(play_info.getPush_url()) + "&md5_code=" + 
-											getUmengMd5();
-//									subTitleUrlList = XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl, Constant.APPKEY);
-									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
-											getSubtitle4Push(subTitleUrl, Constant.APPKEY));
+					MyApp.pool.execute(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (play_info != null
+									&& play_info.getPush_url() != null
+									&& !play_info.getPush_url().equals("")) {
+								if (play_info.getSubList() != null) {
+									mJoyplusSubManager.setSubUri(play_info.getSubList());
 									mSubTitleView.displaySubtitle();
-//									currentSubtitleIndex = 0;
-//									initSubTitleCollection();
+								} else {
+									String subTitleUrl = Constant.BASE_URL
+											+ "/joyplus/subtitle/?url="
+											+ URLEncoder.encode(play_info.getPush_url())
+											+ "&md5_code=" + getUmengMd5();
+									// subTitleUrlList =
+									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
+									// Constant.APPKEY);
+									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
+													.getSubtitle4Push(subTitleUrl,
+															Constant.APPKEY));
+									mSubTitleView.displaySubtitle();
+									// currentSubtitleIndex = 0;
+									// initSubTitleCollection();
 								}
-							});
+							}
 						}
-					}
+					});
 				}
 				
 				if(mProd_type == TYPE_PUSH_BT_EPISODE)
@@ -2907,25 +2911,31 @@ public class VideoPlayerJPActivity extends Activity implements
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {
-				JSONObject json = new JSONObject(response);
-				String reciveData = json.getString("downurl");
+				JSONObject data = new JSONObject(response);
+				String reciveData = data.getString("downurl");
 				if(play_info!=null){
 					play_info.setRecivedDonwLoadUrls(reciveData);
 				}
 				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
-				if(json.has("subtitle")){
-					JSONArray array_sub = json.getJSONArray("subtitle");
-					List<SubURI> subList = new ArrayList<SubURI>();
-					for(int i = 0; i< array_sub.length() ; i++){
-						JSONObject subObj = array_sub.getJSONObject(i);
-						SubURI subInfo = new SubURI();
-						subInfo.setName(subObj.getString("name"));
-						subInfo.setUrl(subObj.getString("url"));
-						subList.add(subInfo);
+				List<SubURI> subList = null;
+				if(data.has("subtitle")){
+					Log.d(TAG, data.get("subtitle").toString());
+					if(!"".equals(data.get("subtitle").toString())){
+						JSONArray array_sub = data.getJSONArray("subtitle");
+						subList = new ArrayList<SubURI>();
+						for(int i = 0; i< array_sub.length() ; i++){
+							JSONObject subObj = array_sub.getJSONObject(i);
+							SubURI subInfo = new SubURI();
+							subInfo.setName(subObj.getString("name"));
+							subInfo.setUrl(subObj.getString("url"));
+							subInfo.SubType = SUBTYPE.NETWORK;
+							subList.add(subInfo);
+						}
 					}
-					play_info.setSubList(subList);
+					
 				}
+				play_info.setSubList(subList);
 				String[] urls = downLoadurls.split("\\{mType\\}");
 //				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
 				
@@ -3297,19 +3307,24 @@ public class VideoPlayerJPActivity extends Activity implements
 				boolean haserror = data.getBoolean("error");
 				if(!haserror){
 					String downurls = data.getString("downurl");
+					List<SubURI> subList = null;
 					if(data.has("subtitle")){
-						JSONArray array_sub = data.getJSONArray("subtitle");
-						List<SubURI> subList = new ArrayList<SubURI>();
-						for(int i = 0; i< array_sub.length() ; i++){
-							JSONObject subObj = array_sub.getJSONObject(i);
-							SubURI subInfo = new SubURI();
-							subInfo.setName(subObj.getString("name"));
-							subInfo.setUrl(subObj.getString("url"));
-							Log.d(TAG, subObj.getString("url"));
-							subList.add(subInfo);
+						Log.d(TAG, data.get("subtitle").toString());
+						if(!"".equals(data.get("subtitle").toString())){
+							JSONArray array_sub = data.getJSONArray("subtitle");
+							subList = new ArrayList<SubURI>();
+							for(int i = 0; i< array_sub.length() ; i++){
+								JSONObject subObj = array_sub.getJSONObject(i);
+								SubURI subInfo = new SubURI();
+								subInfo.setName(subObj.getString("name"));
+								subInfo.setUrl(subObj.getString("url"));
+								subInfo.SubType = SUBTYPE.NETWORK;
+								subList.add(subInfo);
+							}
 						}
-						play_info.setSubList(subList);
+						
 					}
+					play_info.setSubList(subList);
 					String donwLoad_url_data = DesUtils.decode(Constant.DES_KEY, downurls);
 					Log.d(TAG, "getPlayList--->data:" + donwLoad_url_data);
 					String[] urls = donwLoad_url_data.split("\\{mType\\}");
