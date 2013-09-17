@@ -260,6 +260,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					playDate.prod_src = json.getString("prod_src");
 					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
 					playDate.prod_qua = playInfo.getDefination();
+					playDate.isOnline = false;
 //					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //						if(json.has("prod_subname")){//旧版android 没有传递该参数
 //							playDate.prod_sub_name = json.getString("prod_subname");
@@ -353,6 +354,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				playDate.obj = play_info;
 //				playDate.prod_src = json.getString("prod_src");
 				playDate.prod_time = play_info.getPlayback_time()*1000;
+				playDate.isOnline = false;
 //				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
 //				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //					if(json.has("prod_subname")){//旧版android 没有传递该参数
@@ -763,6 +765,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					playDate.prod_src = json.getString("prod_src");
 					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
 					playDate.prod_qua = playInfo.getDefination();
+					playDate.isOnline = false;
 //					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //						if(json.has("prod_subname")){//旧版android 没有传递该参数
 //							playDate.prod_sub_name = json.getString("prod_subname");
@@ -815,6 +818,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //		playDate.prod_src = json.getString("prod_src");
 		playDate.prod_time = Math.round(epInfo.getPlayback_time()*1000);
 		playDate.prod_qua = epInfo.getDefination();
+		playDate.isOnline = false;
 //		if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //			if(json.has("prod_subname")){//旧版android 没有传递该参数
 //				playDate.prod_sub_name = json.getString("prod_subname");

@@ -423,6 +423,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void initVedioDate() {
 		mStatue = STATUE_PRE_LOADING;
 		isRequset = 0;
+		
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -456,7 +457,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = playDate.prod_qua;
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
-		
+		isOnline = playDate.isOnline;
 		if(mProd_type == TYPE_PUSH || mProd_type == TYPE_LOCAL|| mProd_type == TYPE_PUSH_BT_EPISODE){
 			play_info = (MoviePlayHistoryInfo) playDate.obj;
 		}
