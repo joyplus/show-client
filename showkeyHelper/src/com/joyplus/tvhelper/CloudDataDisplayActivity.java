@@ -73,6 +73,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private ExecutorService pool = Executors.newFixedThreadPool(5);
 	
 	private Button selectedButon;
+	private boolean isFirstResume = true;
 	
 //	private int expandGroupIndex = -1;
 	
@@ -266,6 +267,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //							playDate.prod_type = -1;
 //						}
 //					}
+					isFirstResume = false;
 					app.setmCurrentPlayDetailData(playDate);
 					app.set_ReturnProgramView(null);
 					startActivity(intent);
@@ -578,6 +580,9 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		if(selectedIndex == 0){
 			listView.setAdapter(adpter_play_history);
 			listView.requestFocus();
+			if(!isFirstResume){
+				listView.expandGroup(0, true);
+			}
 			listView.setSelection(0);
 		}else{
 			listView.requestFocus();
@@ -817,6 +822,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //				playDate.prod_type = -1;
 //			}
 //		}
+		isFirstResume = false;
 		app.setmCurrentPlayDetailData(playDate);
 		app.set_ReturnProgramView(null);
 		startActivity(intent);
