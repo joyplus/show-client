@@ -7,7 +7,7 @@
 
     <LinearLayout android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:id="@+id/title"
+        android:id="@+id/layout_title"
         android:layout_marginTop="90dp"
         android:paddingLeft="147dp"
         android:gravity="center_vertical"
@@ -41,7 +41,8 @@
     <include layout="@layout/layout_1"
         />
 <!--     <include layout="@layout/layout_2"/> -->
-    <include layout="@layout/layout_3"/>
+    <include layout="@layout/layout_3"
+        android:id="@+id/layout_page_3"/>
 </com.joyplus.tvhelper.ui.MyScrollLayout>
 <com.joyplus.tvhelper.ui.NotificationView android:layout_width="wrap_content"
     android:layout_height="wrap_content"
