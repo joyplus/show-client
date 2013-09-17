@@ -78,7 +78,8 @@ public class SubTitleView extends TextView {
 		}else {
 			if(endTime - currTime > SUBTITLE_DELAY_TIME_MAX){
 				Element preElement = getElement(currTime);
-				if(preElement.getStartTime().getTime() < endTime - SUBTITLE_DELAY_TIME_MAX){//for Fast back
+				if(preElement != null &&
+						preElement.getStartTime().getTime() < endTime - SUBTITLE_DELAY_TIME_MAX){//for Fast back
 					mHandler.removeCallbacksAndMessages(null);
 					mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 					return;
@@ -101,7 +102,8 @@ public class SubTitleView extends TextView {
 		}else {
 			if(startTime - currTime > SUBTITLE_DELAY_TIME_MAX){
 				Element preElement = getElement(currTime);
-				if(preElement.getStartTime().getTime() < startTime - SUBTITLE_DELAY_TIME_MAX){//for Fast back
+				if(preElement != null &&
+						preElement.getStartTime().getTime() < startTime - SUBTITLE_DELAY_TIME_MAX){//for Fast back
 					mHandler.removeCallbacksAndMessages(null);
 					mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 					return;
@@ -136,8 +138,8 @@ public class SubTitleView extends TextView {
 		}
 		Element preElement = getElement(currentPosition);
 		setText("");
-		long startTime = preElement.getStartTime().getTime();
 		if(preElement != null){
+			long startTime = preElement.getStartTime().getTime();
 			setTag(preElement);
 			if( startTime - currentPosition > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
