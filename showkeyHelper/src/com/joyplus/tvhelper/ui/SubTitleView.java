@@ -138,8 +138,8 @@ public class SubTitleView extends TextView {
 		}
 		Element preElement = getElement(currentPosition);
 		setText("");
-		long startTime = preElement.getStartTime().getTime();
 		if(preElement != null){
+			long startTime = preElement.getStartTime().getTime();
 			setTag(preElement);
 			if( startTime - currentPosition > SUBTITLE_DELAY_TIME_MAX){
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_SHOW_CACHE, SUBTITLE_DELAY_TIME_MAX);
