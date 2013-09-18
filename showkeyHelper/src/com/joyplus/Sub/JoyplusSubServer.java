@@ -34,7 +34,6 @@ public class JoyplusSubServer {
     	mContext = context;
     }
 	public void setSubUri(List<SubURI> subUri){
-		 Log.i(TAG, "setSubUri subUri size--->" + subUri.size());
 		 if(subUri==null || subUri.size()<=0)return;
 		 SubUri = subUri;
 		 CheckSubUriList();
