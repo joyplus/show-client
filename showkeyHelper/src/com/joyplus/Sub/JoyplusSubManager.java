@@ -41,7 +41,6 @@ public class JoyplusSubManager {
 		   setSubUri(sub);
 	   }
 	   public void setSubUri(List<SubURI> subUri){
-		   Log.i(TAG, "setSubUri subUri size--->" + subUri.size());
 		   if(subUri==null || subUri.size()<=0 ||mSubServer.CheckSubAviable())return;
 		   mSubServer.setSubUri(subUri);
 	   }
@@ -74,7 +73,6 @@ public class JoyplusSubManager {
 		List<SubURI> list = new ArrayList<SubURI>();
 		String subTitleUrl = Constant.SUBTITLE_PARSE_URL_URL + "?url="
 				+ URLEncoder.encode(url) + "&md5_code=" + MD5;
-		Log.i(TAG, "subTitleUrl-->" + subTitleUrl);
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(subTitleUrl).type(JSONObject.class);
 		Map<String, String> headers = new HashMap<String, String>();
@@ -83,7 +81,6 @@ public class JoyplusSubManager {
 		(new AQuery(context)).sync(cb);
 		JSONObject jo = cb.getResult();
 		if (jo != null && jo.toString() != null && !"".equals(jo.toString())) {
-			Log.i(TAG, "subtitles--->" + jo.toString());
 			try {
 				JSONObject subtitlesJsonObject = (JSONObject) new JSONTokener(
 						jo.toString()).nextValue();
@@ -109,7 +106,6 @@ public class JoyplusSubManager {
 				e.printStackTrace();
 			}
 		}
-		Log.i(TAG, "list size--->" + list.size());
 		return list;
 	}
 }
