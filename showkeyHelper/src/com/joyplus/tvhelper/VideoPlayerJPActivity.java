@@ -423,6 +423,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void initVedioDate() {
 		mStatue = STATUE_PRE_LOADING;
 		isRequset = 0;
+		
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -456,7 +457,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = playDate.prod_qua;
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
-		
+		isOnline = playDate.isOnline;
 		if(mProd_type == TYPE_PUSH || mProd_type == TYPE_LOCAL|| mProd_type == TYPE_PUSH_BT_EPISODE){
 			play_info = (MoviePlayHistoryInfo) playDate.obj;
 		}
@@ -2870,20 +2871,24 @@ public class VideoPlayerJPActivity extends Activity implements
 			playUrls.clear();
 			//updateXunleiurl
 			String url = null;
+			String url_param = play_info.getPush_url();
+			if(url_param.contains(":")){
+				url_param = URLEncoder.encode(url_param);
+			}
 			if(mProd_type==TYPE_PUSH_BT_EPISODE){
 				if(isOnline){
-					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 							+ "&id=" + play_info.getPush_id()
 							+ "&md5_code=" + getUmengMd5()
 							+ "&name=" + URLEncoder.encode(mProd_sub_name);
 				}else{
 					if(isRequset==1){
-						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5()
 								+ "&name=" + URLEncoder.encode(mProd_sub_name);
 					}else{
-						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5()
 								+ "&name=" + URLEncoder.encode(mProd_sub_name);
@@ -2891,23 +2896,23 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 			}else{
 				if(isOnline){
-					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 							+ "&id=" + play_info.getPush_id()
 							+ "&md5_code=" + getUmengMd5();
 				}else{
 					if(isRequset==1){
-						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5();
 					}else{
-						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5();
 					}
 				}
 				
 			}
-			
+			Log.d(TAG, "url--->" + url);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {

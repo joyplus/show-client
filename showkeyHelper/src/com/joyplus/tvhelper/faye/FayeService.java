@@ -152,6 +152,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						playDate.prod_name = play_info.getName();
 //						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
+						playDate.isOnline = true;
 //						playDate.prod_url = play_info.getDownload_url();
 						app.setmCurrentPlayDetailData(playDate);
 						app.set_ReturnProgramView(null);
@@ -1441,6 +1442,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //									playDate.prod_type = -1;
 //								}
 //							}
+							playDate.isOnline = true;
 							app.setmCurrentPlayDetailData(playDate);
 							app.set_ReturnProgramView(null);
 							startActivity(intent);
