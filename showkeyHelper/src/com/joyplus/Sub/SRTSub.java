@@ -24,6 +24,7 @@ public class SRTSub extends JoyplusSub{
 		JoyplusSubContentRestrictionFactory.getContentRestriction().checkUri(SubContentType.SUB_SRT, this.getUri().Uri);
 	}
     private void CheckSize(byte[] Sub){
+    	if(Sub == null)
     	JoyplusSubContentRestrictionFactory.getContentRestriction().checkSubSize(0, Sub.length);
     }
 	@Override

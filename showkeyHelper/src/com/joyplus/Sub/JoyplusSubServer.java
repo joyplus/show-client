@@ -73,6 +73,7 @@ public class JoyplusSubServer {
 	}
 	private JoyplusSub InstanceSub(SubURI uri,byte[] subtitle){
 		JoyplusSub sub = null;
+		if(uri.SubType == SUBTYPE.NETWORK && subtitle==null)return null;
 		for(int i=1;i<=SubContentType.SUB_MAX.toInt();i++){
 			sub = InstanceSub(JoyplusSub.getSubContentType(i),uri,subtitle);
 			if(sub !=null)return sub;
