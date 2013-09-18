@@ -16,7 +16,6 @@ import android.content.Context;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.joyplus.tvhelper.utils.Constant;
-import com.joyplus.tvhelper.utils.Log;
 
 public class JoyplusSubManager {
 	
