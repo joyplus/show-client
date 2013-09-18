@@ -12,7 +12,6 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
 import com.joyplus.tvhelper.utils.Constant;
-import com.joyplus.tvhelper.utils.Log;
 
 public class JoyplusSubServer {
 	private static final String TAG = "JoyplusSubServer";
@@ -34,7 +33,6 @@ public class JoyplusSubServer {
     	mContext = context;
     }
 	public void setSubUri(List<SubURI> subUri){
-		 Log.i(TAG, "setSubUri subUri size--->" + subUri.size());
 		 if(subUri==null || subUri.size()<=0)return;
 		 SubUri = subUri;
 		 CheckSubUriList();
@@ -74,6 +72,7 @@ public class JoyplusSubServer {
 	}
 	private JoyplusSub InstanceSub(SubURI uri,byte[] subtitle){
 		JoyplusSub sub = null;
+		if(uri.SubType == SUBTYPE.NETWORK && subtitle==null)return null;
 		for(int i=1;i<=SubContentType.SUB_MAX.toInt();i++){
 			sub = InstanceSub(JoyplusSub.getSubContentType(i),uri,subtitle);
 			if(sub !=null)return sub;
