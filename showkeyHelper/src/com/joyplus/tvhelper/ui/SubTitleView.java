@@ -146,6 +146,8 @@ public class SubTitleView extends TextView {
 			}else {
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currentPosition);
 			}
+		}else{
+			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_START, SUBTITLE_DELAY_TIME_MAX);
 		}
 		lastTime = currentPosition;
 	}
