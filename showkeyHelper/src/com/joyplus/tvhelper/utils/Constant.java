@@ -29,6 +29,7 @@ public class Constant {
 	 
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 
+	public static String PLAYERPACH_ADV_PUBLISHERID = "4083958c3dc3360dafe7287ae997070c";
 	
 	
 	public static final String[] video_dont_support_extensions = { ".m3u",".m3u8"};//不支持的格式

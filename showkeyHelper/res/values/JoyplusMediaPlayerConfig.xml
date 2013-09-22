@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     
+
+    <!-- The Decode values -->
+    <!-- the default decode type,value  -->
+    <string translatable="false" name="Default_Decode">HW</string>
+    <string translatable="false" name="Decode_HW">HW</string>
+    <string translatable="false" name="Decode_SW">SW</string>
+    
+    <!-- MediaPlayer Config  --> 
+    <!-- name , TYPE , EN , Decode_HW , Decode_SW , PRIORIRY_HW , PRIORITY_SW 
+         name : the player which used
+         TYPE : the player used type, don't change this for it depends on JoyplusMediaPlayerManager
+         EN   : the player usable. true-use false-disable
+         Decode_HW : the player support HW decode, support-true else false
+         Decode_SW : the player support SW decode, support-false else false
+         PRIORIRY_HW : prioriry of HW decode, it usable when Decode_HW is true
+         PRIORITY_SW : prioriry of SW decode, it usable when Decode_SW is true -->
+    <string-array translatable="false" name="mediaplayerconfig">
+        <item>"mediaplayer,0,true,true,false,1,0"</item>
+        <item>"vitamio,1,true,false,true,0,1"</item>        
+    </string-array>
+    
+    <!-- default time to report mediaplayer state MIN =300 MAX =800 (ms)
+         it use to report current player state which can register listener in JoyplusMediaPlayerManager
+         Typical values is 500ms -->
+    <string name="defaultUpdateTime">500</string>
+    
+    <!-- Config support switch player internal, you can change it to false or true -->
+    <string name="switch_internal">true</string>
+    
+    <!-- Sub dir in SDCard 
+         default dir is "mnt/sdcard/Joyplus/sub/"-->
+    <string name="sun_dir">Joyplus/sub/</string>
+</resources>
