@@ -2,13 +2,17 @@ package com.joyplus;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -25,7 +29,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,6 +50,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
+import com.joyplus.Sub.SUBTYPE;
+import com.joyplus.Sub.SubURI;
 import com.joyplus.manager.URLManager;
 import com.joyplus.manager.URLManager.Quality;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
@@ -57,15 +62,22 @@ import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.WebViewActivity;
+import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
+import com.joyplus.tvhelper.entity.VideoPlayUrl;
+import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
-import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.DesUtils;
+import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
+import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -315,9 +327,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mInfo  = new CurrentPlayerInfo();
     	JoyplusMediaPlayerMiddleControlMini.setHandler(MiniHandler);
     	try {
-			JoyplusMediaPlayerManager.Init(this);
-			JoyplusMediaPlayerManager.getInstance().registerListener(this);
-			mScreenManager = new JoyplusMediaPlayerScreenManager(this);
+			JoyplusMediaPlayerManager.Init(JoyplusMediaPlayerActivity.this);
+			JoyplusMediaPlayerManager.getInstance().registerListener(JoyplusMediaPlayerActivity.this);
+			mScreenManager = new JoyplusMediaPlayerScreenManager(JoyplusMediaPlayerActivity.this);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -327,8 +339,16 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
     	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
-    	mPreference          = new JoyplusMediaPlayerPreference(this);
-    	mPreference.setHandler(PreferenceHandler);
+    	mHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				mPreference          = new JoyplusMediaPlayerPreference(JoyplusMediaPlayerActivity.this);
+		    	mPreference.setHandler(PreferenceHandler);
+			}
+		});
+    	
     	ResetURLAndSub();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
@@ -746,9 +766,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private static final int MESSAGE_URLS_READY = MESSAGE_RETURN_DATE_OK + 1;
 	private static final int MESSAGE_PALY_URL_OK = MESSAGE_URLS_READY + 1;
 	private static final int MESSAGE_URL_NEXT = MESSAGE_PALY_URL_OK + 1;
-//	private static final int MESSAGE_UPDATE_PROGRESS = MESSAGE_URL_NEXT + 1;
-//	private static final int MESSAGE_HIDE_PROGRESSBAR = MESSAGE_UPDATE_PROGRESS + 1;
-//	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
+	
+	public static final int TYPE_XUNLEI = -10;
+	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
+	public static final int TYPE_PUSH_BT_EPISODE = TYPE_PUSH -1;
 	
 	private String mProd_id;
 	private String mProd_name;
@@ -761,12 +782,22 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private int    mEpisodeIndex = -1; // 当前集数对应的index
 	private long   lastTime = 0;
 	
-	private boolean isShoucang = false;// 默认为没有收藏
+	private List<URLS_INDEX> playUrls_hd2 = new ArrayList<URLS_INDEX>();//超清
+	private List<URLS_INDEX> playUrls_hd = new ArrayList<URLS_INDEX>();//高清
+	private List<URLS_INDEX> playUrls_mp4 = new ArrayList<URLS_INDEX>();//标清
+	private List<URLS_INDEX> playUrls_flv = new ArrayList<URLS_INDEX>();//流畅
+	
+	private MoviePlayHistoryInfo play_info;
+	private int isRequset = 0;
+	private long lastPlayTime = -1; 
+	private int loadingCount;
 
+	private boolean isOnline;
+	
 	/**
 	 * 网络数据
 	 */
-//	private int               currentPlayIndex;
+	private int               currentPlayIndex;
 	private String            currentPlayUrl;
 	private ReturnProgramView m_ReturnProgramView = null;
 	private List<URLS_INDEX>  playUrls = new ArrayList<URLS_INDEX>();
@@ -822,7 +853,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		// 获取是否收藏
 		getIsShoucangData();
 	}
-
+	
 	private void initVedioDate() {
 		// 点击某部影片播放时，会全局设置CurrentPlayData
 		CurrentPlayDetailData playDate = app.getmCurrentPlayDetailData();
@@ -831,87 +862,131 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			finishActivity();
 			return;
 		}
+		
 		// 初始化基本播放数据
-		mProd_id       = playDate.prod_id;
-		mProd_type     = playDate.prod_type;
-		mProd_name     = playDate.prod_name;
+		mProd_id = playDate.prod_id;
+		mProd_type = playDate.prod_type;
+		mProd_name = playDate.prod_name;
 		mProd_sub_name = playDate.prod_sub_name;
 		currentPlayUrl = playDate.prod_url;
-		url_temp       = playDate.prod_url;
-		mDefination    = playDate.prod_qua;
-		lastTime       = (int) playDate.prod_time;
-		mProd_src      = playDate.prod_src;
+		url_temp = playDate.prod_url;
+		mDefination = playDate.prod_qua;
+		lastTime = (int) playDate.prod_time;
+		mProd_src = playDate.prod_src;
+		isOnline = playDate.isOnline;
+		
+		if(mProd_type == TYPE_PUSH ||mProd_type == TYPE_PUSH_BT_EPISODE){
+			play_info = (MoviePlayHistoryInfo) playDate.obj;
+		}
 		
 		if(mDefination == 0){
 			mDefination = 8;
 		}
-		//记录点击次数
-//		if(mProd_id != null && !mProd_id.equals("")
-//				&& mProd_name != null && !mProd_name.equals("")){
-//			switch (mProd_type) {
-//			case 1:
-//				UtilTools.StatisticsClicksShow(aq, app, mProd_id, mProd_name, "", mProd_type);
-//				break;
-//			case 2:
-//			case 3:
-//			case 131:
-//				if(mProd_sub_name != null && !mProd_sub_name.equals("")){					
-//					UtilTools.StatisticsClicksShow(aq, app, mProd_id, mProd_name, mProd_sub_name, mProd_type);
-//				}
-//				break;
-//			default:
-//				break;
-//			}
-//		}
 		
-//		URLS_INDEX urlsIndex = new URLS_INDEX();
-//		urlsIndex.source_from = mProd_src;
-//		urlsIndex.defination = mDefination;
-//		urlsIndex.defination_from_server = defintionToType(mDefination);
-//		urlManager.setDefaultQuality(mDefination);
-//		urlManager.setURLS(urlsIndex);
 		// 更新播放来源和上次播放时间
 		updateSourceAndTime();
 		updateName();
-		if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
-			if (mProd_type<0) {
-				new Thread(new UrlRedirectTask()).start();
-			} else {
-				if (m_ReturnProgramView != null) {// 如果不为空，获取服务器返回的详细数据
+		
+		switch (mProd_type) {
+		case TYPE_XUNLEI://迅雷 传递-10
+			
+			//取list
+			MyApp.pool.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					
+					XLLXFileInfo xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
+					if(xllxFileInfo != null && !xllxFileInfo.isDir) {
+						
+						ArrayList<VideoPlayUrl> list = 
+								XunLeiLiXianUtil.getLXPlayUrl(JoyplusMediaPlayerActivity.this, xllxFileInfo);
+						//get subtitle
+//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
+						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
+								getSubtitleList(JoyplusMediaPlayerActivity.this,xllxFileInfo));
+						mSubTitleView.displaySubtitle();
+//						currentSubtitleIndex = 0;
+//						initSubTitleCollection();
+						
+						if(list != null && list.size() > 0) {
+							
+							if(playUrls != null && playUrls.size() > 0) {
+								
+								playUrls.clear();
+							}
+							for(int i=0;i<list.size();i++) {
+								
+								VideoPlayUrl videoPlayUrl = list.get(i);
+								Log.i(TAG, "VideoPlayUrl--->" + videoPlayUrl.toString());
+								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
+									
+									URLS_INDEX url = new URLS_INDEX();
+									url.url = videoPlayUrl.playurl;
+									url.source_from = "XUNLEI";
+									if(videoPlayUrl.isCanDrag){// can drag hd2 hd mp4 
+										
+										if(videoPlayUrl.sharp != null) {
+											
+											int index = videoPlayUrl.sharp.getIndex();
+											switch (index) {
+											case 0:
+												url.defination_from_server ="mp4";
+												break;
+											case 2:
+												url.defination_from_server ="hd";
+												break;
+											case 3:
+												url.defination_from_server ="hd2";
+												break;
+
+											default:
+												break;
+											}
+										}
+									}else {//can't drag flv
+										url.defination_from_server ="flv";
+//										playUrls_flv.a
+									}
+								
+									playUrls.add(url);
+								}
+							}
+						}
+					}
+					initFourList();
+					sortPushUrls(mDefination);
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
+			});
+			break;
+//		case TYPE_LOCAL: //本地
+//			if(currentPlayUrl!=null){
+//				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+//			}else{
+//				finish();
+//			}
+//			break;
+		case TYPE_PUSH: //推送
+			MyApp.pool.execute(new getPlayList());
+			break;
+		case TYPE_PUSH_BT_EPISODE:// BT聚集
+			MyApp.pool.execute(new getEpisodePlayUrls());
+			break;
+		default:
+			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
+				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			}else{
+				if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
+
+					m_ReturnProgramView = app.get_ReturnProgramView();
 					mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 				} else {// 如果为空，就重新获取
 					getProgramViewDetailServiceData();
 				}
 			}
-		} else {
-			if (m_ReturnProgramView != null) {// 如果不为空，获取服务器返回的详细数据
-				m_ReturnProgramView = app.get_ReturnProgramView();
-				mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-			} else {// 如果为空，就重新获取
-				getProgramViewDetailServiceData();
-			}
-		}		
-		Log.d(TAG, "defination----->" + mDefination);
-		if(lastTime<=0){
-//			String lastTimeStr = DBUtils.getDuartion4HistoryDB(
-//					getApplicationContext(),
-//					UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
-//			Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
-//			if (lastTimeStr != null && !lastTimeStr.equals("")) {
-//				try {
-//					long tempTime = Integer.valueOf(lastTimeStr);
-//					Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
-//					if (tempTime != 0) {
-//						lastTime = tempTime * 1000;
-//						//add by Jas
-//						mInfo.mLastTime = (int) lastTime;
-//						//end add by Jas
-//					}
-//				} catch (NumberFormatException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
+			break;
 		}
 	}
 
@@ -923,33 +998,57 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			case MESSAGE_RETURN_DATE_OK:
 				new Thread(new PrepareTask()).start();
 				break;
+//			case MESSAGE_NO_NETCONNECT:
+//				mVideoView.pause();
+//				mDateLoadingLayout.setVisibility(View.GONE);
+//				mHandler.removeCallbacksAndMessages(null);
+//				showDialog(2);
+//				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
-					if(!isFinishing()){
-						showDialog(0);
+					if(mProd_type==TYPE_PUSH){
+						if(isRequset==2){
+							if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
+								Intent intent_web = new Intent(JoyplusMediaPlayerActivity.this, WebViewActivity.class);
+								intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
+								startActivity( intent_web);
+							}else{
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}
+						}else{
+							//失效了 接着搞
+							new Thread(new RequestNewUrl()).start();
+						}
+					}else if(mProd_type == TYPE_XUNLEI){
+						
+						if(!isFinishing()){
+							showDialog(0);
+						}
+					}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+						if(isRequset>1){
+							if(!isFinishing()){
+								showDialog(0);
+							}
+						}else{
+							new Thread(new RequestNewUrl()).start();
+						}
 					}
 					return;
 				}
-				currentPlayUrl = mURLManager.getCurURLS_INDEX().url;
-				mProd_src = mURLManager.getCurURLS_INDEX().source_from;
-				Log.i(TAG, "MESSAGE_URLS_READY--->" + currentPlayUrl + " isOnlyExistFengXing--->" + isOnlyExistFengXing
-						+" sourceFromUrl--->" + sourceFromUrl);
+				currentPlayIndex = 0;
+				currentPlayUrl = playUrls.get(currentPlayIndex).url;
+				Log.d(TAG,"MESSAGE_URLS_READY--->currentPlayUrl:" + currentPlayUrl);
+				mProd_src = playUrls.get(currentPlayIndex).source_from;
 				if (currentPlayUrl != null
 						&& URLUtil.isNetworkUrl(currentPlayUrl)) {
-					
-					if(isOnlyExistFengXing && sourceFromUrl != null){//只存在风行的地址
-						
-//						String url = URLUtils.getFexingParseUrlURL(Constant.FENGXING_REGET_FIRST_URL, sourceFromUrl);
-//						getFengxingParseServiceData(url);
-						
-					}else {
-						
-						// 地址跳转相关。。。
-						new Thread(new UrlRedirectTask()).start();
-						// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
-					}
-
+					// 地址跳转相关。。。
+					new Thread(new UrlRedirectTask()).start();
+//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+					// 要根据不同的节目做相应的处理。这里仅仅是为了验证上下集
 				}else {
+					
 					mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
 				}
 				break;
@@ -963,51 +1062,87 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 								&& mProd_id != null) {
 							getProgramViewDetailServiceData();
 						}
+						else if(mProd_type==TYPE_PUSH){
+							if(isRequset==1){
+								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
+									Intent intent_web = new Intent(JoyplusMediaPlayerActivity.this, WebViewActivity.class);
+									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
+									startActivity( intent_web);
+								}else{
+									if(!isFinishing()){
+										showDialog(0);
+									}
+								}
+								
+							}else{
+								//失效了 接着搞
+								new Thread(new RequestNewUrl()).start();
+							}
+						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+							if(isRequset>1){
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}else{
+								new Thread(new RequestNewUrl()).start();
+							}
+						}
 					}
 				} else {
-					if (mURLManager.getNextURLS() != null) {
-						currentPlayUrl = mURLManager.getCurURLS_INDEX().url;
-						mProd_src = mURLManager.getCurURLS_INDEX().source_from;
+					if (currentPlayIndex < playUrls.size() - 1) {
+						currentPlayIndex += 1;
+						currentPlayUrl = playUrls.get(currentPlayIndex).url;
+						mProd_src = playUrls.get(currentPlayIndex).source_from;
 						if (currentPlayUrl != null
 								&& URLUtil.isNetworkUrl(currentPlayUrl)) {
 							// 地址跳转相关。。。
-							Log.d(TAG, "currentPlayUrl:" + currentPlayUrl + "  mProd_src-->" + mProd_src);
+							Log.d(TAG, "currentPlayUrl" + currentPlayUrl);
+							Log.d(TAG, "mProd_src" + mProd_src);
 							new Thread(new UrlRedirectTask()).start();
-						}else {
-							mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
+//							mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
 						}
 					} else {
 						// 所有的片源都不能播放
-						Log.e(TAG, "no url can play!--->");
-						
-						if(isOnlyExistLetv && m_ReturnProgramView != null
-								&& sourceFromUrl != null){
-//							String url = URLUtils.
-//									getParseUrlURL(Constant.LETV_PARSE_URL_URL, sourceFromUrl, mProd_id, mProd_sub_name);
-//							Log.i(TAG, "sourceUrl--->" + sourceFromUrl + " url---->" + url);
-//							getLetvParseServiceData(url);
-						}else {
-							
-							if(JoyplusMediaPlayerManager.getInstance().IshaveNextType()){
-								mURLManager.resetCurURLS_INDEX();
-								InitUI();
-								mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
-							}else {
-								noUrlCanPlay();
+						Log.e(TAG, "no url can play!");
+						if(mProd_type==TYPE_PUSH){
+							if(isRequset==1){
+								if(URLUtil.isNetworkUrl(URLDecoder.decode(play_info.getPush_url()))){
+									Intent intent_web = new Intent(JoyplusMediaPlayerActivity.this, WebViewActivity.class);
+									intent_web.putExtra("url", URLDecoder.decode(play_info.getPush_url()));
+									startActivity( intent_web);
+								}else{
+									if(!isFinishing()){
+										showDialog(0);
+									}
+								}
+							}else{
+								//失效了 接着搞
+								new Thread(new RequestNewUrl()).start();
+							}
+						}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+							if(isRequset>1){
+								if(!isFinishing()){
+									showDialog(0);
+								}
+							}else{
+								new Thread(new RequestNewUrl()).start();
 							}
 						}
 					}
 				}
+//				if(JoyplusMediaPlayerManager.getInstance().IshaveNextType()){
+//					mURLManager.resetCurURLS_INDEX();
+//					InitUI();
+//					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+//				}else {
+//					noUrlCanPlay();
+//				}
 				break;
 			case MESSAGE_PALY_URL_OK:
 				updateName();
 				updateSourceAndTime();
 				//add by Jas@20130816 for player
 				mInfo.mPlayerUri = currentPlayUrl;
-//				mVideoView.getPlayer().SetVideoPaths(currentPlayUrl);
-//				if(lastTime>0){
-//					mVideoView.getPlayer().SeekVideo((int)lastTime);
-//				}
 				PlayerPlay(mInfo.mPlayerUri , (int)lastTime);
 				break;
 			default:
@@ -1850,14 +1985,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		String flag = json.toString();
 		if (!flag.equals("")) {
 			if (flag.contains("true")) {
-				isShoucang = true;
 				mInfo.mCollection = 1;
 			} else {
-				isShoucang = false;
 				mInfo.mCollection = 0;
 			}
 		} else {
-			isShoucang = true;
 			mInfo.mCollection = 1;
 		}
 	}
@@ -1868,10 +2000,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				// woof is "00000",now "20024",by yyc
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
 					Utils.showToast(this, "收藏成功!");					
-					isShoucang = true;	
 					mInfo.mCollection = 1;
 				} else {					
-					isShoucang = true;
 					mInfo.mCollection = 1;
 					Utils.showToast(this, "已收藏!");
 				}					
@@ -1892,11 +2022,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			try {
 				if (json.getString("res_code").trim().equalsIgnoreCase("00000")) {
 					Utils.showToast(this, "取消收藏成功!");
-					isShoucang = false;
 					mInfo.mCollection = 0;
 				} else {					
 					Utils.showToast(this, "取消收藏失败!");
-					isShoucang = true;
 					mInfo.mCollection = 1;
 				}
 			} catch (JSONException e) {
@@ -2260,5 +2388,341 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			});
 	        alertDialog.show(); 
 		return super.onCreateDialog(id);
+	}
+	
+	class getEpisodePlayUrls implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+			for(int i=0 ; i<play_info.getBtEpisodes().size(); i++){
+				BTEpisode e = play_info.getBtEpisodes().get(i);
+				if(mProd_sub_name!=null&&mProd_sub_name.equals(e.getName())){
+					mEpisodeIndex = i;
+				}
+			}
+			Log.d(TAG, "mEpisodeIndex---------------->" + mEpisodeIndex);
+			String url = Constant.BASE_URL + "/joyplus/produrl?id=" + play_info.getPush_id()
+					+ "&name=" + URLEncoder.encode(mProd_sub_name) 
+					+ "&md5_code=" + getUmengMd5()
+					+ "&mac_address=" + Utils.getMacAdd(JoyplusMediaPlayerActivity.this);
+			String date_str = HttpTools.get(JoyplusMediaPlayerActivity.this, url);
+			Log.d(TAG, date_str);
+			try{
+				JSONObject data = new JSONObject(date_str);
+				boolean haserror = data.getBoolean("error");
+				if(!haserror){
+					String downurls = data.getString("downurl");
+					List<SubURI> subList = null;
+					if(data.has("subtitle")){
+						Log.d(TAG, data.get("subtitle").toString());
+						if(!"".equals(data.get("subtitle").toString())){
+							JSONArray array_sub = data.getJSONArray("subtitle");
+							subList = new ArrayList<SubURI>();
+							for(int i = 0; i< array_sub.length() ; i++){
+								JSONObject subObj = array_sub.getJSONObject(i);
+								SubURI subInfo = new SubURI();
+								subInfo.setName(subObj.getString("name"));
+								subInfo.setUrl(subObj.getString("url"));
+								subInfo.SubType = SUBTYPE.NETWORK;
+								subList.add(subInfo);
+							}
+						}
+						
+					}
+					play_info.setSubList(subList);
+					String donwLoad_url_data = DesUtils.decode(Constant.DES_KEY, downurls);
+					Log.d(TAG, "getPlayList--->data:" + donwLoad_url_data);
+					String[] urls = donwLoad_url_data.split("\\{mType\\}");
+//					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+					playUrls.clear();
+//					playUrls_flv.clear();
+//					playUrls_hd.clear();
+//					playUrls_hd2.clear();
+//					playUrls_mp4.clear();
+					for(String str : urls){
+						URLS_INDEX url_index_info = new URLS_INDEX();
+						String[] p = str.split("\\{m\\}");
+						if(p.length<2){
+							continue;
+						}
+						url_index_info.defination_from_server = p[0];
+						url_index_info.url = p[1];
+//						if("hd2".equalsIgnoreCase(p[0])){
+//							playUrls_hd2.add(url_index_info);
+//						}else if("hd".equalsIgnoreCase(p[0])){
+//							playUrls_hd.add(url_index_info);
+//						}else if("mp4".equalsIgnoreCase(p[0])){
+//							playUrls_mp4.add(url_index_info);
+//						}else{
+//							playUrls_flv.add(url_index_info);;
+//						}
+						playUrls.add(url_index_info);
+					}
+					initFourList();
+					sortPushUrls(mDefination);
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+		}
+		
+	}
+	
+	class getPlayList implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try{
+				Log.d(TAG, "getPlayList----> start");
+				if(play_info!=null){
+					String data = DesUtils.decode(Constant.DES_KEY, play_info.getRecivedDonwLoadUrls());
+					Log.d(TAG, "getPlayList--->data:" + data);
+					String[] urls = data.split("\\{mType\\}");
+//					List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+					playUrls.clear();
+//					playUrls_flv.clear();
+//					playUrls_hd.clear();
+//					playUrls_hd2.clear();
+//					playUrls_mp4.clear();
+					for(String str : urls){
+						URLS_INDEX url_index_info = new URLS_INDEX();
+						String[] p = str.split("\\{m\\}");
+						if(p.length<2){
+							continue;
+						}
+						url_index_info.defination_from_server = p[0];
+						url_index_info.url = p[1];
+//						if("hd2".equalsIgnoreCase(p[0])){
+//							playUrls_hd2.add(url_index_info);
+//						}else if("hd".equalsIgnoreCase(p[0])){
+//							playUrls_hd.add(url_index_info);
+//						}else if("mp4".equalsIgnoreCase(p[0])){
+//							playUrls_mp4.add(url_index_info);
+//						}else{
+//							playUrls_flv.add(url_index_info);;
+//						}
+						playUrls.add(url_index_info);
+					}
+					initFourList();
+					sortPushUrls(mDefination);
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}else{
+					Log.d(TAG, "play_info----> = null");
+					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+			}
+		}
+		
+	}
+	
+	private void initFourList(){
+		playUrls_flv.clear();
+		playUrls_hd.clear();
+		playUrls_hd2.clear();
+		playUrls_mp4.clear();
+		for(URLS_INDEX url_index_info:playUrls){
+			if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+				playUrls_hd2.add(url_index_info);
+			}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+				playUrls_hd.add(url_index_info);
+			}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+				playUrls_mp4.add(url_index_info);
+			}else{
+				playUrls_flv.add(url_index_info);;
+			}
+		}
+	}
+	
+	private void sortPushUrls(int defination){
+		
+		for(URLS_INDEX url_index_info:playUrls){
+			switch (defination) {
+			case Constant.DEFINATION_HD2:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_HD:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_MP4:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			case Constant.DEFINATION_FLV:
+				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 1;
+				}else if("hd".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 2;
+				}else if("mp4".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 3;
+				}else if("flv".equalsIgnoreCase(url_index_info.defination_from_server)){
+					url_index_info.defination = 0;
+				}else{
+					url_index_info.defination = 4;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		if(playUrls.size()>1){
+			Collections.sort(playUrls, new DefinationComparatorIndex());
+		}
+	}
+	
+	class RequestNewUrl implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			isRequset +=1;	
+			playUrls.clear();
+			//updateXunleiurl
+			String url = null;
+			String url_param = play_info.getPush_url();
+			if(url_param.contains(":")){
+				url_param = URLEncoder.encode(url_param);
+			}
+			if(mProd_type==TYPE_PUSH_BT_EPISODE){
+				if(isOnline){
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
+							+ "&id=" + play_info.getPush_id()
+							+ "&md5_code=" + getUmengMd5()
+							+ "&name=" + URLEncoder.encode(mProd_sub_name);
+				}else{
+					if(isRequset==1){
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + url_param
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5()
+								+ "&name=" + URLEncoder.encode(mProd_sub_name);
+					}else{
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5()
+								+ "&name=" + URLEncoder.encode(mProd_sub_name);
+					}
+				}
+			}else{
+				if(isOnline){
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
+							+ "&id=" + play_info.getPush_id()
+							+ "&md5_code=" + getUmengMd5();
+				}else{
+					if(isRequset==1){
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + url_param
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5();
+					}else{
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
+								+ "&id=" + play_info.getPush_id()
+								+ "&md5_code=" + getUmengMd5();
+					}
+				}
+				
+			}
+			Log.d(TAG, "url--->" + url);
+			String response = HttpTools.get(JoyplusMediaPlayerActivity.this, url);
+			Log.d(TAG, "response--->" + response);
+			try {
+				JSONObject data = new JSONObject(response);
+				String reciveData = data.getString("downurl");
+				if(play_info!=null){
+					play_info.setRecivedDonwLoadUrls(reciveData);
+				}
+				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
+				Log.d(TAG, "downLoadurls--->" + downLoadurls);
+				List<SubURI> subList = null;
+				if(data.has("subtitle")){
+					Log.d(TAG, data.get("subtitle").toString());
+					if(!"".equals(data.get("subtitle").toString())){
+						JSONArray array_sub = data.getJSONArray("subtitle");
+						subList = new ArrayList<SubURI>();
+						for(int i = 0; i< array_sub.length() ; i++){
+							JSONObject subObj = array_sub.getJSONObject(i);
+							SubURI subInfo = new SubURI();
+							subInfo.setName(subObj.getString("name"));
+							subInfo.setUrl(subObj.getString("url"));
+							subInfo.SubType = SUBTYPE.NETWORK;
+							subList.add(subInfo);
+						}
+					}
+					
+				}
+				play_info.setSubList(subList);
+				String[] urls = downLoadurls.split("\\{mType\\}");
+//				List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+				
+//				playUrls_flv.clear();
+//				playUrls_hd.clear();
+//				playUrls_hd2.clear();
+//				playUrls_mp4.clear();
+				for(String str : urls){
+					URLS_INDEX url_index_info = new URLS_INDEX();
+					String[] p = str.split("\\{m\\}");
+					if(p.length<2){
+						continue;
+					}
+					url_index_info.defination_from_server = p[0];
+					url_index_info.url = p[1];
+//					if("hd2".equalsIgnoreCase(p[0])){
+//						playUrls_hd2.add(url_index_info);
+//					}else if("hd".equalsIgnoreCase(p[0])){
+//						playUrls_hd.add(url_index_info);
+//					}else if("mp4".equalsIgnoreCase(p[0])){
+//						playUrls_mp4.add(url_index_info);
+//					}else{
+//						playUrls_flv.add(url_index_info);;
+//					}
+					playUrls.add(url_index_info);
+				}
+				initFourList();
+				sortPushUrls(play_info.getDefination());
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+//				currentPlayUrl = Utils.getUrl(downLoadurls);
+//				currentPlayUrl = Utils.getRedirectUrl(currentPlayUrl);
+//				mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+			} catch (Exception e) {
+				// TODO: handle exception
+//				mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
+				e.printStackTrace();
+				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+			}
+		}
 	}
 }

@@ -70,22 +70,22 @@ public class JoyplusMediaPlayerAd implements MediaPlayer.OnCompletionListener,
 		return mLayout.getVisibility()==View.VISIBLE;
 	}
 	public void startAD(){
-		mAdState = ADSTATE.PLAYING;
-		if(!CheckAdFile())return;
-		mLayout.setVisibility(View.VISIBLE);
-		Time = MAXTIME;
-		mAdVideoView.setVideoPath(getPlayerUri());
-		mAdState = ADSTATE.PREPARE;
-		new Thread(new Runnable(){
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				ADWait();	
-				if(mManager != null){
-					mManager.ReportCount();
-				}
-			}			
-		}).start();
+//		mAdState = ADSTATE.PLAYING;
+//		if(!CheckAdFile())return;
+//		mLayout.setVisibility(View.VISIBLE);
+//		Time = MAXTIME;
+//		mAdVideoView.setVideoPath(getPlayerUri());
+//		mAdState = ADSTATE.PREPARE;
+//		new Thread(new Runnable(){
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				ADWait();	
+//				if(mManager != null){
+//					mManager.ReportCount();
+//				}
+//			}			
+//		}).start();
 	}
 	private void ADWait(){
 		long time1 ;

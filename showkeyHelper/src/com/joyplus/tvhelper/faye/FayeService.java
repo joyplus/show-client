@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.Sub.SUBTYPE;
 import com.joyplus.Sub.SubURI;
 import com.joyplus.network.filedownload.manager.DownLoadListner;
@@ -138,7 +139,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						}
 					}else{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+						Intent intent_play = new Intent(FayeService.this,JoyplusMediaPlayerActivity.class);
 						intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						if(play_info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
 							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
@@ -1411,7 +1412,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-							Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+							Intent intent = new Intent(FayeService.this,JoyplusMediaPlayerActivity.class);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //							playDate.prod_id = data.getString("id");
 							

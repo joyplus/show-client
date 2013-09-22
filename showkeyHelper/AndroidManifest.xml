@@ -73,6 +73,18 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
+            android:name="com.joyplus.JoyplusMediaPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="io.vov.vitamio.InitActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />        
+        <activity
             android:name="ThirdPlayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:screenOrientation="landscape" >
