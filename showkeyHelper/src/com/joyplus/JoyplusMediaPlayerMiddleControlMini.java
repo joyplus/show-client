@@ -185,6 +185,7 @@ public class JoyplusMediaPlayerMiddleControlMini extends LinearLayout implements
 		Log.d("KeyCode","ControlMini JoyplusonKeyDown() keyCode="+keyCode);
 		switch(keyCode){
 		case KeyEvent.KEYCODE_DPAD_CENTER:
+		case KeyEvent.KEYCODE_ENTER:
 			if(mSwitch.getVisibility() == View.VISIBLE){
 				UpdateUI(LAYOUT_SWITCH,mSwitch_center.getId());
 				Message.obtain(mHandler, MSG_KEYDOWN_CENTER).sendToTarget();
