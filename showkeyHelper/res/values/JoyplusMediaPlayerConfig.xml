@@ -4,7 +4,7 @@
 
     <!-- The Decode values -->
     <!-- the default decode type,value  -->
-    <string translatable="false" name="Default_Decode">HW</string>
+    <string translatable="false" name="Default_Decode">SW</string>
     <string translatable="false" name="Decode_HW">HW</string>
     <string translatable="false" name="Decode_SW">SW</string>
     

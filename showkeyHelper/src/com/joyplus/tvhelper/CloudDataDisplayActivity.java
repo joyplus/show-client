@@ -30,6 +30,7 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.adapter.MovieDownLoadedAdapter;
 import com.joyplus.tvhelper.adapter.MoviePlayHistoryAdapter;
@@ -747,18 +748,18 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					}
 				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+					Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
 //					intent.putExtra("ID", json.getString("prod_id"));
 //					playDate.prod_id = data.getString("id");
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 //					playDate.prod_type = playInfo.getPlay_type();
 					playDate.prod_name = playInfo.getName();
 					if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
-						playDate.prod_url = playInfo.getLocal_url();
-						playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+//						playDate.prod_url = playInfo.getLocal_url();
+//						playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_LOCAL;
 					}else{
 //						playDate.prod_url = playInfo.getDownload_url();
-						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+						playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_PUSH;
 					}
 					playDate.obj = playInfo;
 					Log.d(TAG, "prod_type" + playDate.prod_type);
@@ -799,7 +800,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
 		BTEpisode epInfo = playInfo.getBtEpisodes().get(childPosition);
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
 //		intent.putExtra("ID", json.getString("prod_id"));
 //		playDate.prod_id = data.getString("id");
 //		playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
