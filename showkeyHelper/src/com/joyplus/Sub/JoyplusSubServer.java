@@ -12,7 +12,6 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.joyplus.Sub.JoyplusSubInterface.SubContentType;
 import com.joyplus.tvhelper.utils.Constant;
-import com.joyplus.tvhelper.utils.Log;
 
 public class JoyplusSubServer {
 	private static final String TAG = "JoyplusSubServer";
