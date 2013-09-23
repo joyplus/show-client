@@ -78,6 +78,7 @@
 		        android:layout_height="match_parent" >
 			    <!-- Top mask -->
 		        <TextView
+		            android:id="@+id/mediacontroller_mask_top"
 		            android:layout_width="match_parent"
 		            android:layout_height="wrap_content"
 		            android:layout_alignParentTop="true"
@@ -120,6 +121,7 @@
 		        
 		        <!-- Bottom mask -->
 		        <TextView
+		            android:id="@+id/mediacontroller_mask_bottom"
 		            android:layout_width="match_parent"
 		            android:layout_height="wrap_content"
 		            android:layout_alignParentBottom="true"

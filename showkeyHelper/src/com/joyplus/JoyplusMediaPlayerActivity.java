@@ -851,8 +851,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		app = (MyApp) getApplication();
 		m_ReturnProgramView = app.get_ReturnProgramView();
 		initVedioDate();
-		// 获取是否收藏
-		getIsShoucangData();
 	}
 	
 	private void initVedioDate() {
@@ -1038,6 +1036,41 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					}
 					return;
 				}
+				
+				//字幕获取
+				if((mProd_type == TYPE_PUSH || mProd_type == TYPE_PUSH_BT_EPISODE) && 
+						!mJoyplusSubManager.CheckSubAviable()){
+					MyApp.pool.execute(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (play_info != null
+									&& play_info.getPush_url() != null
+									&& !play_info.getPush_url().equals("")) {
+								if (play_info.getSubList() != null) {
+									mJoyplusSubManager.setSubUri(play_info.getSubList());
+									mSubTitleView.displaySubtitle();
+								} else {
+									String subTitleUrl = Constant.BASE_URL
+											+ "/joyplus/subtitle/?url="
+											+ URLEncoder.encode(play_info.getPush_url())
+											+ "&md5_code=" + getUmengMd5();
+									// subTitleUrlList =
+									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
+									// Constant.APPKEY);
+									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
+													.getSubtitle4Push(subTitleUrl,
+															Constant.APPKEY));
+									mSubTitleView.displaySubtitle();
+									// currentSubtitleIndex = 0;
+									// initSubTitleCollection();
+								}
+							}
+						}
+					});
+				}
+				
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				Log.d(TAG,"MESSAGE_URLS_READY--->currentPlayUrl:" + currentPlayUrl);

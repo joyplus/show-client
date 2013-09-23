@@ -25,6 +25,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private JoyplusMediaPlayerActivity mActivity;
 	private VideoViewController        mBottomBar;
 	private VideoViewTopBar            mTopBar;
+	private View                       mTopMask,mBottomMask;
 
 	private static final int MSG_BASE        = 300;
 	private static final int MSG_SHOWVIEW    = MSG_BASE+1;
@@ -81,6 +82,11 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		mBottomBar.Init();
 		mTopBar.Init();
 	}
+	
+	private void setMaskVisible(boolean isVisible){
+		mTopMask.setVisibility(isVisible?View.VISIBLE:View.GONE);
+		mBottomMask.setVisibility(isVisible?View.VISIBLE:View.GONE);
+	}
 	private Handler mHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -91,6 +97,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				mBottomBar.dispatchMessage(msg);
 				break;
 			case MSG_SHOWVIEW:
+				setMaskVisible(true);
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
 				setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW);
@@ -98,6 +105,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			case MSG_HIDEVIEW:				
 				mTopBar.setVisible(false);
 				mBottomBar.setVisible(false);
+				setMaskVisible(false);
 				mHandler.removeCallbacksAndMessages(null);
 				break;
 			case MSG_REQUESTSHOW:
@@ -115,11 +123,13 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			case MSG_SHOWANDKEYLONGPRESS:
 			case MSG_SHOWANDKEYDOWN:
 				mHandler.removeCallbacksAndMessages(null);
+				setMaskVisible(true);
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
 				mBottomBar.dispatchMessage(msg);
 				break;
 			case MSG_SHOWANDHOLD:
+				setMaskVisible(true);
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
 				mHandler.removeCallbacksAndMessages(null);
@@ -132,6 +142,8 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		mActivity  = context;
 		mBottomBar = new VideoViewController();
 		mTopBar    = new VideoViewTopBar();
+		mTopMask   = context.findViewById(R.id.mediacontroller_mask_top);
+		mBottomMask= context.findViewById(R.id.mediacontroller_mask_bottom);
 		setVisible(true,0);
 	}
 	private void setVisible(boolean visible,int delay){
@@ -144,6 +156,14 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		mHandler.removeCallbacksAndMessages("MSG_HIDEVIEW");
 		mHandler.sendMessageDelayed(m,delay);
 	}
+	
+	/**
+	 * for Mask top and bottom
+	 * @author Administrator
+	 *
+	 */
+	
+	
 
 	/*add by Jas@20130812 for TopBar in JoyPlus VideoView
 	 * it use to display Media name , media resolution .current time
