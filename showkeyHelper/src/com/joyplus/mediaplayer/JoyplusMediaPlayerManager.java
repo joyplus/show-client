@@ -12,6 +12,7 @@ import com.joyplus.manager.URLManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerServer.PlayerState;
 import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.utils.Log;
 
 public class JoyplusMediaPlayerManager {
 
@@ -228,9 +229,11 @@ public class JoyplusMediaPlayerManager {
 	        }
 	        
 	        public boolean saveString(Context context,String XML,String KEY,String VALUE){
+	        	Log.i("TAG", "saveString--->" + VALUE);
 	        	if(XML == null || XML.equals(""))return false;
 	       	    if(KEY == null || KEY.equals(""))return false;
 	       	    if(VALUE == null) return false;
+	       	    Log.i("TAG", "saveString2--->" + VALUE + " KEY--->" + KEY);
 	       	    SharedPreferences sp = context.getSharedPreferences(XML,Context.MODE_PRIVATE);
 	    		Editor editor = sp.edit();
 	    		editor.putString(KEY, VALUE);

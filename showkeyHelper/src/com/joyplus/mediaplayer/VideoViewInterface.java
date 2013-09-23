@@ -13,7 +13,7 @@ public interface VideoViewInterface extends ViewInterface{
 		   DecodeType(int type){
 			   TYPE = type;
 		   }
-		   public int toValue(){
+		   public int toInt(){
 			   return TYPE;
 		   }
 	   }

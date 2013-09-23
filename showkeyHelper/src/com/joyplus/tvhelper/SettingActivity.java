@@ -28,6 +28,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
@@ -59,6 +61,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 	private LinearLayout layout_refresh,layout_deleteApk, layout_confirm, layout_player_mode;
 	
 	private ImageView switch_delete, switch_confirm, switch_isPlaye_HW;
+	
+	private VideoViewSetting mVideoViewSetting;
 	
 	private Handler mHandler = new Handler(){
 		@Override
@@ -165,6 +169,9 @@ public class SettingActivity extends Activity implements OnClickListener{
 //		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
 		webView.loadUrl(Constant.URL_FAQ +"?"+System.currentTimeMillis());
 		layout_refresh.requestFocus();
+		
+		mVideoViewSetting = new VideoViewSetting();
+		mVideoViewSetting.updateUI();
 	}
 	
 	private View.OnFocusChangeListener itemFoucsListener = new View.OnFocusChangeListener() {
@@ -274,10 +281,46 @@ public class SettingActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.layout_player_decode_mode:
 			//点击切换
+			mVideoViewSetting.switchMode();
 			break;
 		}
 	}
-	
+	private class VideoViewSetting {
+		
+		public VideoViewSetting(){
+			try {
+				JoyplusMediaPlayerManager.Init(SettingActivity.this);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public void switchMode(){
+			DecodeType type = JoyplusMediaPlayerManager.getInstance().getDecodeType();
+			if(type == DecodeType.Decode_HW)type= DecodeType.Decode_SW;
+			else type= DecodeType.Decode_HW;
+			JoyplusMediaPlayerManager.getInstance().setDecodeType(type);
+			updateUI();
+		}
+		
+		public void updateUI(){
+			DecodeType type = JoyplusMediaPlayerManager.getInstance().getDecodeType();
+			if(type == DecodeType.Decode_HW)
+				setSwitch(true);
+			else
+				setSwitch(false);
+		}
+		
+		private void setSwitch(boolean en){
+			if(en)
+				((ImageView)findViewById(R.id.switch_player_decode_mode)).
+				setImageResource(R.drawable.switch_hard);
+			else
+				((ImageView)findViewById(R.id.switch_player_decode_mode)).
+				setImageResource(R.drawable.switch_soft);
+		}
+	}
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		// TODO Auto-generated method stub
