@@ -458,7 +458,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		switch(keyCode){
 		case KeyEvent.KEYCODE_BACK:
 		case 111:
-			if(mProd_type == 1 || mInfo.mType == URLTYPE.LOCAL){//movie
+			if(mProd_type == 1 || mInfo.mType == URLTYPE.LOCAL|| mProd_type<0){//movie
 				finishActivity();return true; 
 			}
 			JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_SWITCH);
@@ -486,7 +486,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			RequestMediaPlayerBarShowandHold();
 			break;
 		case KeyEvent.KEYCODE_MENU:
-			if(mProd_type < 0) return true;
+//			if(mProd_type < 0) return true;
 			if(mPreference.isShowing()){
 				mPreference.setVisible(false);
 				return true;

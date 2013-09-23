@@ -56,9 +56,9 @@ public class SettingActivity extends Activity implements OnClickListener{
 	private TextView pincodeText;
 	private TextView versionName;
 	
-	private LinearLayout layout_refresh,layout_deleteApk, layout_confirm;
+	private LinearLayout layout_refresh,layout_deleteApk, layout_confirm, layout_player_mode;
 	
-	private ImageView switch_delete, switch_confirm;
+	private ImageView switch_delete, switch_confirm, switch_isPlaye_HW;
 	
 	private Handler mHandler = new Handler(){
 		@Override
@@ -104,13 +104,16 @@ public class SettingActivity extends Activity implements OnClickListener{
 		layout_refresh = (LinearLayout) findViewById(R.id.layout_refressPin);
 		layout_deleteApk = (LinearLayout) findViewById(R.id.layout_deleteApk);
 		layout_confirm = (LinearLayout) findViewById(R.id.layout_confirm);
+		layout_player_mode = (LinearLayout) findViewById(R.id.layout_player_decode_mode);
 		
 		layout_refresh.setOnFocusChangeListener(itemFoucsListener);
 		layout_deleteApk.setOnFocusChangeListener(itemFoucsListener);
+		layout_player_mode.setOnFocusChangeListener(itemFoucsListener);
 		
 		layout_refresh.setOnClickListener(this);
 		layout_deleteApk.setOnClickListener(this);
 		layout_confirm.setOnClickListener(this);
+		layout_player_mode.setOnClickListener(this);
 		
 		layout_setting = (LinearLayout) findViewById(R.id.layout_setting);
 		layout_help = (ScrollView) findViewById(R.id.layout_help);
@@ -119,6 +122,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 		
 		switch_delete = (ImageView) findViewById(R.id.switch_deleteApk);
 		switch_confirm = (ImageView) findViewById(R.id.switch_confirm);
+		switch_isPlaye_HW = (ImageView) findViewById(R.id.switch_player_decode_mode);
 		
 		isconfirm = PreferencesUtils.isneedConfirm(this);
 		isdelete = PreferencesUtils.isautodelete(this);
@@ -267,6 +271,9 @@ public class SettingActivity extends Activity implements OnClickListener{
 			isconfirm = !isconfirm;
 			PreferencesUtils.setIsneedConfirm(this, isconfirm);
 			updateSwitch();
+			break;
+		case R.id.layout_player_decode_mode:
+			//点击切换
 			break;
 		}
 	}
