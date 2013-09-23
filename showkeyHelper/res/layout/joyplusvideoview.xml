@@ -75,7 +75,13 @@
 	    <RelativeLayout
 		        android:id="@+id/mediacontroller_bar"
 		        android:layout_width="match_parent"
-		        android:layout_height="match_parent" >		        
+		        android:layout_height="match_parent" >
+			    <!-- Top mask -->
+		        <TextView
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentTop="true"
+		            android:background="@drawable/player_mask_top" />
 		        <!-- Top bar XML  Control it in JoyplusMediaPlayerBar.VideoViewTopBar -->
 		        <RelativeLayout
 		            android:id="@+id/mediacontroller_topbar"
@@ -112,6 +118,12 @@
 		        </RelativeLayout>
 		        <!-- end Top Bar XML --> 
 		        
+		        <!-- Bottom mask -->
+		        <TextView
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentBottom="true"
+		            android:background="@drawable/player_mask_bottom" />
 		        <!-- Bottom Bar XML Control it in JoyplusMediaPlayerBar.VideoViewController -->
 		        <RelativeLayout
 		            android:id="@+id/mediacontroller_bottombar"
