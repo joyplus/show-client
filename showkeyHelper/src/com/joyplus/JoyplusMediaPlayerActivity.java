@@ -64,6 +64,7 @@ import com.joyplus.mediaplayer.VideoViewInterface.STATE;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.WebViewActivity;
+import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
@@ -542,7 +543,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public void MediaCompletion() {
 		// TODO Auto-generated method stub
 		if(mInfo.mType == URLTYPE.NETWORK){
-			autoPlayNext();			
+//			autoPlayNext();			
 		}else{//local media should be exit
 			finishActivity();
 		}
@@ -562,7 +563,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	
 	public void SaveCurrentRecord(){
-		if (mProd_type > 0 && mVideoView.CurrentMediaInfo != null && mInfo.mType == URLTYPE.NETWORK) {
+		if (mVideoView.CurrentMediaInfo != null && mInfo.mType == URLTYPE.NETWORK) {
 			MediaInfo info       = mVideoView.CurrentMediaInfo.CreateMediaInfo();
 			long duration        = info.getTotleTime();
 			long curretnPosition = info.getCurrentTime();
@@ -570,9 +571,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
 			if(duration<=curretnPosition || curretnPosition<=0)return;
 			if(duration-curretnPosition<10*1000){
-				saveToServer(duration / 1000, (duration / 1000) -10);
+				saveToDB(duration / 1000, (duration / 1000) -10);
 			}else{
-				saveToServer(duration / 1000, curretnPosition / 1000);
+				saveToDB(duration / 1000, curretnPosition / 1000);
 			}
 		}
 	}
@@ -770,7 +771,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
-	public static final int TYPE_PUSH_BT_EPISODE = TYPE_PUSH -1;
+	public static final int TYPE_PUSH_BT_EPISODE = TYPE_PUSH -2;
 	
 	private String mProd_id;
 	private String mProd_name;
@@ -873,7 +874,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
 		isOnline = playDate.isOnline;
-		
+		Log.d(TAG, "type---->" + mProd_type);
 		if(mProd_type == TYPE_PUSH ||mProd_type == TYPE_PUSH_BT_EPISODE){
 			play_info = (MoviePlayHistoryInfo) playDate.obj;
 		}
@@ -1205,7 +1206,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		if(!JoyplusMediaPlayerActivity.this.isFinishing()){			
 			//所有url不能播放，向服务器传递-1
 			showDialog(0);
-			saveToServer(-1, 0);
+//			saveToDB(-1, 0);
 		}
 	}
 
@@ -1939,23 +1940,48 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		super.onStop();
 	}
 
-	public void saveToServer(long duration, long playBackTime) {
-		String url = Constant.BASE_URL + "program/play";
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("app_key", Constant.APPKEY);// required string
-		params.put("prod_id", mProd_id);
-		params.put("prod_name", mProd_name);// required
-		params.put("prod_subname", mProd_sub_name);
-		params.put("prod_type", mProd_type);// required int 视频类别
-		params.put("play_type", "1");
-		params.put("playback_time", playBackTime);// _time required int
-		params.put("duration", duration);// required int 视频时长， 单位：秒
-		params.put("video_url", currentPlayUrl);// required
-		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
-		cb.SetHeader(app.getHeaders());
-		cb.params(params).url(url).type(JSONObject.class)
-				.weakHandler(this, "CallProgramPlayResult");		
-		aq.ajax(cb);
+	public void saveToDB(long duration, long playBackTime) {
+		
+		Log.d(TAG, "mProd_type---------------->" + mProd_type);
+		Log.d(TAG, "mEpisodeIndex---------------->" + mEpisodeIndex);
+		DBServices services = DBServices.getInstance(this);
+		if(mProd_type == TYPE_PUSH_BT_EPISODE){
+			if(duration>0){
+				play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int) duration);
+			}
+			if(playBackTime>0){
+				play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
+			}
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
+			play_info.setCreat_time(System.currentTimeMillis());
+			services.updateMoviePlayHistory(play_info);
+		}else{
+			play_info.setDuration((int) duration);
+			play_info.setPlayback_time((int) playBackTime);
+			if(mProd_type == TYPE_PUSH){
+				play_info.setDefination(mDefination);
+//				play_info.setDownload_url(currentPlayUrl);
+			}
+			play_info.setCreat_time(System.currentTimeMillis());
+			services.updateMoviePlayHistory(play_info);
+		}
+		
+//		String url = Constant.BASE_URL + "program/play";
+//		Map<String, Object> params = new HashMap<String, Object>();
+//		params.put("app_key", Constant.APPKEY);// required string
+//		params.put("prod_id", mProd_id);
+//		params.put("prod_name", mProd_name);// required
+//		params.put("prod_subname", mProd_sub_name);
+//		params.put("prod_type", mProd_type);// required int 视频类别
+//		params.put("play_type", "1");
+//		params.put("playback_time", playBackTime);// _time required int
+//		params.put("duration", duration);// required int 视频时长， 单位：秒
+//		params.put("video_url", currentPlayUrl);// required
+//		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+//		cb.SetHeader(app.getHeaders());
+//		cb.params(params).url(url).type(JSONObject.class)
+//				.weakHandler(this, "CallProgramPlayResult");		
+//		aq.ajax(cb);
 		// DB操作，把存储到服务器的数据保存到数据库
 //		TvDatabaseHelper helper = TvDatabaseHelper
 //				.newTvDatabaseHelper(getApplicationContext());
