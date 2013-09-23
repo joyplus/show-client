@@ -298,7 +298,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
 			if(type == DecodeType.Decode_HW)type= DecodeType.Decode_SW;
 			else type= DecodeType.Decode_HW;
-			JoyplusMediaPlayerManager.getInstance().setDecodeType(type);
+			mJoyplusMediaPlayerDataManager.setDecodeType(type);
 			updateUI();
 		}
 		

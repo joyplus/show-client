@@ -556,6 +556,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public void ErrorInfo() {
 		// TODO Auto-generated method stub
 		Log.e(TAG,"+++++++++++++++++ERROR+++++++++++++++");
+		InitUI();
 		mHandler.sendEmptyMessage(MESSAGE_URL_NEXT);
 //		finishActivity();
 	}
