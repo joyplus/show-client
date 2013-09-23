@@ -8,6 +8,7 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -176,7 +177,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		private ImageView   MediaResolution;
 		private TextView    MediaName;
 		private TextView    Click;
-		private RelativeLayout Layout; 
+		private LinearLayout Layout; 
 		public void Init(){
 			Layout.setVisibility(View.VISIBLE);
 		};
@@ -237,7 +238,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 
 		private void InitResource() {
 			// TODO Auto-generated method stub
-			Layout          = (RelativeLayout) mActivity.findViewById(R.id.mediacontroller_topbar);
+			Layout          = (LinearLayout) mActivity.findViewById(R.id.mediacontroller_topbar);
 			MediaName       = (TextView)       mActivity.findViewById(R.id.mediacontroller_topbar_playname);
 			MediaResolution = (ImageView)      mActivity.findViewById(R.id.mediacontroller_topbar_resolution);
 			Click           = (TextView)       mActivity.findViewById(R.id.mediacontroller_topbar_time);

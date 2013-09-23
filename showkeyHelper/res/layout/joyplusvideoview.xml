@@ -84,20 +84,32 @@
 		            android:layout_alignParentTop="true"
 		            android:background="@drawable/player_mask_top" />
 		        <!-- Top bar XML  Control it in JoyplusMediaPlayerBar.VideoViewTopBar -->
-		        <RelativeLayout
+		        <LinearLayout
 		            android:id="@+id/mediacontroller_topbar"
 		            android:layout_width="fill_parent"
 		            android:layout_height="50dp"
 		            android:layout_alignParentTop="true">
-			 
-		            <TextView
-		                android:id="@+id/mediacontroller_topbar_playname"
-		                android:layout_width="wrap_content"
+					 <ImageView
+		                android:id="@+id/mediacontroller_topbar_resolution"
+		                android:layout_width="65dp"
 		                android:layout_height="wrap_content"
 		                android:layout_centerVertical="true"
-		                android:layout_marginLeft="30dp"
+		                android:layout_marginLeft="20dp"
+		                android:layout_marginTop="4dp"
+		                />
+		            <TextView
+		                android:id="@+id/mediacontroller_topbar_playname"
+		                android:layout_width="0dp"
+		                android:layout_height="wrap_content"
+		                android:layout_centerVertical="true"
+		                android:layout_marginLeft="10dp"
+		                android:paddingRight="10dp"
+		                android:layout_weight="1"
 		                android:text=""
+		                android:singleLine="true"
+		                android:ellipsize="middle"
 		                android:textColor="@color/white"
+		                android:layout_toRightOf="@id/mediacontroller_topbar_resolution"
 		                android:textSize="26dp" />
 		            <TextView
 		                android:id="@+id/mediacontroller_topbar_time"
@@ -108,15 +120,7 @@
 		                android:layout_marginRight="30dp"
 		                android:textSize="26dp"
 		                android:textColor="@color/white" />
-		            <ImageView
-		                android:id="@+id/mediacontroller_topbar_resolution"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_centerVertical="true"
-		                android:layout_marginLeft="20dp"
-		                android:layout_marginTop="4dp"
-		                android:layout_toRightOf="@+id/mediacontroller_topbar_playname"/>
-		        </RelativeLayout>
+		        </LinearLayout>
 		        <!-- end Top Bar XML --> 
 		        
 		        <!-- Bottom mask -->
