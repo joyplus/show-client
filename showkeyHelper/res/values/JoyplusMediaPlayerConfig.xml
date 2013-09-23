@@ -19,7 +19,7 @@
          PRIORITY_SW : prioriry of SW decode, it usable when Decode_SW is true -->
     <string-array translatable="false" name="mediaplayerconfig">
         <item>"mediaplayer,0,true,true,false,1,0"</item>
-        <item>"vitamio,1,true,false,true,0,1"</item>        
+        <item>"vitamio,1,false,false,true,0,1"</item>        
     </string-array>
     
     <!-- default time to report mediaplayer state MIN =300 MAX =800 (ms)

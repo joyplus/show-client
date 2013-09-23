@@ -75,6 +75,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		return false;
 	}
 	private boolean CheckMediaInfo(){
+		if(CurrentMediaInfo.getState() == STATE.MEDIA_STATE_UNKNOW)Init();
 		if(hasMediaInfoChange()){
 			mWaitingWindows.setVisible(false);
 		}else if(CurrentMediaInfo.getState().toInt()>STATE.MEDIA_STATE_INITED.toInt()
