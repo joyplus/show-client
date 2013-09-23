@@ -313,14 +313,14 @@ public class SettingActivity extends Activity implements OnClickListener{
 		Log.d(TAG, "is auto delete --->"  + PreferencesUtils.isautodelete(this));
 		Log.d(TAG, "is isdelete  --->"  + isdelete);
 		if(isdelete){
-			switch_delete.setImageResource(R.drawable.swith_on);
+			switch_delete.setImageResource(R.drawable.switch_on);
 		}else{
-			switch_delete.setImageResource(R.drawable.swith_off);
+			switch_delete.setImageResource(R.drawable.switch_off);
 		}
 		if(isconfirm){
-			switch_confirm.setImageResource(R.drawable.swith_on);
+			switch_confirm.setImageResource(R.drawable.switch_on);
 		}else{
-			switch_confirm.setImageResource(R.drawable.swith_off);
+			switch_confirm.setImageResource(R.drawable.switch_off);
 		}
 	}
 	

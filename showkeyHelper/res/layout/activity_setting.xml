@@ -142,7 +142,7 @@
 	       		                <ImageView android:layout_width="wrap_content"
 	       		                    android:layout_height="wrap_content"
 	       		                    android:id="@+id/switch_player_decode_mode"
-	       		                    android:src="@drawable/swith_on"/>
+	       		                    android:src="@drawable/switch_hard"/>
 	       		            </LinearLayout>
 	       		            <LinearLayout android:layout_width="fill_parent"
 	       		                android:layout_height="60dp"
@@ -164,7 +164,7 @@
 	       		                <ImageView android:layout_width="wrap_content"
 	       		                    android:layout_height="wrap_content"
 	       		                    android:id="@+id/switch_deleteApk"
-	       		                    android:src="@drawable/swith_on"/>
+	       		                    android:src="@drawable/switch_on"/>
 	       		            </LinearLayout>
 	       		            <LinearLayout android:layout_width="fill_parent"
 	       		                android:layout_height="60dp"
@@ -186,7 +186,7 @@
 	       		                <ImageView android:layout_width="wrap_content"
 	       		                    android:layout_height="wrap_content"
 	       		                    android:id="@+id/switch_confirm"
-	       		                    android:src="@drawable/swith_off"/>
+	       		                    android:src="@drawable/switch_off"/>
 	       		            </LinearLayout>
 	       		        </LinearLayout>
        		            <ScrollView android:layout_width="fill_parent"
