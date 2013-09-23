@@ -1,6 +1,7 @@
 package com.joyplus.tvhelper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -632,6 +633,20 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 							String push_play_url = item.getString("downurl");
 							String time_token = item.getString("time_token");
 							String md5_code = item.getString("md5_code");
+							List<BTEpisode> es = null; 
+							if(item.has("prodName")){
+								es = new ArrayList<BTEpisode>();
+								JSONArray array_name = item.getJSONArray("prodName");
+								Log.d(TAG, array_name.toString());
+								for(int j = 0; j< array_name.length() ; j++){
+									BTEpisode e = new BTEpisode();
+									e.setDefination(Constant.DEFINATION_HD2);
+									e.setName(array_name.getString(j));
+									es.add(e);
+									Log.d(TAG, array_name.getString(j));
+								}
+								
+							}
 							int type = item.getInt("type");
 							if(PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this)!=null &&PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this).equals(md5_code)){
 								if(type == 5){//漏掉的播放
@@ -646,13 +661,31 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 										play_info.setDefination(Constant.DEFINATION_HD2);
 										play_info.setCreat_time(System.currentTimeMillis());
 										play_info.setTime_token(time_token+",");
+										if(es!=null && es.size()>0){
+											play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+											play_info.setBtEpisodes(es);
+										}
 										play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
 									}else{
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setName(push_name);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 										if(play_info.getTime_token()==null){
 											play_info.setTime_token("");
 										}
 										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										if(es!=null && es.size()>0){
+											play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+											play_info.setBtEpisodes(es);
+										}
+//										play_info.setPush_id(push_id);
 										dbService.updateMoviePlayHistory(play_info);
+//										if(play_info.getTime_token()==null){
+//											play_info.setTime_token("");
+//										}
+//										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+//										services.updateMoviePlayHistory(play_info);
 									}
 								}else if(type == 6){//漏掉的下载
 									
