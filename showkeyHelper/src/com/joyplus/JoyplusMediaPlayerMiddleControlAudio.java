@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import com.joyplus.tvhelper.R;
 
 public class JoyplusMediaPlayerMiddleControlAudio extends LinearLayout implements JoyplusMediaPlayerInterface{
-	
 	private Context      mContext;
 	private AudioManager mAudioManager;
 	private ArcView      mArcView;
@@ -21,12 +20,13 @@ public class JoyplusMediaPlayerMiddleControlAudio extends LinearLayout implement
 		// TODO Auto-generated constructor stub
 		mContext = context;
 	}
+	
 	public JoyplusMediaPlayerMiddleControlAudio(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
 		mContext = context; 
-		
 	}
+	
 	protected void onFinishInflate() {
 		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 		mAudioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
@@ -84,4 +84,5 @@ public class JoyplusMediaPlayerMiddleControlAudio extends LinearLayout implement
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 }

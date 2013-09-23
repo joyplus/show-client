@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -207,6 +208,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}			
 		}.run();		
 	}
+	
 	private class JoyplusFinish implements Runnable{
 		@Override 
         public void run() {
@@ -458,11 +460,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		switch(keyCode){
 		case KeyEvent.KEYCODE_BACK:
 		case 111:
-			if(mProd_type == 1 || mInfo.mType == URLTYPE.LOCAL){//movie
+			if((mProd_type == TYPE_PUSH || mProd_type == TYPE_XUNLEI || mProd_type == TYPE_PUSH_BT_EPISODE) 
+					|| mInfo.mType == URLTYPE.LOCAL){//movie
 				finishActivity();return true; 
 			}
 			JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_SWITCH);
 			mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
+			RequestMediaPlayerBarShowandHold();
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -1057,15 +1061,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 											+ "/joyplus/subtitle/?url="
 											+ URLEncoder.encode(play_info.getPush_url())
 											+ "&md5_code=" + getUmengMd5();
-									// subTitleUrlList =
-									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
-									// Constant.APPKEY);
 									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
 									mSubTitleView.displaySubtitle();
-									// currentSubtitleIndex = 0;
-									// initSubTitleCollection();
 								}
 							}
 						}

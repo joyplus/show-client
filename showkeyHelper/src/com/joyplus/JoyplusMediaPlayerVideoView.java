@@ -26,13 +26,13 @@ import com.joyplus.tvhelper.utils.Log;
  **/
 public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 
-	private boolean Debug = true;
+	private boolean Debug = false;
 	private String  TAG   = "JoyplusMediaPlayerVideoView";
 	
 	private JoyplusMediaPlayerActivity mActivity;
 	private VideoViewInterface         Player = null;
 	private JoyplusVideoView           VideoView;
-	public  static MediaInfo           CurrentMediaInfo;
+	public  static MediaInfo          CurrentMediaInfo;
 	public  MediaInfo                  PreMediaInfo;	
 	private LoadingWindows             mWaitingWindows;
 	private final static int MSG_BASE  = 100;
