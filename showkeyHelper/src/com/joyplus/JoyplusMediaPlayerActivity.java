@@ -38,6 +38,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore.Video;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
@@ -1191,6 +1192,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			//mVideoNameText.setText(mProd_name + " " + mProd_sub_name);
 			mInfo.mPlayerName = mProd_name+" "+ mProd_sub_name;
 			break;
+		case TYPE_PUSH:
+		case TYPE_PUSH_BT_EPISODE:
+		case TYPE_XUNLEI:
+			mInfo.mPlayerName = mProd_name;
+			break;
 		default:
 			mInfo.mPlayerName = "UnKnow ";
 			break;
@@ -1280,18 +1286,36 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		//add by Jas
 		mInfo.mLastTime = (int) lastTime;
 		//end add by Jas
-		if(mURLManager.getCurURLS_INDEX() != null){
-			Log.d(TAG, "type---->" + mURLManager.getCurURLS_INDEX().defination_from_server);
-			//mDefinationIcon.setVisibility(View.VISIBLE);
-			if(Constant.player_quality_index[0].equalsIgnoreCase(mURLManager.getCurURLS_INDEX().defination_from_server)){
-				//mDefinationIcon.setImageResource(R.drawable.player_1080p);
-				mInfo.mQua = "1080p";
-			}else if(Constant.player_quality_index[1].equalsIgnoreCase(mURLManager.getCurURLS_INDEX().defination_from_server)){
-				//mDefinationIcon.setImageResource(R.drawable.player_720p);
-				mInfo.mQua = "720p";
-			}else{
-				//mDefinationIcon.setVisibility(View.INVISIBLE);
-				mInfo.mQua = "Unknow";
+//		if(mURLManager.getCurURLS_INDEX() != null){
+//			Log.d(TAG, "type---->" + mURLManager.getCurURLS_INDEX().defination_from_server);
+//			//mDefinationIcon.setVisibility(View.VISIBLE);
+//			if(Constant.player_quality_index[0].equalsIgnoreCase(mURLManager.getCurURLS_INDEX().defination_from_server)){
+//				//mDefinationIcon.setImageResource(R.drawable.player_1080p);
+//				mInfo.mQua = "1080p";
+//			}else if(Constant.player_quality_index[1].equalsIgnoreCase(mURLManager.getCurURLS_INDEX().defination_from_server)){
+//				//mDefinationIcon.setImageResource(R.drawable.player_720p);
+//				mInfo.mQua = "720p";
+//			}else{
+//				//mDefinationIcon.setVisibility(View.INVISIBLE);
+//				mInfo.mQua = "Unknow";
+//			}
+//		}
+		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
+			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE){
+				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+					mInfo.mQua = "hd2";
+					mDefination = 8;
+				}else if("hd".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+					mInfo.mQua = "hd";
+					mDefination = 7;
+				}else if("mp4".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
+					mInfo.mQua = "mp4";
+					mDefination = 6;
+				}else{
+//					mDefinationIcon.setVisibility(View.INVISIBLE);
+					mInfo.mQua = "flv";
+					mDefination = 5;
+				}
 			}
 		}
 		mInfo.NotifyPlayerInfo();

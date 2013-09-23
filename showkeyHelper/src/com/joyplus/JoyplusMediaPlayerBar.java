@@ -197,14 +197,21 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			SimpleDateFormat format = new SimpleDateFormat("H:mm");
 			Click.setText(format.format(date));
 			MediaName.setText(JoyplusMediaPlayerActivity.mInfo.mPlayerName);
-			if("1080p".equals(JoyplusMediaPlayerActivity.mInfo.mQua)){
-				MediaResolution.setImageResource(R.drawable.player_1080p);
+			
+			if("hd2".equals(JoyplusMediaPlayerActivity.mInfo.mQua)){
+				MediaResolution.setImageResource(R.drawable.icon_def_hd2);
 				MediaResolution.setVisibility(View.VISIBLE);
-			}else if("720p".equals(JoyplusMediaPlayerActivity.mInfo.mQua)){
-				MediaResolution.setImageResource(R.drawable.player_720p);
+			}else if("hd".equals(JoyplusMediaPlayerActivity.mInfo.mQua)){
+				MediaResolution.setImageResource(R.drawable.icon_def_hd);
+				MediaResolution.setVisibility(View.VISIBLE);
+			}else if("mp4".equals(JoyplusMediaPlayerActivity.mInfo.mQua)){
+				MediaResolution.setImageResource(R.drawable.icon_def_mp4);
+				MediaResolution.setVisibility(View.VISIBLE);
+			}else if("flv".equals(JoyplusMediaPlayerActivity.mInfo.mQua)){
+				MediaResolution.setImageResource(R.drawable.icon_def_flv);
 				MediaResolution.setVisibility(View.VISIBLE);
 			}else{
-				MediaResolution.setVisibility(View.GONE);
+				MediaResolution.setVisibility(View.INVISIBLE);
 			}
 		}
 
