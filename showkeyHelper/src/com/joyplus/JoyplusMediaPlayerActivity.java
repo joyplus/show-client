@@ -771,7 +771,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
-	public static final int TYPE_PUSH_BT_EPISODE = TYPE_PUSH -1;
+	public static final int TYPE_PUSH_BT_EPISODE = TYPE_PUSH -2;
 	
 	private String mProd_id;
 	private String mProd_name;
@@ -876,7 +876,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
 		isOnline = playDate.isOnline;
-		
+		Log.d(TAG, "type---->" + mProd_type);
 		if(mProd_type == TYPE_PUSH ||mProd_type == TYPE_PUSH_BT_EPISODE){
 			play_info = (MoviePlayHistoryInfo) playDate.obj;
 		}
