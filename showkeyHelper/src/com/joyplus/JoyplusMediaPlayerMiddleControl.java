@@ -160,10 +160,12 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 			 if(Debug)Log.d("KeyCode","Control JoyplusonKeyDown() keyCode="+keyCode);
 			 if( mView.JoyplusonKeyDown(keyCode, event)){
 				 mHandler.sendEmptyMessage(MSG_REQUESTSHOWVIEW);
-			 }else{
-				 setVisible(false,0,mView.JoyplusgetLayout());
-			 };
-			 return true;
+				 return true;
+			 }
+//			 else{
+//				 setVisible(false,0,mView.JoyplusgetLayout());
+//			 };
+//			 return true;
 		}
 		return false;
 	}

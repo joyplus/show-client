@@ -75,7 +75,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.Sub.SUBTYPE;
 import com.joyplus.Sub.SubURI;
-import com.joyplus.manager.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;

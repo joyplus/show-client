@@ -406,12 +406,15 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 						mSpeed       = SPEED.X0;
 						//mHandler.removeCallbacks(QuickAdjustSeekBar);
 						mHandler.removeCallbacksAndMessages(null);
-					}else{
-					    //mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
-						mHandler.removeCallbacksAndMessages(null);
-						mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+						mHandler.sendEmptyMessage(MSG_SHOWVIEW);
+						return true;
 					}
-					return true;
+//					else{
+//					    //mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+//						mHandler.removeCallbacksAndMessages(null);
+//						mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
+//					}
+					
 				}
 			} 
 			return false;

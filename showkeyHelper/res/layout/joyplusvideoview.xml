@@ -35,6 +35,23 @@
 			            android:orientation="vertical"/>
 			    </view>
 	    </RelativeLayout>
+	    <!--  Subtitle Layer -->	
+	   <com.joyplus.SubTitleView
+	       android:id="@+id/tv_subtitle"
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_alignParentBottom="true"
+	       android:layout_marginBottom="15dp"
+	       android:background="@android:color/transparent"
+	       android:gravity="center"
+	       android:maxLines="6"
+	       android:shadowColor="#000000"
+	       android:shadowDx="1"
+	       android:shadowDy="1"
+	       android:shadowRadius="2"
+	       android:text=""
+	       android:textColor="#ffffff"
+	       android:textSize="36dp" />	
 	    <!-- Level 2 : the layout of middel layout  which show control  -->
           <RelativeLayout
                 android:layout_width="match_parent"
@@ -232,23 +249,7 @@
 		        android:layout_width="match_parent"
                 android:layout_height="match_parent"		        
 		        android:layout_centerInParent="true"		        
-                android:orientation="horizontal">
-			   <com.joyplus.SubTitleView
-			       android:id="@+id/tv_subtitle"
-			       android:layout_width="match_parent"
-			       android:layout_height="wrap_content"
-			       android:layout_alignParentBottom="true"
-			       android:layout_marginBottom="15dp"
-			       android:background="@android:color/transparent"
-			       android:gravity="center"
-			       android:maxLines="6"
-			       android:shadowColor="#000000"
-			       android:shadowDx="1"
-			       android:shadowDy="1"
-			       android:shadowRadius="2"
-			       android:text=""
-			       android:textColor="#ffffff"
-			       android:textSize="36dp" />		    
+                android:orientation="horizontal">	    
 	            <LinearLayout
 	                    android:id="@+id/joyplus_videoview_buffer"
 			            android:layout_width="match_parent"

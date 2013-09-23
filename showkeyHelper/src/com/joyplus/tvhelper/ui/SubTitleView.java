@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.joyplus.Sub.Element;
 import com.joyplus.Sub.JoyplusSubManager;
-import com.joyplus.manager.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 
 public class SubTitleView extends TextView {
