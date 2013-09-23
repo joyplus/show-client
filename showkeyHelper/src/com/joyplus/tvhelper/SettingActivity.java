@@ -28,6 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.mediaplayer.JoyplusMediaPlayerDataManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tvhelper.faye.FayeService;
@@ -287,17 +288,14 @@ public class SettingActivity extends Activity implements OnClickListener{
 	}
 	private class VideoViewSetting {
 		
+		private JoyplusMediaPlayerDataManager mJoyplusMediaPlayerDataManager;
+		
 		public VideoViewSetting(){
-			try {
-				JoyplusMediaPlayerManager.Init(SettingActivity.this);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(SettingActivity.this);
 		}
 		
 		public void switchMode(){
-			DecodeType type = JoyplusMediaPlayerManager.getInstance().getDecodeType();
+			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
 			if(type == DecodeType.Decode_HW)type= DecodeType.Decode_SW;
 			else type= DecodeType.Decode_HW;
 			JoyplusMediaPlayerManager.getInstance().setDecodeType(type);
@@ -305,7 +303,7 @@ public class SettingActivity extends Activity implements OnClickListener{
 		}
 		
 		public void updateUI(){
-			DecodeType type = JoyplusMediaPlayerManager.getInstance().getDecodeType();
+			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
 			if(type == DecodeType.Decode_HW)
 				setSwitch(true);
 			else
