@@ -28,6 +28,8 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private VideoViewTopBar            mTopBar;
 	private View                       mTopMask,mBottomMask;
 
+	private static final int SHOWTIME = 1500;//1.5s
+	
 	private static final int MSG_BASE        = 300;
 	private static final int MSG_SHOWVIEW    = MSG_BASE+1;
 	private static final int MSG_HIDEVIEW    = MSG_BASE+2;
@@ -101,7 +103,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				setMaskVisible(true);
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
-				setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW);
+				setVisible(false,SHOWTIME);
 				break;
 			case MSG_HIDEVIEW:				
 				mTopBar.setVisible(false);

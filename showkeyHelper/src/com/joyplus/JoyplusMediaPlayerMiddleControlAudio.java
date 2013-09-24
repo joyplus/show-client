@@ -14,7 +14,7 @@ public class JoyplusMediaPlayerMiddleControlAudio extends LinearLayout implement
 	private Context      mContext;
 	private AudioManager mAudioManager;
 	private ArcView      mArcView;
-	
+	public final static int SHOWTIME = 1500;
 	public JoyplusMediaPlayerMiddleControlAudio(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
