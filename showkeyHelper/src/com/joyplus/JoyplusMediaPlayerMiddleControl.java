@@ -20,7 +20,7 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 
 	private JoyplusMediaPlayerInterface   mView;//Current display layout;
 	//private Context  mContext;
-
+    
 	private final static int MSG_BASE  = 200;
 	public  final static int MSG_HIDEVIEW               = MSG_BASE+1;
 	public  final static int MSG_SHOWVIEW               = MSG_BASE+2;
@@ -38,9 +38,6 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	public void Init(){
 		update(LAYOUT_LOADING);
 		mHandler.removeCallbacksAndMessages(null);
-		//if(mView.JoyplusgetLayout() == LAYOUT_LOADING){
-		//	mView.JoyplussetVisible(true, 0);
-		//}
 	}
 	private Handler mHandler = new Handler(){
 		@Override
@@ -52,18 +49,19 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 				hideView();
 				break;
 			case MSG_SHOWVIEW:
-				update((Integer) msg.obj);
-				//setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW,0);
-				//if(mView != null && mView.JoyplusgetLayout()==LAYOUT_MINI){
-				//	((JoyplusMediaPlayerMiddleControlMini)mView).UpdateShowLayout();
-				//	mHandler.sendEmptyMessage(MSG_REQUESTHOLDSHOWVIEW);
-				//}
+				update((Integer) msg.obj);				
+				if(mView != null && mView.JoyplusgetLayout()==LAYOUT_AUDIO){
+					setVisible(false,JoyplusMediaPlayerMiddleControlAudio.SHOWTIME,0);
+				}
 				break;
             case MSG_REQUESTSHOWVIEW:
             	if(mView != null && ((View)mView).getVisibility()!=View.VISIBLE){
             		setVisible(true,0,mView.JoyplusgetLayout());
             	}
             	mHandler.removeCallbacksAndMessages(null);
+            	if(mView != null && mView.JoyplusgetLayout()==LAYOUT_AUDIO){
+					setVisible(false,JoyplusMediaPlayerMiddleControlAudio.SHOWTIME,0);
+				}
 				break;
             case MSG_REQUESTHOLDSHOWVIEW:
             	if(mView != null){
@@ -145,7 +143,6 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
     	if(Debug)Log.d(TAG,"CreateLayoutView("+stubId+" , "+viewId+")");
     	LinearLayout view = (LinearLayout) getStubView(stubId,viewId);
     	view.setVisibility(View.VISIBLE);
-    	//((JoyplusMediaPlayerInterface)mView).JoyplussetVisible(true, 0);
     	return (JoyplusMediaPlayerInterface)view;
     }
 	@Override
@@ -162,10 +159,6 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 				 mHandler.sendEmptyMessage(MSG_REQUESTSHOWVIEW);
 				 return true;
 			 }
-//			 else{
-//				 setVisible(false,0,mView.JoyplusgetLayout());
-//			 };
-//			 return true;
 		}
 		return false;
 	}
@@ -182,7 +175,7 @@ public class JoyplusMediaPlayerMiddleControl extends LinearLayout implements Joy
 	@Override
 	public boolean JoyplusonKeyLongPress(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 }

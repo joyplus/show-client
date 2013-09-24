@@ -28,6 +28,8 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	private VideoViewTopBar            mTopBar;
 	private View                       mTopMask,mBottomMask;
 
+	private static final int SHOWTIME = 1500;//1.5s
+	
 	private static final int MSG_BASE        = 300;
 	private static final int MSG_SHOWVIEW    = MSG_BASE+1;
 	private static final int MSG_HIDEVIEW    = MSG_BASE+2;
@@ -101,7 +103,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				setMaskVisible(true);
 				mTopBar.setVisible(true);
 				mBottomBar.setVisible(true);
-				setVisible(false,JoyplusMediaPlayerActivity.DELAY_SHOWVIEW);
+				setVisible(false,SHOWTIME);
 				break;
 			case MSG_HIDEVIEW:				
 				mTopBar.setVisible(false);
@@ -465,12 +467,18 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			    		info.getState() == STATE.MEDIA_STATE_PLAYING
 						||info.getState() == STATE.MEDIA_STATE_INITED){
 					CurrentTimeView.setText(getTimeString((int)info.getCurrentTime()));
-					TotalTimeView.setText(getTimeString((int)info.getTotleTime()));
+					if(info.getTotleTime()<=0){
+						TotalTimeView.setText("--:--");
+					}else{
+						TotalTimeView.setText(getTimeString((int)info.getTotleTime()));
+					}
+					
 					updateSeekBar(info);
 				}
 			}else{
 				CurrentTimeView.setText(getTimeString(0));
-				TotalTimeView.setText(getTimeString(0));
+//				TotalTimeView.setText(getTimeString(0));
+				TotalTimeView.setText("--:--");
 				SeekBar.setMax(100);
 				SeekBar.setProgress(0);
 				updateSeekBar(null);
