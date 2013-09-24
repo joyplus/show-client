@@ -121,7 +121,7 @@ public class JoyplusMediaPlayerServer {
         int nextLowest = 0;
         while (insertionPoint > -1) {
             for (JoyplusPlayerConfig na : mPlayerConfigs) {
-                if (na == null || !na.DECODE_SW)    continue;
+                if (na == null || !na.DECODE_SW || !na.EN)    continue;
                 if (na.PRIORITY_SW < currentLowest) continue;
                 if (na.PRIORITY_SW > currentLowest) {
                     if (na.PRIORITY_SW < nextLowest || nextLowest == 0) {
@@ -150,7 +150,7 @@ public class JoyplusMediaPlayerServer {
         int nextLowest = 0;
         while (insertionPoint > -1) {
             for (JoyplusPlayerConfig na : mPlayerConfigs) {
-                if (na == null || !na.DECODE_HW)    continue;
+                if (na == null || !na.DECODE_HW || !na.EN)    continue;
                 if (na.PRIORITY_HW < currentLowest) continue;
                 if (na.PRIORITY_HW > currentLowest) {
                     if (na.PRIORITY_HW < nextLowest || nextLowest == 0) {
