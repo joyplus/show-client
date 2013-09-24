@@ -40,10 +40,7 @@ public class JoyplusMediaPlayerServer {
 		  if(ConfigStrings==null || "".equals(ConfigStrings))throw new IllegalArgumentException();
 		  for(String config : ConfigStrings){
 			  JoyplusPlayerConfig n = new JoyplusPlayerConfig(config);
-			  if(!n.EN){
-				  Log.i(TAG,"JoyplusMediaPlayerServer - ignoring EN to define type");
-				  continue;
-			  }
+			 
 			  if(!JoyplusMediaPlayerManager.isTypeAvailable(n.TYPE)){
 				  Log.i(TAG,"JoyplusMediaPlayerServer - ignoring attempt to define type");
 				  continue;
@@ -53,6 +50,10 @@ public class JoyplusMediaPlayerServer {
 				  continue;
 			  }
 			  mPlayerConfigs[n.TYPE] = n;
+			  if(!n.EN){
+				  Log.i(TAG,"JoyplusMediaPlayerServer - ignoring EN to define type");
+				  continue;
+			  }
 			  if(n.DECODE_HW)HWPlayer++;
 			  if(n.DECODE_SW)SWPlayer++;
 		  }
@@ -62,6 +63,7 @@ public class JoyplusMediaPlayerServer {
 	/*Interface of mediaplayer config*/
 	public JoyplusPlayerConfig getJoyplusPlayerConfig(int Type) throws Exception{
 		if(!JoyplusMediaPlayerManager.isTypeAvailable(Type))throw new Exception("unAvailableType"+Type);
+		Log.i(TAG, "getJoyplusPlayerConfig--->" + mPlayerConfigs[Type]);
 		return mPlayerConfigs[Type];
 	}
 	/*interface of current player,it will be use we init or resume*/

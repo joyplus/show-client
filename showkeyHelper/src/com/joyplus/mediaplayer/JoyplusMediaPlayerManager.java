@@ -64,6 +64,7 @@ public class JoyplusMediaPlayerManager {
 	    	InitURLAndSub();
 	    	if(mServer.getJoyplusPlayerConfig(TYPE_VITAMIO).EN)
 	    		setVitamioEn(LibsChecker.checkVitamioLibs((Activity)context));
+	    	else setVitamioEn(false);
 	    }
 	    /*Interface of SubManager and Urlmanager*/
 	    public JoyplusSubManager getSubManager(){
