@@ -392,6 +392,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
             	}
             }else{
             	list_zimu.add(mContext.getResources().getString(R.string.meidaplayer_sub_string_nosub));
+            	selectionPosions.put(1, 0);
             }
 		}
 		selectionPosions.put(3 , 0);
