@@ -234,7 +234,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				MediaResolution.setImageResource(R.drawable.icon_def_flv);
 				MediaResolution.setVisibility(View.VISIBLE);
 			}else{
-				MediaResolution.setVisibility(View.INVISIBLE);
+				MediaResolution.setVisibility(View.GONE);
 			}
 		}
 
@@ -267,6 +267,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	    private int            DefaultSpeedSpace = 1000;
 	    private int OFFSET = 33;
 		private int seekBarWidthOffset  = 40;
+		private int LongPressCount = 0;
 		public void Init(){
 			SeekBar.setEnabled(false);
 			InitSpeed();
@@ -276,9 +277,10 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			Layout_Time.setVisibility(View.VISIBLE);
 		}
 		public void InitSpeed(){
-			mSeekBarMode = SEEKMODE.NORMAL;
-			mSeekBarType = SEEKTYPE.NORMAL;
-			mSpeed       = SPEED.X0;
+			mSeekBarMode   = SEEKMODE.NORMAL;
+			mSeekBarType   = SEEKTYPE.NORMAL;
+			mSpeed         = SPEED.X0;
+			LongPressCount = 0;
 		}
 		private Runnable QuickAdjustSeekBar = new Runnable(){
 			@Override
@@ -297,6 +299,35 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
 				mHandler.removeCallbacks(QuickAdjustSeekBar);
 				mHandler.postDelayed(QuickAdjustSeekBar, 20);
+			}
+		};
+		private Runnable SEEKBAR_LONGPRESS_ADJUST = new Runnable(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				if(!Feature.SEEKBAR_LONGPRESS_ADJUST
+				   ||!(mSeekBarMode == SEEKMODE.LONGPRESS)){
+					LongPressCount = 0;
+					mHandler.removeCallbacks(SEEKBAR_LONGPRESS_ADJUST);
+					return;
+				}
+				if(++LongPressCount<0){
+					LongPressCount = 0;
+				}else if(LongPressCount<6){
+					//long press time <3s nothing happen 					
+				}else if(LongPressCount<20){
+					//long press time >3s and <10s  
+					if(mSpeed != SPEED.X2)mSpeed = SPEED.X2;
+				}else{
+					//long press time >10s
+					LongPressCount = 20;
+					if(mSpeed != SPEED.X3)mSpeed = SPEED.X3;
+				}
+				mHandler.removeCallbacks(SEEKBAR_LONGPRESS_ADJUST);
+				if(Feature.SEEKBAR_LONGPRESS_ADJUST
+				   ||(mSeekBarMode == SEEKMODE.LONGPRESS)){
+					mHandler.postDelayed(SEEKBAR_LONGPRESS_ADJUST, 500);
+				}
 			}
 		};
 		private int getSpeedSpace(){
@@ -335,17 +366,33 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				Log.d("KeyCode","Bar JoyplusonKeyLongPress ");
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
-					mSeekBarMode = SEEKMODE.LONGPRESS;
-					if(mSpeed == SPEED.X2 && mSeekBarType == SEEKTYPE.BACKWARD)return true;
-					mSpeed = SPEED.X2;
+					if(Feature.SEEKBAR_LONGPRESS_ADJUST){
+						mSeekBarMode = SEEKMODE.LONGPRESS;
+						if(mSpeed == SPEED.X1 && mSeekBarType == SEEKTYPE.BACKWARD)return true;
+						mSpeed = SPEED.X1;
+						mHandler.removeCallbacks(SEEKBAR_LONGPRESS_ADJUST);
+						mHandler.postDelayed(SEEKBAR_LONGPRESS_ADJUST, 500);
+					}else {
+						mSeekBarMode = SEEKMODE.LONGPRESS;
+						if(mSpeed == SPEED.X2 && mSeekBarType == SEEKTYPE.BACKWARD)return true;
+						mSpeed = SPEED.X2;
+					}
 					mSeekBarType = SEEKTYPE.BACKWARD;
 					mHandler.removeCallbacks(QuickAdjustSeekBar);
 					mHandler.postDelayed(QuickAdjustSeekBar, 50);
 					return true;
 				case KeyEvent.KEYCODE_DPAD_RIGHT:
-					mSeekBarMode = SEEKMODE.LONGPRESS;
-					if(mSpeed == SPEED.X2 && mSeekBarType == SEEKTYPE.FORWARD)return true;
-					mSpeed = SPEED.X2;
+					if(Feature.SEEKBAR_LONGPRESS_ADJUST){
+						mSeekBarMode = SEEKMODE.LONGPRESS;
+						if(mSpeed == SPEED.X1 && mSeekBarType == SEEKTYPE.FORWARD)return true;
+						mSpeed = SPEED.X1;
+						mHandler.removeCallbacks(SEEKBAR_LONGPRESS_ADJUST);
+						mHandler.postDelayed(SEEKBAR_LONGPRESS_ADJUST, 500);
+					}else {
+						mSeekBarMode = SEEKMODE.LONGPRESS;
+						if(mSpeed == SPEED.X2 && mSeekBarType == SEEKTYPE.FORWARD)return true;
+						mSpeed = SPEED.X2;
+					}
 					mSeekBarType = SEEKTYPE.FORWARD;
 					mHandler.removeCallbacks(QuickAdjustSeekBar);
 					mHandler.postDelayed(QuickAdjustSeekBar, 50);

@@ -75,7 +75,8 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		return false;
 	}
 	private boolean CheckMediaInfo(){
-		if(CurrentMediaInfo.getState() == STATE.MEDIA_STATE_UNKNOW)Init();
+		//don't do this twice
+		//if(CurrentMediaInfo.getState() == STATE.MEDIA_STATE_UNKNOW)Init();
 		if(hasMediaInfoChange()){
 			mWaitingWindows.setVisible(false);
 		}else if(CurrentMediaInfo.getState().toInt()>STATE.MEDIA_STATE_INITED.toInt()
@@ -155,7 +156,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 			mNotify = (TextView)       mActivity.findViewById(R.id.joyplus_videoview_buffer_notify);
 		}
 		public void setVisible(boolean Visible){
-			if(Visible)mHandler.removeCallbacksAndMessages(null);
+			if(!Visible)mHandler.removeCallbacksAndMessages(null);
 			if((mLayout.getVisibility()==View.VISIBLE) == Visible)return;
 			mHandler.removeCallbacksAndMessages(null);
 			if(Visible){
