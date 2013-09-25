@@ -316,7 +316,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				 if(Layout_Time.getVisibility() == View.VISIBLE){
 					 if(SEEKING && mActivity.mVideoView.hasMediaInfoChange()){
 						 SEEKING = false;
-						 mHandler.sendEmptyMessage(MSG_REQUESTSHOW);
+						 mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
 					 }
 					 UpdateProgress(((MediaInfo) m.obj).CreateMediaInfo());
 				 }
