@@ -101,6 +101,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public JoyplusMediaPlayerPreference    mPreference;
 	/*SubTitle TextView Control   level 4*/
 	private SubTitleView                   mSubTitleView;	
+	
+	private JoyplusMediaPlayerMenuDialog menuDialog;
 	/*ad */
 	private JoyplusMediaPlayerAd           mAd;
 	
@@ -352,7 +354,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		    	mPreference.setHandler(PreferenceHandler);
 			}
 		});
-    	
+    	menuDialog = new JoyplusMediaPlayerMenuDialog(this);
     	ResetURLAndSub();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
@@ -491,11 +493,17 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			break;
 		case KeyEvent.KEYCODE_MENU:
 //			if(mProd_type < 0) return true;
-			if(mPreference.isShowing()){
-				mPreference.setVisible(false);
-				return true;
+//			if(mPreference.isShowing()){
+//				mPreference.setVisible(false);
+//				return true;
+//			}
+//			mPreference.setVisible(true);
+			if(menuDialog.isShowing()){
+				menuDialog.dismiss();
+			}else{
+				menuDialog.init();
+				menuDialog.show();
 			}
-			mPreference.setVisible(true);
 			break;
 		}
 		return super.onKeyUp(keyCode, event);
@@ -547,7 +555,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	public void MediaCompletion() {
 		// TODO Auto-generated method stub
 		if(mInfo.mType == URLTYPE.NETWORK){
-//			autoPlayNext();			
+			autoPlayNext();			
 		}else{//local media should be exit
 			finishActivity();
 		}
@@ -1227,9 +1235,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			mInfo.mPlayerName = mProd_name+" "+ mProd_sub_name;
 			break;
 		case TYPE_PUSH:
-		case TYPE_PUSH_BT_EPISODE:
 		case TYPE_XUNLEI:
 			mInfo.mPlayerName = mProd_name;
+			break;
+		case TYPE_PUSH_BT_EPISODE:
+			mInfo.mPlayerName = mProd_sub_name;
 			break;
 		default:
 			mInfo.mPlayerName = "UnKnow ";
@@ -1952,16 +1962,16 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			if(playBackTime>0){
 				play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
 			}
-			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
+//			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
 			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
 		}else{
 			play_info.setDuration((int) duration);
 			play_info.setPlayback_time((int) playBackTime);
-			if(mProd_type == TYPE_PUSH){
-				play_info.setDefination(mDefination);
-//				play_info.setDownload_url(currentPlayUrl);
-			}
+//			if(mProd_type == TYPE_PUSH){
+//				play_info.setDefination(mDefination);
+////				play_info.setDownload_url(currentPlayUrl);
+//			}
 			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
 		}
@@ -2807,5 +2817,43 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 			}
 		}
+	}
+	
+	public List<URLS_INDEX> getPlayUrls(){
+		return this.playUrls;
+	}
+	
+	public List<String> getEpisode(){
+		List<String> date = null;
+		switch (mProd_type) {
+		case TYPE_PUSH_BT_EPISODE:
+			date = new ArrayList<String>();
+			for(BTEpisode b:play_info.getBtEpisodes()){
+				date.add(b.getName());
+			}
+			break;
+		case 2:
+		case 131:
+			date = new ArrayList<String>();
+			for(int i=0; i<m_ReturnProgramView.tv.episodes.length; i++){
+				date.add(m_ReturnProgramView.tv.episodes[i].name);
+			}
+			break;
+		case 3:
+			date = new ArrayList<String>();
+			for(int i=0; i<m_ReturnProgramView.show.episodes.length; i++){
+				date.add(m_ReturnProgramView.show.episodes[i].name);
+			}
+			break;
+		}
+		return date;
+	}
+	
+	public int getCurrentDefination(){
+		return mDefination;
+	}
+	
+	public String getCurrentProdSubName(){
+		return mProd_sub_name;
 	}
 }

@@ -35,4 +35,18 @@
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowBackground">@android:color/transparent</item>
 	</style>
+	
+    <style name="Transparent">  
+    <item name="android:windowBackground">@android:color/transparent</item>  
+    <item name="android:windowNoTitle">true</item>  
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowIsTranslucent">true</item>     
+    <item name="android:windowAnimationStyle">@style/dilogAnimation</item>  
+  </style>
+  
+    <style name="dilogAnimation" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/alpha_appear_dialog</item>
+        <item name="android:windowExitAnimation">@anim/alpha_disappear_dialog</item>
+    </style>
+    
 </resources>
