@@ -282,7 +282,7 @@ public class XunLeiLXActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				reset2Login();
+				reset2Login(-1);
 				verifyLayout.setVisibility(View.INVISIBLE);
 			}
 		});
@@ -744,7 +744,7 @@ public class XunLeiLXActivity extends Activity {
 		}
 	}
 
-	private void reset2Login() {
+	private void reset2Login(int loginErrorFlag) {
 
 		XunLeiLiXianUtil.Logout(getApplicationContext());
 		setLogin(false);
@@ -760,8 +760,9 @@ public class XunLeiLXActivity extends Activity {
 		isFirstLogin = true;
 		refreshBt.setVisibility(View.INVISIBLE);
 
-		passwdEdit.setText("");
+		if(loginErrorFlag == 10 || loginErrorFlag == 11) return;
 
+		passwdEdit.setText("");
 		XunLeiLiXianUtil.saveLoginUserPasswd(getApplicationContext(), "");
 	}
 
@@ -905,7 +906,7 @@ public class XunLeiLXActivity extends Activity {
 				}
 
 				// 清空数据重新获取数据
-				reset2Login();
+				reset2Login(msg.arg1);
 				removeDialog(DIALOG_WAITING);
 				break;
 			case VERIFY_CODE_SUCCESS:

@@ -128,6 +128,7 @@ public class JoyplusSubServer {
 		int start = 0;
 		int end   = mSub.elements.size()-1;
 		if(end<start || end==0)return null;
+		if(time>mSub.elements.get(end).getStartTime().getTime())return null;
 		while(start < end){			
 			if(mSub.elements.get(getMiddle(start,end)).getStartTime().getTime()>time){
 				end   = getMiddle(start,end);
