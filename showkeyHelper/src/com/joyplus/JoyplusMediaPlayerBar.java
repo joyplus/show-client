@@ -315,12 +315,12 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 					LongPressCount = 0;
 				}else if(LongPressCount<6){
 					//long press time <3s nothing happen 					
-				}else if(LongPressCount<20){
-					//long press time >3s and <10s  
+				}else if(LongPressCount<12){
+					//long press time >3s and <5s  
 					if(mSpeed != SPEED.X2)mSpeed = SPEED.X2;
 				}else{
-					//long press time >10s
-					LongPressCount = 20;
+					//long press time >5s
+					LongPressCount = 12;
 					if(mSpeed != SPEED.X3)mSpeed = SPEED.X3;
 				}
 				mHandler.removeCallbacks(SEEKBAR_LONGPRESS_ADJUST);
