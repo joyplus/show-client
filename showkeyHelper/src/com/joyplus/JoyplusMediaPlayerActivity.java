@@ -2865,7 +2865,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		Log.d(TAG, "changeDefination-------->" + defination);
 		lastTime = mVideoView.CurrentMediaInfo.getCurrentTime();
 		InitUI();
-		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+//		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		mDefination = defination;
+		play_info.setDefination(defination);
 		sortPushUrls(mDefination);
 		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 	}

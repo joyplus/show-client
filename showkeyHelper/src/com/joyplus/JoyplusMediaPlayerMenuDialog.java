@@ -1,6 +1,9 @@
 package com.joyplus;
 
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.util.Comparators;
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.R;
@@ -148,9 +152,10 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 						title_selecet_index = MIN;
 					}else{
 						updateTitleSelceted();
+						adapter = new MyAdapter();
+						list.setAdapter(adapter);
+						list.setSelection(selectionPosions.get(title_selecet_index));
 					}
-					adapter.notifyDataSetChanged();
-					list.setSelection(selectionPosions.get(title_selecet_index));
 					return true;
 				}else if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_UP){
 					title_selecet_index += 1;
@@ -158,9 +163,10 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 						title_selecet_index = MAX;
 					}else{
 						updateTitleSelceted();
+						adapter = new MyAdapter();
+						list.setAdapter(adapter);
+						list.setSelection(selectionPosions.get(title_selecet_index));
 					}
-					adapter.notifyDataSetChanged();
-					list.setSelection(selectionPosions.get(title_selecet_index));
 					return true;
 				}else if(keyCode == KeyEvent.KEYCODE_MENU&&event.getAction() == KeyEvent.ACTION_UP){
 					dismiss();
@@ -281,9 +287,13 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 	
 	private void updateTitleSelceted(){
 		MarginLayoutParams p = (MarginLayoutParams) bg_title_selceted.getLayoutParams();
-		p.setMargins(15+(title_selecet_index-MIN)*title_xuanji.getWidth(), p.topMargin, 
+		p.setMargins(15+(title_selecet_index-MIN)*title_zimu.getWidth(), p.topMargin, 
 				p.rightMargin, p.bottomMargin);
 		bg_title_selceted.setLayoutParams(p);
+//		bg_title_selceted.layout(15+(title_selecet_index-MIN)*title_xuanji.getWidth(), 
+//				bg_title_selceted.getTop(), 
+//				15+(title_selecet_index-MIN)*title_xuanji.getWidth()+bg_title_selceted.getWidth(),
+//				bg_title_selceted.getBottom());
 		switch (title_selecet_index) {
 		case 0:
 			if(selectedTitle!=null){
@@ -374,6 +384,22 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 				}
 			}
 		}
+		if(list_definition.size()>1){
+			Collections.sort(list_definition, new Comparator<Integer>(){
+
+				@Override
+				public int compare(Integer l, Integer r) {
+					// TODO Auto-generated method stub.
+					if(l>r){
+						return -1;
+					}else if(r<l){
+						return 1;
+					}else{ 
+						return 0;
+					}
+				}
+			});
+		}
 		int defanition_index = list_definition.indexOf(mContext.getCurrentDefination());
 		if(defanition_index<0){
 			defanition_index = 0;
@@ -438,7 +464,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			}
 			break;
 		case 2://切换清晰度
-//			mContext.changeDefination(list_definition.get(position));
+			mContext.changeDefination(list_definition.get(position));
 			break;
 		case 3://切换画面比例
 			break;
