@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -30,7 +31,7 @@ import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Log;
 
-public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
+public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemClickListener {
 
 	private static final String TAG = "JoyplusMediaPlayerMenuDialog";
 	private JoyplusMediaPlayerActivity mContext;
@@ -91,6 +92,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 		title_zimu = (TextView) findViewById(R.id.title_zimu);
 		title_definition = (TextView) findViewById(R.id.title_definition);
 		title_size = (TextView) findViewById(R.id.title_size);
+		list.setOnItemClickListener(this);
 	}
 	
 	private void initView(){
@@ -400,5 +402,49 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 		Log.d(TAG, "1----->"+selectionPosions.get(1));
 		Log.d(TAG, "2----->"+selectionPosions.get(2));
 		Log.d(TAG, "3----->"+selectionPosions.get(3));
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		switch (title_selecet_index) {
+		case 0://切换剧集
+			String newPord_sub_name = list_juji.get(position);
+			if(!newPord_sub_name.equals(mContext.getCurrentProdSubName())){
+				//通知改变剧集
+			}
+			break;
+		case 1://切换字幕
+			JoyplusSubManager subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+			if(subManager!=null&&subManager.CheckSubAviable()){
+				if(position==0){
+					if(subManager.IsSubEnable()){
+						subManager.setSubEnable(false);
+					}
+				}else{
+					if(subManager.getCurrentSubIndex()!=(position-1)){
+						subManager.setSubEnable(true);
+						final int zimu_index = position-1;
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								JoyplusMediaPlayerManager.getInstance().getSubManager().SwitchSub(zimu_index);
+							}
+						}).start();
+					}
+				}
+			}
+			break;
+		case 2://切换清晰度
+//			mContext.changeDefination(list_definition.get(position));
+			break;
+		case 3://切换画面比例
+			break;
+		default:
+			break;
+		}
+		dismiss();
 	}
 }

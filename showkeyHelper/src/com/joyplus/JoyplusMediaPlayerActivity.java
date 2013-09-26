@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -2855,5 +2856,17 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public String getCurrentProdSubName(){
 		return mProd_sub_name;
+	}
+	
+	public void changeDefination(int defination){
+		if(mDefination == defination){
+			return ;
+		}
+		Log.d(TAG, "changeDefination-------->" + defination);
+		lastTime = mVideoView.CurrentMediaInfo.getCurrentTime();
+		InitUI();
+		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		sortPushUrls(mDefination);
+		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 	}
 }
