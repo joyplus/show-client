@@ -1,6 +1,8 @@
 package com.joyplus.mediaplayer;
 
 
+import com.joyplus.JoyplusMediaPlayerActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,11 +16,18 @@ public class JoyplusMediaPlayerScreenManager {
 		return mManager;
 	}
 	
-	private  boolean Debug = true;
-	private  String  TAG   = "JoyplusMediaPlayerScreenManager";
+	private  boolean  Debug = true;
+	private  String   TAG   = "JoyplusMediaPlayerScreenManager";
 	private  Activity mActivity;
 	
-	private JoyplusScreenParams mParams;
+	public final static int LINEARLAYOUT_PARAMS_16x9     = 0;
+    public final static int LINEARLAYOUT_PARAMS_4x3      = 1;
+    public final static int LINEARLAYOUT_PARAMS_FULL     = 2;
+    public final static int LINEARLAYOUT_PARAMS_ORIGINAL = 3;
+    public final static int LINEARLAYOUT_PARAMS_DEFAULT  = 3;
+    public static boolean IsAviableType(int type){
+    	return (LINEARLAYOUT_PARAMS_16x9<=type && type<=LINEARLAYOUT_PARAMS_ORIGINAL);
+    }
 	private ScreenDataManager   mData;
 	public JoyplusMediaPlayerScreenManager(Activity activity) throws Exception{
 		if(! (activity instanceof Activity))throw new Exception("use it in Activity");
@@ -26,26 +35,37 @@ public class JoyplusMediaPlayerScreenManager {
 		mActivity = activity;
 		InitResource();
 	}
-
+	//Interface for screen control.set screen and save value to datbase
+    public boolean setScreenParams(int type){
+    	if(!IsAviableType(type))return false;
+    	if(mActivity != null && mActivity instanceof JoyplusMediaPlayerActivity){
+    		if(((JoyplusMediaPlayerActivity)mActivity).getPlayer() != null){
+    			return ((JoyplusMediaPlayerActivity)mActivity).getPlayer().setScreenLayoutParams(type);
+    		}
+    	}
+    	return false;
+    }
+    public int getScreenParams(){
+    	if(mActivity != null && mActivity instanceof JoyplusMediaPlayerActivity){
+    		if(((JoyplusMediaPlayerActivity)mActivity).getPlayer() != null){
+    			return ((JoyplusMediaPlayerActivity)mActivity).getPlayer().getScreenLayoutParams();
+    		}
+    	}
+    	return LINEARLAYOUT_PARAMS_DEFAULT;
+    }
+    public boolean setScreenParamsDefault(int type){
+    	if(!IsAviableType(type))return false;
+    	return mData.setScreenParamsType(type);
+    }
+    public int getScreenParamsDefault(){
+    	return mData.getScreenParamsType();
+    }
 	private void InitResource() {
 		// TODO Auto-generated method stub
 		mData   = new ScreenDataManager(mActivity);
-		mParams = new JoyplusScreenParams(mActivity);
 	}
 	
-	/*Interface of screen params*/
-	public LinearLayout.LayoutParams getParams(){
-		return getParams(getLinearLayoutParamsType());
-	}
-	public LinearLayout.LayoutParams getParams(int type){
-		return mParams.getParams(type);
-	}
-	public int getLinearLayoutParamsType(){
-		return mParams.getLinearLayoutParamsType(mData.getScreenParamsType());
-	}
-	public boolean setLinearLayoutParamsType(int type){
-		return mData.setScreenParamsType(mParams.getLinearLayoutParamsType(type));
-	}
+	/*Interface of screen params*/	
 	private class ScreenDataManager{
 		private static final String  JOYPLUS_CONFIG_XML = "joyplus_mediaplayer_config_xml";
 		private static final String  KEY_SCREENPARAMS   = "KEY_SCREENPARAMS";
@@ -58,7 +78,7 @@ public class JoyplusMediaPlayerScreenManager {
         } 
 		public  int getScreenParamsType(){
 			if(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS)==null || "".equals(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS))){
-				return JoyplusScreenParams.LINEARLAYOUT_PARAMS_DEFAULT;
+				return JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_DEFAULT;
 			}
 			return Integer.parseInt(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS));
 		}

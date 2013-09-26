@@ -240,7 +240,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 
 		private void InitResource() {
 			// TODO Auto-generated method stub
-			Layout          = (LinearLayout) mActivity.findViewById(R.id.mediacontroller_topbar);
+			Layout          = (LinearLayout)   mActivity.findViewById(R.id.mediacontroller_topbar);
 			MediaName       = (TextView)       mActivity.findViewById(R.id.mediacontroller_topbar_playname);
 			MediaResolution = (ImageView)      mActivity.findViewById(R.id.mediacontroller_topbar_resolution);
 			Click           = (TextView)       mActivity.findViewById(R.id.mediacontroller_topbar_time);
@@ -313,14 +313,14 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				}
 				if(++LongPressCount<0){
 					LongPressCount = 0;
-				}else if(LongPressCount<6){
+				}else if(LongPressCount<2){
 					//long press time <3s nothing happen 					
-				}else if(LongPressCount<12){
+				}else if(LongPressCount<5){
 					//long press time >3s and <5s  
 					if(mSpeed != SPEED.X2)mSpeed = SPEED.X2;
 				}else{
 					//long press time >5s
-					LongPressCount = 12;
+					LongPressCount = 5;
 					if(mSpeed != SPEED.X3)mSpeed = SPEED.X3;
 				}
 				mHandler.removeCallbacks(SEEKBAR_LONGPRESS_ADJUST);

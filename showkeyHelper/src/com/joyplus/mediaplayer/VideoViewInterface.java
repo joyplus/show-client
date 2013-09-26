@@ -1,5 +1,7 @@
 package com.joyplus.mediaplayer;
 
+import android.widget.LinearLayout;
+
 public interface VideoViewInterface extends ViewInterface{
      
 	   /*interface of event*/
@@ -49,4 +51,6 @@ public interface VideoViewInterface extends ViewInterface{
 	    void SeekVideo(int seekTo);
 	    boolean IsPlaying();
 	    void SetINFO(int info);
+	    boolean setScreenLayoutParams(int type);
+	    int     getScreenLayoutParams();
 }

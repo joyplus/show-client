@@ -142,11 +142,18 @@ public class JoyplusVideoView extends LinearLayout{
     	}
     	return (VideoViewInterface)view;
     }
-    public boolean setLayoutParams(LinearLayout.LayoutParams params){
-    	if(mView!=null && params!=null){
-    		((LinearLayout)mView).setLayoutParams(params);
+    public boolean setScreenLayoutParams(int type){
+    	if(mView!=null ){
+    		((VideoViewInterface)mView).setScreenLayoutParams(type);
     		return true;
     	}
     	return false;
     }
+    public int getScreenLayoutParams(){
+    	if(mView!=null ){
+    		return ((VideoViewInterface)mView).getScreenLayoutParams();
+    	}
+    	return JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_DEFAULT;
+    }
+    
 }
