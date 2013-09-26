@@ -283,16 +283,16 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			case 3:
 				switch (list_size.get(position)) {
 				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL:
-					view.setText("全屏");
+					view.setText("全    屏");
 					break;
 				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9:
-					view.setText("16:9");
+					view.setText("16 : 9");
 					break;
 				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3:
-					view.setText("4:3");
+					view.setText("4 : 3");
 					break;
 				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL:
-					view.setText("自适应");
+					view.setText("自 适 应");
 					break;
 				}
 				break;
@@ -303,7 +303,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 	
 	private void updateTitleSelceted(){
 		MarginLayoutParams p = (MarginLayoutParams) bg_title_selceted.getLayoutParams();
-		p.setMargins(15+(title_selecet_index-MIN)*title_zimu.getWidth(), p.topMargin, 
+		p.setMargins(Utils.getStandardValue(mContext, 15)+(title_selecet_index-MIN)*title_zimu.getWidth(), p.topMargin, 
 				p.rightMargin, p.bottomMargin);
 		bg_title_selceted.setLayoutParams(p);
 //		bg_title_selceted.layout(15+(title_selecet_index-MIN)*title_xuanji.getWidth(), 
