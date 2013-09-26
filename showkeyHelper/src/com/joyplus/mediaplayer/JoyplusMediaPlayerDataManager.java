@@ -17,6 +17,7 @@ public class JoyplusMediaPlayerDataManager{
     private static final String  KEY_DECODETYPE     = "KEY_DECODETYPE";
     private static final String  KEY_SWITCHINTERNAL = "KEY_SWITCHINTERNAL";
     private static final String  KEY_SUPPORTVITAMIO = "KEY_SUPPORTVITAMIO";
+    private static final String  KEY_SCREENPARAMS   = "KEY_SCREENPARAMS";
     public JoyplusMediaPlayerDataManager(Context context){
     	this.mDataContext = context;
     }
@@ -66,6 +67,15 @@ public class JoyplusMediaPlayerDataManager{
     	}
         return false;
     }
+    public  boolean setScreenParamsDefault(int type){
+    	return saveString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS,Integer.toString(type));
+    } 
+	public  int getScreenParamsDefault(){
+		if(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS)==null || "".equals(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS))){
+			return JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_DEFAULT;
+		}
+		return Integer.parseInt(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS));
+	}
     /*Interface for base*/
     public String getString(Context context,String XML,String KEY){
          if(XML == null || XML.equals(""))return null;

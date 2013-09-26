@@ -5,6 +5,7 @@ import io.vov.vitamio.MediaPlayer.OnCompletionListener;
 import io.vov.vitamio.MediaPlayer.OnErrorListener;
 import io.vov.vitamio.MediaPlayer.OnInfoListener;
 import io.vov.vitamio.MediaPlayer.OnPreparedListener;
+import io.vov.vitamio.MediaPlayer.OnVideoSizeChangedListener;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -119,6 +120,7 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 		// TODO Auto-generated method stub
 		if(Debug)Log.d(TAG,"onPrepared()");
 		mVideoView.SetState(STATE.MEDIA_STATE_INITED);
+		mVideoView.setScreenLayoutParams(JoyplusMediaPlayerScreenManager.getInstance().getScreenParamsDefault());
 	}
 
 	@Override
@@ -155,4 +157,19 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 		mVideoView.SetINFO(what);
 		return false;
 	}
+
+	@Override
+	public boolean setScreenLayoutParams(int type) {
+		// TODO Auto-generated method stub
+		mVideoView.setScreenLayoutParams(type);
+		return true;
+	}
+
+	@Override
+	public int getScreenLayoutParams() {
+		// TODO Auto-generated method stub
+		return mVideoView.getScreenLayoutParams() ;
+	}
+
+	
 }

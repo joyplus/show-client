@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.mediaplayer.JoyplusVideoView;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface;
@@ -116,9 +117,13 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 		// TODO Auto-generated method stub
 		return LAYOUT_VIDEOVIEW;
 	}
-	public boolean setLayoutParams(LinearLayout.LayoutParams params){
-		return VideoView.setLayoutParams(params);
+	public boolean setScreenLayoutParams(int type){
+		if(!JoyplusMediaPlayerScreenManager.IsAviableType(type))return false;
+		return VideoView.setScreenLayoutParams(type);
 	}  
+	public int getScreenLayoutParams(){
+		return VideoView.getScreenLayoutParams();
+	}
 	public boolean hasMediaInfoChange(){
 		long delay = Math.abs(CurrentMediaInfo.getCurrentTime()-PreMediaInfo.getCurrentTime());
 		if(Debug)Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");

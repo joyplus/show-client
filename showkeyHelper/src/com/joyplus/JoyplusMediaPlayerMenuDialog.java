@@ -1,6 +1,8 @@
 package com.joyplus;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -25,12 +28,14 @@ import android.widget.TextView;
 
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Log;
+import com.joyplus.tvhelper.utils.Utils;
 
-public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
+public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemClickListener {
 
 	private static final String TAG = "JoyplusMediaPlayerMenuDialog";
 	private JoyplusMediaPlayerActivity mContext;
@@ -45,7 +50,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 	private List<String> list_juji;
 	private List<String> list_zimu;
 	private List<Integer> list_definition;
-	private List<String> list_size;
+	private List<Integer> list_size;
 	private Map<Integer, Integer> selectionPosions = new HashMap<Integer, Integer>();
 	
 	private ListView list;
@@ -75,10 +80,6 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		this.setContentView(R.layout.player_menu_dialog);
 		findViews();
-		list_size = new ArrayList<String>();
-		list_size.add("全屏");
-		list_size.add("4:3");
-		list_size.add("自适应");
 //		initView();
 	}
 	
@@ -91,12 +92,13 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 		title_zimu = (TextView) findViewById(R.id.title_zimu);
 		title_definition = (TextView) findViewById(R.id.title_definition);
 		title_size = (TextView) findViewById(R.id.title_size);
+		list.setOnItemClickListener(this);
 	}
 	
 	private void initView(){
 		Log.d(TAG, "initView called------------------>");
 		if(selectedTitle!=null){
-			selectedTitle.setPadding(0, 10, 0, 10);
+			selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 			selectedTitle.setTextSize(25);
 		}
 		MIN = list_juji!=null?0:1;
@@ -120,13 +122,19 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Log.d(TAG, "top--------->" + (view.getTop()-10));
-				Log.d(TAG, "bottom----------------->"+(view.getBottom()+50));
+				Log.d(TAG, "top--------->" + (view.getTop()-Utils.getStandardValue(mContext, 10)));
+				Log.d(TAG, "bottom----------------->"+(view.getBottom()+Utils.getStandardValue(mContext, 50)));
 				if(position>=0){
 					bg_image.setVisibility(View.VISIBLE);
-					bg_image.layout(bg_image.getLeft(), view.getTop()-10, bg_image.getRight(), view.getBottom()+50);
+					bg_image.layout(bg_image.getLeft(), view.getTop()-Utils.getStandardValue(mContext, 10), 
+							bg_image.getRight(), view.getBottom()+Utils.getStandardValue(mContext, 50));
 				}else{
 					bg_image.setVisibility(View.INVISIBLE);
+				}
+				if(title_selecet_index == 3){
+					if(list_size.get(position)!=mContext.getVideoSizeType()){
+						mContext.changeVideoSize(list_size.get(position));
+					}
 				}
 			}
 
@@ -146,9 +154,10 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 						title_selecet_index = MIN;
 					}else{
 						updateTitleSelceted();
+						adapter = new MyAdapter();
+						list.setAdapter(adapter);
+						list.setSelection(selectionPosions.get(title_selecet_index));
 					}
-					adapter.notifyDataSetChanged();
-					list.setSelection(selectionPosions.get(title_selecet_index));
 					return true;
 				}else if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_UP){
 					title_selecet_index += 1;
@@ -156,9 +165,10 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 						title_selecet_index = MAX;
 					}else{
 						updateTitleSelceted();
+						adapter = new MyAdapter();
+						list.setAdapter(adapter);
+						list.setSelection(selectionPosions.get(title_selecet_index));
 					}
-					adapter.notifyDataSetChanged();
-					list.setSelection(selectionPosions.get(title_selecet_index));
 					return true;
 				}else if(keyCode == KeyEvent.KEYCODE_MENU&&event.getAction() == KeyEvent.ACTION_UP){
 					dismiss();
@@ -167,6 +177,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 				return false;
 			}
 		});
+		
 		mHandler.postDelayed(new Runnable() {
 			
 			@Override
@@ -229,7 +240,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 			TextView view;
 			if(convertView == null){
 				view = new TextView(mContext);
-				LayoutParams layoutParams = new LayoutParams(parent.getWidth(), 70);
+				LayoutParams layoutParams = new LayoutParams(parent.getWidth(), Utils.getStandardValue(mContext, 70));
 				view.setLayoutParams(layoutParams);
 				view.setGravity(Gravity.CENTER);
 				view.setTextColor(Color.WHITE);
@@ -241,7 +252,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 			}
 			if(title_selecet_index == 0){
 				view.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
-				view.setPadding(35, 0, 35, 0);
+				view.setPadding(Utils.getStandardValue(mContext, 35), 0, Utils.getStandardValue(mContext, 35), 0);
 			}else{
 				view.setGravity(Gravity.CENTER);
 				view.setPadding(0, 0, 0, 0);
@@ -270,7 +281,20 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 				}
 				break;
 			case 3:
-				view.setText(list_size.get(position));
+				switch (list_size.get(position)) {
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL:
+					view.setText("全屏");
+					break;
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9:
+					view.setText("16:9");
+					break;
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3:
+					view.setText("4:3");
+					break;
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL:
+					view.setText("自适应");
+					break;
+				}
 				break;
 			}
 			return view;
@@ -279,13 +303,17 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 	
 	private void updateTitleSelceted(){
 		MarginLayoutParams p = (MarginLayoutParams) bg_title_selceted.getLayoutParams();
-		p.setMargins(15+(title_selecet_index-MIN)*title_xuanji.getWidth(), p.topMargin, 
+		p.setMargins(15+(title_selecet_index-MIN)*title_zimu.getWidth(), p.topMargin, 
 				p.rightMargin, p.bottomMargin);
 		bg_title_selceted.setLayoutParams(p);
+//		bg_title_selceted.layout(15+(title_selecet_index-MIN)*title_xuanji.getWidth(), 
+//				bg_title_selceted.getTop(), 
+//				15+(title_selecet_index-MIN)*title_xuanji.getWidth()+bg_title_selceted.getWidth(),
+//				bg_title_selceted.getBottom());
 		switch (title_selecet_index) {
 		case 0:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			title_xuanji.setPadding(0, 0, 0, 0);
@@ -294,7 +322,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 			break;
 		case 1:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			title_zimu.setPadding(0, 0, 0, 0);
@@ -303,7 +331,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 			break;
 		case 2:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			
@@ -313,7 +341,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 			break;
 		case 3:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			title_size.setPadding(0, 0, 0, 0);
@@ -372,6 +400,22 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
 				}
 			}
 		}
+		if(list_definition.size()>1){
+			Collections.sort(list_definition, new Comparator<Integer>(){
+
+				@Override
+				public int compare(Integer l, Integer r) {
+					// TODO Auto-generated method stub.
+					if(l>r){
+						return -1;
+					}else if(r<l){
+						return 1;
+					}else{ 
+						return 0;
+					}
+				}
+			});
+		}
 		int defanition_index = list_definition.indexOf(mContext.getCurrentDefination());
 		if(defanition_index<0){
 			defanition_index = 0;
@@ -395,10 +439,65 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog {
             	selectionPosions.put(1, 0);
             }
 		}
-		selectionPosions.put(3 , 0);
+		list_size = new ArrayList<Integer>();
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL);
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9);
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3);
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL);
+		Log.d(TAG, "size type -- >" + mContext.getVideoSizeType());
+		int index_size = list_size.indexOf(mContext.getVideoSizeType());
+		if(index_size<0){
+			index_size = 0;
+		}
+		selectionPosions.put(3 , index_size);
 		Log.d(TAG, "0----->"+selectionPosions.get(0));
 		Log.d(TAG, "1----->"+selectionPosions.get(1));
 		Log.d(TAG, "2----->"+selectionPosions.get(2));
 		Log.d(TAG, "3----->"+selectionPosions.get(3));
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		switch (title_selecet_index) {
+		case 0://切换剧集
+			String newPord_sub_name = list_juji.get(position);
+			if(!newPord_sub_name.equals(mContext.getCurrentProdSubName())){
+				//通知改变剧集
+				mContext.changeEpisode(position);
+			}
+			break;
+		case 1://切换字幕
+			JoyplusSubManager subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+			if(subManager!=null&&subManager.CheckSubAviable()){
+				if(position==0){
+					if(subManager.IsSubEnable()){
+						subManager.setSubEnable(false);
+					}
+				}else{
+					if(subManager.getCurrentSubIndex()!=(position-1)){
+						subManager.setSubEnable(true);
+						final int zimu_index = position-1;
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								JoyplusMediaPlayerManager.getInstance().getSubManager().SwitchSub(zimu_index);
+							}
+						}).start();
+					}
+				}
+			}
+			break;
+		case 2://切换清晰度
+			mContext.changeDefination(list_definition.get(position));
+			break;
+		case 3://切换画面比例
+			break;
+		default:
+			break;
+		}
+		dismiss();
 	}
 }

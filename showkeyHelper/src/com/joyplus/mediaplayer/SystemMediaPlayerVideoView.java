@@ -115,6 +115,7 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 		// TODO Auto-generated method stub
 		if(Debug)Log.d(TAG,"onPrepared()");
 		mVideoView.SetState(STATE.MEDIA_STATE_INITED);
+		mVideoView.setScreenLayoutParams(JoyplusMediaPlayerScreenManager.getInstance().getScreenParamsDefault());
 	}
 
 	@Override
@@ -150,5 +151,17 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 	public void SetINFO(int info) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean setScreenLayoutParams(int type) {
+		// TODO Auto-generated method stub	
+		return mVideoView.setScreenLayoutParams(type);
+	}
+
+	@Override
+	public int getScreenLayoutParams() {
+		// TODO Auto-generated method stub
+		return mVideoView.getScreenLayoutParams();
 	}
 }

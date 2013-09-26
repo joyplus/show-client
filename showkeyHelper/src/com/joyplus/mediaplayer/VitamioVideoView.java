@@ -4,6 +4,7 @@ package com.joyplus.mediaplayer;
 import io.vov.vitamio.widget.VideoView;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.joyplus.tvhelper.utils.Log;
 
@@ -28,6 +29,7 @@ public class VitamioVideoView extends VideoView implements VideoViewInterface{
 		// TODO Auto-generated method stub
 		if(Debug)Log.d(TAG,"Init()");
 		mMediaInfo = new MediaInfo();
+		this.setVideoQuality(16);
 	}
 	
 	@Override
@@ -123,4 +125,17 @@ public class VitamioVideoView extends VideoView implements VideoViewInterface{
 		// TODO Auto-generated method stub
 		mMediaInfo.setINFO(info);
 	}
+	@Override
+	public boolean setScreenLayoutParams(int type) {
+		// TODO Auto-generated method stub
+		this.setVideoLayout(type);
+		return true;
+	}
+	@Override
+	public int getScreenLayoutParams() {
+		// TODO Auto-generated method stub
+		return this.getVideoLayout();
+	}
+	
+	
 }

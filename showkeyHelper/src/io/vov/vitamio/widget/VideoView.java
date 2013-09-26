@@ -52,6 +52,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
+import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.tvhelper.R;
 
 
@@ -67,10 +68,14 @@ import com.joyplus.tvhelper.R;
  * {@link #setTimedTextShown(boolean)}
  */
 public class VideoView extends SurfaceView implements MediaController.MediaPlayerControl {
-  public static final int VIDEO_LAYOUT_ORIGIN = 0;
-  public static final int VIDEO_LAYOUT_SCALE = 1;
-  public static final int VIDEO_LAYOUT_STRETCH = 2;
-  public static final int VIDEO_LAYOUT_ZOOM = 3;
+    //add for zoom by Jas@20130925
+    public static final int VIDEO_LAYOUT_16X9     = JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9;
+    public static final int VIDEO_LAYOUT_4X3      = JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3;
+    public static final int VIDEO_LAYOUT_FILL     = JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL;
+    public static final int VIDEO_LAYOUT_ORIGINAL = JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL;
+    public static final int VIDEO_LAYOUT_DEFAULT  = JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_DEFAULT;
+    private int             mVideoLayout = VIDEO_LAYOUT_DEFAULT;
+    //end add for zoom
   private static final int STATE_ERROR = -1;
   private static final int STATE_IDLE = 0;
   private static final int STATE_PREPARING = 1;
@@ -88,7 +93,8 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
       mVideoHeight = mp.getVideoHeight();
       mVideoAspectRatio = mp.getVideoAspectRatio();
       if (mVideoWidth != 0 && mVideoHeight != 0)
-        setVideoLayout(mVideoLayout, mAspectRatio);
+//        setVideoLayout(mVideoLayout, mAspectRatio);
+    	  setVideoLayout(mVideoLayout);
     }
   };
   OnPreparedListener mPreparedListener = new OnPreparedListener() {
@@ -124,7 +130,8 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
       if (seekToPosition != 0)
         seekTo(seekToPosition);
       if (mVideoWidth != 0 && mVideoHeight != 0) {
-        setVideoLayout(mVideoLayout, mAspectRatio);
+//        setVideoLayout(mVideoLayout, mAspectRatio);
+    	  setVideoLayout(mVideoLayout);
         if (mSurfaceWidth == mVideoWidth && mSurfaceHeight == mVideoHeight) {
           if (mTargetState == STATE_PLAYING) {
             start();
@@ -181,7 +188,6 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
   private int mCurrentState = STATE_IDLE;
   private int mTargetState = STATE_IDLE;
   private float mAspectRatio = 0;
-  private int mVideoLayout = VIDEO_LAYOUT_SCALE;
   private SurfaceHolder mSurfaceHolder = null;
   private MediaPlayer mMediaPlayer = null;
   private int mVideoWidth;
@@ -308,7 +314,34 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
     int height = getDefaultSize(mVideoHeight, heightMeasureSpec);
     setMeasuredDimension(width, height);
   }
-
+  public int getVideoLayout(){
+	  return mVideoLayout;
+  }
+  public void setVideoLayout(int layout) {
+      LayoutParams lp     = getLayoutParams();
+      View base = (View) this.getParent();
+      int windowWidth = base.getWidth();
+      int windowHeight = base.getHeight();
+      if(mVideoWidth<0 || mVideoHeight<0)return;
+      mSurfaceHeight      = mVideoHeight;
+      mSurfaceWidth       = mVideoWidth;
+      if (VIDEO_LAYOUT_16X9 == layout) {
+      	lp.width  = windowWidth;
+      	lp.height = windowWidth*9/16;
+      } else if (layout == VIDEO_LAYOUT_4X3) {
+      	lp.width  = windowHeight*4/3;
+      	lp.height = windowHeight;
+      } else if(layout == VIDEO_LAYOUT_ORIGINAL){
+      	lp.width  = mSurfaceWidth;
+      	lp.height = mSurfaceHeight;
+      } else if(layout == VIDEO_LAYOUT_FILL){
+      	lp.width       = windowWidth;
+      	lp.height      = windowHeight;        	
+      }
+      setLayoutParams(lp);
+      getHolder().setFixedSize(mSurfaceWidth, mSurfaceHeight);
+      mVideoLayout = layout;
+  }
   /**
    * Set the display options
    *
@@ -320,31 +353,31 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
    *                    </ul>
    * @param aspectRatio video aspect ratio, will audo detect if 0.
    */
-  public void setVideoLayout(int layout, float aspectRatio) {
-    LayoutParams lp = getLayoutParams();
-    DisplayMetrics disp = mContext.getResources().getDisplayMetrics();
-    int windowWidth = disp.widthPixels, windowHeight = disp.heightPixels;
-    float windowRatio = windowWidth / (float) windowHeight;
-    float videoRatio = aspectRatio <= 0.01f ? mVideoAspectRatio : aspectRatio;
-    mSurfaceHeight = mVideoHeight;
-    mSurfaceWidth = mVideoWidth;
-    if (VIDEO_LAYOUT_ORIGIN == layout && mSurfaceWidth < windowWidth && mSurfaceHeight < windowHeight) {
-      lp.width = (int) (mSurfaceHeight * videoRatio);
-      lp.height = mSurfaceHeight;
-    } else if (layout == VIDEO_LAYOUT_ZOOM) {
-      lp.width = windowRatio > videoRatio ? windowWidth : (int) (videoRatio * windowHeight);
-      lp.height = windowRatio < videoRatio ? windowHeight : (int) (windowWidth / videoRatio);
-    } else {
-      boolean full = layout == VIDEO_LAYOUT_STRETCH;
-      lp.width = (full || windowRatio < videoRatio) ? windowWidth : (int) (videoRatio * windowHeight);
-      lp.height = (full || windowRatio > videoRatio) ? windowHeight : (int) (windowWidth / videoRatio);
-    }
-    setLayoutParams(lp);
-    getHolder().setFixedSize(mSurfaceWidth, mSurfaceHeight);
-    Log.d("VIDEO: %dx%dx%f, Surface: %dx%d, LP: %dx%d, Window: %dx%dx%f", mVideoWidth, mVideoHeight, mVideoAspectRatio, mSurfaceWidth, mSurfaceHeight, lp.width, lp.height, windowWidth, windowHeight, windowRatio);
-    mVideoLayout = layout;
-    mAspectRatio = aspectRatio;
-  }
+//  public void setVideoLayout(int layout, float aspectRatio) {
+//    LayoutParams lp = getLayoutParams();
+//    DisplayMetrics disp = mContext.getResources().getDisplayMetrics();
+//    int windowWidth = disp.widthPixels, windowHeight = disp.heightPixels;
+//    float windowRatio = windowWidth / (float) windowHeight;
+//    float videoRatio = aspectRatio <= 0.01f ? mVideoAspectRatio : aspectRatio;
+//    mSurfaceHeight = mVideoHeight;
+//    mSurfaceWidth = mVideoWidth;
+//    if (VIDEO_LAYOUT_ORIGIN == layout && mSurfaceWidth < windowWidth && mSurfaceHeight < windowHeight) {
+//      lp.width = (int) (mSurfaceHeight * videoRatio);
+//      lp.height = mSurfaceHeight;
+//    } else if (layout == VIDEO_LAYOUT_ZOOM) {
+//      lp.width = windowRatio > videoRatio ? windowWidth : (int) (videoRatio * windowHeight);
+//      lp.height = windowRatio < videoRatio ? windowHeight : (int) (windowWidth / videoRatio);
+//    } else {
+//      boolean full = layout == VIDEO_LAYOUT_STRETCH;
+//      lp.width = (full || windowRatio < videoRatio) ? windowWidth : (int) (videoRatio * windowHeight);
+//      lp.height = (full || windowRatio > videoRatio) ? windowHeight : (int) (windowWidth / videoRatio);
+//    }
+//    setLayoutParams(lp);
+//    getHolder().setFixedSize(mSurfaceWidth, mSurfaceHeight);
+//    Log.d("VIDEO: %dx%dx%f, Surface: %dx%d, LP: %dx%d, Window: %dx%dx%f", mVideoWidth, mVideoHeight, mVideoAspectRatio, mSurfaceWidth, mSurfaceHeight, lp.width, lp.height, windowWidth, windowHeight, windowRatio);
+//    mVideoLayout = layout;
+//    mAspectRatio = aspectRatio;
+//  }
 
   private void initVideoView(Context ctx) {
     mContext = ctx;

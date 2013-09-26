@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1286,7 +1287,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		}
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 	}
-
+	
 	private void updateSourceAndTime() {
 		Log.d(TAG, " ---- sre = " + mProd_src);
 		if (mProd_src == null || mProd_src.length() == 1
@@ -2855,5 +2856,51 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public String getCurrentProdSubName(){
 		return mProd_sub_name;
+	}
+	
+	public void changeDefination(int defination){
+		if(mDefination == defination){
+			return ;
+		}
+		Log.d(TAG, "changeDefination-------->" + defination);
+		lastTime = mVideoView.CurrentMediaInfo.getCurrentTime();
+		InitUI();
+//		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		mDefination = defination;
+		if(mProd_type == TYPE_PUSH){
+			play_info.setDefination(defination);
+		}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(defination);
+		}
+		sortPushUrls(mDefination);
+		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+	}
+	
+	public void changeVideoSize(int type){
+		mScreenManager.setScreenParams(type);
+	}
+	
+	public int getVideoSizeType(){
+		return mScreenManager.getScreenParams();
+	}
+	
+	public void changeEpisode(int index){
+		if(index<0||index>play_info.getBtEpisodes().size()||index==mEpisodeIndex){
+			return;
+		}
+		isRequset = 0;
+		BTEpisode bte = play_info.getBtEpisodes().get(index);
+		mProd_sub_name = bte.getName();
+		lastTime = bte.getPlayback_time()*1000;
+		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(mVideoView.CurrentMediaInfo.getCurrentTime()/1000));
+		play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int)(mVideoView.CurrentMediaInfo.getTotleTime()/1000));
+		Log.d(TAG, "changeEpisode----lastTime---->" + lastTime);
+		mEpisodeIndex = index;
+		mDefination = bte.getDefination();
+		InitUI();
+		ResetURLAndSub();
+		updateSourceAndTime();
+		updateName();
+		MyApp.pool.execute(new getEpisodePlayUrls());
 	}
 }
