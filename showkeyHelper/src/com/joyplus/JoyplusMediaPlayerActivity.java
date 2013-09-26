@@ -2888,9 +2888,12 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		if(index<0||index>play_info.getBtEpisodes().size()||index==mEpisodeIndex){
 			return;
 		}
+		isRequset = 0;
 		BTEpisode bte = play_info.getBtEpisodes().get(index);
 		mProd_sub_name = bte.getName();
-		lastTime = bte.getPlayback_time();
+		lastTime = bte.getPlayback_time()*1000;
+		
+		Log.d(TAG, "changeEpisode----lastTime---->" + lastTime);
 		mEpisodeIndex = index;
 		mDefination = bte.getDefination();
 		InitUI();
