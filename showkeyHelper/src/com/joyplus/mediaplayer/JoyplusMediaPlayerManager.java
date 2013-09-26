@@ -73,6 +73,9 @@ public class JoyplusMediaPlayerManager {
 	    public URLManager getURLManager(){
 	    	return mURLManager;
 	    }
+	    public JoyplusMediaPlayerDataManager getDataManager(){
+	    	return mDataManager;
+	    }
 	    private void InitURLAndSub(){
 	    	ResetURLAndSub();
 	    }

@@ -28,12 +28,11 @@ public class JoyplusMediaPlayerScreenManager {
     public static boolean IsAviableType(int type){
     	return (LINEARLAYOUT_PARAMS_16x9<=type && type<=LINEARLAYOUT_PARAMS_ORIGINAL);
     }
-	private ScreenDataManager   mData;
+	
 	public JoyplusMediaPlayerScreenManager(Activity activity) throws Exception{
 		if(! (activity instanceof Activity))throw new Exception("use it in Activity");
 		mManager = this;
 		mActivity = activity;
-		InitResource();
 	}
 	//Interface for screen control.set screen and save value to datbase
     public boolean setScreenParams(int type){
@@ -55,51 +54,16 @@ public class JoyplusMediaPlayerScreenManager {
     }
     public boolean setScreenParamsDefault(int type){
     	if(!IsAviableType(type))return false;
-    	return mData.setScreenParamsType(type);
+    	if(JoyplusMediaPlayerManager.getInstance()!=null){
+    		JoyplusMediaPlayerManager.getInstance().getDataManager().setScreenParamsDefault(type);
+    	}
+    	return false;
     }
     public int getScreenParamsDefault(){
-    	return mData.getScreenParamsType();
+    	if(JoyplusMediaPlayerManager.getInstance()!=null){
+    		return JoyplusMediaPlayerManager.getInstance().getDataManager().getScreenParamsDefault();
+    	}
+    	return LINEARLAYOUT_PARAMS_DEFAULT;
     }
-	private void InitResource() {
-		// TODO Auto-generated method stub
-		mData   = new ScreenDataManager(mActivity);
-	}
 	
-	/*Interface of screen params*/	
-	private class ScreenDataManager{
-		private static final String  JOYPLUS_CONFIG_XML = "joyplus_mediaplayer_config_xml";
-		private static final String  KEY_SCREENPARAMS   = "KEY_SCREENPARAMS";
-		private Context mDataContext;
-		public ScreenDataManager(Context context){
-			this.mDataContext  = context;
-		}
-		public  boolean setScreenParamsType(int type){
-        	return saveString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS,Integer.toString(type));
-        } 
-		public  int getScreenParamsType(){
-			if(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS)==null || "".equals(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS))){
-				return JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_DEFAULT;
-			}
-			return Integer.parseInt(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SCREENPARAMS));
-		}
-		/*Interface for base*/
-		public  String getString(Context context,String XML,String KEY){
-	        if(XML == null || XML.equals(""))return null;
-	   	 if(KEY == null || KEY.equals(""))return null;
-	   	 SharedPreferences sp = context.getSharedPreferences(XML,Context.MODE_PRIVATE);
-			 return sp.getString(KEY, "");
-	   }
-	   
-	   public  boolean saveString(Context context,String XML,String KEY,String VALUE){
-	   	if(XML == null || XML.equals(""))return false;
-	  	    if(KEY == null || KEY.equals(""))return false;
-	  	    if(VALUE == null) return false;
-	  	    SharedPreferences sp = context.getSharedPreferences(XML,Context.MODE_PRIVATE);
-			Editor editor = sp.edit();
-			editor.putString(KEY, VALUE);
-			editor.commit();
-			if(VALUE.equals(getString(context,XML,KEY)))return true;
-			return false;
-	   } 
-	}
 }
