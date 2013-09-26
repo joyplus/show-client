@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.fasterxml.jackson.databind.util.Comparators;
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.utils.Constant;
@@ -51,7 +52,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 	private List<String> list_juji;
 	private List<String> list_zimu;
 	private List<Integer> list_definition;
-	private List<String> list_size;
+	private List<Integer> list_size;
 	private Map<Integer, Integer> selectionPosions = new HashMap<Integer, Integer>();
 	
 	private ListView list;
@@ -81,10 +82,6 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		this.setContentView(R.layout.player_menu_dialog);
 		findViews();
-		list_size = new ArrayList<String>();
-		list_size.add("全屏");
-		list_size.add("4:3");
-		list_size.add("自适应");
 //		initView();
 	}
 	
@@ -136,6 +133,11 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 				}else{
 					bg_image.setVisibility(View.INVISIBLE);
 				}
+				if(title_selecet_index == 3){
+					if(list_size.get(position)!=mContext.getVideoSizeType()){
+						mContext.changeVideoSize(list_size.get(position));
+					}
+				}
 			}
 
 			@Override
@@ -177,6 +179,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 				return false;
 			}
 		});
+		
 		mHandler.postDelayed(new Runnable() {
 			
 			@Override
@@ -280,7 +283,20 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 				}
 				break;
 			case 3:
-				view.setText(list_size.get(position));
+				switch (list_size.get(position)) {
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL:
+					view.setText("全屏");
+					break;
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9:
+					view.setText("16:9");
+					break;
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3:
+					view.setText("4:3");
+					break;
+				case JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL:
+					view.setText("自适应");
+					break;
+				}
 				break;
 			}
 			return view;
@@ -425,7 +441,17 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
             	selectionPosions.put(1, 0);
             }
 		}
-		selectionPosions.put(3 , 0);
+		list_size = new ArrayList<Integer>();
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL);
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9);
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3);
+		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL);
+		Log.d(TAG, "size type -- >" + mContext.getVideoSizeType());
+		int index_size = list_size.indexOf(mContext.getVideoSizeType());
+		if(index_size<0){
+			index_size = 0;
+		}
+		selectionPosions.put(3 , index_size);
 		Log.d(TAG, "0----->"+selectionPosions.get(0));
 		Log.d(TAG, "1----->"+selectionPosions.get(1));
 		Log.d(TAG, "2----->"+selectionPosions.get(2));

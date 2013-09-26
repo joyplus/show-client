@@ -162,7 +162,6 @@ public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInte
 	@Override
 	public int getScreenLayoutParams() {
 		// TODO Auto-generated method stub
-		mVideoView.getScreenLayoutParams();
-		return 0;
+		return mVideoView.getScreenLayoutParams();
 	}
 }

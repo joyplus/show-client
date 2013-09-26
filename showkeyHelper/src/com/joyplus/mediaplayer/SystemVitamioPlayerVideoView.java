@@ -161,13 +161,14 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 	@Override
 	public boolean setScreenLayoutParams(int type) {
 		// TODO Auto-generated method stub
-		return false;
+		mVideoView.setScreenLayoutParams(type);
+		return true;
 	}
 
 	@Override
 	public int getScreenLayoutParams() {
 		// TODO Auto-generated method stub
-		return 0;
+		return mVideoView.getScreenLayoutParams() ;
 	}
 
 	

@@ -2871,4 +2871,12 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		sortPushUrls(mDefination);
 		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 	}
+	
+	public void changeVideoSize(int type){
+		mScreenManager.setScreenParams(type);
+	}
+	
+	public int getVideoSizeType(){
+		return mScreenManager.getScreenParams();
+	}
 }
