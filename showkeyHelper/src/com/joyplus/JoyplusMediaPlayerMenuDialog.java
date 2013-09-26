@@ -123,11 +123,11 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 					int position, long id) {
 				// TODO Auto-generated method stub
 				Log.d(TAG, "top--------->" + (view.getTop()-Utils.getStandardValue(mContext, 10)));
-				Log.d(TAG, "bottom----------------->"+(view.getBottom()+Utils.getStandardValue(mContext, 50)));
+				Log.d(TAG, "bottom----------------->"+(view.getBottom()+Utils.getStandardValue(mContext, 45)));
 				if(position>=0){
 					bg_image.setVisibility(View.VISIBLE);
 					bg_image.layout(bg_image.getLeft(), view.getTop()-Utils.getStandardValue(mContext, 10), 
-							bg_image.getRight(), view.getBottom()+Utils.getStandardValue(mContext, 50));
+							bg_image.getRight(), view.getBottom()+Utils.getStandardValue(mContext, 45));
 				}else{
 					bg_image.setVisibility(View.INVISIBLE);
 				}
