@@ -1,4 +1,4 @@
-package com.joyplus;
+package com.joyplus.tvhelper.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,16 +30,17 @@ import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.Utils;
 
-public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemClickListener {
+public class PlayerMenuDialog extends AlertDialog implements OnItemClickListener {
 
 	private static final String TAG = "JoyplusMediaPlayerMenuDialog";
-	private JoyplusMediaPlayerActivity mContext;
-	private static final int MAX = 3;
+	private VideoPlayerJPActivity mContext;
+	private static final int MAX = 2;
 	private int MIN = 0;
 	
 //	private String[] list1 = {"1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111","222222222222222","33333333333333333","44444444444444","555555555555555555555555555555555555","222222222222222","33333333333333333","44444444444444","555555555555555555555555555555555555"};
@@ -67,7 +68,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 	
 	private Handler mHandler = new Handler();
 	
-	public JoyplusMediaPlayerMenuDialog(JoyplusMediaPlayerActivity context) {
+	public PlayerMenuDialog(VideoPlayerJPActivity context) {
 		super(context,R.style.Transparent);
 		// TODO Auto-generated constructor stub
 		mContext = context;		
@@ -80,6 +81,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		this.setContentView(R.layout.player_menu_dialog);
 		findViews();
+		title_size.setVisibility(View.GONE);
 //		initView();
 	}
 	
@@ -131,11 +133,11 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 				}else{
 					bg_image.setVisibility(View.INVISIBLE);
 				}
-				if(title_selecet_index == 3){
-					if(list_size.get(position)!=mContext.getVideoSizeType()){
-						mContext.changeVideoSize(list_size.get(position));
-					}
-				}
+//				if(title_selecet_index == 3){
+//					if(list_size.get(position)!=mContext.getVideoSizeType()){
+//						mContext.changeVideoSize(list_size.get(position));
+//					}
+//				}
 			}
 
 			@Override
@@ -183,6 +185,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				Log.d(TAG, "postDelayed --->" +selectionPosions.get(title_selecet_index));
 				list.setSelection(selectionPosions.get(title_selecet_index));
 			}
 		}, 150);
@@ -444,12 +447,12 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9);
 		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3);
 		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL);
-		Log.d(TAG, "size type -- >" + mContext.getVideoSizeType());
-		int index_size = list_size.indexOf(mContext.getVideoSizeType());
-		if(index_size<0){
-			index_size = 0;
-		}
-		selectionPosions.put(3 , index_size);
+//		Log.d(TAG, "size type -- >" + mContext.getVideoSizeType());
+//		int index_size = list_size.indexOf(mContext.getVideoSizeType());
+//		if(index_size<0){
+//			index_size = 0;
+//		}
+		selectionPosions.put(3 , 0);
 		Log.d(TAG, "0----->"+selectionPosions.get(0));
 		Log.d(TAG, "1----->"+selectionPosions.get(1));
 		Log.d(TAG, "2----->"+selectionPosions.get(2));
@@ -474,10 +477,12 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 				if(position==0){
 					if(subManager.IsSubEnable()){
 						subManager.setSubEnable(false);
+						mContext.changeSubViewVisible(false);
 					}
 				}else{
 					if(subManager.getCurrentSubIndex()!=(position-1)){
 						subManager.setSubEnable(true);
+						mContext.changeSubViewVisible(true);
 						final int zimu_index = position-1;
 						new Thread(new Runnable() {
 							@Override

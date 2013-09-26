@@ -72,6 +72,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.JoyplusMediaPlayerMenuDialog;
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.Sub.SUBTYPE;
 import com.joyplus.Sub.SubURI;
@@ -85,6 +86,7 @@ import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
 import com.joyplus.tvhelper.ui.ArcView;
+import com.joyplus.tvhelper.ui.PlayerMenuDialog;
 import com.joyplus.tvhelper.ui.SubTitleView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
 import com.joyplus.tvhelper.utils.Constant;
@@ -183,6 +185,8 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private TextView mDataLoadingSpeedText; //缓冲速度
 	private long mCurrentLoadingbytes;
+	
+	private PlayerMenuDialog mMenuDialog;
 	
 	/**
 	 * 预加载层
@@ -376,7 +380,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		mMenuDialog = new PlayerMenuDialog(this);
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
@@ -1039,150 +1043,8 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
-			if(mStatue == STATUE_PLAYING&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE)&&mDateLoadingLayout.getVisibility()!=View.VISIBLE){
-				try{
-					final Dialog dialog = new AlertDialog.Builder(this).create();
-					dialog.show();
-					LayoutInflater inflater = LayoutInflater.from(this);
-					View view = inflater.inflate(R.layout.video_choose_defination, null);
-					Button btn_ok = (Button) view.findViewById(R.id.btn_ok_def);
-					Button btn_cancel = (Button) view.findViewById(R.id.btn_cancle_def);
-//					final LinearLayout layout_def = (LinearLayout) view.findViewById(R.id.layout_def);
-//					final LinearLayout layout_zimu = (LinearLayout) view.findViewById(R.id.layout_zimu);
-					final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_def);
-					final Gallery gallery_zm = (Gallery) view.findViewById(R.id.gallery_zimu);
-					
-					definationStrings.clear();
-					zimuStrings.clear();
-					
-//					gallery.setOnFocusChangeListener(new OnFocusChangeListener() {
-//						
-//						@Override
-//						public void onFocusChange(View v, boolean hasFocus) {
-//							// TODO Auto-generated method stub
-//							if(hasFocus){
-//								layout_def.setBackgroundColor(Color.DKGRAY);
-//								Log.d(TAG, "layout_def---DKGRAY-->");
-//							}else{
-//								layout_def.setBackgroundColor(Color.TRANSPARENT);
-//							}
-//						}
-//					});
-//					
-//					gallery_zm.setOnFocusChangeListener(new OnFocusChangeListener() {
-//						
-//						@Override
-//						public void onFocusChange(View v, boolean hasFocus) {
-//							// TODO Auto-generated method stub
-//							if(hasFocus){
-//								Log.d(TAG, "layout_zimu---DKGRAY-->");
-//								layout_zimu.setBackgroundColor(Color.DKGRAY);
-//							}else{
-//								layout_zimu.setBackgroundColor(Color.TRANSPARENT);
-//							}
-//						}
-//					});
-//					
-					if(mJoyplusSubManager.getSubList().size() == 0){
-						zimuStrings.add(-1);//暂无字幕
-					}else{
-						for(int i=0; i<=mJoyplusSubManager.getSubList().size(); i++){
-							zimuStrings.add(i);
-						}
-//						zimuStrings.add(0);//字幕关
-//						zimuStrings.add(1);//字幕开
-					}
-//					definationStrings.add("超    清");
-//					definationStrings.add("高    清");
-//					definationStrings.add("标    清");
-//					definationStrings.add("流    畅");
-					if(playUrls_hd2.size()>0){
-						definationStrings.add(Constant.DEFINATION_HD2);
-					}
-					if(playUrls_hd.size()>0){
-						definationStrings.add(Constant.DEFINATION_HD);
-					}
-					if(playUrls_mp4.size()>0){
-						definationStrings.add(Constant.DEFINATION_MP4);
-					}
-					if(playUrls_flv.size()>0){
-						definationStrings.add(Constant.DEFINATION_FLV);
-					}
-					
-					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
-					gallery.setSelection(definationStrings.indexOf(mDefination));
-//					gallery.setOnKeyListener(new MenuKeyListener(dialog));
-//					gallery_zm.setOnKeyListener(new MenuKeyListener(dialog));
-					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
-					if(!mJoyplusSubManager.CheckSubAviable()){
-						gallery_zm.setSelection(0);
-					}else{
-						if(zimuStrings.size()==1&&zimuStrings.get(0)==-1){
-							gallery_zm.setSelection(0);
-						}else{
-//							gallery_zm.setSelection(currentSubtitleIndex+1);
-							if(mSubTitleView.getVisibility() == View.INVISIBLE){
-								gallery_zm.setSelection(0);
-							}else{
-								
-								gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
-							}
-						}
-					}
-					
-					gallery.requestFocus();
-					btn_ok.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-							if(gallery_zm.getChildCount()>1){
-								if(gallery_zm.getSelectedItemPosition()==0){
-//									mSubTitleTv.setVisibility(View.INVISIBLE);
-									mSubTitleView.hiddenSubtitle();
-								}else{
-//									mSubTitleTv.setVisibility(View.VISIBLE);
-									Log.i(TAG, "currentSubtitleIndex--->" + mJoyplusSubManager.getCurrentSubIndex()
-											+ " gallery_zm.getSelectedItemPosition()-->" + gallery_zm.getSelectedItemPosition());
-									if((gallery_zm.getSelectedItemPosition()!=0 && mSubTitleView.getVisibility() == View.INVISIBLE)||
-											mJoyplusSubManager.getCurrentSubIndex() + 1 !=  gallery_zm.getSelectedItemPosition()){
-										final int selection = gallery_zm.getSelectedItemPosition();
-										MyApp.pool.execute(new Runnable() {
-											
-											@Override
-											public void run() {
-												// TODO Auto-generated method stub
-//												currentSubtitleIndex = selection;
-//												currentSubtitleIndex -=1;
-												mJoyplusSubManager.SwitchSub(selection -1);
-												mSubTitleView.displaySubtitle();
-										
-//												initSubTitleCollection();
-											}
-										});
-									}
-								}
-							}
-							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
-						}
-					});
-					btn_cancel.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-						}
-					});
-					dialog.setContentView(view);
-				}catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-				
-			}
-			return true;
+			
+			break;
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			if (mStatue == STATUE_PLAYING) {
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1295,6 +1157,25 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(event.getAction()==KeyEvent.ACTION_UP
+				&&keyCode==KeyEvent.KEYCODE_MENU
+				&&mStatue == STATUE_PLAYING
+				&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE)&&mDateLoadingLayout.getVisibility()!=View.VISIBLE){
+			try{
+					mMenuDialog.init();
+					mMenuDialog.show();
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return super.onKeyUp(keyCode, event);
 	}
 	
 	private void startUpdateSeekBar(long time){
@@ -2308,14 +2189,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(playBackTime>0){
 				play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
 			}
-			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
+//			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
 			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
 		}else{
 			play_info.setDuration((int) duration);
 			play_info.setPlayback_time((int) playBackTime);
 			if(mProd_type == TYPE_PUSH){
-				play_info.setDefination(mDefination);
+//				play_info.setDefination(mDefination);
 //				play_info.setDownload_url(currentPlayUrl);
 			}else if(mProd_type == TYPE_LOCAL){
 				play_info.setLocal_url(currentPlayUrl);
@@ -2871,38 +2752,38 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 	
 	
-	private void changeDefination(int defination){
-		if(mDefination == defination){
-			return ;
-		}
-		lastTime = mVideoView.getCurrentPosition();
-		rxByteslast = 0;
-		mLoadingPreparedPercent = 0;
-//		mEpisodeIndex = -1;
-		mPercentTextView.setText(", 已完成"
-				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
-		mDefination = defination;
-		mVideoView.stopPlayback();
-		mStatue = STATUE_PRE_LOADING;
-		mDateLoadingLayout.setVisibility(View.GONE);
-		mSeekBar.setEnabled(false);
-		mSeekBar.setProgress(0);
-		mTotalTimeTextView.setText("--:--");
-		mPreLoadLayout.setVisibility(View.VISIBLE);
-		mNoticeLayout.setVisibility(View.VISIBLE);
-		mContinueLayout.setVisibility(View.GONE);
-		mControlLayout.setVisibility(View.GONE);
-		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
-		if (mStartRX == TrafficStats.UNSUPPORTED) {
-			mSpeedTextView
-					.setText("Your device does not support traffic stat monitoring.");
-		} else {
-
-			mHandler.postDelayed(mLoadingRunnable, 500);
-		}
-		sortPushUrls(mDefination);
-		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
-	}
+//	private void changeDefination(int defination){
+//		if(mDefination == defination){
+//			return ;
+//		}
+//		lastTime = mVideoView.getCurrentPosition();
+//		rxByteslast = 0;
+//		mLoadingPreparedPercent = 0;
+////		mEpisodeIndex = -1;
+//		mPercentTextView.setText(", 已完成"
+//				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+//		mDefination = defination;
+//		mVideoView.stopPlayback();
+//		mStatue = STATUE_PRE_LOADING;
+//		mDateLoadingLayout.setVisibility(View.GONE);
+//		mSeekBar.setEnabled(false);
+//		mSeekBar.setProgress(0);
+//		mTotalTimeTextView.setText("--:--");
+//		mPreLoadLayout.setVisibility(View.VISIBLE);
+//		mNoticeLayout.setVisibility(View.VISIBLE);
+//		mContinueLayout.setVisibility(View.GONE);
+//		mControlLayout.setVisibility(View.GONE);
+//		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
+//		if (mStartRX == TrafficStats.UNSUPPORTED) {
+//			mSpeedTextView
+//					.setText("Your device does not support traffic stat monitoring.");
+//		} else {
+//
+//			mHandler.postDelayed(mLoadingRunnable, 500);
+//		}
+//		sortPushUrls(mDefination);
+//		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+//	}
 	
 	
 	private void hidePreLoad(){
@@ -3119,5 +3000,127 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
 		
+	}
+	
+	public List<String> getEpisode(){
+		List<String> date = null;
+		switch (mProd_type) {
+		case TYPE_PUSH_BT_EPISODE:
+			date = new ArrayList<String>();
+			for(BTEpisode b:play_info.getBtEpisodes()){
+				date.add(b.getName());
+			}
+			break;
+		case 2:
+		case 131:
+			date = new ArrayList<String>();
+			for(int i=0; i<m_ReturnProgramView.tv.episodes.length; i++){
+				date.add(m_ReturnProgramView.tv.episodes[i].name);
+			}
+			break;
+		case 3:
+			date = new ArrayList<String>();
+			for(int i=0; i<m_ReturnProgramView.show.episodes.length; i++){
+				date.add(m_ReturnProgramView.show.episodes[i].name);
+			}
+			break;
+		}
+		return date;
+	}
+	
+	public int getCurrentDefination(){
+		return mDefination;
+	}
+	
+	public String getCurrentProdSubName(){
+		return mProd_sub_name;
+	}
+	
+	public void changeDefination(int defination){
+		if(mDefination == defination){
+			return ;
+		}
+		Log.d(TAG, "changeDefination-------->" + defination);
+		lastTime = mVideoView.getCurrentPosition();
+		initUi();
+		mDefination = defination;
+		if(mProd_type == TYPE_PUSH){
+			play_info.setDefination(defination);
+		}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(defination);
+		}
+		sortPushUrls(mDefination);
+		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+	}
+	
+//	public void changeVideoSize(int type){
+//		mScreenManager.setScreenParams(type);
+//	}
+//	
+//	public int getVideoSizeType(){
+//		return mScreenManager.getScreenParams();
+//	}
+	
+	private void initUi(){
+		rxByteslast = 0;
+		mLoadingPreparedPercent = 0;
+		mPercentTextView.setText(", 已完成"
+				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		mVideoView.stopPlayback();
+		mStatue = STATUE_PRE_LOADING;
+		mDateLoadingLayout.setVisibility(View.GONE);
+		mSeekBar.setEnabled(false);
+		mSeekBar.setProgress(0);
+		mTotalTimeTextView.setText("--:--");
+		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
+		mContinueLayout.setVisibility(View.GONE);
+		mControlLayout.setVisibility(View.GONE);
+		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
+		if (mStartRX == TrafficStats.UNSUPPORTED) {
+			mSpeedTextView
+					.setText("Your device does not support traffic stat monitoring.");
+		} else {
+
+			mHandler.postDelayed(mLoadingRunnable, 500);
+		}
+	}
+	
+	public void changeEpisode(int index){
+		if(index<0||index>play_info.getBtEpisodes().size()||index==mEpisodeIndex){
+			return;
+		}
+		isRequset = 0;
+		BTEpisode bte = play_info.getBtEpisodes().get(index);
+		mProd_sub_name = bte.getName();
+		lastTime = bte.getPlayback_time()*1000;
+		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(mVideoView.getDuration()/1000));
+		play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int)(mVideoView.getDuration()/1000));
+		Log.d(TAG, "changeEpisode----lastTime---->" + lastTime);
+		mEpisodeIndex = index;
+		mDefination = bte.getDefination();
+		initUi();
+		playUrls.clear();
+		try {
+			JoyplusMediaPlayerManager.Init(this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+		updateSourceAndTime();
+		updateName();
+		MyApp.pool.execute(new getEpisodePlayUrls());
+	}
+	public List<URLS_INDEX> getPlayUrls(){
+		return this.playUrls;
+	}
+	
+	public void changeSubViewVisible(boolean v){
+		if(v){
+			mSubTitleView.displaySubtitle();
+		}else{
+			mSubTitleView.hiddenSubtitle();
+		}
 	}
 }
