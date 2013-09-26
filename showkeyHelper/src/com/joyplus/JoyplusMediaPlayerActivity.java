@@ -2892,12 +2892,15 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		BTEpisode bte = play_info.getBtEpisodes().get(index);
 		mProd_sub_name = bte.getName();
 		lastTime = bte.getPlayback_time()*1000;
-		
+		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(mVideoView.CurrentMediaInfo.getCurrentTime()/1000));
+		play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int)(mVideoView.CurrentMediaInfo.getTotleTime()/1000));
 		Log.d(TAG, "changeEpisode----lastTime---->" + lastTime);
 		mEpisodeIndex = index;
 		mDefination = bte.getDefination();
 		InitUI();
 		ResetURLAndSub();
+		updateSourceAndTime();
+		updateName();
 		MyApp.pool.execute(new getEpisodePlayUrls());
 	}
 }
