@@ -34,6 +34,7 @@ import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Log;
+import com.joyplus.tvhelper.utils.Utils;
 
 public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemClickListener {
 
@@ -102,7 +103,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 	private void initView(){
 		Log.d(TAG, "initView called------------------>");
 		if(selectedTitle!=null){
-			selectedTitle.setPadding(0, 10, 0, 10);
+			selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 			selectedTitle.setTextSize(25);
 		}
 		MIN = list_juji!=null?0:1;
@@ -126,11 +127,12 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Log.d(TAG, "top--------->" + (view.getTop()-10));
-				Log.d(TAG, "bottom----------------->"+(view.getBottom()+50));
+				Log.d(TAG, "top--------->" + (view.getTop()-Utils.getStandardValue(mContext, 10)));
+				Log.d(TAG, "bottom----------------->"+(view.getBottom()+Utils.getStandardValue(mContext, 50)));
 				if(position>=0){
 					bg_image.setVisibility(View.VISIBLE);
-					bg_image.layout(bg_image.getLeft(), view.getTop()-10, bg_image.getRight(), view.getBottom()+50);
+					bg_image.layout(bg_image.getLeft(), view.getTop()-Utils.getStandardValue(mContext, 10), 
+							bg_image.getRight(), view.getBottom()+Utils.getStandardValue(mContext, 50));
 				}else{
 					bg_image.setVisibility(View.INVISIBLE);
 				}
@@ -237,7 +239,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			TextView view;
 			if(convertView == null){
 				view = new TextView(mContext);
-				LayoutParams layoutParams = new LayoutParams(parent.getWidth(), 70);
+				LayoutParams layoutParams = new LayoutParams(parent.getWidth(), Utils.getStandardValue(mContext, 70));
 				view.setLayoutParams(layoutParams);
 				view.setGravity(Gravity.CENTER);
 				view.setTextColor(Color.WHITE);
@@ -249,7 +251,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			}
 			if(title_selecet_index == 0){
 				view.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
-				view.setPadding(35, 0, 35, 0);
+				view.setPadding(Utils.getStandardValue(mContext, 35), 0, Utils.getStandardValue(mContext, 35), 0);
 			}else{
 				view.setGravity(Gravity.CENTER);
 				view.setPadding(0, 0, 0, 0);
@@ -297,7 +299,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 		switch (title_selecet_index) {
 		case 0:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			title_xuanji.setPadding(0, 0, 0, 0);
@@ -306,7 +308,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			break;
 		case 1:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			title_zimu.setPadding(0, 0, 0, 0);
@@ -315,7 +317,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			break;
 		case 2:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			
@@ -325,7 +327,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			break;
 		case 3:
 			if(selectedTitle!=null){
-				selectedTitle.setPadding(0, 10, 0, 10);
+				selectedTitle.setPadding(0, Utils.getStandardValue(mContext, 10), 0, Utils.getStandardValue(mContext, 10));
 				selectedTitle.setTextSize(25);
 			}
 			title_size.setPadding(0, 0, 0, 0);
