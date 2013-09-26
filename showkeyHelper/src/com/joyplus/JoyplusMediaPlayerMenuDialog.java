@@ -1,6 +1,5 @@
 package com.joyplus;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.util.Comparators;
 import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
@@ -467,6 +465,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			String newPord_sub_name = list_juji.get(position);
 			if(!newPord_sub_name.equals(mContext.getCurrentProdSubName())){
 				//通知改变剧集
+				mContext.changeEpisode(position);
 			}
 			break;
 		case 1://切换字幕

@@ -1287,7 +1287,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		}
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 	}
-
+	
 	private void updateSourceAndTime() {
 		Log.d(TAG, " ---- sre = " + mProd_src);
 		if (mProd_src == null || mProd_src.length() == 1
@@ -2867,7 +2867,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		InitUI();
 //		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
 		mDefination = defination;
-		play_info.setDefination(defination);
+		if(mProd_type == TYPE_PUSH){
+			play_info.setDefination(defination);
+		}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(defination);
+		}
 		sortPushUrls(mDefination);
 		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 	}
@@ -2878,5 +2882,19 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public int getVideoSizeType(){
 		return mScreenManager.getScreenParams();
+	}
+	
+	public void changeEpisode(int index){
+		if(index<0||index>play_info.getBtEpisodes().size()||index==mEpisodeIndex){
+			return;
+		}
+		BTEpisode bte = play_info.getBtEpisodes().get(index);
+		mProd_sub_name = bte.getName();
+		lastTime = bte.getPlayback_time();
+		mEpisodeIndex = index;
+		mDefination = bte.getDefination();
+		InitUI();
+		ResetURLAndSub();
+		MyApp.pool.execute(new getEpisodePlayUrls());
 	}
 }
