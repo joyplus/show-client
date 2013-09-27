@@ -126,7 +126,7 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
   	  return mVideoLayout;
     }
     public void setVideoLayout(int layout) {
-        LayoutParams lp     = getLayoutParams();
+        LayoutParams lp     = getLayoutParams();       
         View base = (View) this.getParent();
         int windowWidth = base.getWidth();
         int windowHeight = base.getHeight();
@@ -140,11 +140,27 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
         	lp.width  = windowHeight*4/3;
         	lp.height = windowHeight;
         } else if(layout == VIDEO_LAYOUT_ORIGINAL){
-        	lp.width  = mSurfaceWidth;
-        	lp.height = mSurfaceHeight;
+        	if(((float)lp.width/lp.height)>((float)mSurfaceWidth/mSurfaceHeight)){
+        		lp.width  = lp.height*mSurfaceWidth/mSurfaceHeight;
+        		lp.height = mSurfaceHeight;
+        	}else{
+        		lp.height = lp.width*mSurfaceHeight/mSurfaceWidth;
+        		lp.width  = mSurfaceWidth;
+        	}
         } else if(layout == VIDEO_LAYOUT_FILL){
         	lp.width       = windowWidth;
         	lp.height      = windowHeight;        	
+        }
+        if(lp.width>windowWidth || lp.height>windowHeight){
+        	if(((float)lp.width/lp.height)>((float)windowWidth/windowHeight)){
+        		lp.width  = lp.height*windowWidth/windowHeight;
+        		lp.height = windowHeight;
+        	}else{
+        		lp.height = lp.width*windowHeight/windowWidth;
+        		lp.width  = windowWidth;
+        	}
+        	lp.width  = lp.width >windowWidth?windowWidth:lp.width;
+        	lp.height = lp.height>windowWidth?windowWidth:lp.height;
         }
         setLayoutParams(lp);
         getHolder().setFixedSize(mSurfaceWidth, mSurfaceHeight);
