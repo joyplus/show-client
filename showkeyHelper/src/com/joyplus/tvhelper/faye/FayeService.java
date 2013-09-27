@@ -162,7 +162,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 								// TODO Auto-generated method stub
 								startActivity(intent_play);
 							}
-						}, 200);
+						}, 0);
 						sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
 					}
 				}
@@ -1460,7 +1460,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 									// TODO Auto-generated method stub
 									startActivity(intent);
 								}
-							}, 200);
+							}, 0);
 							
 						}else{
 							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);

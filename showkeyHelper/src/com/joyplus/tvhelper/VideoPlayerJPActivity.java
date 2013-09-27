@@ -1413,7 +1413,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				long current1 = mVideoView.getCurrentPosition();// 当前进度
 				mSeekBar.setProgress((int) current1);
 				if(current1-lastPlayTime>0){
-					lastPlayTime = current1;
+					
 					mDateLoadingLayout.setVisibility(View.GONE);
 					loadingCount=0;
 					mHandler.removeMessages(MESSAGE_DATALOADING_UPDATE_NETSPEED);
@@ -1446,7 +1446,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						});
 					}
 				}
-				
+				lastPlayTime = current1;
 				// updateTimeNoticeView(mSeekBar.getProgress());
 			}
 //			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
