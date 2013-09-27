@@ -9,10 +9,11 @@ import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.sub.Element;
+import com.joyplus.sub.JoyplusSubListener;
 import com.joyplus.sub.JoyplusSubManager;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 
-public class SubTitleView extends TextView {
+public class SubTitleView extends TextView implements JoyplusSubListener{
 	private static final String TAG = "SubTitleView";
 	
 	private static final int SUBTITLE_DELAY_TIME_MAX = 500;
@@ -146,13 +147,16 @@ public class SubTitleView extends TextView {
 			}else {
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currentPosition);
 			}
+		}else{
+			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_START, SUBTITLE_DELAY_TIME_MAX);
 		}
 		lastTime = currentPosition;
 	}
 	
 	private void messageDisplay(){
 		Log.i(TAG, "messageDisplay-->");
-		if(getSubManager().CheckSubAviable()){
+		setText("");
+		if(getSubManager() != null && getSubManager().CheckSubAviable()){
 			setVisibility(VISIBLE);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}
@@ -172,7 +176,11 @@ public class SubTitleView extends TextView {
 		return JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
 	private Element getElement(long time){
-		return getSubManager().getElement(time);
+		if(getSubManager() == null) return null;
+		Element element= getSubManager().getElement(time);
+//		if(element != null)Log.i(TAG, "element--->" + element.toString());
+//		else Log.i(TAG, "element is null");
+		return element;
 	}
 	
 	public SubTitleView(Context context) {
@@ -200,7 +208,7 @@ public class SubTitleView extends TextView {
 	
 	public void displaySubtitle(){
 		mHandler.removeCallbacksAndMessages(null);
-		Log.i(TAG, "displaySubtitle--->" + getSubManager().CheckSubAviable());
+		Log.i(TAG, "displaySubtitle--->");
 		mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_DISPLAY);
 	}
 	
@@ -214,6 +222,14 @@ public class SubTitleView extends TextView {
 		// TODO Auto-generated method stub
 		mHandler.removeCallbacksAndMessages(null);
 		super.onDetachedFromWindow();
+	}
+
+	@Override
+	public void onSubChange(boolean arg0) {
+		// TODO Auto-generated method stub
+		if(arg0){
+			displaySubtitle();
+		}
 	}
 	
 }
