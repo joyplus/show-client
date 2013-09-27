@@ -1043,6 +1043,14 @@ public class VideoPlayerJPActivity extends Activity implements
 				lastPlayTime = -1;
 				mSeekBar.setEnabled(true);
 				break;
+			case STATUE_PRE_LOADING:
+				if(lastTime>0){
+					lastTime = 0;
+					mVideoView.seekTo(0);
+					mLastTimeTextView.setText("");
+					Log.d(TAG, "lastTime------------>" + lastTime);
+				}
+				break;
 			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
@@ -1770,7 +1778,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(lastTime>0){
 			mLastTimeTextView.setVisibility(View.VISIBLE);
-			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime));
+			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime)+"\n按【OK】键从头开始播放");
 		}else{
 			mLastTimeTextView.setVisibility(View.GONE);
 		}
