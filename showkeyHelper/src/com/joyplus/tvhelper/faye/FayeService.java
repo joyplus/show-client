@@ -139,7 +139,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						}
 					}else{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						Intent intent_play = new Intent(FayeService.this,JoyplusMediaPlayerActivity.class);
+						final Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 						intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						if(play_info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
 							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
@@ -157,8 +157,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						playDate.prod_url = play_info.getDownload_url();
 						app.setmCurrentPlayDetailData(playDate);
 						app.set_ReturnProgramView(null);
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								startActivity(intent_play);
+							}
+						}, 200);
 						sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
-						startActivity(intent_play);
 					}
 				}
 				
@@ -1413,7 +1420,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-							Intent intent = new Intent(FayeService.this,JoyplusMediaPlayerActivity.class);
+							final Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //							playDate.prod_id = data.getString("id");
 							
@@ -1448,7 +1455,15 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							app.setmCurrentPlayDetailData(playDate);
 							app.set_ReturnProgramView(null);
 							sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
-							startActivity(intent);
+							handler.postDelayed(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									startActivity(intent);
+								}
+							}, 200);
+							
 						}else{
 							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
 						}
