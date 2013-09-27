@@ -760,7 +760,10 @@ public class XunLeiLXActivity extends Activity {
 		isFirstLogin = true;
 		refreshBt.setVisibility(View.INVISIBLE);
 
-		if(loginErrorFlag == 10 || loginErrorFlag == 11) return;
+		if(loginErrorFlag == 10 || loginErrorFlag == 11) {
+			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
+			return;
+		}
 
 		passwdEdit.setText("");
 		XunLeiLiXianUtil.saveLoginUserPasswd(getApplicationContext(), "");

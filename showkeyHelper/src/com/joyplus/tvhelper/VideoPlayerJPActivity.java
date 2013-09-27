@@ -386,7 +386,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
-		mJoyplusSubManager.registerListener(mSubTitleView);
 		initVedioDate();
 
 		Window win = getWindow();
@@ -500,7 +499,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo));
-//						mSubTitleView.displaySubtitle();
+						mSubTitleView.displaySubtitle();
 //						currentSubtitleIndex = 0;
 //						initSubTitleCollection();
 						
@@ -672,7 +671,7 @@ public class VideoPlayerJPActivity extends Activity implements
 									&& !play_info.getPush_url().equals("")) {
 								if (play_info.getSubList() != null) {
 									mJoyplusSubManager.setSubUri(play_info.getSubList());
-//									mSubTitleView.displaySubtitle();
+									mSubTitleView.displaySubtitle();
 								} else {
 									String subTitleUrl = Constant.BASE_URL
 											+ "/joyplus/subtitle/?url="
@@ -684,7 +683,7 @@ public class VideoPlayerJPActivity extends Activity implements
 									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
-//									mSubTitleView.displaySubtitle();
+									mSubTitleView.displaySubtitle();
 									// currentSubtitleIndex = 0;
 									// initSubTitleCollection();
 								}
@@ -1413,7 +1412,6 @@ public class VideoPlayerJPActivity extends Activity implements
 				long current1 = mVideoView.getCurrentPosition();// 当前进度
 				mSeekBar.setProgress((int) current1);
 				if(current1-lastPlayTime>0){
-					
 					mDateLoadingLayout.setVisibility(View.GONE);
 					loadingCount=0;
 					mHandler.removeMessages(MESSAGE_DATALOADING_UPDATE_NETSPEED);
@@ -3112,7 +3110,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			e.printStackTrace();
 		}
 		mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
-		mJoyplusSubManager.registerListener(mSubTitleView);
 		updateSourceAndTime();
 		updateName();
 		MyApp.pool.execute(new getEpisodePlayUrls());
