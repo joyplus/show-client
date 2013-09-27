@@ -15,10 +15,10 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
 
-import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.manager.URLManager;
 import com.joyplus.manager.URLManager.Quality;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.sub.JoyplusSubManager;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.Utils;

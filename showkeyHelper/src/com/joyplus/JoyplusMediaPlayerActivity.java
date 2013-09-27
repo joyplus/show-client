@@ -29,8 +29,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.media.AudioManager;
-import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,7 +38,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore.Video;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
@@ -52,9 +49,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.Sub.JoyplusSubManager;
-import com.joyplus.Sub.SUBTYPE;
-import com.joyplus.Sub.SubURI;
 import com.joyplus.manager.URLManager;
 import com.joyplus.manager.URLManager.Quality;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
@@ -63,6 +57,10 @@ import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
+import com.joyplus.sub.JoyplusSubListener;
+import com.joyplus.sub.JoyplusSubManager;
+import com.joyplus.sub.SUBTYPE;
+import com.joyplus.sub.SubURI;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.WebViewActivity;
@@ -313,7 +311,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						// TODO Auto-generated method stub
 						mJoyplusSubManager.setSubEnable(true);
 						mJoyplusSubManager.SwitchSub(currIndex -1);
-						mSubTitleView.displaySubtitle();
+//						mSubTitleView.displaySubtitle();
 					}
 				}).start();				
 				break;
@@ -367,6 +365,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
     	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
     	mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+    	mJoyplusSubManager.registerListener(mSubTitleView);
 	}
 	
 	public void InitUI(){
@@ -541,7 +540,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			if(mVideoView.hasMediaInfoChange()){
 				mMiddleControl.JoyplussetVisible(false, 0);
 				mTopBottomController.JoyplussetVisible(true, 0);
-				if(mJoyplusSubManager.CheckSubAviable())mSubTitleView.displaySubtitle();
+//				if(mJoyplusSubManager.CheckSubAviable())mSubTitleView.displaySubtitle();
 				StateOk = true;//now we can dispatch keydown or others operation
 			}
 		}
@@ -920,7 +919,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 //						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(JoyplusMediaPlayerActivity.this,xllxFileInfo));
-						mSubTitleView.displaySubtitle();
+//						mSubTitleView.displaySubtitle();
 //						currentSubtitleIndex = 0;
 //						initSubTitleCollection();
 						
@@ -1065,7 +1064,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 									&& !play_info.getPush_url().equals("")) {
 								if (play_info.getSubList() != null) {
 									mJoyplusSubManager.setSubUri(play_info.getSubList());
-									mSubTitleView.displaySubtitle();
+//									mSubTitleView.displaySubtitle();
 								} else {
 									String subTitleUrl = Constant.BASE_URL
 											+ "/joyplus/subtitle/?url="
