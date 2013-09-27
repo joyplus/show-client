@@ -22,8 +22,8 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
-import com.joyplus.Sub.SUBTYPE;
-import com.joyplus.Sub.SubURI;
+import com.joyplus.sub.SUBTYPE;
+import com.joyplus.sub.SubURI;
 import com.joyplus.tvhelper.entity.SharpnessEnum;
 import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;

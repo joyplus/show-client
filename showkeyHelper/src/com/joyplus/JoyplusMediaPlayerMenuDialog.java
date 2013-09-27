@@ -26,9 +26,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
+import com.joyplus.sub.JoyplusSubManager;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 import com.joyplus.tvhelper.utils.Constant;

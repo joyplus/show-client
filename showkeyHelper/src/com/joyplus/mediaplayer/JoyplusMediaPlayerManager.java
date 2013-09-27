@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 
-import com.joyplus.Sub.JoyplusSubManager;
 import com.joyplus.manager.URLManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerServer.PlayerState;
 import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
+import com.joyplus.sub.JoyplusSubManager;
 
 public class JoyplusMediaPlayerManager {
 

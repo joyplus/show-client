@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sub dir in SDCard 
+         default dir is "mnt/sdcard/Joyplus/sub/"-->
+    <string name="sub_dir">/Android/data/com.joyplus.tv/sub/</string>
+    
+    <!-- Sub EN Default -->
+    <string name="sub_en_default">true</string>
+    
+    <!-- Sub mode Default 
+         1 SETONLY 
+         2 ADDONLY 
+         3 AETANDADD -->
+    <string name="sub_mode_default">3</string>
+    
+    <!-- Sub Max Local  -->
+    <string name="sub_max_local">5</string>
+    
+</resources>
