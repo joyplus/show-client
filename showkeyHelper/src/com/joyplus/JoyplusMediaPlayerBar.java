@@ -542,7 +542,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			parms.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);	
 			if (SeekBar.getProgress()>0){
 				double mLeft = (double) SeekBar.getProgress() / SeekBar.getMax()* 
-						(SeekBar.getMeasuredWidth() - Utils.getStandardValue(mActivity, seekBarWidthOffset)) + OFFSET;
+						(SeekBar.getMeasuredWidth() - Utils.getStandardValue(mActivity, seekBarWidthOffset)) + Utils.getStandardValue(mActivity, OFFSET);
 				parms.leftMargin = (int) mLeft;
 			}else{
 				parms.leftMargin = Utils.getStandardValue(mActivity, OFFSET);
