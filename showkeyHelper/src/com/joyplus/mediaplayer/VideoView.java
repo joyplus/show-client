@@ -141,10 +141,10 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
         	lp.height = windowHeight;
         } else if(layout == VIDEO_LAYOUT_ORIGINAL){
         	if(((float)lp.width/lp.height)>((float)mSurfaceWidth/mSurfaceHeight)){
-        		lp.width  = lp.height*mSurfaceWidth/mSurfaceHeight;
+        		lp.width  = lp.height*lp.width/mSurfaceHeight;
         		lp.height = mSurfaceHeight;
         	}else{
-        		lp.height = lp.width*mSurfaceHeight/mSurfaceWidth;
+        		lp.height = lp.width*lp.height/mSurfaceWidth;
         		lp.width  = mSurfaceWidth;
         	}
         } else if(layout == VIDEO_LAYOUT_FILL){
@@ -153,10 +153,10 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
         }
         if(lp.width>windowWidth || lp.height>windowHeight){
         	if(((float)lp.width/lp.height)>((float)windowWidth/windowHeight)){
-        		lp.width  = lp.height*windowWidth/windowHeight;
+        		lp.width  = lp.height*lp.width/windowHeight;
         		lp.height = windowHeight;
         	}else{
-        		lp.height = lp.width*windowHeight/windowWidth;
+        		lp.height = lp.width*lp.height/windowWidth;
         		lp.width  = windowWidth;
         	}
         	lp.width  = lp.width >windowWidth?windowWidth:lp.width;
