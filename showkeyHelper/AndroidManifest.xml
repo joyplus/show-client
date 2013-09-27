@@ -69,13 +69,11 @@
         <activity
             android:name="VideoPlayerJPActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="com.joyplus.JoyplusMediaPlayerActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape" >
         </activity>
         <activity

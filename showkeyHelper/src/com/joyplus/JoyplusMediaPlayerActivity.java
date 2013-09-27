@@ -77,6 +77,7 @@ import com.joyplus.tvhelper.entity.service.ReturnProgramView;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.DesUtils;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -344,7 +345,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mVideoView           = new JoyplusMediaPlayerVideoView(this);
     	mMiddleControl       = (JoyplusMediaPlayerMiddleControl) this.findViewById(R.id.JoyplusMediaPlayerMiddleControl);
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
-    	registerReceiver(mReceiver, new IntentFilter(Constant.VIDEOPLAYERCMD));
+    	IntentFilter filter = new IntentFilter();
+    	filter.addAction(Constant.VIDEOPLAYERCMD);
+    	filter.addAction(Global.ACTION_RECIVE_NEW_PUSH_MOVIE);
+    	registerReceiver(mReceiver, filter);
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
     	mHandler.post(new Runnable() {
 			
@@ -855,7 +859,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					VIDEOPLAYERCMD_Handler.sendEmptyMessage(MSG_REQUESTBACKWARD);
 					break;
 				}
-			} 
+			}else if(Global.ACTION_RECIVE_NEW_PUSH_MOVIE.equals(action)){
+				finish();
+			}
 		}
 	};
 

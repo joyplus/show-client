@@ -92,6 +92,7 @@ import com.joyplus.tvhelper.utils.BangDanConstant;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.DesUtils;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -357,7 +358,8 @@ public class VideoPlayerJPActivity extends Activity implements
 					break;
 				}
 
-			} else {
+			} else if(Global.ACTION_RECIVE_NEW_PUSH_MOVIE.equals(action)){
+				finish();
 			}
 		}
 	};
@@ -394,6 +396,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
+		intentFilter.addAction(Global.ACTION_RECIVE_NEW_PUSH_MOVIE);
 		registerReceiver(mReceiver, intentFilter);
 
 		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
