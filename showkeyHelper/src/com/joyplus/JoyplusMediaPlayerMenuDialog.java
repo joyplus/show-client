@@ -443,7 +443,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_FULL);
 		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_16x9);
 		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_4x3);
-		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL);
+//		list_size.add(JoyplusMediaPlayerScreenManager.LINEARLAYOUT_PARAMS_ORIGINAL);
 		Log.d(TAG, "size type -- >" + mContext.getVideoSizeType());
 		int index_size = list_size.indexOf(mContext.getVideoSizeType());
 		if(index_size<0){

@@ -131,7 +131,7 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
         int windowWidth = base.getWidth();
         int windowHeight = base.getHeight();
         if(windowHeight<=0|| windowWidth<=0) return;
-        if(mVideoWidth<0 || mVideoHeight<0)return;
+        if(mVideoWidth<=0 || mVideoHeight<=0)return;
         mSurfaceHeight      = mVideoHeight;
         mSurfaceWidth       = mVideoWidth;
         if (VIDEO_LAYOUT_16X9 == layout) {
