@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.network.filedownload.model.DownloadTask;
@@ -44,7 +43,6 @@ import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
 import com.joyplus.tvhelper.entity.PushedMovieDownLoadInfo;
 import com.joyplus.tvhelper.faye.FayeClient.FayeListener;
-import com.joyplus.tvhelper.faye.FayeService.MyFayeListener;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DesUtils;
 import com.joyplus.tvhelper.utils.Global;
