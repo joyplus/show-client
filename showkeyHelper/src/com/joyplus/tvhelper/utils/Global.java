@@ -98,5 +98,9 @@ public class Global {
 	 * 断开
 	 */
 	public static final String ACTION_DISCONNECT_SERVER_MAIN= "action_disconnect_server_main";
+	/**
+	 * 收到新的推送
+	 */
+	public static final String ACTION_RECIVE_NEW_PUSH_MOVIE = "action_recive_new_push_movie";
 	
 }
