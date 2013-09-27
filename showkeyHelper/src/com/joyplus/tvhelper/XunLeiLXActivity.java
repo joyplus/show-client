@@ -342,9 +342,7 @@ public class XunLeiLXActivity extends Activity {
 
 										// if(currentPlayDetailData.prod_src !=
 										// null )
-										startActivity(new Intent(
-												XunLeiLXActivity.this,
-												VideoPlayerJPActivity.class));
+										startActivity(Utils.getIntent(XunLeiLXActivity.this));
 									}
 								} else {
 
@@ -554,9 +552,7 @@ public class XunLeiLXActivity extends Activity {
 
 										// if(currentPlayDetailData.prod_src !=
 										// null )
-										startActivity(new Intent(
-												XunLeiLXActivity.this,
-												VideoPlayerJPActivity.class));
+										startActivity(Utils.getIntent(XunLeiLXActivity.this));
 									}
 								}
 							}

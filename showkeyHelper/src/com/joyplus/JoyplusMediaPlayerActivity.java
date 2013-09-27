@@ -368,7 +368,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private void ResetURLAndSub(){
 		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
     	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
-    	mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+    	mJoyplusSubManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
     	mJoyplusSubManager.registerListener(mSubTitleView);
 	}
 	

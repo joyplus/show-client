@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
-import com.joyplus.sub.JoyplusSubManager;
+import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
@@ -389,7 +389,7 @@ public class PlayerMenuDialog extends AlertDialog implements OnItemClickListener
 		list_zimu = new ArrayList<String>();
 		//清晰度
 		List<URLS_INDEX> playUrls = mContext.getPlayUrls();
-		JoyplusSubManager subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+		JoyplusSubManager subManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 		if(playUrls!=null){
 			for(URLS_INDEX url_index_info:playUrls){
 				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)&&!list_definition.contains(Constant.DEFINATION_HD2)){
@@ -472,7 +472,7 @@ public class PlayerMenuDialog extends AlertDialog implements OnItemClickListener
 			}
 			break;
 		case 1://切换字幕
-			JoyplusSubManager subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+			JoyplusSubManager subManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 			if(subManager!=null&&subManager.CheckSubAviable()){
 				if(position==0){
 					if(subManager.IsSubEnable()){
@@ -488,7 +488,7 @@ public class PlayerMenuDialog extends AlertDialog implements OnItemClickListener
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								JoyplusMediaPlayerManager.getInstance().getSubManager().SwitchSub(zimu_index);
+								((JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager()).SwitchSub(zimu_index);
 							}
 						}).start();
 					}

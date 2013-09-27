@@ -10,6 +10,7 @@ import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.Utils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ThirdPlayActivity extends Activity {
@@ -41,7 +42,8 @@ public class ThirdPlayActivity extends Activity {
 			info.setId((int)dbService.insertMoviePlayHistory(info));
 		}
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+		Intent intent = Utils.getIntent(this);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
 		playDate.prod_name = info.getName();

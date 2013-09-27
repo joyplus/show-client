@@ -5,10 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 
+import com.joyplus.control.SubManager;
 import com.joyplus.manager.URLManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerServer.PlayerState;
 import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
-import com.joyplus.sub.JoyplusSubManager;
+
 
 public class JoyplusMediaPlayerManager {
 
@@ -21,7 +22,10 @@ public class JoyplusMediaPlayerManager {
 	    /*Interface of videoview preference*/
 	    private JoyplusMediaPlayerDataManager   mDataManager;
 	    /*Interface of sub manager*/
-	    private JoyplusSubManager               mSubManager;
+	    public final static boolean SubanagerUseNEW = false;
+	    private SubManager            mSubManager;
+//	    private com.joyplus.sub.JoyplusSubManager          mSubManager;
+//	    private com.joyplus.sub_old_1.JoyplusSubManager    mOldSubManager;
 	    /*Interface of Url Manager*/
 	    private URLManager                      mURLManager;
 	    	    
@@ -67,9 +71,10 @@ public class JoyplusMediaPlayerManager {
 	    	else setVitamioEn(false);
 	    }
 	    /*Interface of SubManager and Urlmanager*/
-	    public JoyplusSubManager getSubManager(){
-	    	return mSubManager;
+	    public SubManager getSubManager(){	    	
+	    	return mSubManager; 	    	
 	    }
+	    
 	    public URLManager getURLManager(){
 	    	return mURLManager;
 	    }
@@ -80,7 +85,11 @@ public class JoyplusMediaPlayerManager {
 	    	ResetURLAndSub();
 	    }
 	    public void ResetURLAndSub(){
-	    	mSubManager    = new JoyplusSubManager(mContext);
+	    	if(SubanagerUseNEW){
+	    		mSubManager    = new com.joyplus.sub.JoyplusSubManager(mContext);
+	    	}else{
+	    		mSubManager    = new com.joyplus.sub_old_1.JoyplusSubManager(mContext);
+	    	}	    	
 	    	mURLManager    = new URLManager();
 	    }
 	    /*Interface of type config*/

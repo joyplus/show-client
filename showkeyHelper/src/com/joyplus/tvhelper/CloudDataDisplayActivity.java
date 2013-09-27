@@ -244,7 +244,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					}
 				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+					Intent intent = Utils.getIntent(this);
 //					intent.putExtra("ID", json.getString("prod_id"));
 //					playDate.prod_id = data.getString("id");
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
@@ -345,7 +346,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				}
 				
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+				Intent intent = Utils.getIntent(this);
 //				intent.putExtra("ID", json.getString("prod_id"));
 //				playDate.prod_id = data.getString("id");
 //				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
@@ -781,7 +783,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					}
 				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+//					Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+					Intent intent = Utils.getIntent(this);
 //					intent.putExtra("ID", json.getString("prod_id"));
 //					playDate.prod_id = data.getString("id");
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
@@ -833,7 +836,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
 		BTEpisode epInfo = playInfo.getBtEpisodes().get(childPosition);
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+//		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+		Intent intent = Utils.getIntent(this);
 //		intent.putExtra("ID", json.getString("prod_id"));
 //		playDate.prod_id = data.getString("id");
 //		playDate.prod_type = Integer.valueOf(json.getString("prod_type"));

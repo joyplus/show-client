@@ -44,7 +44,7 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
 		if(visible){
 			show();
 			if(mQuality != null)mQuality.setURLManager(JoyplusMediaPlayerManager.getInstance().getURLManager());
-			if(mSub != null)    mSub.setSubManager(JoyplusMediaPlayerManager.getInstance().getSubManager());
+			if(mSub != null)    mSub.setSubManager((JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager());
 		}
 		else Dismiss();
 	}
@@ -161,7 +161,7 @@ public class JoyplusMediaPlayerPreference extends AlertDialog{
             }
         }	
         public boolean isChange(){
-        	return gallery.getSelectedItemPosition() != (definationStrings.indexOf(JoyplusMediaPlayerManager.getInstance().getSubManager().getCurrentSubIndex()+1));
+        	return gallery.getSelectedItemPosition() != (definationStrings.indexOf(((JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager()).getCurrentSubIndex()+1));
         }
         public int getCurrentIndex(){
         	return gallery.getSelectedItemPosition();

@@ -386,7 +386,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 		list_zimu = new ArrayList<String>();
 		//清晰度
 		List<URLS_INDEX> playUrls = mContext.getPlayUrls();
-		JoyplusSubManager subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+		JoyplusSubManager subManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 		if(playUrls!=null){
 			for(URLS_INDEX url_index_info:playUrls){
 				if("hd2".equalsIgnoreCase(url_index_info.defination_from_server)&&!list_definition.contains(Constant.DEFINATION_HD2)){
@@ -469,7 +469,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 			}
 			break;
 		case 1://切换字幕
-			JoyplusSubManager subManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+			JoyplusSubManager subManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 			if(subManager!=null&&subManager.CheckSubAviable()){
 				if(position==0){
 					if(subManager.IsSubEnable()){
@@ -483,7 +483,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								JoyplusMediaPlayerManager.getInstance().getSubManager().SwitchSub(zimu_index);
+								((JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager()).SwitchSub(zimu_index);
 							}
 						}).start();
 					}

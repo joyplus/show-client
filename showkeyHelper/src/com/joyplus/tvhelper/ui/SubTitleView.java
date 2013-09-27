@@ -8,12 +8,11 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
-import com.joyplus.sub.Element;
-import com.joyplus.sub.JoyplusSubListener;
-import com.joyplus.sub.JoyplusSubManager;
+import com.joyplus.sub_old_1.Element;
+import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 
-public class SubTitleView extends TextView implements JoyplusSubListener{
+public class SubTitleView extends TextView{
 	private static final String TAG = "SubTitleView";
 	
 	private static final int SUBTITLE_DELAY_TIME_MAX = 500;
@@ -173,7 +172,7 @@ public class SubTitleView extends TextView implements JoyplusSubListener{
 		return mActivity.getPlayerCurrentPosition();
 	}
 	private JoyplusSubManager getSubManager(){
-		return JoyplusMediaPlayerManager.getInstance().getSubManager();
+		return (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
 	private Element getElement(long time){
 		if(getSubManager() == null) return null;
@@ -222,14 +221,6 @@ public class SubTitleView extends TextView implements JoyplusSubListener{
 		// TODO Auto-generated method stub
 		mHandler.removeCallbacksAndMessages(null);
 		super.onDetachedFromWindow();
-	}
-
-	@Override
-	public void onSubChange(boolean arg0) {
-		// TODO Auto-generated method stub
-		if(arg0){
-			displaySubtitle();
-		}
 	}
 	
 }

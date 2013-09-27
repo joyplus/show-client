@@ -44,7 +44,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +54,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -72,11 +70,10 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.JoyplusMediaPlayerMenuDialog;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
-import com.joyplus.sub.JoyplusSubManager;
 import com.joyplus.sub.SUBTYPE;
 import com.joyplus.sub.SubURI;
+import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
@@ -377,7 +374,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		try {
 			JoyplusMediaPlayerManager.Init(this);
-			mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+			mJoyplusSubManager = (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -386,7 +383,6 @@ public class VideoPlayerJPActivity extends Activity implements
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
-		mJoyplusSubManager.registerListener(mSubTitleView);
 		initVedioDate();
 
 		Window win = getWindow();
@@ -500,7 +496,7 @@ public class VideoPlayerJPActivity extends Activity implements
 //						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo));
-//						mSubTitleView.displaySubtitle();
+						mSubTitleView.displaySubtitle();
 //						currentSubtitleIndex = 0;
 //						initSubTitleCollection();
 						
@@ -672,7 +668,7 @@ public class VideoPlayerJPActivity extends Activity implements
 									&& !play_info.getPush_url().equals("")) {
 								if (play_info.getSubList() != null) {
 									mJoyplusSubManager.setSubUri(play_info.getSubList());
-//									mSubTitleView.displaySubtitle();
+									mSubTitleView.displaySubtitle();
 								} else {
 									String subTitleUrl = Constant.BASE_URL
 											+ "/joyplus/subtitle/?url="
@@ -684,7 +680,7 @@ public class VideoPlayerJPActivity extends Activity implements
 									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
-//									mSubTitleView.displaySubtitle();
+									mSubTitleView.displaySubtitle();
 									// currentSubtitleIndex = 0;
 									// initSubTitleCollection();
 								}
@@ -2560,7 +2556,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
-				List<SubURI> subList = null;
+				List<com.joyplus.sub.SubURI> subList = null;
 				if(data.has("subtitle")){
 					Log.d(TAG, data.get("subtitle").toString());
 					if(!"".equals(data.get("subtitle").toString())){
@@ -3111,8 +3107,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
-		mJoyplusSubManager.registerListener(mSubTitleView);
+		mJoyplusSubManager = (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
 		updateSourceAndTime();
 		updateName();
 		MyApp.pool.execute(new getEpisodePlayUrls());

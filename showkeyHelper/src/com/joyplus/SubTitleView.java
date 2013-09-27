@@ -177,7 +177,7 @@ public class SubTitleView extends TextView implements JoyplusSubListener{
 		return getMediaInfo().getCurrentTime();
 	}
 	private JoyplusSubManager getSubManager(){
-		return JoyplusMediaPlayerManager.getInstance().getSubManager();
+		return (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
 
 	private Element getElement(long time){

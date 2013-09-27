@@ -46,7 +46,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 
 public class Utils {
@@ -650,5 +653,14 @@ public static InetAddress getLocalIpAddress(){
 	public static int getStandardValue(Context context,int value){
 		float standardDp = context.getResources().getDimension(R.dimen.standard_1_dp);
 		return standardDp == 0 ? value:(int)(value * standardDp);
+	}
+	
+	public static Intent getIntent(Context context){
+		if(JoyplusMediaPlayerManager.SubanagerUseNEW){
+			return new Intent(context,JoyplusMediaPlayerActivity.class);
+		}else{
+			return new Intent(context,VideoPlayerJPActivity.class);
+		}
+		
 	}
 }

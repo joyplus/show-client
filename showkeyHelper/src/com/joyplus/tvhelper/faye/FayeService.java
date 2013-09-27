@@ -137,7 +137,9 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						}
 					}else{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						final Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+//						final Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+						final Intent intent_play = Utils.getIntent(FayeService.this);
+						
 						intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						if(play_info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
 							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
@@ -1418,7 +1420,8 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-							final Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+//							final Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+							final Intent intent = Utils.getIntent(FayeService.this);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //							playDate.prod_id = data.getString("id");
 							
