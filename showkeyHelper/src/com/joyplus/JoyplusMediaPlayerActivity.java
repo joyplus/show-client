@@ -1971,7 +1971,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 //			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
 			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
-		}else{
+		}else if(mProd_type == TYPE_PUSH){
 			play_info.setDuration((int) duration);
 			play_info.setPlayback_time((int) playBackTime);
 //			if(mProd_type == TYPE_PUSH){

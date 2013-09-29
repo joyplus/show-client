@@ -141,13 +141,20 @@ public class VideoView extends SurfaceView implements MediaPlayerControl {
         	lp.width  = windowHeight*4/3;
         	lp.height = windowHeight;
         } else if(layout == VIDEO_LAYOUT_ORIGINAL){
-        	if(((float)lp.width/lp.height)>((float)mSurfaceWidth/mSurfaceHeight)){
-        		lp.width  = lp.height*lp.width/mSurfaceHeight;
-        		lp.height = mSurfaceHeight;
+        	Log.d(TAG, "video size type------>" + layout);
+        	Log.d(TAG, "prant width------>" + windowWidth);
+        	Log.d(TAG, "prant height------>" + windowHeight);
+        	Log.d(TAG, "mSurfaceWidth------>" + mSurfaceWidth);
+        	Log.d(TAG, "mSurfaceHeight------>" + mSurfaceHeight);
+        	if(((float)mSurfaceWidth/windowWidth)>=((float)mSurfaceHeight/windowHeight)){
+        		lp.width  = windowWidth;
+        		lp.height = mSurfaceHeight*windowWidth/mSurfaceWidth;
         	}else{
-        		lp.height = lp.width*lp.height/mSurfaceWidth;
-        		lp.width  = mSurfaceWidth;
+        		lp.width  = mSurfaceWidth*windowHeight/mSurfaceHeight;
+        		lp.height = windowHeight;
         	}
+        	Log.d(TAG, "video view width ------>" + lp.width);
+        	Log.d(TAG, "video view height------>" + lp.height);
         } else if(layout == VIDEO_LAYOUT_FILL){
         	lp.width       = windowWidth;
         	lp.height      = windowHeight;        	
