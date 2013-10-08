@@ -70,7 +70,6 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.sub.SUBTYPE;
 import com.joyplus.sub.SubURI;
 import com.joyplus.sub_old_1.JoyplusSubManager;
@@ -153,7 +152,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int seekBarWidthOffset = 40;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
-	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
 
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
@@ -362,14 +360,8 @@ public class VideoPlayerJPActivity extends Activity implements
 		app = (MyApp) getApplication();
 		mAlphaDispear = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
 		
-		try {
-			JoyplusMediaPlayerManager.Init(this);
-			mJoyplusSubManager = (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		mMenuDialog = new PlayerMenuDialog(this);
+		mJoyplusSubManager = new JoyplusSubManager(this);
+		mMenuDialog 	   = new PlayerMenuDialog(this);
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
@@ -482,13 +474,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
-						//get subtitle
-//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo));
 						mSubTitleView.displaySubtitle();
-//						currentSubtitleIndex = 0;
-//						initSubTitleCollection();
 						
 						if(list != null && list.size() > 0) {
 							
@@ -664,15 +652,10 @@ public class VideoPlayerJPActivity extends Activity implements
 											+ "/joyplus/subtitle/?url="
 											+ URLEncoder.encode(play_info.getPush_url())
 											+ "&md5_code=" + getUmengMd5();
-									// subTitleUrlList =
-									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
-									// Constant.APPKEY);
 									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
 									mSubTitleView.displaySubtitle();
-									// currentSubtitleIndex = 0;
-									// initSubTitleCollection();
 								}
 							}
 						}
@@ -2288,11 +2271,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		playUrls_hd.clear();
 		playUrls_hd2.clear();
 		playUrls_mp4.clear();
-//		mSubTitleCollection = null;
-//		currentSubtitleIndex = 0;
-//		subTitleUrlList.clear();
-//		mSubTitleTv.setVisibility(View.VISIBLE);
-		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		mJoyplusSubManager = new JoyplusSubManager(this);
 		initVedioDate();
 	}
 
@@ -3098,13 +3077,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = bte.getDefination();
 		initUi();
 		playUrls.clear();
-		try {
-			JoyplusMediaPlayerManager.Init(this);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		mJoyplusSubManager = (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
+		mJoyplusSubManager = new JoyplusSubManager(this);
 		updateSourceAndTime();
 		updateName();
 		MyApp.pool.execute(new getEpisodePlayUrls());
