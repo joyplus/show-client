@@ -481,13 +481,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
-						//get subtitle
-//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo));
 						mSubTitleView.displaySubtitle();
-//						currentSubtitleIndex = 0;
-//						initSubTitleCollection();
 						
 						if(list != null && list.size() > 0) {
 							
@@ -663,15 +659,10 @@ public class VideoPlayerJPActivity extends Activity implements
 											+ "/joyplus/subtitle/?url="
 											+ URLEncoder.encode(play_info.getPush_url())
 											+ "&md5_code=" + getUmengMd5();
-									// subTitleUrlList =
-									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
-									// Constant.APPKEY);
 									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
 									mSubTitleView.displaySubtitle();
-									// currentSubtitleIndex = 0;
-									// initSubTitleCollection();
 								}
 							}
 						}

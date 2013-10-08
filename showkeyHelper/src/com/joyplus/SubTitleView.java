@@ -1,7 +1,5 @@
 package com.joyplus;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -235,6 +233,18 @@ public class SubTitleView extends TextView implements JoyplusSubListener{
 		if(arg0){
 			displaySubtitle();
 		}
+	}
+
+	@Override
+	public void onSubInstance(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSubSwitch(boolean arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
