@@ -4,7 +4,7 @@ package com.joyplus.tvhelper.utils;
 
 public final class Log {
 	
-	private static boolean mbLoggable = true;; 
+	private static boolean mbLoggable = true;
 //	private static boolean mbLoggable = false;
 	
 	public static void setLoggable(boolean bLoggable)

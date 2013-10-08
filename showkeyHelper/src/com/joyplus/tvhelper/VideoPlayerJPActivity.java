@@ -619,7 +619,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				mVideoView.pause();
 				mDateLoadingLayout.setVisibility(View.GONE);
 				mHandler.removeCallbacksAndMessages(null);
-				showDialog(2);
+				if(!isFinishing()){
+					showDialog(2);
+				}
 				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
