@@ -2486,7 +2486,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				}
 			});
 	        alertDialog.show(); 
-		return super.onCreateDialog(id);
+		return null;
 	}
 	
 	class getEpisodePlayUrls implements Runnable{
