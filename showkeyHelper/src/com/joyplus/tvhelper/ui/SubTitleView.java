@@ -174,11 +174,10 @@ public class SubTitleView extends TextView{
 	private JoyplusSubManager getSubManager(){
 		return (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
+	
 	private Element getElement(long time){
 		if(getSubManager() == null) return null;
 		Element element= getSubManager().getElement(time);
-//		if(element != null)Log.i(TAG, "element--->" + element.toString());
-//		else Log.i(TAG, "element is null");
 		return element;
 	}
 	
