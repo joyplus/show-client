@@ -7,6 +7,7 @@ public class Constant {
 	public static boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
 	
 	public static boolean isSimple = false;
+	public static boolean isNeedGuid = true;
 	 //正式环境
 //	 public static final boolean TestEnv = false;
 //	 public static String APPKEY = "ijoyplus_android_0001bj";

@@ -310,6 +310,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		}else{
 			web_url_textview.setText(PreferencesUtils.getWebUrl(this));
 		}
+		if(Utils.getVersionCode(this)>PreferencesUtils.getGuidLastVersion(this)&&Constant.isNeedGuid){
+			startActivity(new Intent(this, GuideActivity.class));
+		}
 	}
 	
 	private long exitTime = 0;
