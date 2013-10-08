@@ -943,7 +943,7 @@ public class XunLeiLXActivity extends Activity {
 
 				loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,
 						userNameEdit.getText().toString(), passwdEdit.getText()
-								.toString(), verifyEdit.getText().toString());
+								.toString(), verifyEdit.getText().toString(),true);
 			} else {
 
 				loginFlag = XunLeiLiXianUtil.Login(XunLeiLXActivity.this,

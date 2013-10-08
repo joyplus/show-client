@@ -116,8 +116,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
 	private static final int MESSAGE_NO_NETCONNECT = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
-//	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
-//	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
@@ -155,8 +153,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int seekBarWidthOffset = 40;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
-	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
-
+	
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
 	private SeekBar mSeekBar; // 进度条
@@ -278,14 +275,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	
 	private Animation mAlphaDispear;
 	private boolean isSeekBarIntoch = false;
-	
-	/**  Subtitle*/
-//	private Collection mSubTitleCollection = null;
-//	private int mStartTimeSubTitle,mEndTimeSubTitle;
-//	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
-	
-//	private List<String> subTitleUrlList = new ArrayList<String>();
-//	private int currentSubtitleIndex = 0;//默认为第一个
 	
 	private JoyplusSubManager mJoyplusSubManager = null;
 	

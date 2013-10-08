@@ -2,7 +2,7 @@
 <resources>
     <!-- Sub dir in SDCard 
          default dir is "mnt/sdcard/Joyplus/sub/"-->
-    <string name="sub_dir">/Android/data/com.joyplus.tv/sub/</string>
+    <string name="sub_dir">/Android/data/com.joyplus.tvhelper/sub/</string>
     
     <!-- Sub EN Default -->
     <string name="sub_en_default">true</string>

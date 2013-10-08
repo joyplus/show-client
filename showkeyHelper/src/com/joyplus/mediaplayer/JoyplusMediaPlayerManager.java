@@ -22,7 +22,7 @@ public class JoyplusMediaPlayerManager {
 	    /*Interface of videoview preference*/
 	    private JoyplusMediaPlayerDataManager   mDataManager;
 	    /*Interface of sub manager*/
-	    public final static boolean SubanagerUseNEW = true;
+	    public final static boolean SubanagerUseNEW = false;
 	    private SubManager            mSubManager;
 //	    private com.joyplus.sub.JoyplusSubManager          mSubManager;
 //	    private com.joyplus.sub_old_1.JoyplusSubManager    mOldSubManager;
