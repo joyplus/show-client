@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+	<com.joyplus.tvhelper.ui.GuideScrollLayout 
+	    android:layout_width="fill_parent"
+	    android:id="@+id/layout"
+	    android:layout_height="fill_parent">
+	    <ImageView android:id="@+id/guide_page_1"
+	        android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent"/>
+	    <ImageView android:id="@+id/guide_page_2"
+	        android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent"/>
+	    <ImageView android:id="@+id/guide_page_3"
+	        android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent"/>
+	    <ImageView android:id="@+id/guide_page_4"
+	        android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent"/>
+	</com.joyplus.tvhelper.ui.GuideScrollLayout>
+
+</RelativeLayout>

@@ -37,6 +37,8 @@ import org.apache.http.params.HttpParams;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
@@ -662,5 +664,17 @@ public static InetAddress getLocalIpAddress(){
 			return new Intent(context,VideoPlayerJPActivity.class);
 		}
 		
+	}
+	
+	public static int getVersionCode(Context context)//获取版本号(内部识别号)
+	{
+		try {
+			PackageInfo pi=context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+			return pi.versionCode;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
 	}
 }
