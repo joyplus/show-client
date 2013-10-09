@@ -47,7 +47,8 @@ public class JoyplusMediaPlayerMiddleControlLoading extends LinearLayout impleme
 		if(finished >= 0)info.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string,speed,finished));
 		if(JoyplusMediaPlayerActivity.mInfo.mLastTime>0){
 			lasttime.setVisibility(View.VISIBLE);
-			lasttime.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string_lasttime)+getTimeString(JoyplusMediaPlayerActivity.mInfo.mLastTime));
+//			lasttime.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string_lasttime)+getTimeString(JoyplusMediaPlayerActivity.mInfo.mLastTime));
+			lasttime.setText(mContext.getApplicationContext().getString(R.string.meidaplayer_loading_string_lasttime, getTimeString(JoyplusMediaPlayerActivity.mInfo.mLastTime)));
 		}else lasttime.setVisibility(View.GONE);
 		if(JoyplusMediaPlayerActivity.mInfo.mFrom != null && !"".equals(JoyplusMediaPlayerActivity.mInfo.mFrom)){
 			from.setVisibility(View.VISIBLE);

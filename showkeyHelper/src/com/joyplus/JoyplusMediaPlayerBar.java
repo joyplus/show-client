@@ -201,14 +201,15 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		};
 		public void setVisible(boolean Visiblility){
 			if(Debug)Log.d(TAG,"setVisibility("+Visiblility+")");
-			//if(((Layout.VISIBLE == View.VISIBLE)?true:false) == Visiblility)return;
+			if(!Visiblility && Layout.getVisibility()==View.VISIBLE){
+				Layout.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+			}
 			Layout.setVisibility(Visiblility?View.VISIBLE:View.GONE);
 			if(Layout.getVisibility() == View.VISIBLE){
 				InitView();
 				mHandler.removeCallbacks(UpdateTime);
 				mHandler.postDelayed(UpdateTime, 1000);
 			}else{
-				Layout.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
 				mHandler.removeCallbacks(UpdateTime);
 			}
 		}
@@ -467,14 +468,20 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		}
 		public void setVisible(boolean Visiblility){
 			if(Debug)Log.d(TAG,"setVisibility("+Visiblility+")");
+			if(!Visiblility && Layout_Time.getVisibility()==View.VISIBLE){
+				Layout_Time.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+			}
+			if(!Visiblility && Layout_seek.getVisibility()==View.VISIBLE){
+				Layout_seek.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+			}
 			Layout_Time.setVisibility(Visiblility?View.VISIBLE:View.GONE);
 			Layout_seek.setVisibility(Visiblility?View.VISIBLE:View.GONE);
 			if(Visiblility && mSeekBarType == SEEKTYPE.NORMAL)
 				UpdateProgress(JoyplusMediaPlayerVideoView.CurrentMediaInfo);
-			else{
-				Layout_Time.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
-				Layout_seek.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
-			}
+//			else{
+//				//Layout_Time.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+//				//Layout_seek.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+//			}
 		}
 		private void InitResource(){
 			if(Debug)Log.d(TAG,"VideoViewController InitResource()");
