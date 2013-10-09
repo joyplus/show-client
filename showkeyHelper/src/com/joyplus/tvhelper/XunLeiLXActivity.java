@@ -235,6 +235,7 @@ public class XunLeiLXActivity extends Activity {
 		playerListView.setOnGroupExpandListener(
 				new ExpandableListView.OnGroupExpandListener() {
 					public void onGroupExpand(int groupPosition) {
+						if(playerList.size() <= groupPosition) return;
 						XLLXFileInfo xllxFileInfo = playerList.get(groupPosition);
 						if (xllxFileInfo != null&& xllxFileInfo.btFiles != null)
 						for (int i = 0; i < playerList.size(); i++) {
@@ -306,7 +307,7 @@ public class XunLeiLXActivity extends Activity {
 							int lastVisiblePosition = playerListView
 									.getLastVisiblePosition();
 							int totalSize = playerList.size();
-							if (expandFlag != -1
+							if (expandFlag != -1 && totalSize > expandFlag
 									&& playerList.get(expandFlag) != null
 									&& playerList.get(expandFlag).btFiles != null
 									&& playerList.get(expandFlag).btFiles.length > 0) {
@@ -494,17 +495,23 @@ public class XunLeiLXActivity extends Activity {
 			case REFRESH_LIST:// 刷新用户信息成功
 				// removeDialog(DIALOG_WAITING);
 				ArrayList<XLLXFileInfo> list = (ArrayList<XLLXFileInfo>) msg.obj;
-
+				boolean flag = false;
 				if (list != null && list.size() > 0) {
 					playerList = list;
 					playerExpandListAdapter = new PlayExpandListAdapter(
 							XunLeiLXActivity.this, playerList);
 					playerListView.setAdapter(playerExpandListAdapter);
+					flag = true;
 				}
 				if(isTempRefresh){
 					removeDialog(DIALOG_WAITING);
 					isTempRefresh = false;
 				}
+				if(flag){
+					playerListView.setSelection(0);
+					playerListView.requestFocus();
+				}
+				
 				break;
 			case START_LOGIN:// 直接进入用户界面
 				MyApp.pool.execute(getUsrInfoRunnable);
