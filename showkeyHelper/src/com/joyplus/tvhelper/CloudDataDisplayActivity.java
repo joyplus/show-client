@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +20,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -64,7 +67,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private DBServices dbService;
 	private int selectedIndex = 0;
 	private Button title_playHistory, title_downloading, title_downloaded;
-	private Button backButton, deleteButton, cancleButton, editeButton;
+	private Button backButton, deleteButton, cancleButton, editeButton, clearButton;
 	private LinearLayout layout1, layout2;
 	private List<PushedMovieDownLoadInfo> downloadedMovies;
 	private List<MoviePlayHistoryInfo> playinfos;
@@ -172,6 +175,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		deleteButton = (Button) findViewById(R.id.del_Button);
 		cancleButton = (Button) findViewById(R.id.cancel_Button);
 		editeButton = (Button) findViewById(R.id.edit_Button);
+		clearButton = (Button) findViewById(R.id.clear_Button);
 		listView = (ExpandableListView) findViewById(R.id.movieList);
 		title_playHistory = (Button) findViewById(R.id.title_play_history);
 		title_downloading = (Button) findViewById(R.id.title_downloading);
@@ -186,6 +190,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		deleteButton.setOnClickListener(this);
 		cancleButton.setOnClickListener(this);
 		editeButton.setOnClickListener(this);
+		clearButton.setOnClickListener(this);
 		adpter_downloading = new PushedMovieDownLoadAdapter(this, FayeService.movieDownLoadInfos);
 		dbService = DBServices.getInstance(this);
 		downloadedMovies = dbService.queryMovieDownLoadedInfos();
@@ -561,6 +566,40 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			}
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 			break;
+		case R.id.clear_Button:
+			final Dialog dialog = new AlertDialog.Builder(this).create();
+			dialog.show();
+			LayoutInflater inflater = LayoutInflater.from(this);
+			View view = inflater.inflate(R.layout.layout_clear_dialog, null);
+			Button delButton = (Button) view.findViewById(R.id.btn_ok);
+			Button cancelButton = (Button) view.findViewById(R.id.btn_canle);
+			dialog.setContentView(view);
+			cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+			delButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					Iterator<MoviePlayHistoryInfo> iterator = null;
+					iterator = playinfos.iterator();  
+			         while(iterator.hasNext()) {  
+			        	 MoviePlayHistoryInfo info = iterator.next();  
+		            	 info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_HIDE);
+		            	 dbService.updateMoviePlayHistory(info);
+						 iterator.remove();  
+			         }
+			         updateEditBottn();
+				}
+			});
+			break;
 		default:
 			break;
 		}
@@ -569,10 +608,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private void updateEditBottn(){
 		if(((BaseAdapter)listView.getAdapter()).getCount()>0){
 			editeButton.setVisibility(View.VISIBLE);
+			clearButton.setVisibility(View.VISIBLE);
 			listView.requestFocus();
 			defult_img.setVisibility(View.GONE);
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
+			clearButton.setVisibility(View.INVISIBLE);
 			defult_img.setVisibility(View.VISIBLE);
 		}
 	}
