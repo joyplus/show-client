@@ -459,7 +459,14 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		// TODO Auto-generated method stub
 		if(!StateOk){
 			//when loading ,we only can finish it.
-			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == 111)finishActivity();
+			if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == 111){
+				finishActivity();
+			}else if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER||keyCode == KeyEvent.KEYCODE_ENTER){
+				if(lastTime>0){
+					mInfo.mLastTime = (int) (lastTime = 0);
+					mVideoView.getPlayer().SeekVideo(0);
+				}
+			}
 			return true;
 		}
 		if(JoyplusonKeyDown(keyCode,event))return true;
@@ -808,7 +815,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	private MoviePlayHistoryInfo play_info;
 	private int isRequset = 0;
-	private long lastPlayTime = -1; 
 	private int loadingCount;
 
 	private boolean isOnline;

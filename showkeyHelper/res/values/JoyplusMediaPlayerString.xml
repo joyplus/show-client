@@ -23,7 +23,7 @@
     
     <string name="meidaplayer_loading_string">"载入中...( <xliff:g id="speed">%s</xliff:g> KB/S ) ，已完成  <xliff:g id="finished">%s</xliff:g> %%"</string>
     <string name="meidaplayer_loading_string_loading">载入中...</string>
-    <string name="meidaplayer_loading_string_lasttime">上次播放时间：</string>
+    <string name="meidaplayer_loading_string_lasttime">上次播放到：%1$s\n按【OK】键从头开始播放</string>
     <string name="meidaplayer_loading_string_from">网络来源：</string>
     <string name="meidaplayer_loading_string_loadingprogress">努力加载中...</string>
     <string name="meidaplayer_loading_string_buffer">缓冲中...( <xliff:g id="speed">%s</xliff:g> KB/S )</string>
