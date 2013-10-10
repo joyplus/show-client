@@ -362,7 +362,11 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				playDate.prod_url = play_info.getLocal_url();
 				playDate.obj = play_info;
 //				playDate.prod_src = json.getString("prod_src");
-				playDate.prod_time = play_info.getPlayback_time()*1000;
+				if(play_info.getDuration()-play_info.getPlayback_time()<=Constant.END_TIME){
+					playDate.prod_time = 0;
+				}else{
+					playDate.prod_time = Math.round(play_info.getPlayback_time()*1000);
+				}
 				playDate.isOnline = false;
 //				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
 //				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
@@ -841,7 +845,11 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 					playDate.obj = playInfo;
 					Log.d(TAG, "prod_type" + playDate.prod_type);
 //					playDate.prod_src = json.getString("prod_src");
-					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+					if(playInfo.getDuration()-playInfo.getPlayback_time()<=Constant.END_TIME){
+						playDate.prod_time = 0;
+					}else{
+						playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+					}
 					playDate.prod_qua = playInfo.getDefination();
 					playDate.isOnline = false;
 //					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
@@ -895,7 +903,11 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		playDate.obj = playInfo;
 		Log.d(TAG, "prod_type" + playDate.prod_type);
 //		playDate.prod_src = json.getString("prod_src");
-		playDate.prod_time = Math.round(epInfo.getPlayback_time()*1000);
+		if(epInfo.getDuration()-epInfo.getPlayback_time()<=Constant.END_TIME){
+			playDate.prod_time = 0;
+		}else{
+			playDate.prod_time = Math.round(epInfo.getPlayback_time()*1000);
+		}
 		playDate.prod_qua = epInfo.getDefination();
 		playDate.isOnline = false;
 //		if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){

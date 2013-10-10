@@ -44,6 +44,7 @@ import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -346,6 +347,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mMiddleControl       = (JoyplusMediaPlayerMiddleControl) this.findViewById(R.id.JoyplusMediaPlayerMiddleControl);
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
     	mNoticeNearNendLayout = (LinearLayout) findViewById(R.id.joyplus_videoview_notify_near_end);
+    	mNextName = (TextView) findViewById(R.id.bt_next_ep_name);
     	IntentFilter filter = new IntentFilter();
     	filter.addAction(Constant.VIDEOPLAYERCMD);
     	filter.addAction(Global.ACTION_RECIVE_NEW_PUSH_MOVIE);
@@ -377,6 +379,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	public void InitUI(){
 		StateOk = false;
+		isNearEnd = false;
+		mNoticeNearNendLayout.setVisibility(View.GONE);
 		mVideoView.Init();
     	mTopBottomController.Init();
     	mMiddleControl.Init();
@@ -576,11 +580,15 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	private void checkNearEnd(MediaInfo info) {
 		// TODO Auto-generated method stub
-		if(info.getTotleTime()-info.getCurrentTime()<=10*1000&&info.getTotleTime()>10){
-			if(!isNearEnd){
+		if(info.getTotleTime()-info.getCurrentTime()<=Constant.END_TIME*1000&&info.getTotleTime()>Constant.END_TIME){
+			if(!isNearEnd&&mEpisodeIndex<play_info.getBtEpisodes().size()-1&&mProd_type==TYPE_PUSH_BT_EPISODE){
 				mNoticeNearNendLayout.setVisibility(View.VISIBLE);
+				mNextName.setText(play_info.getBtEpisodes().get(mEpisodeIndex+1).getName());
 				isNearEnd = true;
 			}
+		}else{
+			mNoticeNearNendLayout.setVisibility(View.GONE);
+			isNearEnd = false;
 		}
 	}
 
@@ -616,8 +624,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
 //			if(duration<=curretnPosition || curretnPosition<=0)return;
-			if(duration-curretnPosition<10*1000){
-				saveToDB(duration / 1000, (duration / 1000) -10);
+			if(duration-curretnPosition<Constant.END_TIME*1000){
+				saveToDB(duration / 1000, (duration / 1000) -Constant.END_TIME);
 			}else{
 				saveToDB(duration / 1000, curretnPosition / 1000);
 			}
@@ -840,6 +848,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private int loadingCount;
 
 	private LinearLayout mNoticeNearNendLayout;
+	private TextView mNextName;
 	
 	private boolean isOnline;
 	
@@ -1332,18 +1341,22 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
 	}
 	private void playNextBt(){
-		mVideoView.getPlayer().PauseVideo();
 		MediaInfo info       = mVideoView.CurrentMediaInfo.CreateMediaInfo();
 		long duration        = info.getTotleTime();
 		long curretnPosition = info.getCurrentTime();
 		play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int)(duration/1000));
-		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(duration/1000)-10);
+		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(duration/1000)-Constant.END_TIME);
 		mEpisodeIndex += 1;
 		mProd_sub_name = play_info.getBtEpisodes().get(mEpisodeIndex).getName();
-		lastTime = play_info.getBtEpisodes().get(mEpisodeIndex).getPlayback_time()*1000;
+		if(play_info.getBtEpisodes().get(mEpisodeIndex).getDuration()-play_info.getBtEpisodes().get(mEpisodeIndex).getPlayback_time()<=Constant.END_TIME){
+			lastTime = 0;
+		}else{
+			lastTime = play_info.getBtEpisodes().get(mEpisodeIndex).getPlayback_time()*1000;
+		}
 		if(menuDialog.isShowing()){
 			menuDialog.dismiss();
 		}
+		mVideoView.getPlayer().StopVideo();
 		mNoticeNearNendLayout.setVisibility(View.GONE);
 		isNearEnd = false;
 		InitUI();

@@ -69,4 +69,6 @@ public class Constant {
 	public static final int DEFINATION_HD = 7; 
 	public static final int DEFINATION_MP4 = 6; 
 	public static final int DEFINATION_FLV = 5; 
+	
+	public static final int END_TIME = 30;
 }
