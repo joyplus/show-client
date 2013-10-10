@@ -38,10 +38,12 @@ import android.os.Parcelable;
 import android.provider.MediaStore.Video;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
+import android.widget.LinearLayout;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -343,6 +345,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mVideoView           = new JoyplusMediaPlayerVideoView(this);
     	mMiddleControl       = (JoyplusMediaPlayerMiddleControl) this.findViewById(R.id.JoyplusMediaPlayerMiddleControl);
     	mTopBottomController = new JoyplusMediaPlayerBar(this);
+    	mNoticeNearNendLayout = (LinearLayout) findViewById(R.id.joyplus_videoview_notify_near_end);
     	IntentFilter filter = new IntentFilter();
     	filter.addAction(Constant.VIDEOPLAYERCMD);
     	filter.addAction(Global.ACTION_RECIVE_NEW_PUSH_MOVIE);
@@ -498,9 +501,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			break;
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
-			JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_PAUSEPLAY);
-			mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
-			RequestMediaPlayerBarShowandHold();
+			if(isNearEnd&&mProd_type==TYPE_PUSH_BT_EPISODE){
+				playNextBt();
+			}else{
+				JoyplusMediaPlayerMiddleControlMini.setLayout(JoyplusMediaPlayerMiddleControlMini.LAYOUT_PAUSEPLAY);
+				mMiddleControl.JoyplussetVisible(true, JoyplusMediaPlayerMiddleControl.LAYOUT_MINI);
+				RequestMediaPlayerBarShowandHold();
+			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
 //			if(mProd_type < 0) return true;
@@ -555,6 +562,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				StateOk = true;//now we can dispatch keydown or others operation
 			}
 		}
+		if(StateOk){
+			checkNearEnd(info);
+		}
 		mInfo.mState = info.CreateMediaInfo().getState();
 		//if(mInfo.mState == STATE.MEDIA_STATE_FINISH)MediaCompletion();
 		Message m = new Message();
@@ -562,6 +572,16 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		m.obj     = info;
 		JoyplusdispatchMessage(m);
 	}
+	private void checkNearEnd(MediaInfo info) {
+		// TODO Auto-generated method stub
+		if(info.getTotleTime()-info.getCurrentTime()<=10*1000&&info.getTotleTime()>10){
+			if(!isNearEnd){
+				mNoticeNearNendLayout.setVisibility(View.VISIBLE);
+				isNearEnd = true;
+			}
+		}
+	}
+
 	@Override
 	public void MediaCompletion() {
 		// TODO Auto-generated method stub
@@ -593,7 +613,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			long curretnPosition = info.getCurrentTime();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
-			if(duration<=curretnPosition || curretnPosition<=0)return;
+//			if(duration<=curretnPosition || curretnPosition<=0)return;
 			if(duration-curretnPosition<10*1000){
 				saveToDB(duration / 1000, (duration / 1000) -10);
 			}else{
@@ -817,7 +837,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	private int isRequset = 0;
 	private int loadingCount;
 
+	private LinearLayout mNoticeNearNendLayout;
+	
 	private boolean isOnline;
+	
+	private boolean isNearEnd = false;
 	
 	/**
 	 * 网络数据
@@ -1282,6 +1306,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				finishActivity();
 			}
 			break;
+		case TYPE_PUSH_BT_EPISODE:
+			if(mEpisodeIndex<play_info.getBtEpisodes().size()-1&&isNearEnd){
+				playNextBt();
+			}else{
+				finishActivity();
+			}
+			break;
 		default:
 			finishActivity();
 			break;
@@ -1297,6 +1328,27 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			mEpisodeIndex += 1;
 		}
 		mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
+	}
+	private void playNextBt(){
+		mVideoView.getPlayer().PauseVideo();
+		MediaInfo info       = mVideoView.CurrentMediaInfo.CreateMediaInfo();
+		long duration        = info.getTotleTime();
+		long curretnPosition = info.getCurrentTime();
+		play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int)(duration/1000));
+		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(duration/1000)-10);
+		mEpisodeIndex += 1;
+		mProd_sub_name = play_info.getBtEpisodes().get(mEpisodeIndex).getName();
+		lastTime = play_info.getBtEpisodes().get(mEpisodeIndex).getPlayback_time()*1000;
+		if(menuDialog.isShowing()){
+			menuDialog.dismiss();
+		}
+		mNoticeNearNendLayout.setVisibility(View.GONE);
+		isNearEnd = false;
+		InitUI();
+		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		updateSourceAndTime();
+		updateName();
+		MyApp.pool.execute(new getEpisodePlayUrls());
 	}
 	
 	private void updateSourceAndTime() {

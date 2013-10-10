@@ -328,5 +328,24 @@
 	                android:textColor="@color/white"
 	                android:textAppearance="?android:attr/textAppearanceMedium"
 	                android:textSize="40dp" />	            
-	    </RelativeLayout>        
+	    </RelativeLayout> 
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:visibility="gone"
+	        android:gravity="center"
+	        android:id="@+id/joyplus_videoview_notify_near_end"
+	        android:paddingTop="300dp">
+	        <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:text="本集即将结束,将自动跳转到下一集\n按OK键直接跳转"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="40dp"/>
+	    </LinearLayout>
 </RelativeLayout>
