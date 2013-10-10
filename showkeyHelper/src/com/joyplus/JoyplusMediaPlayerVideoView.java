@@ -132,7 +132,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	private class LoadingWindows {
 		private final static int MSG_SHOW = 1;
 		private final static int MSG_HIDE = 2;
-		private final static int DELAYTIME  = 10*60*1000; //10 min
+		private final static int DELAYTIME  = 1*60*1000; //1 min
 		
 		private class WindowsInfo{
 			public long ShowTime;
