@@ -516,11 +516,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 //				return true;
 //			}
 //			mPreference.setVisible(true);
-			if(menuDialog.isShowing()){
-				menuDialog.dismiss();
-			}else{
-				menuDialog.init();
-				menuDialog.show();
+			if(!mTopBottomController.JoyplusonKeyDown(keyCode, event)){
+				if(menuDialog.isShowing()){
+					menuDialog.dismiss();
+				}else{
+					menuDialog.init();
+					menuDialog.show();
+				}
 			}
 			break;
 		}
