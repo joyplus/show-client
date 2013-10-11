@@ -458,6 +458,10 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 						mHandler.sendEmptyMessage(MSG_SHOWVIEW);
 						return true;
 					}
+				case KeyEvent.KEYCODE_MENU:
+					if(mSpeed!=SPEED.X0){
+						return true;
+					}
 				}
 			} 
 			return false;

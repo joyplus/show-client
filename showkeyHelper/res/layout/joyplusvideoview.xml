@@ -328,5 +328,51 @@
 	                android:textColor="@color/white"
 	                android:textAppearance="?android:attr/textAppearanceMedium"
 	                android:textSize="40dp" />	            
-	    </RelativeLayout>        
+	    </RelativeLayout> 
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:visibility="gone"
+	        android:gravity="center"
+	        android:orientation="vertical"
+	        android:id="@+id/joyplus_videoview_notify_near_end"
+	        android:paddingTop="250dp">
+	        <TextView
+	                android:layout_width="800dp"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:text="即将播放:"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="40dp"/>
+	        <TextView
+	                android:layout_width="fill_parent"
+	                android:id="@+id/bt_next_ep_name"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+			        android:singleLine="true"
+			        android:ellipsize="middle"
+	                android:textColor="@color/white"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="40dp"/>
+	        <TextView
+	                android:layout_width="800dp"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:text="按【OK】键直接播放"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="40dp"/>
+	    </LinearLayout>
 </RelativeLayout>
