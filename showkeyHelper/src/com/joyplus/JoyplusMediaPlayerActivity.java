@@ -60,7 +60,6 @@ import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
 import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.mediaplayer.VideoViewInterface;
 import com.joyplus.mediaplayer.VideoViewInterface.STATE;
-import com.joyplus.sub.JoyplusSubListener;
 import com.joyplus.sub.JoyplusSubManager;
 import com.joyplus.sub.SUBTYPE;
 import com.joyplus.sub.SubURI;
@@ -315,7 +314,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						// TODO Auto-generated method stub
 						mJoyplusSubManager.setSubEnable(true);
 						mJoyplusSubManager.SwitchSub(currIndex -1);
-//						mSubTitleView.displaySubtitle();
 					}
 				}).start();				
 				break;
@@ -949,35 +947,19 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		
 		switch (mProd_type) {
 		case TYPE_XUNLEI://迅雷 传递-10
-			
 			//取list
 			MyApp.pool.execute(new Runnable() {
-				
-				@Override
 				public void run() {
-					// TODO Auto-generated method stub
-					
 					XLLXFileInfo xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
 					if(xllxFileInfo != null && !xllxFileInfo.isDir) {
-						
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(JoyplusMediaPlayerActivity.this, xllxFileInfo);
-						//get subtitle
-//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(JoyplusMediaPlayerActivity.this,xllxFileInfo));
-//						mSubTitleView.displaySubtitle();
-//						currentSubtitleIndex = 0;
-//						initSubTitleCollection();
 						
 						if(list != null && list.size() > 0) {
-							
-							if(playUrls != null && playUrls.size() > 0) {
-								
-								playUrls.clear();
-							}
+							if(playUrls != null && playUrls.size() > 0)	playUrls.clear();
 							for(int i=0;i<list.size();i++) {
-								
 								VideoPlayUrl videoPlayUrl = list.get(i);
 								Log.i(TAG, "VideoPlayUrl--->" + videoPlayUrl.toString());
 								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
@@ -2023,7 +2005,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	protected void onStop() {
 		Log.i(TAG, "onStop--->");
 		if(!isFinishing()){
-//			finish();
 			finishActivity();
 		}
 		super.onStop();
@@ -2252,10 +2233,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		aq.ajax(cb);
 	}
 	
-	private void getFenxingNetServiceData(String url){
-		
-		getParseServiceData(url, "initFenxingNetServiceData");
-	}
+//	private void getFenxingNetServiceData(String url){
+//		
+//		getParseServiceData(url, "initFenxingNetServiceData");
+//	}
 	
 	public void initFenxingNetServiceData(String url, JSONObject json, AjaxStatus status) {
 
@@ -2276,10 +2257,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		
 	}
 	
-	private void getFengxingSecondServiceData(String url,JSONObject json){
-		
-		getParseServiceData(url,json, "initFengxingSecondServiceData");
-	}
+//	private void getFengxingSecondServiceData(String url,JSONObject json){
+//		
+//		getParseServiceData(url,json, "initFengxingSecondServiceData");
+//	}
 	
 	protected void getParseServiceData(String url,JSONObject json, String interfaceName) {
 		// TODO Auto-generated method stub
@@ -2943,7 +2924,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		Log.d(TAG, "changeDefination-------->" + defination);
 		lastTime = mVideoView.CurrentMediaInfo.getCurrentTime();
 		InitUI();
-//		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
 		mDefination = defination;
 		if(mProd_type == TYPE_PUSH){
 			play_info.setDefination(defination);
