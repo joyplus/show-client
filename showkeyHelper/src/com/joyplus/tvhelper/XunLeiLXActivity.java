@@ -23,8 +23,10 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tvhelper.adapter.PlayExpandListAdapter;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.XLLXUserInfo;
 import com.joyplus.tvhelper.ui.WaitingDialog;
@@ -194,7 +196,7 @@ public class XunLeiLXActivity extends Activity {
 										// 如果url不为空，直接传给播放器
 										CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
 										currentPlayDetailData.prod_url = xllxFileInfo.src_url;
-										currentPlayDetailData.prod_type = -10;
+										currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI;
 										currentPlayDetailData.prod_name = xllxFileInfo.file_name;
 
 										currentPlayDetailData.obj = xllxFileInfo;
@@ -276,19 +278,17 @@ public class XunLeiLXActivity extends Activity {
 					public boolean onChildClick(ExpandableListView parent,
 							View v, int groupPosition, int childPosition,long id) {
 						if (playerList.size() > groupPosition && playerList.get(groupPosition) != null) {
-							if (playerList.get(groupPosition).btFiles != null
-									&& playerList.get(groupPosition).btFiles.length > childPosition) {
-								if (playerList.get(groupPosition).btFiles[childPosition] != null
-										&& !playerList.get(groupPosition).btFiles[childPosition].isDir) {
-									XLLXFileInfo xllxFileInfo = playerList
-											.get(groupPosition).btFiles[childPosition];
+							XLLXFileInfo parentInfo = playerList.get(groupPosition);
+							if (parentInfo.btFiles != null&& parentInfo.btFiles.length > childPosition) {
+								if (parentInfo.btFiles[childPosition] != null&& !parentInfo.btFiles[childPosition].isDir) {
+									XLLXFileInfo xllxFileInfo = parentInfo.btFiles[childPosition];
 									if (!TextUtils.isEmpty(xllxFileInfo.file_name)) {
 										// 如果url不为空，直接传给播放器
 										CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
 										currentPlayDetailData.prod_url = xllxFileInfo.src_url;
-										currentPlayDetailData.prod_type = -10;
-										currentPlayDetailData.prod_name = xllxFileInfo.file_name;
-										currentPlayDetailData.obj = xllxFileInfo;
+										currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI_BT_EPISODE;
+										currentPlayDetailData.prod_sub_name = xllxFileInfo.file_name;										
+										currentPlayDetailData.obj = parentInfo.btFiles;
 										app.setmCurrentPlayDetailData(currentPlayDetailData);
 										startActivity(Utils.getIntent(XunLeiLXActivity.this));
 									}
