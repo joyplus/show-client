@@ -33,8 +33,8 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	private JoyplusMediaPlayerActivity mActivity;
 	private VideoViewInterface         Player = null;
 	private JoyplusVideoView           VideoView;
-	public  static MediaInfo          CurrentMediaInfo;
-	public  MediaInfo                  PreMediaInfo;	
+	public  static MediaInfo           CurrentMediaInfo;
+	private MediaInfo                  PreMediaInfo;	
 	private LoadingWindows             mWaitingWindows;
 	private final static int MSG_BASE  = 100;
 	public  final static int LAYOUT_VIDEOVIEW = MSG_BASE+1;
