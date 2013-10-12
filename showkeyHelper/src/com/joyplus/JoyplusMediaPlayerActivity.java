@@ -360,10 +360,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		    	mPreference.setHandler(PreferenceHandler);
 			}
 		});
-    	menuDialog = new JoyplusMediaPlayerMenuDialog(this);
-    	ResetURLAndSub();
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
+    	ResetURLAndSub();
+    	menuDialog = new JoyplusMediaPlayerMenuDialog(this);
     	//add ad 
     	mAd = new JoyplusMediaPlayerAd(this);
 	}
@@ -373,6 +373,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
     	mJoyplusSubManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
     	mJoyplusSubManager.registerListener(mSubTitleView);
+    	if(mSubTitleView != null)mSubTitleView.hiddenSubtitle();
 	}
 	
 	public void InitUI(){
@@ -1304,7 +1305,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		mNoticeNearNendLayout.setVisibility(View.GONE);
 		isNearEnd = false;
 		InitUI();
-		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		ResetURLAndSub();
 		updateSourceAndTime();
 		updateName();
 		getXunLeiEpisode();
@@ -1330,7 +1331,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		mNoticeNearNendLayout.setVisibility(View.GONE);
 		isNearEnd = false;
 		InitUI();
-		JoyplusMediaPlayerManager.getInstance().ResetURLAndSub();
+		ResetURLAndSub();
 		updateSourceAndTime();
 		updateName();
 		MyApp.pool.execute(new getEpisodePlayUrls());
@@ -1370,7 +1371,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			} else if (mProd_src.equalsIgnoreCase("p2p")) {
 				strSrc = "P 2 P";
 			} else if (mProd_src.equalsIgnoreCase("XUNLEI")) {
-				strSrc = "XUNLEI";
+				strSrc = "迅  雷";
 			}else {
 				strSrc = "PPTV";
 			}
