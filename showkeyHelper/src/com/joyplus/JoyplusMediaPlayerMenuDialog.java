@@ -476,6 +476,8 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 						subManager.setSubEnable(false);
 					}
 				}else{
+					Log.i("JoyplusMediaPlayerMenuDialog", "subManager.getCurrentSubIndex()-->" + subManager.getCurrentSubIndex()
+							+ " position" + (position));
 					if(subManager.getCurrentSubIndex()!=(position-1)){
 						subManager.setSubEnable(true);
 						final int zimu_index = position-1;
