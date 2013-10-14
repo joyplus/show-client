@@ -1025,7 +1025,9 @@ public class VideoPlayerJPActivity extends Activity implements
 			case STATUE_PRE_LOADING:
 				if(lastTime>0){
 					lastTime = 0;
-					mVideoView.seekTo(0);
+					mVideoView.stopPlayback();
+					mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
+//					mVideoView.seekTo(0);
 					mLastTimeTextView.setText("");
 					Log.d(TAG, "lastTime------------>" + lastTime);
 				}

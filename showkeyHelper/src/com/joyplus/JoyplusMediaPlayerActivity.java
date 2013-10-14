@@ -470,7 +470,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}else if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER||keyCode == KeyEvent.KEYCODE_ENTER){
 				if(lastTime>0){
 					mInfo.mLastTime = (int) (lastTime = 0);
-					mVideoView.getPlayer().SeekVideo(0);
+					mVideoView.getPlayer().StopVideo();
+					PlayerPlay(mInfo.mPlayerUri , (int)lastTime);
+					//mVideoView.getPlayer().SetVideoPaths(video)
+//					mVideoView.getPlayer().SeekVideo(0);
 				}
 			}
 			return true;
