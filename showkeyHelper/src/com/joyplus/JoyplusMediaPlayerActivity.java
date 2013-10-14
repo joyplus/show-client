@@ -2006,7 +2006,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		Log.d(TAG, "mProd_type---------------->" + mProd_type);
 		Log.d(TAG, "mEpisodeIndex---------------->" + mEpisodeIndex);
 		DBServices services = DBServices.getInstance(this);
-		if(mProd_type == TYPE_PUSH_BT_EPISODE){
+		if(mProd_type == TYPE_PUSH_BT_EPISODE && mEpisodeIndex < play_info.getBtEpisodes().size()){
 			if(duration>0){
 				play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int) duration);
 			}
