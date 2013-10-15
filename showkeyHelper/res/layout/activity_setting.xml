@@ -196,13 +196,18 @@
 	       		                android:paddingRight="20dp"
 	       		                android:visibility="gone"
 			                    android:id="@+id/layout_help">
-			                    <WebView android:layout_width="fill_parent"
+	       		            	<LinearLayout android:layout_width="fill_parent"
+			                        android:layout_height="wrap_content"
+			                        android:orientation="vertical"
+			                        android:id="@+id/layout_content">
+			                    </LinearLayout>
+			                    <!-- <WebView android:layout_width="fill_parent"
 			                    android:layout_height="wrap_content"
 			                    android:layerType="software"  
 			                    android:fadingEdge="@null"
 			                    android:focusable="false"
 			                    android:focusableInTouchMode="false"
-			                    android:id="@+id/webView"/>
+			                    android:id="@+id/webView"/> -->
                  		</ScrollView>
 	       		        <ScrollView android:layout_width="fill_parent"
 			                    android:layout_height="fill_parent"
