@@ -1400,7 +1400,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 //			}
 //		}
 		if(playUrls.size()>0&&currentPlayIndex<=playUrls.size()-1){
-			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE){
+			if(mProd_type == TYPE_PUSH||mProd_type == TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE
+					|| mProd_type == TYPE_XUNLEI_BT_EPISODE){
 				if("hd2".equalsIgnoreCase(playUrls.get(currentPlayIndex).defination_from_server)){
 					mInfo.mQua = "hd2";
 					mDefination = 8;
