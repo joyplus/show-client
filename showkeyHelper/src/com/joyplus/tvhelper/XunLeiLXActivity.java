@@ -423,7 +423,9 @@ public class XunLeiLXActivity extends Activity {
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
 			return;
 		}
-
+	}
+	
+	private void clearPasswdRecord(){
 		passwdEdit.setText("");
 		XunLeiLiXianUtil.saveLoginUserPasswd(getApplicationContext(), "");
 	}
@@ -530,6 +532,7 @@ public class XunLeiLXActivity extends Activity {
 					break;
 				case 2:
 					Utils.showToast(XunLeiLXActivity.this, "密码错误");
+					clearPasswdRecord();
 					break;
 				case 4:
 				case 5:
