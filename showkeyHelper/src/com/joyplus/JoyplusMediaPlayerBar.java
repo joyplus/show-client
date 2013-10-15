@@ -482,10 +482,9 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			Layout_seek.setVisibility(Visiblility?View.VISIBLE:View.GONE);
 			if(Visiblility && mSeekBarType == SEEKTYPE.NORMAL)
 				UpdateProgress(JoyplusMediaPlayerVideoView.CurrentMediaInfo);
-//			else{
-//				//Layout_Time.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
-//				//Layout_seek.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
-//			}
+			if(!Visiblility){
+				InitSpeed();
+			}
 		}
 		private void InitResource(){
 			if(Debug)Log.d(TAG,"VideoViewController InitResource()");
