@@ -455,6 +455,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				case 111://the keycode was be change to 111 ,but don't know where change
 					if(mSeekBarType != SEEKTYPE.NORMAL){
 						mSeekBarType = SEEKTYPE.NORMAL;
+						mSeekBarMode = SEEKMODE.NORMAL;
 						mSpeed       = SPEED.X0;
 						mHandler.removeCallbacksAndMessages(null);
 						mHandler.sendEmptyMessage(MSG_SHOWVIEW);
