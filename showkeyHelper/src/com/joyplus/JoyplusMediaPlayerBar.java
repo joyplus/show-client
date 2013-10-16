@@ -366,6 +366,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			Log.d("KeyCode","Bar JoyplusonKeyLongPress keyCode="+keyCode);
 			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
 				Log.d("KeyCode","Bar JoyplusonKeyLongPress ");
+				SEEKING = false;
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
 					if(Feature.SEEKBAR_LONGPRESS_ADJUST){
@@ -407,6 +408,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			// TODO Auto-generated method stub
 			Log.d("KeyCode","Bar JoyplusonKeyDown keyCode="+keyCode);
 			if(Layout_Time.getVisibility() == View.VISIBLE && (mActivity.getPlayer()!=null)){
+				SEEKING = false;
 				Log.d("KeyCode","Bar JoyplusonKeyDown ");
 				switch(keyCode){
 				case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -456,6 +458,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 						mSpeed       = SPEED.X0;
 						mHandler.removeCallbacksAndMessages(null);
 						mHandler.sendEmptyMessage(MSG_SHOWVIEW);
+						updateSeekBar(JoyplusMediaPlayerVideoView.CurrentMediaInfo);
 						return true;
 					}
 				case KeyEvent.KEYCODE_MENU:

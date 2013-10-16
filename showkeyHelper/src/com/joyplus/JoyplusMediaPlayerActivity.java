@@ -593,7 +593,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			}else if(mProd_type==TYPE_XUNLEI_BT_EPISODE){
 				if(!isNearEnd&&mXLLXFileInfArray != null&&mEpisodeIndex<mXLLXFileInfArray.length-1){
 					mNoticeNearNendLayout.setVisibility(View.VISIBLE);
-					mNextName.setText(mXLLXFileInfArray[mEpisodeIndex].file_name);
+					mNextName.setText(mXLLXFileInfArray[mEpisodeIndex+1].file_name);
 					isNearEnd = true;
 				}
 			}

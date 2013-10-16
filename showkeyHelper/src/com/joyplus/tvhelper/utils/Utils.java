@@ -613,36 +613,6 @@ public static InetAddress getLocalIpAddress(){
         return false;
     }
     
-    public static String getCharset(byte[] subTitle,int length){
-    	
-    	if(subTitle != null){
-    		
-    		if(subTitle.length < length){
-    			
-    			length = subTitle.length;
-    		}
-    		
-    		ByteArrayInputStream in = new ByteArrayInputStream(subTitle);
-    		
-    		CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
-//    		detector.add(new ParsingDetector(false));
-    		detector.add(JChardetFacade.getInstance());
-    		try {
-    			Charset charset = detector.detectCodepage(in, length);
-    			
-    			return charset!= null ? charset.name() : "";
-    		} catch (IllegalArgumentException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		} catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
-		
-		return "";
-    }
-    
     public static String getBaiduName(String url){
     	String[] str = url.split("\\|");
 		String name = null;

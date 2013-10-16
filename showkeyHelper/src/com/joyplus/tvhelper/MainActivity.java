@@ -167,14 +167,18 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	};
 	
 	private void reSetImages(){
-		int width = layout_1_4.getWidth();
-		int height = layout_1_4.getHeight();
+		int width = layout_1_1.getWidth();
+		int height = (layout_1_1.getHeight()-Utils.getStandardValue(MainActivity.this,13))/2;
 		image_1_1.layout(0, 0, width+ Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
 		image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
 //		image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
 //		image_1_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
 		image_1_4.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
-		image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		if(Constant.isSimple){
+			image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		}else{
+			image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		}
 		image_3_1.layout(0, 0, width+Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
 		image_3_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
 		image_3_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
@@ -476,6 +480,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		if(Constant.isSimple){
 			layout_page_3.setVisibility(View.GONE);
 			layout_title.setVisibility(View.INVISIBLE);
+			findViewById(R.id.layout_1_4).setVisibility(View.GONE);
+			findViewById(R.id.layout_divider_3).setVisibility(View.GONE);
 		}
 //		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
