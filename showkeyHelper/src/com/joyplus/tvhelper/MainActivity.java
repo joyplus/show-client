@@ -199,7 +199,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
 		UmengUpdateAgent.setUpdateAutoPopup(false);
 		UmengUpdateAgent.update(this);
-		MobclickAgent.setDebugMode(true);
+		MobclickAgent.setDebugMode(false);
 		;
 		MobclickAgent.updateOnlineConfig(this);
 		
@@ -480,8 +480,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		if(Constant.isSimple){
 			layout_page_3.setVisibility(View.GONE);
 			layout_title.setVisibility(View.INVISIBLE);
-			findViewById(R.id.layout_1_4).setVisibility(View.GONE);
-			findViewById(R.id.layout_divider_3).setVisibility(View.GONE);
+//			findViewById(R.id.layout_1_4).setVisibility(View.GONE);
+//			findViewById(R.id.layout_divider_3).setVisibility(View.GONE);
 		}
 //		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
