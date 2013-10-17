@@ -286,26 +286,28 @@ public class XunLeiLiXianUtil {
 					XLLXFileInfo xllxFileInfo = new XLLXFileInfo();
 					JSONObject jsonObject = historyPlayListJsonObject
 							.getJSONObject(j);
-					xllxFileInfo.file_name = jsonObject.getString("file_name");
-					xllxFileInfo.src_url = jsonObject.getString("src_url");
-					xllxFileInfo.createTime = jsonObject
-							.getString("createtime");
-					xllxFileInfo.duration = jsonObject.getString("duration");
-					xllxFileInfo.filesize = jsonObject.getString("file_size");
-					xllxFileInfo.userid = jsonObject.getString("userid");
-					xllxFileInfo.gcid = jsonObject.getString("gcid");
+					if(jsonObject.has("file_name"))
+						xllxFileInfo.file_name = jsonObject.getString("file_name");
+					if(jsonObject.has("src_url"))
+						xllxFileInfo.src_url = jsonObject.getString("src_url");
+					if(jsonObject.has("createtime"))
+						xllxFileInfo.createTime = jsonObject.getString("createtime");
+					if(jsonObject.has("duration"))
+						xllxFileInfo.duration = jsonObject.getString("duration");
+					if(jsonObject.has("file_size"))
+						xllxFileInfo.filesize = jsonObject.getString("file_size");
+					if(jsonObject.has("userid"))
+						xllxFileInfo.userid = jsonObject.getString("userid");
+					if(jsonObject.has("gcid"))
+						xllxFileInfo.gcid = jsonObject.getString("gcid");
 					xllxFileInfo.recordeNum = record_num;
-
 					if (xllxFileInfo.src_url.contains("bt://")) {
-
 						xllxFileInfo.isDir = true;
 					}
-
 					list.add(xllxFileInfo);
 				}
 			}
 		} catch (Exception localException) {
-
 			localException.printStackTrace();
 		}
 		return list;
