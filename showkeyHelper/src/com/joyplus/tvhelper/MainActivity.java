@@ -193,7 +193,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		if(Constant.isSimple){
+			setContentView(R.layout.activity_main_simple);
+		}else{
+			setContentView(R.layout.activity_main);
+		}
 		
 		MobclickAgent.onError(this);
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
@@ -480,8 +484,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		if(Constant.isSimple){
 			layout_page_3.setVisibility(View.GONE);
 			layout_title.setVisibility(View.INVISIBLE);
-//			findViewById(R.id.layout_1_4).setVisibility(View.GONE);
-//			findViewById(R.id.layout_divider_3).setVisibility(View.GONE);
+			findViewById(R.id.layout_1_4).setVisibility(View.GONE);
+			findViewById(R.id.layout_divider_3).setVisibility(View.GONE);
 		}
 //		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
