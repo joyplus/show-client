@@ -90,6 +90,10 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 	}
 	
 	private void setMaskVisible(boolean isVisible){
+		if(!isVisible && mTopMask.getVisibility() == View.VISIBLE)
+			mTopMask.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
+		if(!isVisible && mBottomMask.getVisibility() == View.VISIBLE)
+			mBottomMask.startAnimation(JoyplusMediaPlayerActivity.mAlphaDispear);
 		mTopMask.setVisibility(isVisible?View.VISIBLE:View.GONE);
 		mBottomMask.setVisibility(isVisible?View.VISIBLE:View.GONE);
 	}
