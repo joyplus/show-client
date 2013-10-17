@@ -640,7 +640,7 @@ public class XunLeiLiXianUtil {
 			NameValuePair[] arrayOfNameValuePair = new NameValuePair[3];
 
 			arrayOfNameValuePair[0] = new BasicNameValuePair("userid",
-					xllxFileInfo.userid);
+					getUID(context));
 			arrayOfNameValuePair[1] = new BasicNameValuePair("gcid",
 					xllxFileInfo.gcid);
 			arrayOfNameValuePair[2] = new BasicNameValuePair("filename",
@@ -724,7 +724,8 @@ public class XunLeiLiXianUtil {
 							URLEncoder.encode(xllxFileInfo.file_name));
 					arrayOfNameValuePair[2] = new BasicNameValuePair("platform", i + "");
 					arrayOfNameValuePair[3] = new BasicNameValuePair("userid",
-							xllxFileInfo.userid);
+							getUID(context));
+//							xllxFileInfo.userid);
 					arrayOfNameValuePair[4] = new BasicNameValuePair("vip", "1");
 					arrayOfNameValuePair[5] = new BasicNameValuePair("sessionid", getSessionid(context));
 					arrayOfNameValuePair[6] = new BasicNameValuePair("cache",System.currentTimeMillis() + "");
