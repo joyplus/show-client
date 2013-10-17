@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.joyplus.JoyplusMediaPlayerMiddleControlAudio xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/joyplusvideoview_audio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <io.vov.vitamio.widget.CenterLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+	    <com.joyplus.ArcView
+	            android:id="@+id/joyplusvideoview_audio_arcview"
+	            android:layout_width="133dp"
+	            android:layout_height="133dp"
+	            android:layout_gravity="center"
+	            android:background="@drawable/player_volume" />
+    </io.vov.vitamio.widget.CenterLayout>
+</com.joyplus.JoyplusMediaPlayerMiddleControlAudio>

@@ -35,10 +35,11 @@
                 android:id="@+id/tv_movie_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/common_list_content_textcolor"
-                android:textSize="@dimen/mid_text_size"/>
+                android:textSize="@dimen/mid_text_size"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"/>
         </LinearLayout>
 
         <TextView

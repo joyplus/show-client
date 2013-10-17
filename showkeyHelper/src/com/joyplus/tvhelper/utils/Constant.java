@@ -6,16 +6,21 @@ public class Constant {
 	
 	public static boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
 	
+	public static boolean isSimple = false;
+	public static boolean isNeedGuid = true;
 	 //正式环境
-//	 public static final boolean TestEnv = false;
-//	 public static String APPKEY = "ijoyplus_android_0001bj";
-//	 public static String BASE_URL = "http://tt.showkey.tv";//视频直播源
-//	 public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
-	//测试环境控制
-	public static final boolean TestEnv = true;
+	 public static final boolean TestEnv = false;
 	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
-	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
+	 public static String BASE_URL = "http://tt.showkey.tv";//视频直播源
+	public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
+	 
+//	 public static String BASE_URL = "http://comet.showkey.tv/uploadApk";//视频直播源
+	 
+	//测试环境控制
+//	public static final boolean TestEnv = true;
+//	 public static String APPKEY = "ijoyplus_android_0001bj";
+//	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
+//	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
 	 
 	//刘洋环境
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
@@ -28,6 +33,7 @@ public class Constant {
 	 
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
 
+	public static String PLAYERPACH_ADV_PUBLISHERID = "4083958c3dc3360dafe7287ae997070c";
 	
 	
 	public static final String[] video_dont_support_extensions = { ".m3u",".m3u8"};//不支持的格式
@@ -65,4 +71,6 @@ public class Constant {
 	public static final int DEFINATION_HD = 7; 
 	public static final int DEFINATION_MP4 = 6; 
 	public static final int DEFINATION_FLV = 5; 
+	
+	public static final int END_TIME = 30;
 }

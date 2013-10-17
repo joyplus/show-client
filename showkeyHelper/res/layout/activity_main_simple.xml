@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:id="@+id/layout_title"
+        android:layout_marginTop="90dp"
+        android:paddingLeft="147dp"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:id="@+id/title_1"
+            android:textColor="@color/main_title_selected"
+            android:text="转  屏 "/>
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:scaleType="fitXY"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/main_title_divider"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/title_2"
+            android:textSize="30dp"
+            android:textColor="@color/main_title_unselected"
+            android:text=" 工  具 "/>
+    </LinearLayout>
+<com.joyplus.tvhelper.ui.MyScrollLayout 
+    android:layout_width="fill_parent"
+    android:id="@+id/layout"
+    android:layout_weight="1"
+    android:layout_height="fill_parent">
+    <include layout="@layout/layout_1_simple"
+        />
+<!--     <include layout="@layout/layout_2"/> -->
+    <include layout="@layout/layout_3"
+        android:id="@+id/layout_page_3"/>
+</com.joyplus.tvhelper.ui.MyScrollLayout>
+<com.joyplus.tvhelper.ui.NotificationView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="147dp"
+   	app:textColor="#f0f0f0"
+   	app:textSize="24dp"
+   	app:text="正在连接服务器···"
+    android:id="@+id/statue_connect"/>
+<TextView android:layout_width="fill_parent"
+    android:paddingBottom="20dp"
+    android:layout_height="90dp"
+    android:textSize="24dp"
+    android:visibility="invisible"
+    android:textColor="#ffffff"
+    android:gravity="right|center_vertical"
+    android:paddingRight="147dp"
+    android:text="今日已推送800次"/>
+</LinearLayout>

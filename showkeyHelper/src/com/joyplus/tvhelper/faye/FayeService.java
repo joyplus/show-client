@@ -2,7 +2,6 @@ package com.joyplus.tvhelper.faye;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -26,11 +25,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.joyplus.Sub.SUBTYPE;
-import com.joyplus.Sub.SubURI;
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.network.filedownload.model.DownloadTask;
+import com.joyplus.sub.SUBTYPE;
+import com.joyplus.sub.SubURI;
 import com.joyplus.tvhelper.DialogActivity;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.PlayBaiduActivity;
@@ -138,7 +137,9 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						}
 					}else{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-						Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+//						final Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+						final Intent intent_play = Utils.getIntent(FayeService.this);
+						
 						intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						if(play_info.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES){
 							playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH_BT_EPISODE;
@@ -152,10 +153,19 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						playDate.prod_name = play_info.getName();
 //						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
+						playDate.isOnline = true;
 //						playDate.prod_url = play_info.getDownload_url();
 						app.setmCurrentPlayDetailData(playDate);
 						app.set_ReturnProgramView(null);
-						startActivity(intent_play);
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								startActivity(intent_play);
+							}
+						}, 0);
+						sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
 					}
 				}
 				
@@ -1410,7 +1420,8 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
 								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
 							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-							Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+//							final Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
+							final Intent intent = Utils.getIntent(FayeService.this);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //							playDate.prod_id = data.getString("id");
 							
@@ -1441,9 +1452,19 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //									playDate.prod_type = -1;
 //								}
 //							}
+							playDate.isOnline = true;
 							app.setmCurrentPlayDetailData(playDate);
 							app.set_ReturnProgramView(null);
-							startActivity(intent);
+							sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
+							handler.postDelayed(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									startActivity(intent);
+								}
+							}, 0);
+							
 						}else{
 							handler.sendEmptyMessage(MESSAGE_SHOW_DIALOG);
 						}

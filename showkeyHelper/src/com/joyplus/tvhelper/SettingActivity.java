@@ -3,6 +3,7 @@ package com.joyplus.tvhelper;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,18 +17,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.joyplus.mediaplayer.JoyplusMediaPlayerDataManager;
+import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
@@ -42,6 +45,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 	
 	private static final int MESSAGE_GETPINCODE_SUCCESS = 0;
 	private static final int MESSAGE_GETPINCODE_FAILE = MESSAGE_GETPINCODE_SUCCESS+1;
+	private static final int MESSAGE_GETHELPER_DATE_OK = MESSAGE_GETPINCODE_FAILE+1;
+	
 	private static final String TAG = "SettingActivity";
 	private Button btn_setting;
 	private Button btn_help;
@@ -50,15 +55,18 @@ public class SettingActivity extends Activity implements OnClickListener{
 	private LinearLayout  layout_setting;
 	private ScrollView  layout_help;
 	private ScrollView  layout_about;
-	private WebView webView;
+//	private WebView webView;
+	private LinearLayout layout_content;
 	
 	private TextView seletedView;
 	private TextView pincodeText;
 	private TextView versionName;
 	
-	private LinearLayout layout_refresh,layout_deleteApk, layout_confirm;
+	private LinearLayout layout_refresh,layout_deleteApk, layout_confirm, layout_player_mode;
 	
-	private ImageView switch_delete, switch_confirm;
+	private ImageView switch_delete, switch_confirm, switch_isPlaye_HW;
+	
+	private VideoViewSetting mVideoViewSetting;
 	
 	private Handler mHandler = new Handler(){
 		@Override
@@ -75,6 +83,27 @@ public class SettingActivity extends Activity implements OnClickListener{
 //				Toast.makeText(SettingActivity.this, "请求pinCode失败", 100).show();
 				Utils.showToast(SettingActivity.this, "请求pinCode失败");
 				removeDialog(0);
+				break;
+			case MESSAGE_GETHELPER_DATE_OK:
+				try{
+					String data = (String) msg.obj;
+					JSONObject json = new JSONObject(data);
+					JSONArray array = json.getJSONArray("results");
+					for(int i=0; i<array.length(); i++){
+						JSONObject obj_item = array.getJSONObject(i);
+						View v = LayoutInflater.from(SettingActivity.this).inflate(R.layout.item_faq_list,null);
+						TextView qustion = (TextView) v.findViewById(R.id.text_qustion);
+						TextView answer = (TextView) v.findViewById(R.id.text_answer);
+						qustion.setText(obj_item.getString("question"));
+						answer.setText("\t\t"+obj_item.getString("answer"));
+						layout_content.addView(v);
+					}
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					handleHelperDateError();
+				}
+				
 				break;
 			default:
 				break;
@@ -97,6 +126,8 @@ public class SettingActivity extends Activity implements OnClickListener{
 		pincodeText = (TextView) findViewById(R.id.pincode_text);
 		versionName = (TextView) findViewById(R.id.versionCode);
 		
+		layout_content = (LinearLayout) findViewById(R.id.layout_content);
+		
 		btn_setting.setOnClickListener(this);
 		btn_help.setOnClickListener(this);
 		btn_about.setOnClickListener(this);
@@ -104,21 +135,25 @@ public class SettingActivity extends Activity implements OnClickListener{
 		layout_refresh = (LinearLayout) findViewById(R.id.layout_refressPin);
 		layout_deleteApk = (LinearLayout) findViewById(R.id.layout_deleteApk);
 		layout_confirm = (LinearLayout) findViewById(R.id.layout_confirm);
+		layout_player_mode = (LinearLayout) findViewById(R.id.layout_player_decode_mode);
 		
 		layout_refresh.setOnFocusChangeListener(itemFoucsListener);
 		layout_deleteApk.setOnFocusChangeListener(itemFoucsListener);
+		layout_player_mode.setOnFocusChangeListener(itemFoucsListener);
 		
 		layout_refresh.setOnClickListener(this);
 		layout_deleteApk.setOnClickListener(this);
 		layout_confirm.setOnClickListener(this);
+		layout_player_mode.setOnClickListener(this);
 		
 		layout_setting = (LinearLayout) findViewById(R.id.layout_setting);
 		layout_help = (ScrollView) findViewById(R.id.layout_help);
 		layout_about = (ScrollView) findViewById(R.id.layout_about);
-		webView = (WebView) findViewById(R.id.webView);
+//		webView = (WebView) findViewById(R.id.webView);
 		
 		switch_delete = (ImageView) findViewById(R.id.switch_deleteApk);
 		switch_confirm = (ImageView) findViewById(R.id.switch_confirm);
+		switch_isPlaye_HW = (ImageView) findViewById(R.id.switch_player_decode_mode);
 		
 		isconfirm = PreferencesUtils.isneedConfirm(this);
 		isdelete = PreferencesUtils.isautodelete(this);
@@ -144,23 +179,27 @@ public class SettingActivity extends Activity implements OnClickListener{
 		btn_setting.setBackgroundResource(R.drawable.highlight);
 		btn_setting.setTextColor(Color.BLACK);
 		
-		webView.getSettings().setJavaScriptEnabled(false);
-		webView.getSettings().setEnableSmoothTransition(true);
-		webView.setBackgroundColor(Color.TRANSPARENT);
-		webView.setWebViewClient(new WebViewClient()
-		   {
-		          @Override
-		          public boolean shouldOverrideUrlLoading(WebView view, String url)
-		          {
-		 
-		            view.loadUrl(url); // 在当前的webview中跳转到新的url
-		 
-		            return true;
-		          }
-		    });
-//		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
-		webView.loadUrl(Constant.URL_FAQ +"?"+System.currentTimeMillis());
+//		webView.getSettings().setJavaScriptEnabled(false);
+//		webView.getSettings().setEnableSmoothTransition(true);
+//		webView.setBackgroundColor(Color.TRANSPARENT);
+//		webView.setWebViewClient(new WebViewClient()
+//		   {
+//		          @Override
+//		          public boolean shouldOverrideUrlLoading(WebView view, String url)
+//		          {
+//		 
+//		            view.loadUrl(url); // 在当前的webview中跳转到新的url
+//		 
+//		            return true;
+//		          }
+//		    });
+////		webView.loadUrl("http://www.joyplus.tv/faq-tv?"+System.currentTimeMillis());
+//		webView.loadUrl(Constant.URL_FAQ +"?"+System.currentTimeMillis());
+		MyApp.pool.execute(new GetHelperDate());
 		layout_refresh.requestFocus();
+		
+		mVideoViewSetting = new VideoViewSetting();
+		mVideoViewSetting.updateUI();
 	}
 	
 	private View.OnFocusChangeListener itemFoucsListener = new View.OnFocusChangeListener() {
@@ -268,9 +307,55 @@ public class SettingActivity extends Activity implements OnClickListener{
 			PreferencesUtils.setIsneedConfirm(this, isconfirm);
 			updateSwitch();
 			break;
+		case R.id.layout_player_decode_mode:
+			//点击切换
+			mVideoViewSetting.switchMode();
+			break;
 		}
 	}
 	
+	private void handleHelperDateError(){
+		//获取帮助信息失败或者获取数据有误
+		TextView tv = new TextView(this);
+		tv.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+		tv.setGravity(Gravity.CENTER);
+		tv.setText("获取帮助界面失败");
+		layout_content.addView(tv);
+	}
+	
+	private class VideoViewSetting {
+		
+		private JoyplusMediaPlayerDataManager mJoyplusMediaPlayerDataManager;
+		
+		public VideoViewSetting(){
+			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(SettingActivity.this);
+		}
+		
+		public void switchMode(){
+			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
+			if(type == DecodeType.Decode_HW)type= DecodeType.Decode_SW;
+			else type= DecodeType.Decode_HW;
+			mJoyplusMediaPlayerDataManager.setDecodeType(type);
+			updateUI();
+		}
+		
+		public void updateUI(){
+			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
+			if(type == DecodeType.Decode_HW)
+				setSwitch(true);
+			else
+				setSwitch(false);
+		}
+		
+		private void setSwitch(boolean en){
+			if(en)
+				((ImageView)findViewById(R.id.switch_player_decode_mode)).
+				setImageResource(R.drawable.switch_hard);
+			else
+				((ImageView)findViewById(R.id.switch_player_decode_mode)).
+				setImageResource(R.drawable.switch_soft);
+		}
+	}
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		// TODO Auto-generated method stub
@@ -306,14 +391,14 @@ public class SettingActivity extends Activity implements OnClickListener{
 		Log.d(TAG, "is auto delete --->"  + PreferencesUtils.isautodelete(this));
 		Log.d(TAG, "is isdelete  --->"  + isdelete);
 		if(isdelete){
-			switch_delete.setImageResource(R.drawable.swith_on);
+			switch_delete.setImageResource(R.drawable.switch_on);
 		}else{
-			switch_delete.setImageResource(R.drawable.swith_off);
+			switch_delete.setImageResource(R.drawable.switch_off);
 		}
 		if(isconfirm){
-			switch_confirm.setImageResource(R.drawable.swith_on);
+			switch_confirm.setImageResource(R.drawable.switch_on);
 		}else{
-			switch_confirm.setImageResource(R.drawable.swith_off);
+			switch_confirm.setImageResource(R.drawable.switch_off);
 		}
 	}
 	
@@ -359,5 +444,19 @@ public class SettingActivity extends Activity implements OnClickListener{
 			}
 			  
 		}
+	}
+	
+	class GetHelperDate implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			String url = Constant.BASE_URL+"/questions/showkey";
+			String str = HttpTools.get(SettingActivity.this, url);
+			Message msg = mHandler.obtainMessage(MESSAGE_GETHELPER_DATE_OK);
+			msg.obj = str;
+			mHandler.sendMessage(msg);
+		}
+		
 	}
 }

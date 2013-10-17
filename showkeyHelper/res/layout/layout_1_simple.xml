@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1170dp"
+    android:paddingRight="17dp"
+    android:paddingLeft="127dp"
+    android:layout_height="match_parent" >
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="20dp"
+        android:orientation="horizontal">
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:id="@+id/layout_1_1"
+            android:focusable="true"
+            android:background="@color/bg_color_showtui">
+            <RelativeLayout android:layout_width="fill_parent"
+	                        android:layout_height="fill_parent"
+	                        android:id="@+id/main_content_2"
+	                        android:paddingBottom="30dp">
+	                        <LinearLayout android:layout_width="fill_parent"
+	                            android:layout_height="fill_parent"
+	                            android:orientation="vertical"
+	                            android:gravity="center">
+	                            <LinearLayout android:layout_width="fill_parent"
+	                                android:layout_height="fill_parent"
+	                                android:layout_weight="1"
+	                                android:orientation="vertical"
+	                                android:paddingBottom="6dp">
+	                                <LinearLayout android:layout_width="fill_parent"
+	                                    android:layout_height="fill_parent"
+	                                    android:gravity="center"
+	                                    android:orientation="vertical"
+	                                    android:layout_weight="1">
+	                                    <TextView android:layout_width="fill_parent"
+	                                        android:layout_height="wrap_content"
+	                                        android:gravity="center_horizontal"
+	                                        android:textColor="#000000"
+	                                    	android:textSize="20dp"
+	                                        android:text="Web端访问网址 "/>
+	                                    <TextView android:layout_width="fill_parent"
+	                                        android:layout_height="wrap_content"
+	                                        android:gravity="center_horizontal"
+	                                        android:textColor="#000000"
+	                                        android:textStyle="bold"
+	                                    	android:textSize="30dp"
+	                                    	android:singleLine="true"
+	                                    	android:id="@+id/web_url_text"
+	                                        android:text=""/>
+	                                </LinearLayout>
+	                                <TextView android:layout_width="fill_parent"
+	                                    android:layout_height="wrap_content"
+	                                    android:gravity="center"
+	                                    android:textColor="#000000"
+	                                    android:textSize="20dp"
+	                                    android:text="并输入PIN"/>
+	                            </LinearLayout>
+	                            <TextView android:layout_width="210dp"
+	                                android:layout_height="wrap_content"
+	                                android:background="#22ffffff"
+	                                android:gravity="center_horizontal"
+	                                android:textColor="#000000"
+	                                android:textStyle="bold"
+	                                android:textSize="30dp"
+	                                android:id="@+id/pincodeText"/>
+	                            <LinearLayout android:layout_width="fill_parent"
+	                                android:layout_height="fill_parent"
+	                                android:gravity="center"
+	                                android:layout_weight="1">
+	                                <ImageView android:layout_width="wrap_content"
+		                                android:src="@drawable/main_icon_showtui"
+		                                android:layout_marginTop="10dp"
+		                                android:layout_height="wrap_content"/>
+	                            </LinearLayout>
+	                        </LinearLayout>
+	                        <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="35dp"
+	                            android:visibility="gone"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:text="软件推送记录"/>
+	                    </RelativeLayout>
+        </LinearLayout>
+        <TextView android:layout_width="13dp"
+            android:layout_height="fill_parent"
+            android:visibility="invisible"/>
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:id="@+id/sencond_layout"
+            android:orientation="vertical"
+            >
+            <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:id="@+id/layout_1_2"
+                android:focusable="true"
+                android:layout_weight="1"
+                android:background="@color/bg_color_tuisong"
+                android:gravity="center">
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/main_icon_yuntui"/>
+                 <TextView android:layout_width="fill_parent"
+	                            android:layout_height="wrap_content"
+	                            android:textColor="#f0f0f0"
+	                            android:textSize="35dp"
+	                            android:layout_marginTop="20dp"
+	                            android:gravity="center_horizontal"
+	                            android:layout_alignParentBottom="true"
+	                            android:text="视频推送记录"/>
+            </LinearLayout>
+            <!-- <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/bg_color_tuisong"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:id="@+id/layout_1_2"
+                android:layout_weight="1">
+                <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:src="@drawable/main_icon_yuntui"/>
+	            <TextView android:layout_width="fill_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="#f0f0f0"
+                           android:textSize="35dp"
+                           android:gravity="center_horizontal"
+                           android:layout_alignParentBottom="true"
+                           android:text="推送记录"/>
+            </LinearLayout> -->
+            <TextView android:layout_width="fill_parent"
+            android:layout_height="13dp"
+            android:visibility="gone"/>
+            <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:focusable="true"
+                android:visibility="gone"
+                android:id="@+id/layout_1_3"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:background="@color/bg_color_xunlei"
+                android:layout_weight="1">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:src="@drawable/main_icon_xunlei"/>
+	            <TextView android:layout_width="fill_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="#f0f0f0"
+                           android:textSize="35dp"
+                           android:gravity="center_horizontal"
+                           android:layout_alignParentBottom="true"
+                           android:text="迅雷云播"/>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView android:layout_width="13dp"
+            android:layout_height="fill_parent"
+            android:visibility="invisible"/>
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:id="@+id/third_layout"
+            android:orientation="vertical"
+            >
+            <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:focusable="true"
+                android:id="@+id/layout_1_4"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:background="@color/bg_color_xunlei"
+                android:layout_weight="1">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:src="@drawable/main_icon_xunlei"/>
+	            <TextView android:layout_width="fill_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="#f0f0f0"
+                           android:textSize="35dp"
+                           android:gravity="center_horizontal"
+                           android:layout_alignParentBottom="true"
+                           android:text="迅雷云播"/>
+            </LinearLayout>
+            <TextView android:layout_width="fill_parent"
+            android:layout_height="13dp"
+            android:id="@+id/layout_divider_3"/>
+            <LinearLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:focusable="true"
+                android:id="@+id/layout_1_5"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:background="@color/bg_color_setting"
+                android:layout_weight="1">
+	            <ImageView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/main_icon_setting"/>
+	            <TextView android:layout_width="fill_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="#f0f0f0"
+                           android:textSize="35dp"
+                           android:layout_marginTop="25dp"
+                           android:gravity="center_horizontal"
+                           android:layout_alignParentBottom="true"
+                           android:text="设置"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <FrameLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/relative_layout">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            android:id="@+id/image_1_1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            android:id="@+id/image_1_2"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            android:id="@+id/image_1_3"/>
+		<ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            android:id="@+id/image_1_4"/>
+		<ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            android:id="@+id/image_1_5"/>
+    </FrameLayout>
+    
+</RelativeLayout>

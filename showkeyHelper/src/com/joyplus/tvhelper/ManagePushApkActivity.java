@@ -429,7 +429,7 @@ public class ManagePushApkActivity extends Activity implements OnClickListener,
 			list.requestFocus();
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
-			defult_img.setVisibility(View.VISIBLE);
+			defult_img.setVisibility(View.GONE);
 		}
 	}
 }

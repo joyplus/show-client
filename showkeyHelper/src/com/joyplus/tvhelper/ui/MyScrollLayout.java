@@ -1,5 +1,6 @@
 package com.joyplus.tvhelper.ui;
 
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Log;
 
 import android.content.Context;
@@ -125,7 +126,11 @@ public class MyScrollLayout extends ViewGroup{
       
      public void snapToScreen(int whichScreen) {          
             // get the valid layout page      
-            whichScreen = Math.max(0, Math.min(whichScreen, getChildCount()-1));      
+    	 	if(Constant.isSimple){
+    	 		whichScreen = 0;
+    	 	}else{
+    	 		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount()-1));      
+    	 	}
             if (getScrollX() != (getChildLeft(whichScreen))) {      
                 final int delta = getChildLeft(whichScreen)-getScrollX();      
 //                        mScroller.startScroll(getScrollX(), 0,       

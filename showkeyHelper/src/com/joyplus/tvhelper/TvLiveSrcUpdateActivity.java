@@ -377,7 +377,7 @@ public class TvLiveSrcUpdateActivity extends Activity {
 						tvLiveInfo.setDstFileLists(dstFileList);//存储目的文件
 						long fileTotalSize = Utils
 								.getTotalSize4ListFiles(dstFileList);
-						if (listFileTotalSize > fileTotalSize) {
+						if (listFileTotalSize != fileTotalSize) {
 
 							if(tvLiveInfo.isInstall()){
 								
@@ -588,44 +588,41 @@ public class TvLiveSrcUpdateActivity extends Activity {
 					if(urlStr != null && URLUtil.isNetworkUrl(urlStr)){
 						
 						File file = new File(tempStoreTvLivingFileDir, filename);
-						if(!file.exists()){
-							
-							try {
-								file.createNewFile();
-								url = new URL(Uri.encode(urlStr,"UTF-8").replaceAll("%3A", ":").replaceAll("%2F", "/").replaceAll("%3F", "?"));
-								HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-								connection.setDoInput(true);
-								connection.connect();
-								is =  connection.getInputStream();
-								
-								fos = new FileOutputStream(file);
-								
-								byte[] b = new byte[4096];
-								int len = 0;
-								 while ((len = is.read(b, 0, 4096)) != -1){
-									 
-									 fos.write(b, 0, len);
-									 fos.flush();
-								 }
-								 fos.flush();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}finally{
-								
-								if(fos != null){
-									
-									try {
-										fos.close();
-										is.close();
-									} catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
+						try {
+							file.createNewFile();
+							url = new URL(Uri.encode(urlStr, "UTF-8")
+									.replaceAll("%3A", ":").replaceAll("%2F", "/")
+									.replaceAll("%3F", "?"));
+							HttpURLConnection connection = (HttpURLConnection) url
+									.openConnection();
+							connection.setDoInput(true);
+							connection.connect();
+							is = connection.getInputStream();
+
+							fos = new FileOutputStream(file);
+							byte[] b = new byte[4096];
+							int len = 0;
+							while ((len = is.read(b, 0, 4096)) != -1) {
+								fos.write(b, 0, len);
+								fos.flush();
+							}
+							fos.flush();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} finally {
+
+							if (fos != null) {
+								try {
+									fos.close();
+									is.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
 							}
 						}
-						
+
 					}
 				}
 				
