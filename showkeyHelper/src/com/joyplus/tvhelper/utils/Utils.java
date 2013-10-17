@@ -37,6 +37,8 @@ import org.apache.http.params.HttpParams;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
@@ -46,7 +48,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.VideoPlayerJPActivity;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 
 public class Utils {
@@ -608,36 +613,6 @@ public static InetAddress getLocalIpAddress(){
         return false;
     }
     
-    public static String getCharset(byte[] subTitle,int length){
-    	
-    	if(subTitle != null){
-    		
-    		if(subTitle.length < length){
-    			
-    			length = subTitle.length;
-    		}
-    		
-    		ByteArrayInputStream in = new ByteArrayInputStream(subTitle);
-    		
-    		CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
-//    		detector.add(new ParsingDetector(false));
-    		detector.add(JChardetFacade.getInstance());
-    		try {
-    			Charset charset = detector.detectCodepage(in, length);
-    			
-    			return charset!= null ? charset.name() : "";
-    		} catch (IllegalArgumentException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		} catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
-		
-		return "";
-    }
-    
     public static String getBaiduName(String url){
     	String[] str = url.split("\\|");
 		String name = null;
@@ -650,5 +625,26 @@ public static InetAddress getLocalIpAddress(){
 	public static int getStandardValue(Context context,int value){
 		float standardDp = context.getResources().getDimension(R.dimen.standard_1_dp);
 		return standardDp == 0 ? value:(int)(value * standardDp);
+	}
+	
+	public static Intent getIntent(Context context){
+		if(JoyplusMediaPlayerManager.SubanagerUseNEW){
+			return new Intent(context,JoyplusMediaPlayerActivity.class);
+		}else{
+			return new Intent(context,VideoPlayerJPActivity.class);
+		}
+		
+	}
+	
+	public static int getVersionCode(Context context)//获取版本号(内部识别号)
+	{
+		try {
+			PackageInfo pi=context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+			return pi.versionCode;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
 	}
 }

@@ -44,7 +44,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +54,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -72,10 +70,10 @@ import com.androidquery.callback.AjaxStatus;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joyplus.Sub.JoyplusSubManager;
-import com.joyplus.Sub.SUBTYPE;
-import com.joyplus.Sub.SubURI;
-import com.joyplus.manager.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.sub.SUBTYPE;
+import com.joyplus.sub.SubURI;
+import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
@@ -85,11 +83,13 @@ import com.joyplus.tvhelper.entity.VideoPlayUrl;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.service.ReturnProgramView;
 import com.joyplus.tvhelper.ui.ArcView;
+import com.joyplus.tvhelper.ui.PlayerMenuDialog;
 import com.joyplus.tvhelper.ui.SubTitleView;
 import com.joyplus.tvhelper.utils.BangDanConstant;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.DefinationComparatorIndex;
 import com.joyplus.tvhelper.utils.DesUtils;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -116,8 +116,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private static final int MESSAGE_HIDE_VOICE = MESSAGE_HIDE_PROGRESSBAR + 1;
 	private static final int MESSAGE_DATALOADING_UPDATE_NETSPEED = MESSAGE_HIDE_VOICE + 1;
 	private static final int MESSAGE_NO_NETCONNECT = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
-//	private static final int MESSAGE_SUBTITLE_BEGAIN_SHOW = MESSAGE_DATALOADING_UPDATE_NETSPEED + 1;
-//	private static final int MESSAGE_SUBTITLE_END_HIDEN = MESSAGE_SUBTITLE_BEGAIN_SHOW + 1;
 	
 	public static final int TYPE_XUNLEI = -10;
 	public static final int TYPE_PUSH = TYPE_XUNLEI -1;
@@ -155,8 +153,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private int seekBarWidthOffset = 40;
 	
 	private static final int SEEKBAR_REFRESH_TIME = 500;//refresh time
-	private static final int SUBTITLE_DELAY_TIME_MAX = 1000;
-
+	
 	private TextView mVideoNameText; // 名字
 	private ImageView mDefinationIcon;// 清晰度icon
 	private SeekBar mSeekBar; // 进度条
@@ -183,6 +180,8 @@ public class VideoPlayerJPActivity extends Activity implements
 
 	private TextView mDataLoadingSpeedText; //缓冲速度
 	private long mCurrentLoadingbytes;
+	
+	private PlayerMenuDialog mMenuDialog;
 	
 	/**
 	 * 预加载层
@@ -277,14 +276,6 @@ public class VideoPlayerJPActivity extends Activity implements
 	private Animation mAlphaDispear;
 	private boolean isSeekBarIntoch = false;
 	
-	/**  Subtitle*/
-//	private Collection mSubTitleCollection = null;
-//	private int mStartTimeSubTitle,mEndTimeSubTitle;
-//	private org.blaznyoght.subtitles.model.Element mCurSubTitleE,mBefSubTitleE;
-	
-//	private List<String> subTitleUrlList = new ArrayList<String>();
-//	private int currentSubtitleIndex = 0;//默认为第一个
-	
 	private JoyplusSubManager mJoyplusSubManager = null;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -353,7 +344,8 @@ public class VideoPlayerJPActivity extends Activity implements
 					break;
 				}
 
-			} else {
+			} else if(Global.ACTION_RECIVE_NEW_PUSH_MOVIE.equals(action)){
+				finish();
 			}
 		}
 	};
@@ -371,12 +363,12 @@ public class VideoPlayerJPActivity extends Activity implements
 		
 		try {
 			JoyplusMediaPlayerManager.Init(this);
-			mJoyplusSubManager = JoyplusMediaPlayerManager.getInstance().getSubManager();
+			mJoyplusSubManager = (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		mMenuDialog = new PlayerMenuDialog(this);
 		initViews();
 		mSeekBar.setEnabled(false);
 		m_ReturnProgramView = app.get_ReturnProgramView();
@@ -390,6 +382,7 @@ public class VideoPlayerJPActivity extends Activity implements
 
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.VIDEOPLAYERCMD);
+		intentFilter.addAction(Global.ACTION_RECIVE_NEW_PUSH_MOVIE);
 		registerReceiver(mReceiver, intentFilter);
 
 		OFFSET = Utils.getStandardValue(getApplicationContext(), OFFSET);
@@ -423,6 +416,7 @@ public class VideoPlayerJPActivity extends Activity implements
 	private void initVedioDate() {
 		mStatue = STATUE_PRE_LOADING;
 		isRequset = 0;
+		
 		mSeekBar.setEnabled(false);
 		mSeekBar.setProgress(0);
 		mTotalTimeTextView.setText("--:--");
@@ -456,7 +450,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		mDefination = playDate.prod_qua;
 		lastTime = (int) playDate.prod_time;
 		mProd_src = playDate.prod_src;
-		
+		isOnline = playDate.isOnline;
 		if(mProd_type == TYPE_PUSH || mProd_type == TYPE_LOCAL|| mProd_type == TYPE_PUSH_BT_EPISODE){
 			play_info = (MoviePlayHistoryInfo) playDate.obj;
 		}
@@ -487,13 +481,9 @@ public class VideoPlayerJPActivity extends Activity implements
 						
 						ArrayList<VideoPlayUrl> list = 
 								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
-						//get subtitle
-//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
 						mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
 								getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo));
 						mSubTitleView.displaySubtitle();
-//						currentSubtitleIndex = 0;
-//						initSubTitleCollection();
 						
 						if(list != null && list.size() > 0) {
 							
@@ -573,190 +563,7 @@ public class VideoPlayerJPActivity extends Activity implements
 			}
 			break;
 		}
-//		if(mProd_type != TYPE_XUNLEI) {
-//			
-//			if(mProd_type == TYPE_LOCAL){
-//				if(currentPlayUrl!=null){
-//					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-//				}
-//				return;
-//			}
-//			if (currentPlayUrl != null && URLUtil.isNetworkUrl(currentPlayUrl)) {
-//				if (mProd_type<0) {
-////					mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
-//					if(mProd_type == TYPE_PUSH){
-//						new Thread(new UrlRedirectTask()).start();
-//					}
-//					return ;
-//				} else {
-//					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
-//
-//						m_ReturnProgramView = app.get_ReturnProgramView();
-//						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-//					} else {// 如果为空，就重新获取
-//
-//						getProgramViewDetailServiceData();
-//					}
-//				}
-//			} else {
-//				if(mProd_type == TYPE_PUSH){
-//					MyApp.pool.execute(new getPlayList());
-//				}else if(){
-//					
-//				}else{
-//					if (app.get_ReturnProgramView() != null) {// 如果不为空，获取服务器返回的详细数据
-//
-//						m_ReturnProgramView = app.get_ReturnProgramView();
-//						mHandler.sendEmptyMessage(MESSAGE_RETURN_DATE_OK);
-//					} else {// 如果为空，就重新获取
-//
-//						getProgramViewDetailServiceData();
-//					}
-//				}
-//			}
-//		}else {//迅雷 传递-10
-//			
-//			//取list
-//			MyApp.pool.execute(new Runnable() {
-//				
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					
-//					XLLXFileInfo xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
-//					if(xllxFileInfo != null && !xllxFileInfo.isDir) {
-//						
-//						ArrayList<VideoPlayUrl> list = 
-//								XunLeiLiXianUtil.getLXPlayUrl(VideoPlayerJPActivity.this, xllxFileInfo);
-//						//get subtitle
-//						subTitleUrlList = XunLeiLiXianUtil.getSubtitleList(VideoPlayerJPActivity.this,xllxFileInfo);
-//						currentSubtitleIndex = 0;
-//						initSubTitleCollection();
-//						
-//						if(list != null && list.size() > 0) {
-//							
-//							if(playUrls != null && playUrls.size() > 0) {
-//								
-//								playUrls.clear();
-//							}
-//							for(int i=0;i<list.size();i++) {
-//								
-//								VideoPlayUrl videoPlayUrl = list.get(i);
-//								Log.i(TAG, "VideoPlayUrl--->" + videoPlayUrl.toString());
-//								if(videoPlayUrl != null && videoPlayUrl.playurl != null) {
-//									
-//									URLS_INDEX url = new URLS_INDEX();
-//									url.url = videoPlayUrl.playurl;
-//									url.source_from = "XUNLEI";
-//									if(videoPlayUrl.isCanDrag){// can drag hd2 hd mp4 
-//										
-//										if(videoPlayUrl.sharp != null) {
-//											
-//											int index = videoPlayUrl.sharp.getIndex();
-//											switch (index) {
-//											case 0:
-//												url.defination_from_server ="mp4";
-//												break;
-//											case 2:
-//												url.defination_from_server ="hd";
-//												break;
-//											case 3:
-//												url.defination_from_server ="hd2";
-//												break;
-//
-//											default:
-//												break;
-//											}
-//										}
-//									}else {//can't drag flv
-//										url.defination_from_server ="flv";
-////										playUrls_flv.a
-//									}
-//								
-//									playUrls.add(url);
-//								}
-//							}
-//							
-//						}
-//					}
-//					initFourList();
-//					sortPushUrls(mDefination);
-//					mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
-//				}
-//			});
-////			URLS_INDEX url = new URLS_INDEX();
-////			url.defination_from_server ="hd2";
-////			url.source_from = "xunlei";
-////			url.url ="";
-//			
-////			playUrls = new ArrayList<URLS_INDEX>
-			
-//		}
 	}
-	
-//	private void initSubTitleCollection(){
-//		Log.i(TAG, "subTitleUrlList--->" + subTitleUrlList.size() + "currentSubtitleIndex--->" + currentSubtitleIndex);
-//		if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
-//			byte[] subTitle = HttpUtils.getBinary(subTitleUrlList.get(currentSubtitleIndex), null,null);
-//			
-//			if(subTitle != null && subTitle.length > 3
-//					&& mSubTitleCollection == null){
-//				
-//				Parser parser = new Parser();
-//				
-//				String charsetName = Utils.getCharset(subTitle, 512);
-//				Log.d(TAG, "initSubTitleCollection-->charsetName:" + charsetName);
-//				if(charsetName.equals("")){
-//					
-//					boolean isUtf8 = Utils.isUTF_8(subTitle);
-//					Log.i(TAG, "isUtf8--->" + isUtf8);
-//					
-//					if(!isUtf8){
-//						
-//						parser.setCharset("GBK");
-//					} else {
-//						
-//						parser.setCharset("UTF-8");
-//					}
-//				}else {
-//					
-//					parser.setCharset(charsetName);
-//				}
-//				parser.parse(new ByteArrayInputStream(subTitle));
-//				Log.d(TAG, "getElements().size()--->" + parser.getCollection().getElements().size());
-//				if(parser.getCollection().getElements().size() > 2){
-//					mSubTitleCollection = parser.getCollection();
-//					if(mVideoView != null){
-//						long currentPosition = mVideoView.getCurrentPosition();
-//						org.blaznyoght.subtitles.model.Element element = getPreElement(currentPosition);
-//						if(element != null){
-//							Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, element);
-//							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, element);
-//							if(element.getStartTime().getTime() - currentPosition > SUBTITLE_DELAY_TIME_MAX){
-//								mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
-//							}else {
-//								
-//								mHandler.sendMessageDelayed(messageShow, element.getStartTime().getTime() - currentPosition);
-//							}
-//							mHandler.sendMessageDelayed(messageHiden, element.getEndTime().getTime() - currentPosition);
-//						}
-//					}
-//				}else {
-//					Log.i(TAG, "restart init");
-//					if(subTitleUrlList.size() > 0 && currentSubtitleIndex < subTitleUrlList.size()){
-//						mHandler.removeMessages(MESSAGE_SUBTITLE_BEGAIN_SHOW);
-//						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
-//						subTitleUrlList.remove(currentSubtitleIndex);
-//						currentSubtitleIndex = 0;
-//						mSubTitleCollection = null;
-//						initSubTitleCollection();
-//					}
-//				}
-////				Log.d(TAG, "mSubTitleCollection--->" + mSubTitleCollection.getElementSize());
-//				return;
-//			}
-//		}
-//	}
 	
 	public long getPlayerCurrentPosition(){
 		if(mVideoView == null) return 0;
@@ -797,7 +604,9 @@ public class VideoPlayerJPActivity extends Activity implements
 				mVideoView.pause();
 				mDateLoadingLayout.setVisibility(View.GONE);
 				mHandler.removeCallbacksAndMessages(null);
-				showDialog(2);
+				if(!isFinishing()){
+					showDialog(2);
+				}
 				break;
 			case MESSAGE_URLS_READY:// url 准备好了
 				if(playUrls.size()<=0){
@@ -852,23 +661,16 @@ public class VideoPlayerJPActivity extends Activity implements
 											+ "/joyplus/subtitle/?url="
 											+ URLEncoder.encode(play_info.getPush_url())
 											+ "&md5_code=" + getUmengMd5();
-									// subTitleUrlList =
-									// XunLeiLiXianUtil.getSubtitle4Push(subTitleUrl,
-									// Constant.APPKEY);
 									mJoyplusSubManager.setSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
 									mSubTitleView.displaySubtitle();
-									// currentSubtitleIndex = 0;
-									// initSubTitleCollection();
 								}
 							}
 						}
 					});
 				}
-				
-				if(mProd_type == TYPE_PUSH_BT_EPISODE)
-				
+//				if(mProd_type == TYPE_PUSH_BT_EPISODE)
 				currentPlayIndex = 0;
 				currentPlayUrl = playUrls.get(currentPlayIndex).url;
 				Log.d(TAG,"MESSAGE_URLS_READY--->currentPlayUrl:" + currentPlayUrl);
@@ -992,69 +794,6 @@ public class VideoPlayerJPActivity extends Activity implements
 			case MESSAGE_DATALOADING_UPDATE_NETSPEED:
 				updateDataLoadingSpeed();
 				break;
-//			case MESSAGE_SUBTITLE_BEGAIN_SHOW:
-//				org.blaznyoght.subtitles.model.Element element_show = 
-//				(org.blaznyoght.subtitles.model.Element) msg.obj;
-//				if(element_show != null){
-//					long currentPositionShow = mVideoView.getCurrentPosition();
-//					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
-//					//在字幕的显示时间段内
-//					if(!element_show.getText().equals(mSubTitleTv.getText())){
-//						if(element_show.getStartTime().getTime() < currentPositionShow + SEEKBAR_REFRESH_TIME/2
-//								&& element_show.getStartTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
-//							mSubTitleTv.setText(element_show.getText());
-//							mSubTitleTv.setTag(element_show.getEndTime().getTime());
-//						}
-//					}
-//					if(element_show.getEndTime().getTime() < currentPositionShow){
-//						mSubTitleTv.setText("");
-//						mSubTitleTv.setTag(-1L);
-//						mHandler.removeMessages(MESSAGE_SUBTITLE_END_HIDEN);
-//						if(preElement_show != null){
-//							Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
-//							mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
-//						}
-//					}
-//					
-//					long tagEndTime = -1;
-//					try {
-//						if(mSubTitleTv.getTag() != null)
-//						tagEndTime = (Long) mSubTitleTv.getTag();
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					if(!element_show.getText().equals(mSubTitleTv.getText()) && tagEndTime != -1
-//							&& tagEndTime < currentPositionShow){
-//						mSubTitleTv.setText("");
-//						mSubTitleTv.setTag(-1L);
-//					}
-//					if(preElement_show != null){
-//						Message messageShow = mHandler.obtainMessage(MESSAGE_SUBTITLE_BEGAIN_SHOW, preElement_show);
-//						if(preElement_show.getStartTime().getTime() - currentPositionShow > SUBTITLE_DELAY_TIME_MAX){
-//							mHandler.sendMessageDelayed(messageShow, SUBTITLE_DELAY_TIME_MAX);
-//						}else {
-//							mHandler.sendMessageDelayed(messageShow, preElement_show.getStartTime().getTime() - currentPositionShow);
-//						}
-//					}
-//				}
-//				break;
-//			case MESSAGE_SUBTITLE_END_HIDEN:
-//				org.blaznyoght.subtitles.model.Element element_end = 
-//				(org.blaznyoght.subtitles.model.Element) msg.obj;
-//				if(element_end != null){
-//					long currentPositionShow = mVideoView.getCurrentPosition();
-//					org.blaznyoght.subtitles.model.Element preElement_show = getPreElement(currentPositionShow);
-//					if(element_end.getEndTime().getTime() > currentPositionShow - SEEKBAR_REFRESH_TIME/2){
-//						mSubTitleTv.setText("");
-//						mSubTitleTv.setTag(-1L);
-//					}
-//					if(preElement_show != null){
-//						Message messageHiden = mHandler.obtainMessage(MESSAGE_SUBTITLE_END_HIDEN, preElement_show);
-//						mHandler.sendMessageDelayed(messageHiden, preElement_show.getEndTime().getTime() - currentPositionShow);
-//					}
-//				}
-//				break;
 			default:
 				break;
 			}
@@ -1283,153 +1022,21 @@ public class VideoPlayerJPActivity extends Activity implements
 				lastPlayTime = -1;
 				mSeekBar.setEnabled(true);
 				break;
+			case STATUE_PRE_LOADING:
+				if(lastTime>0){
+					lastTime = 0;
+					mVideoView.stopPlayback();
+					mVideoView.setVideoURI(Uri.parse(currentPlayUrl));
+//					mVideoView.seekTo(0);
+					mLastTimeTextView.setText("");
+					Log.d(TAG, "lastTime------------>" + lastTime);
+				}
+				break;
 			}
 			break;
 		case KeyEvent.KEYCODE_MENU:
-			if(mStatue == STATUE_PLAYING&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE)&&mDateLoadingLayout.getVisibility()!=View.VISIBLE){
-				try{
-					final Dialog dialog = new AlertDialog.Builder(this).create();
-					dialog.show();
-					LayoutInflater inflater = LayoutInflater.from(this);
-					View view = inflater.inflate(R.layout.video_choose_defination, null);
-					Button btn_ok = (Button) view.findViewById(R.id.btn_ok_def);
-					Button btn_cancel = (Button) view.findViewById(R.id.btn_cancle_def);
-//					final LinearLayout layout_def = (LinearLayout) view.findViewById(R.id.layout_def);
-//					final LinearLayout layout_zimu = (LinearLayout) view.findViewById(R.id.layout_zimu);
-					final Gallery gallery = (Gallery) view.findViewById(R.id.gallery_def);
-					final Gallery gallery_zm = (Gallery) view.findViewById(R.id.gallery_zimu);
-					
-					definationStrings.clear();
-					zimuStrings.clear();
-					
-//					gallery.setOnFocusChangeListener(new OnFocusChangeListener() {
-//						
-//						@Override
-//						public void onFocusChange(View v, boolean hasFocus) {
-//							// TODO Auto-generated method stub
-//							if(hasFocus){
-//								layout_def.setBackgroundColor(Color.DKGRAY);
-//								Log.d(TAG, "layout_def---DKGRAY-->");
-//							}else{
-//								layout_def.setBackgroundColor(Color.TRANSPARENT);
-//							}
-//						}
-//					});
-//					
-//					gallery_zm.setOnFocusChangeListener(new OnFocusChangeListener() {
-//						
-//						@Override
-//						public void onFocusChange(View v, boolean hasFocus) {
-//							// TODO Auto-generated method stub
-//							if(hasFocus){
-//								Log.d(TAG, "layout_zimu---DKGRAY-->");
-//								layout_zimu.setBackgroundColor(Color.DKGRAY);
-//							}else{
-//								layout_zimu.setBackgroundColor(Color.TRANSPARENT);
-//							}
-//						}
-//					});
-//					
-					if(mJoyplusSubManager.getSubList().size() == 0){
-						zimuStrings.add(-1);//暂无字幕
-					}else{
-						for(int i=0; i<=mJoyplusSubManager.getSubList().size(); i++){
-							zimuStrings.add(i);
-						}
-//						zimuStrings.add(0);//字幕关
-//						zimuStrings.add(1);//字幕开
-					}
-//					definationStrings.add("超    清");
-//					definationStrings.add("高    清");
-//					definationStrings.add("标    清");
-//					definationStrings.add("流    畅");
-					if(playUrls_hd2.size()>0){
-						definationStrings.add(Constant.DEFINATION_HD2);
-					}
-					if(playUrls_hd.size()>0){
-						definationStrings.add(Constant.DEFINATION_HD);
-					}
-					if(playUrls_mp4.size()>0){
-						definationStrings.add(Constant.DEFINATION_MP4);
-					}
-					if(playUrls_flv.size()>0){
-						definationStrings.add(Constant.DEFINATION_FLV);
-					}
-					
-					gallery.setAdapter(new DefinationAdapter(this, definationStrings));
-					gallery.setSelection(definationStrings.indexOf(mDefination));
-//					gallery.setOnKeyListener(new MenuKeyListener(dialog));
-//					gallery_zm.setOnKeyListener(new MenuKeyListener(dialog));
-					gallery_zm.setAdapter(new ZimuAdapter(this, zimuStrings));
-					if(!mJoyplusSubManager.CheckSubAviable()){
-						gallery_zm.setSelection(0);
-					}else{
-						if(zimuStrings.size()==1&&zimuStrings.get(0)==-1){
-							gallery_zm.setSelection(0);
-						}else{
-//							gallery_zm.setSelection(currentSubtitleIndex+1);
-							if(mSubTitleView.getVisibility() == View.INVISIBLE){
-								gallery_zm.setSelection(0);
-							}else{
-								
-								gallery_zm.setSelection(mJoyplusSubManager.getCurrentSubIndex() + 1);
-							}
-						}
-					}
-					
-					gallery.requestFocus();
-					btn_ok.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-							if(gallery_zm.getChildCount()>1){
-								if(gallery_zm.getSelectedItemPosition()==0){
-//									mSubTitleTv.setVisibility(View.INVISIBLE);
-									mSubTitleView.hiddenSubtitle();
-								}else{
-//									mSubTitleTv.setVisibility(View.VISIBLE);
-									Log.i(TAG, "currentSubtitleIndex--->" + mJoyplusSubManager.getCurrentSubIndex()
-											+ " gallery_zm.getSelectedItemPosition()-->" + gallery_zm.getSelectedItemPosition());
-									if((gallery_zm.getSelectedItemPosition()!=0 && mSubTitleView.getVisibility() == View.INVISIBLE)||
-											mJoyplusSubManager.getCurrentSubIndex() + 1 !=  gallery_zm.getSelectedItemPosition()){
-										final int selection = gallery_zm.getSelectedItemPosition();
-										MyApp.pool.execute(new Runnable() {
-											
-											@Override
-											public void run() {
-												// TODO Auto-generated method stub
-//												currentSubtitleIndex = selection;
-//												currentSubtitleIndex -=1;
-												mJoyplusSubManager.SwitchSub(selection -1);
-												mSubTitleView.displaySubtitle();
-										
-//												initSubTitleCollection();
-											}
-										});
-									}
-								}
-							}
-							changeDefination(definationStrings.get(gallery.getSelectedItemPosition()));
-						}
-					});
-					btn_cancel.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-						}
-					});
-					dialog.setContentView(view);
-				}catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-				
-			}
-			return true;
+			
+			break;
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			if (mStatue == STATUE_PLAYING) {
 				mHandler.removeMessages(MESSAGE_HIDE_VOICE);
@@ -1542,6 +1149,25 @@ public class VideoPlayerJPActivity extends Activity implements
 			break;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(event.getAction()==KeyEvent.ACTION_UP
+				&&keyCode==KeyEvent.KEYCODE_MENU
+				&&mStatue == STATUE_PLAYING
+				&&(mProd_type == TYPE_PUSH||mProd_type==TYPE_XUNLEI||mProd_type == TYPE_PUSH_BT_EPISODE)&&mDateLoadingLayout.getVisibility()!=View.VISIBLE){
+			try{
+					mMenuDialog.init();
+					mMenuDialog.show();
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return super.onKeyUp(keyCode, event);
 	}
 	
 	private void startUpdateSeekBar(long time){
@@ -1775,7 +1401,6 @@ public class VideoPlayerJPActivity extends Activity implements
 				long current1 = mVideoView.getCurrentPosition();// 当前进度
 				mSeekBar.setProgress((int) current1);
 				if(current1-lastPlayTime>0){
-					lastPlayTime = current1;
 					mDateLoadingLayout.setVisibility(View.GONE);
 					loadingCount=0;
 					mHandler.removeMessages(MESSAGE_DATALOADING_UPDATE_NETSPEED);
@@ -1808,7 +1433,7 @@ public class VideoPlayerJPActivity extends Activity implements
 						});
 					}
 				}
-				
+				lastPlayTime = current1;
 				// updateTimeNoticeView(mSeekBar.getProgress());
 			}
 //			mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PROGRESS, SEEKBAR_REFRESH_TIME);
@@ -2134,7 +1759,7 @@ public class VideoPlayerJPActivity extends Activity implements
 		}
 		if(lastTime>0){
 			mLastTimeTextView.setVisibility(View.VISIBLE);
-			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime));
+			mLastTimeTextView.setText("上次播放: " + Utils.formatDuration(lastTime)+"\n按【OK】键从头开始播放");
 		}else{
 			mLastTimeTextView.setVisibility(View.GONE);
 		}
@@ -2555,14 +2180,14 @@ public class VideoPlayerJPActivity extends Activity implements
 			if(playBackTime>0){
 				play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int) playBackTime);
 			}
-			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
+//			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(mDefination);
 			play_info.setCreat_time(System.currentTimeMillis());
 			services.updateMoviePlayHistory(play_info);
 		}else{
 			play_info.setDuration((int) duration);
 			play_info.setPlayback_time((int) playBackTime);
 			if(mProd_type == TYPE_PUSH){
-				play_info.setDefination(mDefination);
+//				play_info.setDefination(mDefination);
 //				play_info.setDownload_url(currentPlayUrl);
 			}else if(mProd_type == TYPE_LOCAL){
 				play_info.setLocal_url(currentPlayUrl);
@@ -2870,20 +2495,24 @@ public class VideoPlayerJPActivity extends Activity implements
 			playUrls.clear();
 			//updateXunleiurl
 			String url = null;
+			String url_param = play_info.getPush_url();
+			if(url_param.contains(":")){
+				url_param = URLEncoder.encode(url_param);
+			}
 			if(mProd_type==TYPE_PUSH_BT_EPISODE){
 				if(isOnline){
-					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 							+ "&id=" + play_info.getPush_id()
 							+ "&md5_code=" + getUmengMd5()
 							+ "&name=" + URLEncoder.encode(mProd_sub_name);
 				}else{
 					if(isRequset==1){
-						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5()
 								+ "&name=" + URLEncoder.encode(mProd_sub_name);
 					}else{
-						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5()
 								+ "&name=" + URLEncoder.encode(mProd_sub_name);
@@ -2891,23 +2520,23 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 			}else{
 				if(isOnline){
-					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+					url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 							+ "&id=" + play_info.getPush_id()
 							+ "&md5_code=" + getUmengMd5();
 				}else{
 					if(isRequset==1){
-						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5();
 					}else{
-						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + URLEncoder.encode(play_info.getPush_url())
+						url = Constant.BASE_URL + "/updateJoyplusUrl/retry?url=" + url_param
 								+ "&id=" + play_info.getPush_id()
 								+ "&md5_code=" + getUmengMd5();
 					}
 				}
 				
 			}
-			
+			Log.d(TAG, "url--->" + url);
 			String response = HttpTools.get(VideoPlayerJPActivity.this, url);
 			Log.d(TAG, "response--->" + response);
 			try {
@@ -2918,7 +2547,7 @@ public class VideoPlayerJPActivity extends Activity implements
 				}
 				String downLoadurls = DesUtils.decode(Constant.DES_KEY, reciveData);
 				Log.d(TAG, "downLoadurls--->" + downLoadurls);
-				List<SubURI> subList = null;
+				List<com.joyplus.sub.SubURI> subList = null;
 				if(data.has("subtitle")){
 					Log.d(TAG, data.get("subtitle").toString());
 					if(!"".equals(data.get("subtitle").toString())){
@@ -3114,38 +2743,38 @@ public class VideoPlayerJPActivity extends Activity implements
 	}
 	
 	
-	private void changeDefination(int defination){
-		if(mDefination == defination){
-			return ;
-		}
-		lastTime = mVideoView.getCurrentPosition();
-		rxByteslast = 0;
-		mLoadingPreparedPercent = 0;
-//		mEpisodeIndex = -1;
-		mPercentTextView.setText(", 已完成"
-				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
-		mDefination = defination;
-		mVideoView.stopPlayback();
-		mStatue = STATUE_PRE_LOADING;
-		mDateLoadingLayout.setVisibility(View.GONE);
-		mSeekBar.setEnabled(false);
-		mSeekBar.setProgress(0);
-		mTotalTimeTextView.setText("--:--");
-		mPreLoadLayout.setVisibility(View.VISIBLE);
-		mNoticeLayout.setVisibility(View.VISIBLE);
-		mContinueLayout.setVisibility(View.GONE);
-		mControlLayout.setVisibility(View.GONE);
-		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
-		if (mStartRX == TrafficStats.UNSUPPORTED) {
-			mSpeedTextView
-					.setText("Your device does not support traffic stat monitoring.");
-		} else {
-
-			mHandler.postDelayed(mLoadingRunnable, 500);
-		}
-		sortPushUrls(mDefination);
-		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
-	}
+//	private void changeDefination(int defination){
+//		if(mDefination == defination){
+//			return ;
+//		}
+//		lastTime = mVideoView.getCurrentPosition();
+//		rxByteslast = 0;
+//		mLoadingPreparedPercent = 0;
+////		mEpisodeIndex = -1;
+//		mPercentTextView.setText(", 已完成"
+//				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+//		mDefination = defination;
+//		mVideoView.stopPlayback();
+//		mStatue = STATUE_PRE_LOADING;
+//		mDateLoadingLayout.setVisibility(View.GONE);
+//		mSeekBar.setEnabled(false);
+//		mSeekBar.setProgress(0);
+//		mTotalTimeTextView.setText("--:--");
+//		mPreLoadLayout.setVisibility(View.VISIBLE);
+//		mNoticeLayout.setVisibility(View.VISIBLE);
+//		mContinueLayout.setVisibility(View.GONE);
+//		mControlLayout.setVisibility(View.GONE);
+//		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
+//		if (mStartRX == TrafficStats.UNSUPPORTED) {
+//			mSpeedTextView
+//					.setText("Your device does not support traffic stat monitoring.");
+//		} else {
+//
+//			mHandler.postDelayed(mLoadingRunnable, 500);
+//		}
+//		sortPushUrls(mDefination);
+//		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+//	}
 	
 	
 	private void hidePreLoad(){
@@ -3362,5 +2991,127 @@ public class VideoPlayerJPActivity extends Activity implements
 			mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 		}
 		
+	}
+	
+	public List<String> getEpisode(){
+		List<String> date = null;
+		switch (mProd_type) {
+		case TYPE_PUSH_BT_EPISODE:
+			date = new ArrayList<String>();
+			for(BTEpisode b:play_info.getBtEpisodes()){
+				date.add(b.getName());
+			}
+			break;
+		case 2:
+		case 131:
+			date = new ArrayList<String>();
+			for(int i=0; i<m_ReturnProgramView.tv.episodes.length; i++){
+				date.add(m_ReturnProgramView.tv.episodes[i].name);
+			}
+			break;
+		case 3:
+			date = new ArrayList<String>();
+			for(int i=0; i<m_ReturnProgramView.show.episodes.length; i++){
+				date.add(m_ReturnProgramView.show.episodes[i].name);
+			}
+			break;
+		}
+		return date;
+	}
+	
+	public int getCurrentDefination(){
+		return mDefination;
+	}
+	
+	public String getCurrentProdSubName(){
+		return mProd_sub_name;
+	}
+	
+	public void changeDefination(int defination){
+		if(mDefination == defination){
+			return ;
+		}
+		Log.d(TAG, "changeDefination-------->" + defination);
+		lastTime = mVideoView.getCurrentPosition();
+		initUi();
+		mDefination = defination;
+		if(mProd_type == TYPE_PUSH){
+			play_info.setDefination(defination);
+		}else if(mProd_type == TYPE_PUSH_BT_EPISODE){
+			play_info.getBtEpisodes().get(mEpisodeIndex).setDefination(defination);
+		}
+		sortPushUrls(mDefination);
+		mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
+	}
+	
+//	public void changeVideoSize(int type){
+//		mScreenManager.setScreenParams(type);
+//	}
+//	
+//	public int getVideoSizeType(){
+//		return mScreenManager.getScreenParams();
+//	}
+	
+	private void initUi(){
+		rxByteslast = 0;
+		mLoadingPreparedPercent = 0;
+		mPercentTextView.setText(", 已完成"
+				+ Long.toString(mLoadingPreparedPercent / 100) + "%");
+		mVideoView.stopPlayback();
+		mStatue = STATUE_PRE_LOADING;
+		mDateLoadingLayout.setVisibility(View.GONE);
+		mSeekBar.setEnabled(false);
+		mSeekBar.setProgress(0);
+		mTotalTimeTextView.setText("--:--");
+		mPreLoadLayout.setVisibility(View.VISIBLE);
+		mNoticeLayout.setVisibility(View.VISIBLE);
+		mContinueLayout.setVisibility(View.GONE);
+		mControlLayout.setVisibility(View.GONE);
+		mStartRX = TrafficStats.getTotalRxBytes();// 获取网络速度
+		if (mStartRX == TrafficStats.UNSUPPORTED) {
+			mSpeedTextView
+					.setText("Your device does not support traffic stat monitoring.");
+		} else {
+
+			mHandler.postDelayed(mLoadingRunnable, 500);
+		}
+	}
+	
+	public void changeEpisode(int index){
+		if(index<0||index>play_info.getBtEpisodes().size()||index==mEpisodeIndex){
+			return;
+		}
+		isRequset = 0;
+		BTEpisode bte = play_info.getBtEpisodes().get(index);
+		mProd_sub_name = bte.getName();
+		lastTime = bte.getPlayback_time()*1000;
+		play_info.getBtEpisodes().get(mEpisodeIndex).setPlayback_time((int)(mVideoView.getDuration()/1000));
+		play_info.getBtEpisodes().get(mEpisodeIndex).setDuration((int)(mVideoView.getDuration()/1000));
+		Log.d(TAG, "changeEpisode----lastTime---->" + lastTime);
+		mEpisodeIndex = index;
+		mDefination = bte.getDefination();
+		initUi();
+		playUrls.clear();
+		try {
+			JoyplusMediaPlayerManager.Init(this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mJoyplusSubManager = (JoyplusSubManager)JoyplusMediaPlayerManager.getInstance().getSubManager();
+		updateSourceAndTime();
+		updateName();
+		MyApp.pool.execute(new getEpisodePlayUrls());
+	}
+	public List<URLS_INDEX> getPlayUrls(){
+		return this.playUrls;
+	}
+	
+	public void changeSubViewVisible(boolean v){
+		if(v){
+			mSubTitleView.displaySubtitle();
+		}else{
+			mSubTitleView.hiddenSubtitle();
+		}
 	}
 }

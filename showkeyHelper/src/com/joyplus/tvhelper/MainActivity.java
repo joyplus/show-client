@@ -78,6 +78,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	
 	private View selectedLayout;
 	
+	private View layout_page_3;
+	private LinearLayout layout_title;
+	
 	private TextView web_url_textview;
 	
 //	private FrameLayout relativeLayout;
@@ -164,14 +167,18 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	};
 	
 	private void reSetImages(){
-		int width = layout_1_4.getWidth();
-		int height = layout_1_4.getHeight();
+		int width = layout_1_1.getWidth();
+		int height = (layout_1_1.getHeight()-Utils.getStandardValue(MainActivity.this,13))/2;
 		image_1_1.layout(0, 0, width+ Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
 		image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
 //		image_1_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
 //		image_1_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
 		image_1_4.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height+Utils.getStandardValue(MainActivity.this,40));
-		image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		if(Constant.isSimple){
+			image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), 0, width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		}else{
+			image_1_5.layout(width*2+Utils.getStandardValue(MainActivity.this,26), height+Utils.getStandardValue(MainActivity.this,13), width*3+Utils.getStandardValue(MainActivity.this,66), height*2+Utils.getStandardValue(MainActivity.this,53));
+		}
 		image_3_1.layout(0, 0, width+Utils.getStandardValue(MainActivity.this,40), height*2+Utils.getStandardValue(MainActivity.this,53));
 		image_3_2.layout(width+Utils.getStandardValue(MainActivity.this,13), 0, width*2+Utils.getStandardValue(MainActivity.this,53), height+Utils.getStandardValue(MainActivity.this,40));
 		image_3_3.layout(width+Utils.getStandardValue(MainActivity.this,13), height+Utils.getStandardValue(MainActivity.this,13), width*2+Utils.getStandardValue(MainActivity.this,53), height*2+Utils.getStandardValue(MainActivity.this,53));
@@ -186,13 +193,17 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		if(Constant.isSimple){
+			setContentView(R.layout.activity_main_simple);
+		}else{
+			setContentView(R.layout.activity_main);
+		}
 		
 		MobclickAgent.onError(this);
 		UmengUpdateAgent.setUpdateOnlyWifi(false);
 		UmengUpdateAgent.setUpdateAutoPopup(false);
 		UmengUpdateAgent.update(this);
-		MobclickAgent.setDebugMode(true);
+		MobclickAgent.setDebugMode(false);
 		;
 		MobclickAgent.updateOnlineConfig(this);
 		
@@ -306,6 +317,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			web_url_textview.setText("tt.showkey.tv");
 		}else{
 			web_url_textview.setText(PreferencesUtils.getWebUrl(this));
+		}
+		if(Utils.getVersionCode(this)>PreferencesUtils.getGuidLastVersion(this)&&Constant.isNeedGuid){
+			startActivity(new Intent(this, GuideActivity.class));
 		}
 	}
 	
@@ -445,6 +459,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		layout_1_5.setOnKeyListener(this);
 		layout_1_4.setOnKeyListener(this);
 		
+		layout_page_3 = findViewById(R.id.layout_page_3);
+		layout_title = (LinearLayout) findViewById(R.id.layout_title);
+		
 		layout.SetOnViewChangeListener(new OnViewChangeListener() {
 			
 			@Override
@@ -464,6 +481,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 				}
 			}
 		});
+		if(Constant.isSimple){
+			layout_page_3.setVisibility(View.GONE);
+			layout_title.setVisibility(View.INVISIBLE);
+			findViewById(R.id.layout_1_4).setVisibility(View.GONE);
+			findViewById(R.id.layout_divider_3).setVisibility(View.GONE);
+		}
 //		web_url_textview.setText(Constant.BASE_URL.replace("http://", "").replace("https://", ""));
 	}
 	@Override
@@ -494,9 +517,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 			case R.id.layout_3_3:
 			case R.id.layout_3_4:
 			case R.id.layout_3_5:
-				if(layout.getSelected()==1){
-					updateImageView(v);
-					v.requestFocus();
+				if(!Constant.isSimple){
+					if(layout.getSelected()==1){
+						updateImageView(v);
+						v.requestFocus();
+					}
 				}
 				break;
 			default:
@@ -547,15 +572,19 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnH
 		case R.id.layout_1_4:
 		case R.id.layout_1_5:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showNext();
-				layout_3_1.requestFocus();
+				if (!Constant.isSimple) {
+					layout.showNext();
+					layout_3_1.requestFocus();
+				}
 				return true;
 			}
 			break;
 		case R.id.layout_3_1:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				layout.showPre();
-				layout_1_5.requestFocus();
+				if (!Constant.isSimple) {
+					layout.showPre();
+					layout_1_5.requestFocus();
+				}
 				return true;
 			}
 		default:

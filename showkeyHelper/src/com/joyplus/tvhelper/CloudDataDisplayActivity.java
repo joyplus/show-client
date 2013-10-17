@@ -1,6 +1,7 @@
 package com.joyplus.tvhelper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -10,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +20,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -30,6 +34,7 @@ import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.tvhelper.adapter.MovieDownLoadedAdapter;
 import com.joyplus.tvhelper.adapter.MoviePlayHistoryAdapter;
@@ -62,7 +67,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private DBServices dbService;
 	private int selectedIndex = 0;
 	private Button title_playHistory, title_downloading, title_downloaded;
-	private Button backButton, deleteButton, cancleButton, editeButton;
+	private Button backButton, deleteButton, cancleButton, editeButton, clearButton;
 	private LinearLayout layout1, layout2;
 	private List<PushedMovieDownLoadInfo> downloadedMovies;
 	private List<MoviePlayHistoryInfo> playinfos;
@@ -170,6 +175,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		deleteButton = (Button) findViewById(R.id.del_Button);
 		cancleButton = (Button) findViewById(R.id.cancel_Button);
 		editeButton = (Button) findViewById(R.id.edit_Button);
+		clearButton = (Button) findViewById(R.id.clear_Button);
 		listView = (ExpandableListView) findViewById(R.id.movieList);
 		title_playHistory = (Button) findViewById(R.id.title_play_history);
 		title_downloading = (Button) findViewById(R.id.title_downloading);
@@ -184,6 +190,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		deleteButton.setOnClickListener(this);
 		cancleButton.setOnClickListener(this);
 		editeButton.setOnClickListener(this);
+		clearButton.setOnClickListener(this);
 		adpter_downloading = new PushedMovieDownLoadAdapter(this, FayeService.movieDownLoadInfos);
 		dbService = DBServices.getInstance(this);
 		downloadedMovies = dbService.queryMovieDownLoadedInfos();
@@ -242,7 +249,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					}
 				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+					Intent intent = Utils.getIntent(this);
 //					intent.putExtra("ID", json.getString("prod_id"));
 //					playDate.prod_id = data.getString("id");
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
@@ -260,6 +268,7 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					playDate.prod_src = json.getString("prod_src");
 					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
 					playDate.prod_qua = playInfo.getDefination();
+					playDate.isOnline = false;
 //					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //						if(json.has("prod_subname")){//旧版android 没有传递该参数
 //							playDate.prod_sub_name = json.getString("prod_subname");
@@ -342,7 +351,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				}
 				
 				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//				Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+				Intent intent = Utils.getIntent(this);
 //				intent.putExtra("ID", json.getString("prod_id"));
 //				playDate.prod_id = data.getString("id");
 //				playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
@@ -352,7 +362,12 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 				playDate.prod_url = play_info.getLocal_url();
 				playDate.obj = play_info;
 //				playDate.prod_src = json.getString("prod_src");
-				playDate.prod_time = play_info.getPlayback_time()*1000;
+				if(play_info.getDuration()-play_info.getPlayback_time()<=Constant.END_TIME){
+					playDate.prod_time = 0;
+				}else{
+					playDate.prod_time = Math.round(play_info.getPlayback_time()*1000);
+				}
+				playDate.isOnline = false;
 //				playDate.prod_qua = Integer.valueOf(json.getString("prod_qua"));
 //				if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //					if(json.has("prod_subname")){//旧版android 没有传递该参数
@@ -555,6 +570,40 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 			}
 			((BaseAdapter)listView.getAdapter()).notifyDataSetChanged();
 			break;
+		case R.id.clear_Button:
+			final Dialog dialog = new AlertDialog.Builder(this).create();
+			dialog.show();
+			LayoutInflater inflater = LayoutInflater.from(this);
+			View view = inflater.inflate(R.layout.layout_clear_dialog, null);
+			Button delButton = (Button) view.findViewById(R.id.btn_ok);
+			Button cancelButton = (Button) view.findViewById(R.id.btn_canle);
+			dialog.setContentView(view);
+			cancelButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+				}
+			});
+			delButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					dialog.dismiss();
+					Iterator<MoviePlayHistoryInfo> iterator = null;
+					iterator = playinfos.iterator();  
+			         while(iterator.hasNext()) {  
+			        	 MoviePlayHistoryInfo info = iterator.next();  
+		            	 info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_HIDE);
+		            	 dbService.updateMoviePlayHistory(info);
+						 iterator.remove();  
+			         }
+			         updateEditBottn();
+				}
+			});
+			break;
 		default:
 			break;
 		}
@@ -563,11 +612,13 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 	private void updateEditBottn(){
 		if(((BaseAdapter)listView.getAdapter()).getCount()>0){
 			editeButton.setVisibility(View.VISIBLE);
+			clearButton.setVisibility(View.VISIBLE);
 			listView.requestFocus();
 			defult_img.setVisibility(View.GONE);
 		}else{
 			editeButton.setVisibility(View.INVISIBLE);
-			defult_img.setVisibility(View.GONE);
+			clearButton.setVisibility(View.INVISIBLE);
+			defult_img.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -629,6 +680,20 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 							String push_play_url = item.getString("downurl");
 							String time_token = item.getString("time_token");
 							String md5_code = item.getString("md5_code");
+							List<BTEpisode> es = null; 
+							if(item.has("prodName")){
+								es = new ArrayList<BTEpisode>();
+								JSONArray array_name = item.getJSONArray("prodName");
+								Log.d(TAG, array_name.toString());
+								for(int j = 0; j< array_name.length() ; j++){
+									BTEpisode e = new BTEpisode();
+									e.setDefination(Constant.DEFINATION_HD2);
+									e.setName(array_name.getString(j));
+									es.add(e);
+									Log.d(TAG, array_name.getString(j));
+								}
+								
+							}
 							int type = item.getInt("type");
 							if(PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this)!=null &&PreferencesUtils.getPincodeMd5(CloudDataDisplayActivity.this).equals(md5_code)){
 								if(type == 5){//漏掉的播放
@@ -643,13 +708,31 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 										play_info.setDefination(Constant.DEFINATION_HD2);
 										play_info.setCreat_time(System.currentTimeMillis());
 										play_info.setTime_token(time_token+",");
+										if(es!=null && es.size()>0){
+											play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+											play_info.setBtEpisodes(es);
+										}
 										play_info.setId((int)dbService.insertMoviePlayHistory(play_info));
 									}else{
+										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setName(push_name);
+										play_info.setRecivedDonwLoadUrls(push_play_url);
+										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 										if(play_info.getTime_token()==null){
 											play_info.setTime_token("");
 										}
 										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+										if(es!=null && es.size()>0){
+											play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_BT_EPISODES);
+											play_info.setBtEpisodes(es);
+										}
+//										play_info.setPush_id(push_id);
 										dbService.updateMoviePlayHistory(play_info);
+//										if(play_info.getTime_token()==null){
+//											play_info.setTime_token("");
+//										}
+//										play_info.setTime_token(play_info.getTime_token() + time_token+",");
+//										services.updateMoviePlayHistory(play_info);
 									}
 								}else if(type == 6){//漏掉的下载
 									
@@ -745,24 +828,30 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 //					}
 				}else{
 					CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-					Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//					Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+					Intent intent = Utils.getIntent(this);
 //					intent.putExtra("ID", json.getString("prod_id"));
 //					playDate.prod_id = data.getString("id");
 //					playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
 //					playDate.prod_type = playInfo.getPlay_type();
 					playDate.prod_name = playInfo.getName();
 					if(playInfo.getPlay_type()==MoviePlayHistoryInfo.PLAY_TYPE_LOCAL){
-						playDate.prod_url = playInfo.getLocal_url();
-						playDate.prod_type = VideoPlayerJPActivity.TYPE_LOCAL;
+//						playDate.prod_url = playInfo.getLocal_url();
+//						playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_LOCAL;
 					}else{
 //						playDate.prod_url = playInfo.getDownload_url();
-						playDate.prod_type = VideoPlayerJPActivity.TYPE_PUSH;
+						playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_PUSH;
 					}
 					playDate.obj = playInfo;
 					Log.d(TAG, "prod_type" + playDate.prod_type);
 //					playDate.prod_src = json.getString("prod_src");
-					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+					if(playInfo.getDuration()-playInfo.getPlayback_time()<=Constant.END_TIME){
+						playDate.prod_time = 0;
+					}else{
+						playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+					}
 					playDate.prod_qua = playInfo.getDefination();
+					playDate.isOnline = false;
 //					if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //						if(json.has("prod_subname")){//旧版android 没有传递该参数
 //							playDate.prod_sub_name = json.getString("prod_subname");
@@ -796,7 +885,8 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		MoviePlayHistoryInfo playInfo = playinfos.get(groupPosition);
 		BTEpisode epInfo = playInfo.getBtEpisodes().get(childPosition);
 		CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-		Intent intent = new Intent(this,VideoPlayerJPActivity.class);
+//		Intent intent = new Intent(this,JoyplusMediaPlayerActivity.class);
+		Intent intent = Utils.getIntent(this);
 //		intent.putExtra("ID", json.getString("prod_id"));
 //		playDate.prod_id = data.getString("id");
 //		playDate.prod_type = Integer.valueOf(json.getString("prod_type"));
@@ -813,8 +903,13 @@ public class CloudDataDisplayActivity extends Activity implements OnItemClickLis
 		playDate.obj = playInfo;
 		Log.d(TAG, "prod_type" + playDate.prod_type);
 //		playDate.prod_src = json.getString("prod_src");
-		playDate.prod_time = Math.round(epInfo.getPlayback_time()*1000);
+		if(epInfo.getDuration()-epInfo.getPlayback_time()<=Constant.END_TIME){
+			playDate.prod_time = 0;
+		}else{
+			playDate.prod_time = Math.round(epInfo.getPlayback_time()*1000);
+		}
 		playDate.prod_qua = epInfo.getDefination();
+		playDate.isOnline = false;
 //		if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //			if(json.has("prod_subname")){//旧版android 没有传递该参数
 //				playDate.prod_sub_name = json.getString("prod_subname");

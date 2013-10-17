@@ -16,6 +16,7 @@ import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.BTEpisode;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.PushedApkDownLoadInfo;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Utils;
 
 public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
@@ -223,7 +224,7 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 				if(info.getDuration()<10){
 					holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
 							"  /  "+ "--:--:--");
-				}else if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>10){
+				}else if(info.getDuration()<=info.getPlayback_time()+Constant.END_TIME&&info.getDuration()>10){
 					holder.size.setText("已看完");
 				}else{
 					holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
@@ -287,7 +288,7 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 		if(info.getDuration()<10){
 			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+
 					"  /  "+ "--:--:--");
-		}else if(info.getDuration()<=info.getPlayback_time()+10&&info.getDuration()>10){
+		}else if(info.getDuration()<=info.getPlayback_time()+Constant.END_TIME&&info.getDuration()>10){
 			holder.size.setText("已看完");
 		}else{
 			holder.size.setText("已观看："+Utils.formatDuration(info.getPlayback_time()*1000)+

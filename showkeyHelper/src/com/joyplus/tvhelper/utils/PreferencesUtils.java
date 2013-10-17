@@ -15,6 +15,7 @@ public class PreferencesUtils {
 	private static final String PINCODE_MD5 = "md5_code";
 	private static final String MAC_ADDR = "mac_addr";
 	private static final String DISPLAYURL = "web_url";
+	private static final String LASTVERSION = "last_version";
 	
 	public static void changeAcceptedStatue(Context c ,boolean isAccepted){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
@@ -107,5 +108,17 @@ public class PreferencesUtils {
 	public static String getPincodeMd5(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
 		return s.getString(PINCODE_MD5, null);
+	}
+	
+	public static int getGuidLastVersion(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getInt(LASTVERSION, -1);
+	}
+	
+	public static void setGuidLastVersion(Context c, int version){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putInt(LASTVERSION, version);
+		editor.commit();
 	}
 }

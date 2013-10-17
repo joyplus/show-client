@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.joyplus.JoyplusMediaPlayerMiddleControlMini xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/joyplusvideoview_mini"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
+    <io.vov.vitamio.widget.CenterLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        <!-- show of switch -->
+	    <LinearLayout
+		        android:id="@+id/joyplusvideoview_mini_switch"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:gravity="center" 
+		        android:focusable="true"
+		        android:focusableInTouchMode="true"
+		        android:visibility="gone" >
+		        <RelativeLayout
+		            android:layout_width="314dp"
+		            android:layout_height="314dp">
+		            <ImageButton
+		                android:id="@+id/joyplusvideoview_mini_switch_center"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_centerInParent="true"
+		                android:focusable="true"
+		                android:focusableInTouchMode="true"
+		                android:background="@drawable/player_btn_finish"
+		                android:nextFocusDown="@+id/joyplusvideoview_mini_switch_bottom"
+		                android:nextFocusLeft="@+id/joyplusvideoview_mini_switch_left"
+		                android:nextFocusRight="@+id/joyplusvideoview_mini_switch_right"
+		                android:nextFocusUp="@+id/joyplusvideoview_mini_switch_top"/>
+		            <ImageButton
+		                android:id="@+id/joyplusvideoview_mini_switch_left"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentLeft="true"
+		                android:layout_centerVertical="true"
+		                android:focusable="true"
+		                android:focusableInTouchMode="true"
+		                android:background="@drawable/player_btn_pre"
+		                android:nextFocusDown="@+id/joyplusvideoview_mini_switch_bottom"
+		                android:nextFocusLeft="@+id/joyplusvideoview_mini_switch_left"
+		                android:nextFocusRight="@+id/joyplusvideoview_mini_switch_center"
+		                android:nextFocusUp="@+id/joyplusvideoview_mini_switch_top"/>
+		
+		            <ImageButton
+		                android:id="@+id/joyplusvideoview_mini_switch_top"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentTop="true"
+		                android:layout_centerHorizontal="true"
+		                android:focusable="true"
+		                android:focusableInTouchMode="true"
+		                android:background="@drawable/player_btn_continue"
+		                android:nextFocusDown="@+id/joyplusvideoview_mini_switch_center"
+		                android:nextFocusLeft="@+id/joyplusvideoview_mini_switch_left"
+		                android:nextFocusRight="@+id/joyplusvideoview_mini_switch_right"
+		                android:nextFocusUp="@+id/joyplusvideoview_mini_switch_top"/>
+		
+		            <ImageButton
+		                android:id="@+id/joyplusvideoview_mini_switch_right"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentRight="true"
+		                android:layout_centerVertical="true"
+		                android:focusable="true"
+		                android:focusableInTouchMode="true"
+		                android:background="@drawable/player_btn_next"
+		                android:nextFocusDown="@+id/joyplusvideoview_mini_switch_bottom"
+		                android:nextFocusLeft="@+id/joyplusvideoview_mini_switch_center"
+		                android:nextFocusRight="@+id/joyplusvideoview_mini_switch_right"
+		                android:nextFocusUp="@+id/joyplusvideoview_mini_switch_top"/>
+		
+		            <ImageButton
+		                android:id="@+id/joyplusvideoview_mini_switch_bottom"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentBottom="true"
+		                android:layout_centerHorizontal="true"
+		                android:focusable="true"
+		                android:focusableInTouchMode="true"
+		                android:background="@drawable/player_btn_fav"
+		                android:nextFocusDown="@+id/joyplusvideoview_mini_switch_bottom"
+		                android:nextFocusLeft="@+id/joyplusvideoview_mini_switch_left"
+		                android:nextFocusRight="@+id/joyplusvideoview_mini_switch_right"
+		                android:nextFocusUp="@+id/joyplusvideoview_mini_switch_center"/>
+		        </RelativeLayout>
+    		</LinearLayout>
+    		<!-- show of pause play -->
+    		<LinearLayout
+			        android:id="@+id/joyplusvideoview_mini_pauseplay"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:background="#00000000"
+			        android:gravity="center"
+			        android:orientation="horizontal"
+			        android:focusable="true"
+		            android:focusableInTouchMode="true"
+			        android:padding="0dip"
+			        android:visibility="gone" >
+			        <ImageButton android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:background="@drawable/player_btn_play_play"
+			            android:id="@+id/joyplusvideoview_mini_pauseplay_button"
+			            android:nextFocusDown="@id/joyplusvideoview_mini_pauseplay"
+			            android:nextFocusLeft="@id/joyplusvideoview_mini_pauseplay"
+			            android:nextFocusRight="@id/joyplusvideoview_mini_pauseplay"
+			            android:nextFocusUp="@id/joyplusvideoview_mini_pauseplay"
+			            />
+		    </LinearLayout>
+        
+    </io.vov.vitamio.widget.CenterLayout>
+
+</com.joyplus.JoyplusMediaPlayerMiddleControlMini>

@@ -7,12 +7,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.joyplus.Sub.Element;
-import com.joyplus.Sub.JoyplusSubManager;
-import com.joyplus.manager.JoyplusMediaPlayerManager;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
+import com.joyplus.sub_old_1.Element;
+import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
 
-public class SubTitleView extends TextView {
+public class SubTitleView extends TextView{
 	private static final String TAG = "SubTitleView";
 	
 	private static final int SUBTITLE_DELAY_TIME_MAX = 500;
@@ -146,13 +146,16 @@ public class SubTitleView extends TextView {
 			}else {
 				mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_BEGAIN_SHOW, startTime - currentPosition);
 			}
+		}else{
+			mHandler.sendEmptyMessageDelayed(MESSAGE_SUBTITLE_START, SUBTITLE_DELAY_TIME_MAX);
 		}
 		lastTime = currentPosition;
 	}
 	
 	private void messageDisplay(){
 		Log.i(TAG, "messageDisplay-->");
-		if(getSubManager().CheckSubAviable()){
+		setText("");
+		if(getSubManager() != null && getSubManager().CheckSubAviable()){
 			setVisibility(VISIBLE);
 			mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_START);
 		}
@@ -169,10 +172,13 @@ public class SubTitleView extends TextView {
 		return mActivity.getPlayerCurrentPosition();
 	}
 	private JoyplusSubManager getSubManager(){
-		return JoyplusMediaPlayerManager.getInstance().getSubManager();
+		return (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
 	}
+	
 	private Element getElement(long time){
-		return getSubManager().getElement(time);
+		if(getSubManager() == null) return null;
+		Element element= getSubManager().getElement(time);
+		return element;
 	}
 	
 	public SubTitleView(Context context) {
@@ -200,7 +206,7 @@ public class SubTitleView extends TextView {
 	
 	public void displaySubtitle(){
 		mHandler.removeCallbacksAndMessages(null);
-		Log.i(TAG, "displaySubtitle--->" + getSubManager().CheckSubAviable());
+		Log.i(TAG, "displaySubtitle--->");
 		mHandler.sendEmptyMessage(MESSAGE_SUBTITLE_DISPLAY);
 	}
 	

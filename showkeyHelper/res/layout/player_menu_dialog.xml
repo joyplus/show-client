@@ -1,0 +1,131 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
+    <RelativeLayout android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7">
+       	 	<ImageView android:layout_width="wrap_content"
+       	 	    android:layout_height="wrap_content"
+       	 	    android:layout_marginTop="95dp"
+       	 	    android:layout_marginLeft="15dp"
+       	 	    android:id="@+id/title_selected_background"
+       	 	    android:src="@drawable/player_menu_title_hl"/>
+		    <LinearLayout android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:background="@drawable/player_menu_bg"
+		        android:orientation="vertical">
+		        <LinearLayout android:layout_width="fill_parent"
+				    android:layout_height="wrap_content" 
+				    android:paddingLeft="60dp"
+		        	android:paddingRight="60dp"
+				    android:gravity="center_vertical">
+				    <ImageView android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:src="@drawable/player_menu"/>
+				    <TextView android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:text="菜单"
+				        android:textSize="30dp"
+				        android:textColor="#ffffff"
+				        android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowRadius="3"
+				        android:shadowDy="1"/>
+				</LinearLayout>
+				<LinearLayout android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_marginTop="50dp"
+				    android:paddingLeft="25dp"
+				    android:paddingRight="25dp"
+				    android:orientation="horizontal">
+				    <TextView android:layout_width="165dp"
+				        android:layout_height="wrap_content"
+				        android:textSize="25dp"
+				        android:textColor="#ffffff"
+				        android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="1"
+				        android:shadowRadius="2"
+				        android:paddingTop="10dp"
+				        android:paddingBottom="10dp"
+				        android:text="选集"
+				        android:gravity="center_horizontal"
+				        android:id="@+id/title_xuanji"
+				        />
+				    <TextView android:layout_width="165dp"
+				        android:layout_height="wrap_content"
+				        android:textSize="25dp"
+				        android:textColor="#ffffff"
+				        android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="1"
+				        android:shadowRadius="2"
+				        android:paddingTop="10dp"
+				        android:paddingBottom="10dp"
+				        android:text="字幕"
+				        android:id="@+id/title_zimu"
+				        android:gravity="center_horizontal"
+				        />
+				    <TextView android:layout_width="165dp"
+				        android:layout_height="wrap_content"
+				        android:textSize="25dp"
+				        android:textColor="#ffffff"
+				        android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="1"
+				        android:shadowRadius="2"
+				        android:paddingTop="10dp"
+				        android:paddingBottom="10dp"
+				        android:text="清晰度"
+				        android:id="@+id/title_definition"
+				        android:gravity="center_horizontal"
+				        />
+				    <TextView android:layout_width="165dp"
+				        android:layout_height="wrap_content"
+				        android:textSize="25dp"
+				        android:textColor="#ffffff"
+				        android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="1"
+				        android:shadowRadius="2"
+				        android:paddingTop="10dp"
+				        android:paddingBottom="10dp"
+				        android:text="画面比例"
+				        android:id="@+id/title_size"
+				        android:gravity="center_horizontal"
+				        />
+				</LinearLayout>
+				<TextView android:layout_width="fill_parent"
+				    android:layout_height="1px"
+				    android:background="@drawable/player_menu_divider"/>
+				<RelativeLayout android:layout_width="fill_parent"
+				    android:layout_height="fill_parent"
+				    android:paddingLeft="50dp"
+				    android:paddingRight="50dp">
+				    <ImageView android:layout_width="fill_parent"
+				        android:layout_height="130dp"
+				        android:background="@drawable/player_menu_item_bg"
+				        android:id="@+id/highlight_bg"
+				        android:visibility="invisible"
+				        android:layout_marginTop="-15dp"
+				        android:alpha="0.8"
+				        />
+				    <ListView android:layout_width="fill_parent"
+				    android:layout_height="fill_parent"
+				    android:id="@+id/list_choice"
+				    android:layout_marginTop="20dp"
+				    android:layout_marginBottom="20dp"
+				    android:scrollbars="none"
+				    android:listSelector="@android:color/transparent"
+				    android:divider="@null">
+				    </ListView>
+				</RelativeLayout>
+		    </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
