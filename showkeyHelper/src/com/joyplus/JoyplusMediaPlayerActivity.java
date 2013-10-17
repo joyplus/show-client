@@ -606,6 +606,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	@Override
 	public void MediaCompletion() {
 		// TODO Auto-generated method stub
+		Log.i(TAG, "MediaCompletion-->" + mInfo.mType);
 		if(mInfo.mType == URLTYPE.NETWORK){
 			autoPlayNext();			
 		}else{//local media should be exit
@@ -1263,6 +1264,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		case TYPE_PUSH_BT_EPISODE:
 		case TYPE_XUNLEI_BT_EPISODE:
 //			if(mEpisodeIndex<play_info.getBtEpisodes().size()-1&&isNearEnd){
+			Log.i(TAG, "autoPlayNext--->mProd_type:" + mProd_type + " isNearEnd:" + isNearEnd);
 			if(isNearEnd){
 				playNextBt();
 			}else{
@@ -1304,7 +1306,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		if(menuDialog.isShowing()){
 			menuDialog.dismiss();
 		}
-		mVideoView.getPlayer().StopVideo();
 		mNoticeNearNendLayout.setVisibility(View.GONE);
 		isNearEnd = false;
 		InitUI();
@@ -1330,7 +1331,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		if(menuDialog.isShowing()){
 			menuDialog.dismiss();
 		}
-		mVideoView.getPlayer().StopVideo();
 		mNoticeNearNendLayout.setVisibility(View.GONE);
 		isNearEnd = false;
 		InitUI();
