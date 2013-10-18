@@ -318,7 +318,8 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 						UpdateLongPress();
 					}
 					UpdateSeekUI();
-					Notify    = false;
+					Notify    = false;					
+					mHandler.removeMessages(MSG_HIDEVIEW);
 					mHandler.removeMessages(MSG_UPDATE_SEEKBARMODE);
 					mHandler.sendEmptyMessageDelayed(MSG_UPDATE_SEEKBARMODE, 10);
 				}else{
