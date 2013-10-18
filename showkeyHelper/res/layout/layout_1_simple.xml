@@ -37,7 +37,7 @@
 	                                        android:gravity="center_horizontal"
 	                                        android:textColor="#000000"
 	                                    	android:textSize="20dp"
-	                                        android:text="1.通过电脑/PAD/手机访问网址 "/>
+	                                        android:text="Web端访问网址 "/>
 	                                    <TextView android:layout_width="fill_parent"
 	                                        android:layout_height="wrap_content"
 	                                        android:gravity="center_horizontal"
@@ -50,11 +50,10 @@
 	                                </LinearLayout>
 	                                <TextView android:layout_width="fill_parent"
 	                                    android:layout_height="wrap_content"
-	                                    android:gravity="left"
-	                                    android:paddingLeft="25dp"
+	                                    android:gravity="center"
 	                                    android:textColor="#000000"
 	                                    android:textSize="20dp"
-	                                    android:text="2.输入PIN码 "/>
+	                                    android:text="并输入PIN"/>
 	                            </LinearLayout>
 	                            <TextView android:layout_width="210dp"
 	                                android:layout_height="wrap_content"
@@ -68,17 +67,10 @@
 	                                android:layout_height="fill_parent"
 	                                android:gravity="center"
 	                                android:layout_weight="1">
-	                                <!-- <ImageView android:layout_width="wrap_content"
+	                                <ImageView android:layout_width="wrap_content"
 		                                android:src="@drawable/main_icon_showtui"
 		                                android:layout_marginTop="10dp"
-		                                android:layout_height="wrap_content"/> -->
-		                                <TextView android:layout_width="fill_parent"
-	                                    android:layout_height="wrap_content"
-	                                    android:gravity="left"
-	                                    android:textColor="#000000"
-	                                    android:paddingLeft="25dp"
-	                                    android:textSize="20dp"
-	                                    android:text="3.输入BT种子、电驴、磁力链\n点击小屏转大屏欣赏影片"/>
+		                                android:layout_height="wrap_content"/>
 	                            </LinearLayout>
 	                        </LinearLayout>
 	                        <TextView android:layout_width="fill_parent"
@@ -183,7 +175,6 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:paddingBottom="10dp"
-                android:visibility="gone"
                 android:background="@color/bg_color_xunlei"
                 android:layout_weight="1">
 	            <ImageView android:layout_width="wrap_content"
@@ -200,7 +191,6 @@
             </LinearLayout>
             <TextView android:layout_width="fill_parent"
             android:layout_height="13dp"
-            android:visibility="gone"
             android:id="@+id/layout_divider_3"/>
             <LinearLayout android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -220,6 +210,7 @@
                            android:textSize="35dp"
                            android:layout_marginTop="25dp"
                            android:gravity="center_horizontal"
+                           android:layout_alignParentBottom="true"
                            android:text="设置"/>
             </LinearLayout>
         </LinearLayout>
