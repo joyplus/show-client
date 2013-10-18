@@ -583,6 +583,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	}
 	private void checkNearEnd(MediaInfo info) {
 		// TODO Auto-generated method stub
+		if(info != null) Log.i(TAG, "info" + info.toString());
 		if(info.getTotleTime()-info.getCurrentTime()<=Constant.END_TIME*1000&&info.getTotleTime()>Constant.END_TIME){
 			if(mProd_type == TYPE_PUSH_BT_EPISODE){
 				if(!isNearEnd&&mEpisodeIndex<play_info.getBtEpisodes().size()-1){
@@ -606,7 +607,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	@Override
 	public void MediaCompletion() {
 		// TODO Auto-generated method stub
-		Log.i(TAG, "MediaCompletion-->" + mInfo.mType);
+		Log.i(TAG, "MediaCompletion-->" + mInfo.mType + " mVideoView.CurrentMediaInfo"
+				 + mVideoView.CurrentMediaInfo.toString());
 		if(mInfo.mType == URLTYPE.NETWORK){
 			autoPlayNext();			
 		}else{//local media should be exit
