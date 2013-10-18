@@ -4,13 +4,13 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.sub_old_1.Element;
 import com.joyplus.sub_old_1.JoyplusSubManager;
 import com.joyplus.tvhelper.VideoPlayerJPActivity;
+import com.joyplus.tvhelper.utils.Log;
 
 public class SubTitleView extends TextView{
 	private static final String TAG = "SubTitleView";

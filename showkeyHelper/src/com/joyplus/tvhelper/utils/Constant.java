@@ -11,8 +11,8 @@ public class Constant {
 	 //正式环境
 	 public static final boolean TestEnv = false;
 	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static String BASE_URL = "http://tt.showkey.tv";//视频直播源
-	public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
+	 public static String BASE_URL = "http://comet.showkey.tv";//视频直播源
+//	public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
 	 
 //	 public static String BASE_URL = "http://comet.showkey.tv/uploadApk";//视频直播源
 	 

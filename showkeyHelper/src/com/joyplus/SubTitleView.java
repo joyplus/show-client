@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
@@ -12,6 +11,7 @@ import com.joyplus.mediaplayer.MediaInfo;
 import com.joyplus.sub.Element;
 import com.joyplus.sub.JoyplusSubListener;
 import com.joyplus.sub.JoyplusSubManager;
+import com.joyplus.tvhelper.utils.Log;
 
 public class SubTitleView extends TextView implements JoyplusSubListener{
 	private static final String TAG = "SubTitleView";
