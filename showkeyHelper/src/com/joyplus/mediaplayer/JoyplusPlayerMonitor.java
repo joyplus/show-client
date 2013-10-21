@@ -46,7 +46,8 @@ public class JoyplusPlayerMonitor{
 	    	if(Debug)Log.d(TAG,"stopMonitor()");
 	    	Flog = false;
 	    	mRunnable = null;
-			mHandler.removeCallbacksAndMessages(null);
+			if(mHandler != null)
+				mHandler.removeCallbacksAndMessages(null);
 			mHandler = null;
 	    }
 	    public void startMonitor(Handler handler){
