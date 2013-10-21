@@ -655,7 +655,7 @@ public class XunLeiLXActivity extends Activity {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			if(TextUtils.isEmpty(userNameEdit.getText().toString())){
+			if(!TextUtils.isEmpty(userNameEdit.getText().toString())){
 				Bitmap bitmap = XunLeiLiXianUtil.getVerifyCodeBitmap(getApplicationContext(),
 						userNameEdit.getText().toString());
 				if(bitmap != null){

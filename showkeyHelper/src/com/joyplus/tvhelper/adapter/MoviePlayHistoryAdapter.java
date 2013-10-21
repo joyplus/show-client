@@ -169,7 +169,6 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 			View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 			ViewHolder holder = null;
-			MoviePlayHistoryInfo info = data.get(groupPosition);
 			if(convertView == null){
 				convertView = LayoutInflater.from(mContext).inflate(R.layout.item_downloaded_movie, null);
 				holder = new ViewHolder();
@@ -182,6 +181,9 @@ public class MoviePlayHistoryAdapter extends BaseExpandableListAdapter {
 			}else{
 				holder = (ViewHolder) convertView.getTag();
 			}
+			
+			if(groupPosition >= data.size()) return convertView;
+			MoviePlayHistoryInfo info = data.get(groupPosition);
 			
 			
 			if(info.getName()==null||"".equals(info.getName())){

@@ -6,12 +6,13 @@ public class Constant {
 	
 	public static boolean isJoyPlus = true;//是否是JoyPlus本身应用，还是其他应用
 	
-	public static boolean isSimple = true;
+	public static boolean isSimple = false;
 	public static boolean isNeedGuid = true;
 	 //正式环境
 	 public static final boolean TestEnv = false;
 	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static String BASE_URL = "http://comet.showkey.tv";//视频直播源
+	 public static String BASE_URL = "http://tt.showkey.tv";//视频直播源
+	 public static String FAYE_SERVICE = "http://comet.showkey.tv";
 //	public static final String URL_FAQ = "http://tt.showkey.tv/helptv.html";//视频直播源
 	 
 //	 public static String BASE_URL = "http://comet.showkey.tv/uploadApk";//视频直播源
@@ -21,6 +22,7 @@ public class Constant {
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
 //	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
 //	 public static final String URL_FAQ = "http://tt.yue001.com:8080/helptv.html";//视频直播源
+//	 public static String FAYE_SERVICE = BASE_URL;
 	 
 	//刘洋环境
 //	 public static String APPKEY = "ijoyplus_android_0001bj";
