@@ -89,7 +89,8 @@ public class XunLeiLXActivity extends Activity {
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(this));
 		}
 		
-		if (!TextUtils.isEmpty(XunLeiLiXianUtil.getCookie(this))) {//already login
+		if (!TextUtils.isEmpty(XunLeiLiXianUtil.getCookie(this))
+				&& !TextUtils.isEmpty(XunLeiLiXianUtil.getLoginUserPasswd(this))) {//already login
 			isFirstLogin = false;
 			handler.sendEmptyMessage(START_LOGIN);
 			showDialog(DIALOG_WAITING);
@@ -467,6 +468,10 @@ public class XunLeiLXActivity extends Activity {
 							userNameEdit.getText().toString())) {
 						XunLeiLiXianUtil.saveLoginUserName(XunLeiLXActivity.this,
 								userNameEdit.getText().toString());
+						XunLeiLiXianUtil.saveLoginUserPasswd(
+								XunLeiLXActivity.this, 
+								MD5Util.getMD5String(passwdEdit.getText().toString()));
+					}else{
 						XunLeiLiXianUtil.saveLoginUserPasswd(
 								XunLeiLXActivity.this, 
 								MD5Util.getMD5String(passwdEdit.getText().toString()));

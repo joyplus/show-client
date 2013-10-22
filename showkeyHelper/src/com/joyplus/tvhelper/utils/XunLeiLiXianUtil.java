@@ -1028,7 +1028,6 @@ public class XunLeiLiXianUtil {
 	
 	//存储登陆录密码
 	public static void saveLoginUserPasswd(Context context,String loginUserPasswd) {
-		
 		SharedPreferences.Editor localEditor = context
 				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE)
 				.edit();
