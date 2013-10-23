@@ -146,7 +146,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						m.arg1 = (int) seekto;
 						PlayerHandler.sendMessage(m);
 					}else{
-						mVideoView.getPlayer().SetVideoPaths(path);
+						if(mVideoView.getPlayer() != null)
+							mVideoView.getPlayer().SetVideoPaths(path);
 						if(lastTime>0){
 							mVideoView.getPlayer().SeekVideo(seekto);
 						}
@@ -363,7 +364,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
     	ResetURLAndSub();
-    	menuDialog = new JoyplusMediaPlayerMenuDialog(this);
+    	menuDialog = new JoyplusMediaPlayerMenuDialog(JoyplusMediaPlayerActivity.this);
     	//add ad 
     	mAd = new JoyplusMediaPlayerAd(this);
 	}

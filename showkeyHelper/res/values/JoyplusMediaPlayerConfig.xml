@@ -8,6 +8,8 @@
     <string translatable="false" name="Decode_HW">HW</string>
     <string translatable="false" name="Decode_SW">SW</string>
     
+    <string translatable="false" name="Decode_SW_EN">true</string>
+    
     <!-- MediaPlayer Config  --> 
     <!-- name , TYPE , EN , Decode_HW , Decode_SW , PRIORIRY_HW , PRIORITY_SW 
          name : the player which used

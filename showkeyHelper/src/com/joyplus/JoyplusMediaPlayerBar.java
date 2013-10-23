@@ -401,6 +401,7 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 						 SEEKING = false;
 						 mHandler.sendEmptyMessage(MSG_REQUESTHIDE);
 					 }
+					 Log.i(TAG, "dispatchMessage--->MediaInfo:" + ((MediaInfo) m.obj).CreateMediaInfo().toString() );
 					 UpdateProgress(((MediaInfo) m.obj).CreateMediaInfo());
 				 }
 				 break;

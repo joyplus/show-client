@@ -329,6 +329,15 @@ public class SettingActivity extends Activity implements OnClickListener{
 		
 		public VideoViewSetting(){
 			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(SettingActivity.this);
+			setSwUIEn(mJoyplusMediaPlayerDataManager.getSWEnable());
+		}
+		
+		private void setSwUIEn(boolean en){
+			if(en){
+				findViewById(R.id.layout_player_decode_mode).setVisibility(View.VISIBLE);
+			}else{
+				findViewById(R.id.layout_player_decode_mode).setVisibility(View.INVISIBLE);
+			}
 		}
 		
 		public void switchMode(){

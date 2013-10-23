@@ -14,13 +14,18 @@ public class JoyplusMediaPlayerDataManager{
     private static final String  JOYPLUS_CONFIG_XML = "joyplus_mediaplayer_config_xml";
     
     /*Interface of Decode type*/
+    private static final String  KEY_SUPPORT_SW   	  = "KEY_SUPPORT_SW";
     private static final String  KEY_DECODETYPE     = "KEY_DECODETYPE";
     private static final String  KEY_SWITCHINTERNAL = "KEY_SWITCHINTERNAL";
     private static final String  KEY_SUPPORTVITAMIO = "KEY_SUPPORTVITAMIO";
     private static final String  KEY_SCREENPARAMS   = "KEY_SCREENPARAMS";
     private static final String  KEY_SUPPORTBAIDU   = "KEY_SUPPORTBAIDU";
+
     public JoyplusMediaPlayerDataManager(Context context){
     	this.mDataContext = context;
+    }
+    public boolean getSWEnable(){
+    	return Boolean.parseBoolean(mDataContext.getString(R.string.Decode_SW_EN)); 		
     }
     /*Interface for baidu player*/
     public String getBaiduAK(){

@@ -132,7 +132,7 @@
 	       		            	android:id="@+id/layout_player_decode_mode"
 	       		            	android:background="@drawable/bg_xunlei_content_setting_selector"
 	       		                android:orientation="horizontal"
-	       		                android:visibility="gone">
+	       		                android:visibility="visible">
 	       		                <TextView android:layout_width="0dp"
 	       		                    android:layout_height="fill_parent"
 	       		                    android:gravity="center_vertical"
