@@ -60,12 +60,19 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 		public String toString(){
 			return speed;
 		}
+		public int toInt(){
+			if(speed.equals(SPEED.X0.toString()))return 0;
+			else if(speed.equals(SPEED.X1.toString()))return 1;
+			else if(speed.equals(SPEED.X2.toString()))return 2;
+			else if(speed.equals(SPEED.X3.toString()))return 3;
+			else return 0;
+		}
 	}
-	public int getIntSpeed(SPEED speed){
+	public float getIntSpeed(SPEED speed){
 		if(speed == null)return 0;
-		if(speed == SPEED.X3)return 4;
-		if(speed == SPEED.X2)return 2;
-		if(speed == SPEED.X1)return 1;
+		if(speed == SPEED.X3)return 20f;
+		if(speed == SPEED.X2)return 10f;
+		if(speed == SPEED.X1)return 5f;
 		if(speed == SPEED.X0)return 0;
 		return 0;
 	}
@@ -332,12 +339,14 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			private void UpdateLongPress(){
 				if(mSeekBarMode != SEEKMODE.LONGPRESS)return;
 				long DelayTime = System.currentTimeMillis()-LongPressStartTime;
-				if(DelayTime>5*500)
-					mSpeed = SPEED.X3;
-				else if(DelayTime<2*500)
-					mSpeed = SPEED.X1; 
-				else
-					mSpeed = SPEED.X2;
+				Log.d("Jas","UpdateLongPress() speed="+mSpeed.toString()+" DelayTime="+DelayTime);
+				if(DelayTime>6*500){
+					if(mSpeed.toInt()<SPEED.X3.toInt())mSpeed = SPEED.X3;
+				}else if(DelayTime<2*500){
+					if(mSpeed.toInt()<SPEED.X1.toInt())mSpeed = SPEED.X1; 
+				}else{
+					if(mSpeed.toInt()<SPEED.X2.toInt())mSpeed = SPEED.X2;
+				}
 			}
 			public void UpdateSeekUI(){
 				mHandler.removeMessages(MSG_UPDATE_SEEKBAR);
@@ -351,9 +360,9 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			UpdateUIRunnableRunning = true;
 			int position =0;
 			if(mSeekBarState.mSeekBarType == SEEKTYPE.FORWARD)
-			    position  = SeekBar.getProgress()+getSpeedSpace()*getIntSpeed(mSeekBarState.mSpeed);
+			    position  = (int) (SeekBar.getProgress()+getSpeedSpace()*getIntSpeed(mSeekBarState.mSpeed));
 			else if(mSeekBarState.mSeekBarType == SEEKTYPE.BACKWARD)
-				position  = SeekBar.getProgress()-getSpeedSpace()*getIntSpeed(mSeekBarState.mSpeed);
+				position  = (int) (SeekBar.getProgress()-getSpeedSpace()*getIntSpeed(mSeekBarState.mSpeed));
 			if(position<0)position = 0;
 			if(position>SeekBar.getMax())position = SeekBar.getMax();
 			SeekBar.setProgress(position);
@@ -375,11 +384,12 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 			mSeekBarState = new SeekBarState();
 		}		
 		private int getSpeedSpace(){
-			int Space = SeekBar.getMax();
-			if(Space == 0)
-				return 0;
-			else 
-				return Space/DefaultSpeedSpace;
+			return 500;
+//			int Space = SeekBar.getMax();
+//			if(Space == 0)
+//				return 0;
+//			else 
+//				return Space/DefaultSpeedSpace;
 		}
 		public void dispatchMessage(Message m){
 			switch(m.what){
@@ -411,14 +421,14 @@ public class JoyplusMediaPlayerBar implements JoyplusMediaPlayerInterface{
 				case KeyEvent.KEYCODE_DPAD_LEFT:
 					LongPressStartTime         = System.currentTimeMillis();
 					mSeekBarState.mSeekBarMode = SEEKMODE.LONGPRESS;
-					mSeekBarState.mSpeed = SPEED.X1;						
+					if(mSeekBarState.mSpeed == SPEED.X0)mSeekBarState.mSpeed = SPEED.X1;						
 					mSeekBarState.mSeekBarType = SEEKTYPE.BACKWARD;					
 					mSeekBarState.notifySeekBarMode();
 					return true;
 				case KeyEvent.KEYCODE_DPAD_RIGHT:
 					LongPressStartTime         = System.currentTimeMillis();
 					mSeekBarState.mSeekBarMode = SEEKMODE.LONGPRESS;
-					mSeekBarState.mSpeed = SPEED.X1;
+					if(mSeekBarState.mSpeed == SPEED.X0)mSeekBarState.mSpeed = SPEED.X1;
 					mSeekBarState.mSeekBarType = SEEKTYPE.FORWARD;
 					mSeekBarState.notifySeekBarMode();
 					return true;
