@@ -14,7 +14,7 @@ public class JoyplusPlayerMonitor{
 
 		private boolean Debug = false;
 	    private String  TAG   = "JoyplusPlayerMonitor";
-	    public static Handler mHandler;
+	    public  Handler mHandler;
 	    private VideoViewInterface  mPlayer;
 	    private static  int DELAY = 500;
 	    private boolean Flog = false;
@@ -46,7 +46,8 @@ public class JoyplusPlayerMonitor{
 	    	if(Debug)Log.d(TAG,"stopMonitor()");
 	    	Flog = false;
 	    	mRunnable = null;
-			mHandler.removeCallbacksAndMessages(null);
+			if(mHandler != null)
+				mHandler.removeCallbacksAndMessages(null);
 			mHandler = null;
 	    }
 	    public void startMonitor(Handler handler){

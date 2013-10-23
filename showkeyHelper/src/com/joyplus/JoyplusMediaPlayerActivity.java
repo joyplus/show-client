@@ -2995,10 +2995,20 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			public void run() {
 				XLLXFileInfo xllxFileInfo = null;
 				if(mProd_type == TYPE_XUNLEI){
-					xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
-				} else {
+					try {
+						xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if(mProd_type == TYPE_XUNLEI_BT_EPISODE){
 					if(TextUtils.isEmpty(mProd_sub_name)) return;
-					mXLLXFileInfArray = (XLLXFileInfo[]) app.getmCurrentPlayDetailData().obj;
+					try {
+						mXLLXFileInfArray = (XLLXFileInfo[]) app.getmCurrentPlayDetailData().obj;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if(mXLLXFileInfArray == null || mXLLXFileInfArray.length <= 0) return;
 					for(int i=0;i<mXLLXFileInfArray.length;i++){
 						if(mProd_sub_name.equals(mXLLXFileInfArray[i].file_name)){

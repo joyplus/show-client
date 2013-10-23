@@ -89,7 +89,8 @@ public class XunLeiLXActivity extends Activity {
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(this));
 		}
 		
-		if (!TextUtils.isEmpty(XunLeiLiXianUtil.getCookie(this))) {//already login
+		if (!TextUtils.isEmpty(XunLeiLiXianUtil.getCookie(this))
+				&& !TextUtils.isEmpty(XunLeiLiXianUtil.getLoginUserPasswd(this))) {//already login
 			isFirstLogin = false;
 			handler.sendEmptyMessage(START_LOGIN);
 			showDialog(DIALOG_WAITING);
@@ -418,7 +419,7 @@ public class XunLeiLXActivity extends Activity {
 		pageIndex = 1;
 		isFirstLogin = true;
 		refreshBt.setVisibility(View.INVISIBLE);
-
+		verifyEdit.setText("");
 		if(loginErrorFlag == 10 || loginErrorFlag == 11) {
 			passwdEdit.setText(XunLeiLiXianUtil.getLoginUserPasswd(getApplicationContext()));
 			return;
@@ -467,6 +468,10 @@ public class XunLeiLXActivity extends Activity {
 							userNameEdit.getText().toString())) {
 						XunLeiLiXianUtil.saveLoginUserName(XunLeiLXActivity.this,
 								userNameEdit.getText().toString());
+						XunLeiLiXianUtil.saveLoginUserPasswd(
+								XunLeiLXActivity.this, 
+								MD5Util.getMD5String(passwdEdit.getText().toString()));
+					}else{
 						XunLeiLiXianUtil.saveLoginUserPasswd(
 								XunLeiLXActivity.this, 
 								MD5Util.getMD5String(passwdEdit.getText().toString()));
@@ -523,12 +528,13 @@ public class XunLeiLXActivity extends Activity {
 				int loginErrorFlag = msg.arg1;
 				switch (loginErrorFlag) {
 				case 1:
-					Utils.showToast(XunLeiLXActivity.this, "自动获取验证码失败");
-					verifyLayout.setVisibility(View.VISIBLE);
-					if(userNameEdit.getText().toString() != null 
-							&& !"".equals(userNameEdit.getText().toString())){
-						MyApp.pool.execute(getVerifyBitmap);
+					if(verifyLayout.getVisibility() == View.VISIBLE){
+						Utils.showToast(XunLeiLXActivity.this, "输入有误，请重新输入");
+					}else {
+						Utils.showToast(XunLeiLXActivity.this, "请手动输入验证码");
 					}
+					
+					verifyLayout.setVisibility(View.VISIBLE);
 					break;
 				case 2:
 					Utils.showToast(XunLeiLXActivity.this, "密码错误");
@@ -550,6 +556,13 @@ public class XunLeiLXActivity extends Activity {
 				default:
 					Utils.showToast(XunLeiLXActivity.this, "网络超时，稍后重试");
 					break;
+				}
+				
+				if(verifyLayout.getVisibility() == View.VISIBLE){
+					if(userNameEdit.getText().toString() != null 
+							&& !"".equals(userNameEdit.getText().toString())){
+						MyApp.pool.execute(getVerifyBitmap);
+					}
 				}
 
 				// 清空数据重新获取数据
@@ -655,7 +668,7 @@ public class XunLeiLXActivity extends Activity {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			if(TextUtils.isEmpty(userNameEdit.getText().toString())){
+			if(!TextUtils.isEmpty(userNameEdit.getText().toString())){
 				Bitmap bitmap = XunLeiLiXianUtil.getVerifyCodeBitmap(getApplicationContext(),
 						userNameEdit.getText().toString());
 				if(bitmap != null){
@@ -726,5 +739,4 @@ public class XunLeiLXActivity extends Activity {
 		loginLayout.setVisibility(View.VISIBLE);
 		logoutLayout.setVisibility(View.INVISIBLE);
 	}
-
 }

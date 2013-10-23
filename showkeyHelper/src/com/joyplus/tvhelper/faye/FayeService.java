@@ -378,7 +378,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		URI url = URI.create(Constant.BASE_URL+"/uploadApk");
+		URI url = URI.create(Constant.FAYE_SERVICE+"/uploadApk");
 		channel = "/" + PreferencesUtils.getChannel(this);
 		if(myClient!=null){
 			myClient.disconnectFromServer();
