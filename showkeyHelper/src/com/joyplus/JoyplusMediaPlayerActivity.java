@@ -100,7 +100,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	//private Handler mHandler = new Handler(){};
 	public JoyplusMediaPlayerScreenManager mScreenManager;
 	//Setting msg 400-450  
-	public JoyplusMediaPlayerPreference    mPreference;
+//	public JoyplusMediaPlayerPreference    mPreference;
 	/*SubTitle TextView Control   level 4*/
 	private SubTitleView                   mSubTitleView;	
 	
@@ -352,15 +352,6 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	filter.addAction(Global.ACTION_RECIVE_NEW_PUSH_MOVIE);
     	registerReceiver(mReceiver, filter);
     	mAlphaDispear        = AnimationUtils.loadAnimation(this, R.anim.alpha_disappear);
-    	mHandler.post(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				mPreference          = new JoyplusMediaPlayerPreference(JoyplusMediaPlayerActivity.this);
-		    	mPreference.setHandler(PreferenceHandler);
-			}
-		});
     	mSubTitleView        = (SubTitleView) findViewById(R.id.tv_subtitle);
     	mSubTitleView.Init(this);
     	ResetURLAndSub();
