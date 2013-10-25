@@ -129,7 +129,7 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	public boolean hasMediaInfoChange(){
 		long delay = Math.abs(CurrentMediaInfo.getCurrentTime()-PreMediaInfo.getCurrentTime());
 		if(Debug)Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");
-		return (delay<2000&&delay>=300);
+		return (delay<3000&&delay>=300);
 	}
 	private class LoadingWindows {
 		private final static int MSG_SHOW = 1;

@@ -146,10 +146,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						m.arg1 = (int) seekto;
 						PlayerHandler.sendMessage(m);
 					}else{
-						if(mVideoView.getPlayer() != null)
+						if(mVideoView.getPlayer() == null)
+							mVideoView.update();//there should call @InitUI().
+						if(mVideoView.getPlayer() != null){
 							mVideoView.getPlayer().SetVideoPaths(path);
-						if(lastTime>0){
-							mVideoView.getPlayer().SeekVideo(seekto);
+							if(lastTime>0){
+								mVideoView.getPlayer().SeekVideo(seekto);
+							}
 						}
 					}
 					
@@ -630,6 +633,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
 //			if(duration<=curretnPosition || curretnPosition<=0)return;
+			if(curretnPosition<10*1000)return;//don't save it beyond 10s
 			if(duration-curretnPosition<Constant.END_TIME*1000){
 				saveToDB(duration / 1000, (duration / 1000) -Constant.END_TIME);
 			}else{
