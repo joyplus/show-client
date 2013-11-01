@@ -1997,9 +1997,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	@Override
 	protected void onStop() {
 		Log.i(TAG, "onStop--->");
-		//if(!isFinishing()){
+		if(!menuDialog.isShowing()){
 			finishActivity();
-		//}
+		}
 		super.onStop();
 	}
 

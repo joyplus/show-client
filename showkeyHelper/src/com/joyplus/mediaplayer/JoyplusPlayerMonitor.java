@@ -20,6 +20,7 @@ public class JoyplusPlayerMonitor{
 	    private boolean Flog = false;
 	    public  static final int MSG_STATEUPDATE       = 1;
 	    public  static final int MSG_NOPROCESSCOMMEND  = 2;
+	    private Object mObject = new Object();
 	    public JoyplusPlayerMonitor(Context context,VideoViewInterface player){
 	    	  mPlayer  = player;
 	    	  setUpdateTime(Integer.parseInt(context.getString(R.string.defaultUpdateTime)));
@@ -36,19 +37,23 @@ public class JoyplusPlayerMonitor{
 		private void notityState(){
 			if(Debug)Log.d(TAG,"notityState()mHandler="+(mHandler == null)+" mPlayer="+(mPlayer == null));
 			if(mHandler == null || mPlayer == null)return;
-			mHandler.removeCallbacksAndMessages(null);
-			Message m = new Message();
-			m.what    = MSG_STATEUPDATE;
-			m.obj     = mCurrentInfo;			
-			mHandler.sendMessage(m);
+			synchronized (mObject) {
+				mHandler.removeCallbacksAndMessages(null);
+				Message m = new Message();
+				m.what    = MSG_STATEUPDATE;
+				m.obj     = mCurrentInfo;			
+				mHandler.sendMessage(m);
+			}			
 		}
 	    public void stopMonitor(){
 	    	if(Debug)Log.d(TAG,"stopMonitor()");
-	    	Flog = false;
-	    	mRunnable = null;
-			if(mHandler != null)
-				mHandler.removeCallbacksAndMessages(null);
-			mHandler = null;
+	    	synchronized (mObject) {
+		    	Flog = false;
+		    	mRunnable = null;
+				if(mHandler != null)
+					mHandler.removeCallbacksAndMessages(null);
+				mHandler = null;
+	    	}
 	    }
 	    public void startMonitor(Handler handler){
 	    	if(Debug)Log.d(TAG,"startMonitor()");
