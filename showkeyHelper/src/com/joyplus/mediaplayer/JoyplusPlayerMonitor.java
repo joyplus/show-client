@@ -87,6 +87,7 @@ public class JoyplusPlayerMonitor{
 	    private MediaInfo mPreMediaInfo = new MediaInfo();
 	    private final int MAXCount      = 30*1000/DELAY;
 	    private int       Count         = 0;
+	    private boolean   ErrorReport   = true;
 	    private void CheckMediaInfo(){
 	    	mCurrentInfo = mPlayer.getMediaInfo();
 	    	if(mCurrentInfo.getState() == STATE.MEDIA_STATE_PLAYING
@@ -97,6 +98,21 @@ public class JoyplusPlayerMonitor{
 	    			Count = 0;
 	    		}
 	    	}else Count = 0;
+	    	if(JoyplusMediaPlayerFeature.FEATURE_REPLAY_ERRORURL){
+		    	if(mCurrentInfo.getState() == STATE.MEDIA_STATE_FINISH){
+		    		if(mCurrentInfo.getCurrentTime()<mCurrentInfo.getTotleTime()){
+		    			if(ErrorReport){
+		    				ErrorReport = false;//it only report once.
+		    				mCurrentInfo.setState(STATE.MEDIA_STATE_ERROR_FINISH);
+		    			}else{
+		    				mCurrentInfo.setState(STATE.MEDIA_STATE_PLAYING);
+		    			}
+		    		}
+		    	}else {
+		    		Log.d("Yzg","wwww ErrorReport="+ErrorReport);
+		    		ErrorReport = true;
+		    	}
+	    	}
 	    	mPreMediaInfo = mCurrentInfo.CreateMediaInfo();
 	    }
 }

@@ -14,4 +14,7 @@ public interface JoyplusMediaPlayerListener {
     
 	/*receiver error commend*/
 	public void NoProcess(String commend);
+	
+	/*send MediaPlayer Error Complements*/
+	public void MediaErrorCompletion(MediaInfo info);
 }

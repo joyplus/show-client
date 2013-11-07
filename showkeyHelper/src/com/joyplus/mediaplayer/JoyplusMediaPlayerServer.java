@@ -279,6 +279,12 @@ public class JoyplusMediaPlayerServer {
 						mStateTracker.notifyMediaError();
 					}else if(info.getState() == STATE.MEDIA_STATE_FINISH){
 						mStateTracker.notifyMediaCompletion();
+					}else if(info.getState() == STATE.MEDIA_STATE_ERROR_FINISH){
+						if(JoyplusMediaPlayerFeature.FEATURE_REPLAY_ERRORURL){
+							mStateTracker.notifyMediaErrorCompletion(info);
+						}else{
+							mStateTracker.notifyMediaCompletion();//for it be sure complement 
+						}
 					}
 				}
 				break;

@@ -61,6 +61,22 @@ public class JoyplusMediaPlayerStateTrack {
 			   }.run();
 		}
 	}
+	
+	public void notifyMediaErrorCompletion(final MediaInfo info){
+		if(Debug)Log.d(TAG,"notifyMediaCompletion()");
+		synchronized(mListenerList){
+			   new Runnable(){
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						for(JoyplusMediaPlayerListener listener:mListenerList){
+							 listener.MediaErrorCompletion(info);
+						}
+					} 
+			   }.run();
+		}
+	}
+	
 	public void notifyMediaError(){
 		if(Debug)Log.d(TAG,"notifyMediaError()");
 		synchronized(mListenerList){

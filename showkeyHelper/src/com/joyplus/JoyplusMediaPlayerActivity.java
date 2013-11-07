@@ -54,6 +54,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.manager.URLManager;
 import com.joyplus.manager.URLManager.Quality;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerFeature;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerListener;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.mediaplayer.JoyplusMediaPlayerScreenManager;
@@ -608,6 +609,16 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 			autoPlayNext();			
 		}else{//local media should be exit
 			finishActivity();
+		}
+	}
+	@Override
+	public void MediaErrorCompletion(com.joyplus.mediaplayer.MediaInfo info) {
+		// TODO Auto-generated method stub
+		if(JoyplusMediaPlayerFeature.FEATURE_REPLAY_ERRORURL){
+		    lastTime = info.getCurrentTime();
+		    mHandler.sendEmptyMessage(MESSAGE_PALY_URL_OK);
+		}else{
+			MediaCompletion();//for it report complements aleady.
 		}
 	}
 	@Override
