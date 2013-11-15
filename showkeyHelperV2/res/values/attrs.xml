@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>  
+    <declare-styleable name="NotificationView">  
+        <attr name="textColor" format="color" />  
+        <attr name="textSize" format="dimension" />  
+        <attr name="text" format="string" /> 
+    </declare-styleable>  
+    
+    <declare-styleable name="RoundProgressBar">  
+        <attr name="max" format="integer"/>	
+        <attr name="fill" format="boolean"/>			<!-- 是否填充圆形区域 -->
+        <attr name="Paint_Width" format="integer"/>		<!-- 画笔宽度，填充模式下无效，会被重置为0 -->
+        <attr name="Paint_Color" format="color"/>		<!-- 画笔颜色 -->
+        <attr name="Show_Bottom" format="boolean"/>		<!-- 是否显示底色 -->
+        <attr name="Inside_Interval" format="integer"/> <!-- 圆形区域向里缩进的距离 --> 
+    </declare-styleable> 
+</resources>  

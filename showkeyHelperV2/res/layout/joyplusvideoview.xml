@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/joyplusvideoview_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+          <!-- Level 3 :the bottom layout use to videoview -->
+          <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+		        <view class="com.joyplus.mediaplayer.JoyplusVideoView"
+			        android:id="@+id/JoyplusVideoView"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+		            android:focusable="false"
+		            android:focusableInTouchMode="false"
+		            android:layout_centerVertical="true"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerInParent="true"
+		            android:configChanges="orientation">
+			        <ViewStub android:id="@+id/system_mediaplayer_videoview_stub"
+			            android:layout="@layout/system_mediaplayer_videoview"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:layout_gravity="center"
+			            android:orientation="vertical"/>
+			        <ViewStub android:id="@+id/system_vitamioplayer_videoview_stub"
+			            android:layout="@layout/system_vitamioplayer_videoview"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:orientation="vertical"/>
+			        <ViewStub android:id="@+id/system_baiduplayer_videoview_stub"
+			            android:layout="@layout/system_baiduplayer_videoview"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:orientation="vertical"/>
+			    </view>
+	    </RelativeLayout>
+	    <!--  Subtitle Layer -->	
+	   <com.joyplus.SubTitleView
+	       android:id="@+id/tv_subtitle"
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_alignParentBottom="true"
+	       android:layout_marginBottom="15dp"
+	       android:background="@android:color/transparent"
+	       android:gravity="center"
+	       android:maxLines="6"
+	       android:shadowColor="#000000"
+	       android:shadowDx="1"
+	       android:shadowDy="1"
+	       android:shadowRadius="2"
+	       android:text=""
+	       android:textColor="#ffffff"
+	       android:textSize="36dp" />	
+	    <!-- Level 2 : the layout of middel layout  which show control  -->
+          <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+			    <view class="com.joyplus.JoyplusMediaPlayerMiddleControl"
+			        android:id="@+id/JoyplusMediaPlayerMiddleControl"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+		            android:focusable="true"
+		            android:focusableInTouchMode="true"
+		            android:layout_centerVertical="true"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerInParent="true"
+		            android:configChanges="orientation">
+			        <ViewStub android:id="@+id/joyplusvideoview_loading_stub"
+			            android:layout="@layout/joyplusvideoview_loading"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:orientation="vertical"/>
+			        <ViewStub android:id="@+id/joyplusvideoview_audio_stub"
+			            android:layout="@layout/joyplusvideoview_audio"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:orientation="vertical"/>
+			        <ViewStub android:id="@+id/joyplusvideoview_mini_stub"
+			            android:layout="@layout/joyplusvideoview_mini"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:orientation="vertical"/>
+			    </view>
+        </RelativeLayout>
+	    <!-- Level 1 : the Mediaplayer bar layout. include top and bottom  -->
+	    <RelativeLayout
+		        android:id="@+id/mediacontroller_bar"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent" >
+			    <!-- Top mask -->
+		        <TextView
+		            android:id="@+id/mediacontroller_mask_top"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentTop="true"
+		            android:background="@drawable/player_mask_top" />
+		        <!-- Top bar XML  Control it in JoyplusMediaPlayerBar.VideoViewTopBar -->
+		        <LinearLayout
+		            android:id="@+id/mediacontroller_topbar"
+		            android:layout_width="fill_parent"
+		            android:layout_height="50dp"
+		            android:layout_alignParentTop="true">
+					 <ImageView
+		                android:id="@+id/mediacontroller_topbar_resolution"
+		                android:layout_width="65dp"
+		                android:layout_height="wrap_content"
+		                android:layout_centerVertical="true"
+		                android:layout_marginLeft="20dp"
+		                android:layout_marginTop="4dp"
+		                />
+		            <TextView
+		                android:id="@+id/mediacontroller_topbar_playname"
+		                android:layout_width="0dp"
+		                android:layout_height="wrap_content"
+		                android:layout_centerVertical="true"
+		                android:layout_marginLeft="10dp"
+		                android:paddingRight="10dp"
+		                android:layout_weight="1"
+		                android:text=""
+		                android:singleLine="true"
+		                android:ellipsize="middle"
+		                android:textColor="@color/white"
+		                android:layout_toRightOf="@id/mediacontroller_topbar_resolution"
+		                android:textSize="26dp" />
+		            <TextView
+		                android:id="@+id/mediacontroller_topbar_time"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentRight="true"
+		                android:layout_centerVertical="true"
+		                android:layout_marginRight="30dp"
+		                android:textSize="26dp"
+		                android:textColor="@color/white" />
+		        </LinearLayout>
+		        <!-- end Top Bar XML --> 
+		        
+		        <!-- Bottom mask -->
+		        <TextView
+		            android:id="@+id/mediacontroller_mask_bottom"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentBottom="true"
+		            android:background="@drawable/player_mask_bottom" />
+		        <!-- Bottom Bar XML Control it in JoyplusMediaPlayerBar.VideoViewController -->
+		        <RelativeLayout
+		            android:id="@+id/mediacontroller_bottombar"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentBottom="true"
+		            android:layout_marginBottom="30dp"
+		            android:layout_marginLeft="33dp" >
+		      
+		            <RelativeLayout
+		                android:id="@+id/mediacontroller_bottombar_time"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:background="@drawable/player_time" >
+		                <TextView
+		                    android:id="@+id/mediacontroller_bottombar_current_time"
+		                    android:layout_width="wrap_content"
+		                    android:layout_height="wrap_content"
+		                    android:layout_marginLeft="28dp"
+		                    android:layout_marginTop="10dp"
+		                    android:text="00:00:00"
+		                    android:textColor="@color/white"
+		                    android:textSize="22dp" />
+		            </RelativeLayout>
+		            <RelativeLayout
+		                android:id="@+id/mediacontroller_bottombar_time_fast"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentLeft="true"
+		                android:layout_marginBottom="19dp"
+		                android:layout_marginLeft="126dp"
+		                android:background="@drawable/play_time_right"
+		                android:visibility="gone" >
+		                <TextView
+		                    android:id="@+id/mediacontroller_bottombar_time_fasttext"
+		                    android:layout_width="wrap_content"
+		                    android:layout_height="wrap_content"
+		                    android:layout_alignParentLeft="true"
+		                    android:layout_marginLeft="30dp"
+		                    android:layout_marginTop="10dp"
+		                    android:text="×2"
+		                    android:textColor="@color/white"
+		                    android:textSize="20dp" />
+		            </RelativeLayout>
+		        </RelativeLayout>
+		        <RelativeLayout
+		            android:id="@+id/mediacontroller_bottombar_seek"
+		            android:layout_width="fill_parent"
+		            android:layout_height="50dp"
+		            android:layout_alignParentBottom="true" >
+		            <TextView
+		                android:layout_width="fill_parent"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentBottom="true"
+		                android:layout_alignParentLeft="true"
+		                android:layout_alignParentRight="true"
+		                android:layout_marginBottom="10dp"
+		                android:layout_marginLeft="10dp"
+		                android:layout_marginRight="185dp"
+		                android:background="@drawable/player_time_jindu" />
+		            <LinearLayout
+		                android:layout_width="fill_parent"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentBottom="true"
+		                android:layout_marginBottom="11dp"
+		                android:paddingLeft="20dp"
+		                android:paddingRight="195dp" >
+		                <SeekBar
+		                    android:id="@+id/mediacontroller_bottombar_seekbar"
+		                    android:layout_width="fill_parent"
+		                    android:layout_height="wrap_content"
+		                    android:layout_gravity="center"
+		                    android:clickable="true"
+		                    android:focusable="true"
+		                    android:max="1000"
+		                    android:paddingLeft="10dp"
+		                    android:paddingRight="10dp"
+		                    android:progress="0"
+		                    android:progressDrawable="@drawable/player_seekbar_img"
+		                    android:thumb="@drawable/player_progress_thumb"
+		                    android:thumbOffset="14dp" />
+		            </LinearLayout>
+		            <TextView
+		                android:id="@+id/mediacontroller_bottombar_total_time"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_alignParentRight="true"
+		                android:layout_centerVertical="true"
+		                android:layout_marginRight="60dp"
+		                android:paddingBottom="19dp"
+		                android:text="--:--"
+		                android:textColor="@color/white"
+		                android:textSize="24dp" />
+		        </RelativeLayout>
+		        <!-- end Bottom Bar -->
+        </RelativeLayout>     
+        <!-- Level 4 : nothing  -->     
+        <RelativeLayout                
+		        android:layout_width="match_parent"
+                android:layout_height="match_parent"		        
+		        android:layout_centerInParent="true"		        
+                android:orientation="horizontal">	    
+	            <LinearLayout
+	                    android:id="@+id/joyplus_videoview_buffer"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:gravity="center"
+			            android:visibility="gone"
+			            android:orientation="vertical" >
+		                <LinearLayout
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:gravity="center"
+				            android:visibility="visible"
+				            android:orientation="horizontal" 
+				            android:layout_marginTop="300dp">
+				            <ProgressBar
+				                android:layout_width="40dp"
+				                android:layout_height="40dp" />
+				            <TextView
+				                android:id="@+id/joyplus_videoview_buffer_info"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_marginLeft="5dp"
+				                android:shadowColor="#000000"
+						        android:shadowDx="1"
+						        android:shadowDy="1"
+						        android:shadowRadius="2"
+				                android:textColor="@color/white"
+				                android:text="@string/meidaplayer_loading_string_buffer_loading"
+				                android:textAppearance="?android:attr/textAppearanceMedium"
+				                android:textSize="30dp" />
+				       </LinearLayout>
+				       <TextView
+				                android:id="@+id/joyplus_videoview_buffer_notify"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_marginLeft="5dp"
+				                android:visibility="gone"
+				                android:shadowColor="#000000"
+						        android:shadowDx="1"
+						        android:shadowDy="1"
+						        android:shadowRadius="2"
+				                android:textColor="@color/white"
+				                android:text="@string/meidaplayer_loading_string_buffer_notify"
+				                android:textAppearance="?android:attr/textAppearanceMedium"
+				                android:textSize="30dp" />
+	            </LinearLayout>
+		</RelativeLayout>
+		
+		<!-- Level 5 : Ad -->
+		<RelativeLayout                
+		        android:layout_width="match_parent"
+                android:layout_height="match_parent"	
+		        android:id="@+id/joyplusmediaplayer_advideoView_layout"	
+		        android:visibility="gone"	        
+                android:orientation="horizontal"
+			    android:background="@color/black">
+	            <io.vov.vitamio.widget.CenterLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:orientation="vertical" >
+				    <VideoView
+					    android:id="@+id/joyplusmediaplayer_advideoView"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content" />
+				</io.vov.vitamio.widget.CenterLayout>
+			    <TextView
+	                android:id="@+id/joyplusmediaplayer_advideoView_time"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentTop="true"
+	                android:layout_alignParentRight="true"
+		            android:layout_marginRight="30dp"           
+	                android:shadowColor="#000000"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="30dp" />	            
+	    </RelativeLayout> 
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:visibility="gone"
+	        android:gravity="center"
+	        android:orientation="vertical"
+	        android:id="@+id/joyplus_videoview_notify_near_end"
+	        android:paddingTop="250dp">
+	        <TextView
+	                android:layout_width="800dp"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:text="即将播放:"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="30dp"/>
+	        <TextView
+	                android:layout_width="fill_parent"
+	                android:id="@+id/bt_next_ep_name"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+			        android:singleLine="true"
+			        android:ellipsize="middle"
+	                android:textColor="@color/white"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="30dp"/>
+	        <TextView
+	                android:layout_width="800dp"
+	                android:layout_height="wrap_content"
+	                android:shadowColor="#000000"
+	                android:gravity="center"
+			        android:shadowDx="1"
+			        android:shadowDy="1"
+			        android:shadowRadius="2"
+	                android:textColor="@color/white"
+	                android:text="按【OK】键直接播放"
+	                android:textAppearance="?android:attr/textAppearanceMedium"
+	                android:textSize="30dp"/>
+	    </LinearLayout>
+</RelativeLayout>

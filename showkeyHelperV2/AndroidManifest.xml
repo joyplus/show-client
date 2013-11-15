@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.joyplus.tvhelper"
+      android:versionCode="1"
+      android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="8"/>
+    <uses-feature android:glEsVersion="0x00020000" />
+
+    <!-- 访问internet权限 -->
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<!-- 在SDCard中创建与删除文件权限 -->
+	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+	<!-- 往SDCard写入数据权限 -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.REORDER_TASKS"/>
+	
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>  
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission> 
+    
+    <application android:label="@string/app_name"
+        android:name=".MyApp"
+        android:icon="@drawable/icon"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+
+        <activity android:name="com.joyplus.tvhelper.MainActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="landscape"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.joyplus.tvhelper.PlayBaiduActivity"
+            android:label="@string/app_name" 
+            android:theme="@style/FullHeightDialog">>
+            
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>
+        <activity
+            android:name="ThirdPlayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="com.joyplus.tv.video" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.joyplus.tvhelper.WebViewActivity"
+            android:label="@string/app_name" >
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>
+        <activity
+            android:name="com.joyplus.tvhelper.GuideActivity"
+            android:label="@string/app_name" 
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">>
+            
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+        </activity>
+        <activity
+            android:name="com.joyplus.JoyplusMediaPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="io.vov.vitamio.InitActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <service android:name="com.joyplus.tvhelper.faye.FayeService" >
+        </service>
+        <receiver android:name="BootCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
+            </intent-filter>
+        </receiver>
+		<meta-data android:value="51e75b5956240ba99502e874" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="j001" android:name="UMENG_CHANNEL"/>
+    </application>
+    <supports-screens android:largeScreens="true"
+                      android:smallScreens="true"
+                      android:anyDensity="true"
+                      android:normalScreens="true"/>
+</manifest> 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/layout_xunlei_login"
+        android:orientation="vertical">
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="27"/>
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="57">
+            <TextView android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"/>
+            <LinearLayout android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="10">
+                <LinearLayout android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/login_baidu"
+                    android:orientation="vertical"
+                    android:layout_weight="3">
+                    <TextView android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="5"/>
+                    <LinearLayout android:layout_height="0dp"
+                        android:layout_width="fill_parent"
+                        android:orientation="horizontal"
+                        android:layout_weight="6">
+                        <Button android:layout_width="0dp"
+		                android:layout_height="wrap_content"
+		                android:layout_weight="1"
+		                android:id="@+id/baidu_login_button"
+		                android:text="账号密码登陆"/>
+                        <LinearLayout android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:paddingRight="60dp"
+                            android:paddingBottom="60dp"
+                            android:paddingLeft="13dp">
+                            <ImageView android:layout_weight="1"
+				                android:layout_width="0dp"
+				                android:paddingRight="8dp"
+				                android:scaleType="fitXY"
+				                android:layout_height="fill_parent"
+				                android:id="@+id/baidu_login_erweima"/>
+                            <TextView android:layout_width="0dp"
+                                android:layout_height="fill_parent"
+                                android:textColor="#ffffff"
+                                android:textSize="20dp"
+                                android:text="请打开手机内可扫描二维码的应用，将选取框对准二维码扫描，并按提示登录"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
+			            
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <ImageView android:layout_weight="6"
+	                    android:layout_height="0dp"
+	                    android:background="@drawable/login_baidu_tip"
+	                    android:layout_width="fill_parent"/>
+                    <TextView android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+            </LinearLayout>
+            <TextView android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"/>
+        </LinearLayout>
+        <TextView android:layout_width="fill_parent" 
+            android:layout_height="0dp" 
+            android:layout_weight="20" /></LinearLayout>
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/layout_xunlei_progress"
+        android:visibility="gone"
+        android:gravity="center">
+		<ProgressBar android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:indeterminateDrawable="@drawable/a_popup_dialog_loading"/>
+	</LinearLayout>
+</RelativeLayout>
