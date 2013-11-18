@@ -3007,6 +3007,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					}
 				}
 				if(xllxFileInfo != null && !xllxFileInfo.isDir) {
+					Log.i(TAG, "xllxFileInfo--->" + xllxFileInfo.toString());
 					ArrayList<VideoPlayUrl> list = 
 							XunLeiLiXianUtil.getLXPlayUrl(JoyplusMediaPlayerActivity.this, xllxFileInfo);
 					mJoyplusSubManager.setSubUri(XunLeiLiXianUtil.
