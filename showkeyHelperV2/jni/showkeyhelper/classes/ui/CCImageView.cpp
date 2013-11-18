@@ -78,17 +78,9 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 	}
 
 	const char* tag = response->getHttpRequest()->getTag();
-	if (0 == strcmp("PicGet",tag))
+	if (0 != strcmp("PicGet",tag))
 	{
-		vector<char> *data = response->getResponseData();
-		int data_length = data->size();
-		string res;
-		for (int i = 0;i<data_length;++i)
-		{
-			res+=(*data)[i];
-		}
-		res+='\0';
-		LOGD("onGetFinished","%s",res.c_str());
+		return;
 	}
 
 	// 数据转存
