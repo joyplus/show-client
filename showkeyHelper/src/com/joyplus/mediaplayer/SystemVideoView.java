@@ -4,7 +4,6 @@ package com.joyplus.mediaplayer;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.joyplus.tvhelper.utils.Log;
 

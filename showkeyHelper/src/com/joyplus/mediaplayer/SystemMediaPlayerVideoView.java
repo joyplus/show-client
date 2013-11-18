@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.utils.Log;
 
-public class SystemMediaPlayerVideoView extends LinearLayout implements ViewInterface,VideoViewInterface,MediaPlayer.OnErrorListener,MediaPlayer.OnCompletionListener,
+public class SystemMediaPlayerVideoView extends LinearLayout implements VideoViewInterface,MediaPlayer.OnErrorListener,MediaPlayer.OnCompletionListener,
                                                                         MediaPlayer.OnPreparedListener,MediaPlayer.OnInfoListener{
 	private boolean Debug = true;
 	private String  TAG   = "SystemMediaPlayerVideoView";

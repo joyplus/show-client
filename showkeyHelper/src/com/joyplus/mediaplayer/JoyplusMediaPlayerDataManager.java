@@ -18,8 +18,16 @@ public class JoyplusMediaPlayerDataManager{
     private static final String  KEY_SWITCHINTERNAL = "KEY_SWITCHINTERNAL";
     private static final String  KEY_SUPPORTVITAMIO = "KEY_SUPPORTVITAMIO";
     private static final String  KEY_SCREENPARAMS   = "KEY_SCREENPARAMS";
+    private static final String  KEY_SUPPORTBAIDU   = "KEY_SUPPORTBAIDU";
     public JoyplusMediaPlayerDataManager(Context context){
     	this.mDataContext = context;
+    }
+    /*Interface for baidu player*/
+    public String getBaiduAK(){
+    	return mDataContext.getString(R.string.baiduplayer_AK);
+    }
+    public String getBaiduSK(){
+    	return mDataContext.getString(R.string.baiduplayer_SK);
     }
     public  DecodeType getDecodeType(){
     	return getDecodeType(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_DECODETYPE));
@@ -63,6 +71,15 @@ public class JoyplusMediaPlayerDataManager{
     }
     public boolean getVitamioEnable(){
     	if("true".equals(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SUPPORTVITAMIO))){
+    	    return true;
+    	}
+        return false;
+    }
+    public boolean setBaiduEnable(boolean en){
+    	return saveString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SUPPORTBAIDU,(en?"true":"false"));
+    }
+    public boolean getBaiduEnable(){
+    	if("true".equals(getString(mDataContext,JOYPLUS_CONFIG_XML,KEY_SUPPORTBAIDU))){
     	    return true;
     	}
         return false;

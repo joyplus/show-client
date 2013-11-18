@@ -92,6 +92,10 @@ public class JoyplusVideoView extends LinearLayout{
 	    	Log.i(TAG,"Vitamio unsupport now !!");
 	    	return false;
 	    }
+	    if(config.TYPE == JoyplusMediaPlayerManager.TYPE_BAIDU && !JoyplusMediaPlayerManager.getInstance().getBaiduEn()){
+	    	Log.i(TAG,"Vitamio unsupport now !!");
+	    	return false;
+	    }
 		mView = CreateView(MediaPlayerType);
 		return true;
 	}
@@ -126,6 +130,10 @@ public class JoyplusVideoView extends LinearLayout{
     		return CreateVideoView(
     				R.id.system_vitamioplayer_videoview_stub,
     				R.id.system_vitamioplayer_videoview);
+    	}else if(type == JoyplusMediaPlayerManager.TYPE_BAIDU){
+    		return CreateVideoView(
+    				R.id.system_baiduplayer_videoview_stub,
+    				R.id.system_baiduplayer_videoview);
     	}else{
     		throw new IllegalArgumentException();
     	}

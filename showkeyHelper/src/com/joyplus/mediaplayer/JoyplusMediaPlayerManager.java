@@ -24,8 +24,6 @@ public class JoyplusMediaPlayerManager {
 	    /*Interface of sub manager*/
 	    public final static boolean SubanagerUseNEW = true;
 	    private SubManager            mSubManager;
-//	    private com.joyplus.sub.JoyplusSubManager          mSubManager;
-//	    private com.joyplus.sub_old_1.JoyplusSubManager    mOldSubManager;
 	    /*Interface of Url Manager*/
 	    private URLManager                      mURLManager;
 	    	    
@@ -35,8 +33,10 @@ public class JoyplusMediaPlayerManager {
 	    public final static int TYPE_MEDIAPLAYER  = 0;
 	    /*a type of media player it use Vitamio*/
 	    public final static int TYPE_VITAMIO      = 1;
+	    /*a type of media player it use Baidu */
+	    public final static int TYPE_BAIDU        = 2;
 	    
-	    public final static int TYPE_MAX          = TYPE_VITAMIO;
+	    public final static int TYPE_MAX          = TYPE_BAIDU;
 	    
 	    public static String getPlayerTypeName(int type){
 	    	 switch(type){
@@ -44,6 +44,8 @@ public class JoyplusMediaPlayerManager {
 	    		 return "MEDIAPLAYER";
 	    	 case TYPE_VITAMIO:
 	    		 return "VITAMIO";
+	    	 case TYPE_BAIDU:
+	    		 return "BAIDU";
 	    	 default :
 	    		 return Integer.toString(type);
 	    	 }
@@ -69,6 +71,12 @@ public class JoyplusMediaPlayerManager {
 	    	if(mServer.getJoyplusPlayerConfig(TYPE_VITAMIO).EN)
 	    		setVitamioEn(LibsChecker.checkVitamioLibs((Activity)context));
 	    	else setVitamioEn(false);
+	    	if(mServer.getJoyplusPlayerConfig(TYPE_BAIDU).EN){
+//	    		BCyberPlayerFactory.init(mContext);
+//	    		BEngineManager mgr = BCyberPlayerFactory.createEngineManager();
+//				mgr.initCyberPlayerEngine(mDataManager.getBaiduAK(), mDataManager.getBaiduSK());
+	    		setBaiduEn(true);
+	    	}else setBaiduEn(false);
 	    }
 	    /*Interface of SubManager and Urlmanager*/
 	    public SubManager getSubManager(){	    	
@@ -123,6 +131,13 @@ public class JoyplusMediaPlayerManager {
 	    }
 	    public boolean getVitamioEn(){
 	    	return mDataManager.getVitamioEnable();
+	    }
+	    /*Interface of Baidu support flog*/
+	    public boolean setBaiduEn(boolean en){
+	    	return mDataManager.setBaiduEnable(en);
+	    }
+	    public boolean getBaiduEn(){
+	    	return mDataManager.getBaiduEnable();
 	    }
 	    /*Interface of check decode name*/
 	    public String getDecodeName(DecodeType type){

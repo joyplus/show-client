@@ -33,6 +33,12 @@
 			            android:layout_height="match_parent"
 			            android:layout_centerInParent="true"
 			            android:orientation="vertical"/>
+			        <ViewStub android:id="@+id/system_baiduplayer_videoview_stub"
+			            android:layout="@layout/system_baiduplayer_videoview"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_centerInParent="true"
+			            android:orientation="vertical"/>
 			    </view>
 	    </RelativeLayout>
 	    <!--  Subtitle Layer -->	
