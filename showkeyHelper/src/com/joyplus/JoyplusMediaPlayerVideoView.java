@@ -51,9 +51,11 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
     }
     private void InitResource() {
 		// TODO Auto-generated method stub
+    	CurrentMediaInfo = new MediaInfo();
+		PreMediaInfo     = new MediaInfo();
     	VideoView = (JoyplusVideoView) mActivity.findViewById(R.id.JoyplusVideoView);
     	//mWaitingDialog   = new RoundProcessDialog(mActivity);
-    	mWaitingWindows  = new LoadingWindows();
+    	mWaitingWindows  = new LoadingWindows();    	
 	}
 	public VideoViewInterface getPlayer(){
     	return Player;
