@@ -55,6 +55,7 @@ extern void disableAccelerometerJNI();
 extern void setAccelerometerIntervalJNI(float interval);
 extern void* getErweimaDateJNI(const char* date, int width, unsigned int * pSize);
 extern std::string getPlayHistoryListJNI();
+extern std::string fomartTime(int s);
 // functions for CCUserDefault
 extern bool getBoolForKeyJNI(const char* pKey, bool defaultValue);
 extern int getIntegerForKeyJNI(const char* pKey, int defaultValue);
@@ -68,5 +69,7 @@ extern void setDoubleForKeyJNI(const char* pKey, double value);
 extern void setStringForKeyJNI(const char* pKey, const char* value);
 extern std::string getStringResouceByKeyJNI(const char* pKey);
 extern std::string getDecodeStringFromJNI(const char* pKey);
+
+
 
 #endif /* __Java_org_cocos2dx_lib_Cocos2dxHelper_H__ */

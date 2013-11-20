@@ -64,6 +64,7 @@ private :
 	int duration;
 	int id;
 	bool isDir;
+	int type;
 	std::vector<BTEpisode> btepisodes;
 public:
 
@@ -131,6 +132,14 @@ public:
 	void setIsDir(bool isDir) {
 		this->isDir = isDir;
 	}
+
+	int getType() const {
+		return type;
+	}
+
+	void setType(int type) {
+		this->type = type;
+	}
 };
 
 class HistoryScnce : public CCLayer , public CCListViewDataResouce , public CCListViewDelegate
@@ -157,6 +166,8 @@ public:
 	virtual CCTableViewCell* tableCellAtIndex(CCListView *table, unsigned int idx);
 
 	virtual unsigned int numberOfCellsInTableView(CCListView *table);
+
+	void callBackAnim(CCNode* sender, CCLabelTTF *pLabel);
 
 private :
 	CCListView * tableView;

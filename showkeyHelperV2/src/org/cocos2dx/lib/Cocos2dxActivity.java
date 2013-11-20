@@ -36,7 +36,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -45,13 +44,17 @@ import android.widget.ImageView.ScaleType;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tvhelper.MyApp;
+import com.joyplus.tvhelper.PlayBaiduActivity;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BaiduVideoInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
 
@@ -172,16 +175,58 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	@Override
 	public void playVideo(String str) {
 		// TODO Auto-generated method stub
+		Log.d(TAG, "str" + str);
 		try{
+			DBServices dbServices = DBServices.getInstance(sContext);
 			JSONObject obj = new JSONObject(str);
 			int type = obj.getInt("type");
 			JSONObject date = obj.getJSONObject("date");
+			CurrentPlayDetailData playDate;
 			switch (type) {
 			case 0://推送历史
-				
+				int _id = date.getInt("_id");
+				int isDir = date.getInt("isDir");
+				String sub_name = null;
+				MoviePlayHistoryInfo playInfo = dbServices.queryMoviePlayHistoryById(_id);
+				if(isDir == 1){
+					sub_name = date.getString("sub_name");
+					if(sub_name==null){
+						com.joyplus.tvhelper.utils.Log.e(TAG, "sub_name is null");
+						return ;
+					}
+				}
+				if(playInfo==null){
+					com.joyplus.tvhelper.utils.Log.e(TAG, "play_info is null");
+					return;
+				}
+				playDate = new CurrentPlayDetailData();
+				playDate.prod_name = playInfo.getName();
+				playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_PUSH;
+				playDate.obj = playInfo;
+				Log.d(TAG, "prod_type" + playDate.prod_type);
+				if((playInfo.getDuration()-playInfo.getPlayback_time())<=Constant.END_TIME){
+					playDate.prod_time = 0;
+				}else{
+					playDate.prod_time = Math.round(playInfo.getPlayback_time()*1000);
+				}
+				Log.d(TAG, "prod_time" + playDate.prod_time);
+				playDate.prod_qua = playInfo.getDefination();
+				playDate.isOnline = false;
+				app.setmCurrentPlayDetailData(playDate);
+				app.set_ReturnProgramView(null);
+				startActivity(Utils.getIntent(getContext()));
 				break;
 			case 1://推送历史——百度
-				
+				int _id_baidu = date.getInt("_id");
+				MoviePlayHistoryInfo play_info_baidu = dbServices.queryMoviePlayHistoryById(_id_baidu);
+				play_info_baidu.setCreat_time(System.currentTimeMillis());
+				dbServices.updateMoviePlayHistory(play_info_baidu);
+				Intent intent_baidu = new Intent(this,PlayBaiduActivity.class);
+				intent_baidu.putExtra("url", play_info_baidu.getRecivedDonwLoadUrls());
+				intent_baidu.putExtra("name", play_info_baidu.getName());
+				intent_baidu.putExtra("push_url", play_info_baidu.getPush_url());
+				intent_baidu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent_baidu);
 				break;
 			case 2://迅雷离线
 				
@@ -191,7 +236,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 				info.setFileName(date.getString("filename"));
 				info.setFs_id(date.getLong("fs_id"));
 				info.setPath(date.getString("path"));
-				CurrentPlayDetailData playDate = new CurrentPlayDetailData();
+				playDate = new CurrentPlayDetailData();
 				playDate.obj = info;
 				playDate.prod_name = info.getFileName();
 				playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_BAIDU;
