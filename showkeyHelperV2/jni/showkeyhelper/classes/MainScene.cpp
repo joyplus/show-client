@@ -1,4 +1,15 @@
 #include "MainScene.h"
+
+static void pincodeCallbackFunc(bool isSuccess,void* ctx)
+{
+	MainScene* thiz = (MainScene*)ctx;
+	if(isSuccess){
+		thiz->disPlayPincode();
+	}else{
+
+	}
+}
+
 CCScene* MainScene::scene()
 {
     CCScene * scene = NULL;
@@ -36,10 +47,17 @@ bool MainScene::init()
 //        background->setPosition(ccp(size.width/2, size.height/2));
 //        this->addChild(background, 0);
 
-        layout_pageLayer = PageLayer::create();
-        layout_pageLayer->setPosition(CCSizeZero);
-        layout_pageLayer->setItemClickDelegate(this);
-        this->addChild(layout_pageLayer);
+        m_pageLayer = PageLayer::create();
+        m_pageLayer->setPosition(CCSizeZero);
+        m_pageLayer->setItemClickDelegate(this);
+        this->addChild(m_pageLayer);
+
+        string pincode = getPincodeJNI();
+        if(!pincode.empty()){
+        	disPlayPincode();
+        }else{
+        	generatePincode(pincodeCallbackFunc,this);
+        }
 
 //        layout_historyLayer = HistoryLayer::create();
 //        layout_historyLayer->setPosition(CCSizeZero);
@@ -66,9 +84,9 @@ void MainScene::keyBackClicked()
 
 void MainScene::keyEnterClicked()
 {
-	if(layout_pageLayer->isVisible())
+	if(m_pageLayer->isVisible())
 	{
-		if(layout_pageLayer->onKeyEnterClicked()) return;
+		if(m_pageLayer->onKeyEnterClicked()) return;
 	}
 //	if(layout_historyLayer->isVisible())
 //	{
@@ -80,9 +98,9 @@ void MainScene::keyEnterClicked()
 
 void MainScene::keyArrowClicked(int arrow)
 {
-	if(layout_pageLayer->isVisible())
+	if(m_pageLayer->isVisible())
 	{
-		if(layout_pageLayer->onKeyArrowClicked(arrow)) return;
+		if(m_pageLayer->onKeyArrowClicked(arrow)) return;
 	}
 //	if(layout_historyLayer->isVisible())
 //	{
@@ -118,35 +136,26 @@ void MainScene::keyArrowClicked(int arrow)
 //	}
 }
 
-void MainScene::onGetFinished(CCNode* node,CCObject* obj)
-{
-	CCHttpResponse* response = (CCHttpResponse*)obj;
-	//    判断是否响应成功
-	    if (!response->isSucceed())
-	    {
-	        LOGD("onGetFinished","Receive Error! %s\n",response->getErrorBuffer());
-	        return ;
-	    }
-
-	    const char* tag = response->getHttpRequest()->getTag();
-	    if (0 == strcmp("PicGet",tag))
-	    {
-	        vector<char> *data = response->getResponseData();
-	        int data_length = data->size();
-	        string res;
-	        for (int i = 0;i<data_length;++i)
-	        {
-	            res+=(*data)[i];
-	        }
-	        res+='\0';
-	        LOGD("MainScene","response ->%s",res.c_str());
-	        CSJson::Value jsonobj;
-	        CSJson::Reader reader;
-	        reader.parse(res,jsonobj);
-	        string name = jsonobj["movie"]["name"].asString();
-	        LOGD("MainScene","movie name -> %s",name.c_str());
-	    }
-}
+//void MainScene::onGetFinished(CCNode* node,CCObject* obj)
+//{
+//	CCHttpResponse* response = (CCHttpResponse*)obj;
+//	//    判断是否响应成功
+//	    if (!response->isSucceed())
+//	    {
+//	        LOGD("onGetFinished","Receive Error! %s\n",response->getErrorBuffer());
+//	        return ;
+//	    }
+//
+//	    const char* tag = response->getHttpRequest()->getTag();
+//	    if (0 == strcmp("getPin",tag))
+//	    {
+//	        vector<char> *data = response->getResponseData();
+////	        LOGD("MainScene","response ->%s",res.c_str());
+////	        CSJson::Value jsonobj;
+////	        CSJson::Reader reader;
+////	        reader.parse(res,jsonobj);
+//	    }
+//}
 
 MainScene::~MainScene()
 {
@@ -179,6 +188,44 @@ void MainScene::onPageItemClick(int page_Tag)
 
 	}
 }
+
+//void MainScene::getPincode() {
+//	CCString * url = CCString::createWithFormat("https://openapi.baidu.com/rest/2.0/passport/users/getLoggedInUser?access_token=%s",getBaiduTokenJNI().c_str());
+//	CCHttpClient* httpClient = CCHttpClient::getInstance();
+//	CCHttpRequest* httpReq =new CCHttpRequest();
+//	httpReq->setRequestType(CCHttpRequest::kHttpGet);
+//	LOGD("XunLeiYunSence","getBaiduLoginUserInfo url -- > %s",url->getCString());
+//	httpReq->setUrl(url->getCString());
+//	httpReq->setTag("getPin");
+//	httpReq->setResponseCallback(this,callfuncND_selector(MainScene::onGetFinished));
+//	httpClient->setTimeoutForConnect(30);
+//	httpClient->send(httpReq);
+//	httpReq->release();
+//	httpReq=NULL;
+//}
+
+
+void MainScene::disPlayPincode() {
+	m_pageLayer->setPincode(getPincodeJNI().c_str());
+	startFayeService();
+	unsigned int size = 0;
+	void* date = getErweimaDateJNI("http://www.baidu.com/", 250, &size);
+	if(date){
+		CCImage * image = new CCImage();
+		image->initWithImageData(date,size);
+		free(date);
+		CCTexture2D* texture = new cocos2d::CCTexture2D();
+		bool isImg = texture->initWithImage(image);
+		image->release();
+		if(isImg){
+			CCSprite *s = CCSprite::createWithTexture(texture);
+			s->setPosition(ccp(500,300));
+			addChild(s);
+		}
+		texture->release();
+	}
+}
+
 
 
 

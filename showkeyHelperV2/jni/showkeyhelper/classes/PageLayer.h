@@ -33,7 +33,7 @@ public:
 	void setItemClickDelegate(PageLayerItemClickDelegate * itemClickDelegate);
 	bool onKeyArrowClicked(int arrow);//方向键
 	bool onKeyEnterClicked();//回车键
-
+	void setPincode(const char* pincode);
 	virtual ~PageLayer();
 	CREATE_FUNC(PageLayer);
 private:

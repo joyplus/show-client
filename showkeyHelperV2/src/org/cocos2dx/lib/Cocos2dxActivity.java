@@ -23,32 +23,37 @@ THE SOFTWARE.
  ****************************************************************************/
 package org.cocos2dx.lib;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.cocos2dx.lib.Cocos2dxHelper.Cocos2dxHelperListener;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
+
 import com.joyplus.JoyplusMediaPlayerActivity;
-import com.joyplus.adkey.Util;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.BaiduVideoInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.faye.FayeService;
+import com.joyplus.tvhelper.https.HttpUtils;
+import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
-
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.opengl.GLSurfaceView;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Message;
-import android.view.KeyEvent;
-import android.view.ViewGroup;
-import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelperListener {
 	// ===========================================================
@@ -127,7 +132,42 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		this.mHandler.sendMessage(msg);
 	}
 	
-	
+	@Override
+	public void generatePincode() {
+		// TODO Auto-generated method stub
+		if(!HttpUtils.isNetworkAvailable(this)){
+			Utils.showToast(this, "检查网络设置");
+			mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE);
+			return;
+		}
+		MyApp.pool.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Map<String, String> params = new HashMap<String, String>();
+				params.put("app_key", Constant.APPKEY);
+				params.put("mac_address", Utils.getMacAdd(Cocos2dxActivity.this));
+				params.put("client", new Build().MODEL);
+//				Log.d(TAG, "client = " + new Build().MODEL);
+				String str = HttpTools.post(Cocos2dxActivity.this, Constant.BASE_URL+"/generatePinCode", params);
+				Log.d(TAG, str);
+				try {
+					JSONObject data = new JSONObject(str);
+					String pincode = data.getString("pinCode");
+					String channel = data.getString("channel");
+					PreferencesUtils.setPincode(Cocos2dxActivity.this, pincode);
+					PreferencesUtils.setChannel(Cocos2dxActivity.this, channel);
+					PreferencesUtils.setPincodeMd5(Cocos2dxActivity.this, null);
+					mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_SUCCESS);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE);
+				}
+			}
+		});
+	}
 	
 	@Override
 	public void playVideo(String str) {
@@ -174,6 +214,11 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		this.mHandler.sendMessage(msg);
 	}
 	
+	@Override
+	public void startService() {
+		// TODO Auto-generated method stub
+		startService(new Intent(this,FayeService.class));
+	}
 	
 	
 	@Override

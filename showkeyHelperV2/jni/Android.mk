@@ -26,6 +26,8 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/showkeyhelper/classes \
 
 LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static cocos_extension_static
 
+LOCAL_LDLIBS    := -ljnigraphics
+
 include $(BUILD_SHARED_LIBRARY)
 
 

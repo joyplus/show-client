@@ -200,6 +200,11 @@ void PageLayer::setItemClickDelegate(PageLayerItemClickDelegate *itemClickDelaga
 	this->itemClickDelegate = itemClickDelagate;
 }
 
+void PageLayer::setPincode(const char* pincode) {
+	PincodeLayer* pincode_layer = (PincodeLayer *)getChildByTag(TAG_PINCODE);
+	pincode_layer->setPincode(pincode);
+}
+
 PageLayer::~PageLayer()
 {
 

@@ -367,7 +367,22 @@ void BaiduYunSence::onBaiduLoginUserComplete(CCNode* node, CCObject* obj) {
 	 }else{
 		 LOGD("BaiduYunSence","getBaiduLoginUserInfo Filed %s", response->getErrorBuffer());
 		 if(response->getResponseCode()==401){
-			 showBaiduLoginDialog(baiduDilogCallbackFunc,this);
+			 string errormsg = string(response->getErrorBuffer());
+			 CSJson::Value jsonobj;
+			 CSJson::Reader reader;
+			 if(reader.parse(errormsg,jsonobj)){
+				 int error_code = jsonobj["error_code"].asInt();
+				 /*
+				  *	HTTP状态码  	错误码		错误信息					备注
+				  *		401		110		Access token invalid 	Access token
+				  *						or no longer valid		无效或已失效
+				  *		401		111		Access token expired	Access token已过期
+				  *		401 	112		Session key expired		会话密钥已过期
+				  */
+				 if(error_code == 110||error_code == 111 || error_code == 112){
+					 showBaiduLoginDialog(baiduDilogCallbackFunc,this);
+				 }
+			 }
 		 }
 	 }
 }

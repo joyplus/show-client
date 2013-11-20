@@ -38,9 +38,9 @@ bool PincodeLayer::init()
 
 			setContentSize(CCSizeMake(sprite->getContentSize().width+sprite_notice->getContentSize().width, sprite->getContentSize().height));
 
-			m_uiLayer = UILayer::create();
-			m_uiLayer->scheduleUpdate();
-			addChild(m_uiLayer);
+//			m_uiLayer = UILayer::create();
+//			m_uiLayer->scheduleUpdate();
+//			addChild(m_uiLayer);
 
 
 
@@ -87,21 +87,32 @@ bool PincodeLayer::init()
 //			m_uiLayer->addWidget(label_divider);
 
 
-			UILabel *label_pincode = UILabel::create();
-			label_pincode->setFocused(false);
-			label_pincode->setText(("PIN:"+getStringForKeyJNI("pincode","")).c_str());
-			label_pincode->setFontSize(27);
+//			UILabel *label_pincode = UILabel::create();
+//			label_pincode->setFocused(false);
+//			//label_pincode->setText(("PIN:"+getStringForKeyJNI("pincode","")).c_str());
+//			label_pincode->setFontSize(27);
+//			label_pincode->setTag(0);
+//			label_pincode->setPosition(ccp(155,105));
+//			m_uiLayer->addWidget(label_pincode);
+
+			CCLabelTTF* label_pincode = CCLabelTTF::create("", "Arial", 27.0);
 			label_pincode->setPosition(ccp(155,105));
-			m_uiLayer->addWidget(label_pincode);
+			label_pincode->setAnchorPoint(ccp(0.5,0.5));
+			label_pincode->setTag(0);
+			this->addChild(label_pincode);
 
-
-			UILabel *label_name = UILabel::create();
-			label_name->setFocused(false);
-			label_name->setText("QQ");
-			label_name->setFontSize(30);
-//			label_divider->setAnchorPoint(ccp(0,0));
+			CCLabelTTF* label_name = CCLabelTTF::create("QQ", "Arial", 30.0);
 			label_name->setPosition(ccp(155,195));
-			m_uiLayer->addWidget(label_name);
+			label_name->setAnchorPoint(ccp(0.5,0.5));
+			this->addChild(label_name);
+
+//			UILabel *label_name = UILabel::create();
+//			label_name->setFocused(false);
+//			label_name->setText("QQ");
+//			label_name->setFontSize(30);
+////			label_divider->setAnchorPoint(ccp(0,0));
+//			label_name->setPosition(ccp(155,195));
+//			m_uiLayer->addWidget(label_name);
 			bRet = true;
 		} while (0);
 		return bRet;
@@ -126,5 +137,12 @@ void PincodeLayer::runBreath(CCTime dt) {
 	CCActionInterval* fadeToBack = CCFadeTo::create(0.5f,255);
 //	CCActionInterval* fadeIn = fadeTo->reverse();
 	m_background->runAction(CCSequence::create(fadeTo,fadeToBack,NULL));
+}
+
+void PincodeLayer::setPincode(const char* pincode){
+	CCLabelTTF* label_pincode = (CCLabelTTF*)this->getChildByTag(0);
+	CCString* str = CCString::createWithFormat("PIN:%s",pincode);
+//	label_pincode->setText(str->getCString());
+	label_pincode->initWithString(str->getCString(), "Arial", 27.0);
 }
 

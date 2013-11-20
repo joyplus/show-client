@@ -30,8 +30,50 @@ bool HistoryScnce::init()
 			break;
 		}
 		m_selectedCell = NULL;
+		m_dates.clear();
 
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+		string playList = getPlayHistoryListJNI();
+		LOGD("HistoryScnce","play list ---> %s", playList.c_str());
+		CSJson::Value root;
+		CSJson::Reader reader;
+		if(reader.parse(playList,root)){
+			const CSJson::Value arrayObj = root["list"];
+			for(int i=0; i< arrayObj.size(); i++){
+				LOGD("HistoryScnce","play list %d , name : %s", i , arrayObj[i]["name"].asString().c_str());
+				PlayHistoryInfo info;
+				info.setId(arrayObj[i]["_id"].asInt());
+				info.setName(arrayObj[i]["name"].asString());
+				info.setDuration(arrayObj[i]["duration"].asInt());
+				info.setPlaybackTime(arrayObj[i]["playback_time"].asInt());
+				info.setPushUrl(arrayObj[i]["push_url"].asString());
+				info.setPicUrl(arrayObj[i]["pic_url"].asString());
+				string btes = arrayObj[i]["episodes"].asString();
+				info.setIsDir(false);
+				if(!btes.empty()){
+					CSJson::Value btepisodesObj;
+					CSJson::Reader btepisodesreader;
+					if(btepisodesreader.parse(btes,btepisodesObj)){
+						std::vector<BTEpisode> btepisodes;
+						for(int j=0; j<btepisodesObj.size(); j++){
+							BTEpisode bteInfo;
+							bteInfo.setName(btepisodesObj[j]["name"].asString());
+							bteInfo.setDuration(btepisodesObj[j]["duration"].asInt());
+							bteInfo.setPlaybackTime(btepisodesObj[j]["playback_time"].asInt());
+							bteInfo.setPicUrl(btepisodesObj[j]["pic_url"].asString());
+							btepisodes.push_back(bteInfo);
+						}
+						info.setBtepisodes(btepisodes);
+						info.setIsDir(true);
+					}
+
+				}
+				m_dates.push_back(info);
+			}
+		}else{
+			LOGD("HistoryScnce", "play list json parse failed");
+		}
 
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 		tableView->setAnchorPoint(ccp(0,1));
@@ -77,7 +119,8 @@ void HistoryScnce::keyArrowClicked(int arrow)
 cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		CCListView* table, unsigned int idx)
 {
-	CCString *pString = CCString::createWithFormat("生活大爆炸S07E04].The.Big.Bang.Theory.S01E%d.中英字幕.HR-HDTV.AC3", idx);
+	PlayHistoryInfo info = m_dates.at(idx);
+	CCString *pString = CCString::createWithFormat("%s", info.getName().c_str());
 	CCTableViewCell *pCell = table->dequeueCell();
 	if (!pCell) {
 		pCell = new CCTableViewCell();
@@ -131,7 +174,7 @@ unsigned int HistoryScnce::numberOfCellsInTableView(CCListView* table)
 {
 //	LOGD(TAG_HistoryScnce,"return number of cells %d",20);
 //	LOGD(TAG_HistoryScnce,"view size %f",table->getViewSize().width);
-	return 30;
+	return m_dates.size();
 }
 
 void HistoryScnce::tableCellClicked(CCListView* table, CCTableViewCell* cell,

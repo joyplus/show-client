@@ -5,19 +5,23 @@
 #include "JniHelper.h"
 #include "cocoa/CCString.h"
 #include "Java_org_cocos2dx_lib_Cocos2dxHelper.h"
+#include <android/bitmap.h>
 
 
 #define  LOG_TAG    "Java_org_cocos2dx_lib_Cocos2dxHelper.cpp"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 #define  CLASS_NAME "org/cocos2dx/lib/Cocos2dxHelper"
 
 static EditTextCallback s_pfEditTextCallback = NULL;
 static XunLeiLoginCallback s_pfXunLeiLoginCallback = NULL;
 static BaiduLoginCallback s_pfBaiduLoginCallback = NULL;
+static MainGeneratePincode s_pfMainGeneratePincode = NULL;
 static void* s_ctx = NULL;
 static void* x_ctx = NULL;
 static void* b_ctx = NULL;
+static void* m_ctx = NULL;
 
 using namespace cocos2d;
 using namespace std;
@@ -125,6 +129,16 @@ extern "C" {
 		}
     }
 
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetPincodeResult(JNIEnv * env, jobject obj,jint isSuccess) {
+    	bool successed = false;
+		if(isSuccess!=0){
+			successed = true;
+		}
+		if (s_pfMainGeneratePincode){
+			s_pfMainGeneratePincode(successed,m_ctx);
+		}
+    }
+
 }
 
 const char * getApkPath() {
@@ -198,7 +212,7 @@ void playVideoJNI(const char* date){
 
 	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "playVideo", "(Ljava/lang/String;)V")) {
 		jstring stringArg = t.env->NewStringUTF(date);
-		jboolean ret = t.env->CallStaticBooleanMethod(t.classID, t.methodID, stringArg);
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg);
 		t.env->DeleteLocalRef(t.classID);
 		t.env->DeleteLocalRef(stringArg);
 	}
@@ -428,6 +442,126 @@ std::string getStringResouceByKeyJNI(const char* pKey)
 
 	return ret;
 }
+std::string getPincodeJNI() {
+	JniMethodInfo t;
+	std::string ret("");
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getPincode", "()Ljava/lang/String;")) {
+		jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+		ret = JniHelper::jstring2string(str);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(str);
+	}
+
+	return ret;
+}
+
+
+//
+//void setPincodeJNI(const char* date) {
+//	JniMethodInfo t;
+//
+//	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setPincode", "(Ljava/lang/String;)V")) {
+//		jstring stringArg = t.env->NewStringUTF(date);
+//		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg);
+//		t.env->DeleteLocalRef(t.classID);
+//		t.env->DeleteLocalRef(stringArg);
+//	}
+//}
+
+
+//
+//void setChannelJNI(const char* date) {
+//	JniMethodInfo t;
+//
+//	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setChannel", "(Ljava/lang/String;)V")) {
+//		jstring stringArg = t.env->NewStringUTF(date);
+//		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg);
+//		t.env->DeleteLocalRef(t.classID);
+//		t.env->DeleteLocalRef(stringArg);
+//	}
+//}
+
+
+
+void startFayeService() {
+	JniMethodInfo t;
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "startService", "()V")) {
+		t.env->CallStaticVoidMethod(t.classID, t.methodID);
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+
+extern void generatePincode(MainGeneratePincode pfXunLeiLoginCallback,
+		void* ctx) {
+	s_pfMainGeneratePincode = pfXunLeiLoginCallback;
+	m_ctx = ctx;
+	JniMethodInfo t;
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "generatePincode", "()V")) {
+		t.env->CallStaticVoidMethod(t.classID, t.methodID);
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+
+void* getErweimaDateJNI(const char* date, int width, unsigned int * pSize) {
+	JniMethodInfo t;
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "generateErweima", "(Ljava/lang/String;I)[B")) {
+		jstring stringArg1 = t.env->NewStringUTF(date);
+		jobject obj = t.env->CallStaticObjectMethod(t.classID, t.methodID,stringArg1,width);
+		if(!obj){
+			return NULL;
+		}
+		jbyteArray array = (jbyteArray)obj;
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(stringArg1);
+		jsize  size = t.env->GetArrayLength(array);
+		*pSize = size;
+//		void* data = (void*)t.env->GetByteArrayElements(array, 0);
+
+		if (size > 0) {
+			jbyte * data = (jbyte*)t.env->GetByteArrayElements(array, 0);
+			char* pBuf = (char*)malloc(size+1);
+			if (pBuf != NULL) {
+				memcpy(pBuf, data, size);
+				pBuf[size] = '\0';
+			}
+			t.env->ReleaseByteArrayElements(array, data, 0);
+			return pBuf;
+		}else{
+			return NULL;
+		}
+//		env->ReleaseByteArrayElements(array, data, 0);
+//		AndroidBitmapInfo  info;
+//		void* pixels;
+//		int ret;
+//		if ((ret = AndroidBitmap_getInfo(t.env, bitmap, &info)) < 0) {
+//			LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+//			return NULL;
+//		}
+//		if ((ret = AndroidBitmap_lockPixels(t.env, bitmap, &pixels)) < 0) {
+//			LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+//			return NULL;
+//		}
+//		AndroidBitmap_unlockPixels(t.env, bitmap);
+//		return pixels;
+	}else{
+		return NULL;
+	}
+}
+
+std::string getPlayHistoryListJNI() {
+	JniMethodInfo t;
+	std::string ret("");
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getPlayList", "()Ljava/lang/String;")) {
+		jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+		ret = JniHelper::jstring2string(str);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(str);
+	}
+	return ret;
+}
+
 std::string getDecodeStringFromJNI(const char* pKey)
 {
 	JniMethodInfo t;

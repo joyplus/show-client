@@ -26,7 +26,7 @@ public class MoviePlayHistoryInfo {
 	private int play_type;
 	private String push_url;
 //	private String download_url;
-	private String local_url;
+//	private String local_url;
 	private int duration;
 	private int playback_time;
 	private int push_id;
@@ -36,6 +36,7 @@ public class MoviePlayHistoryInfo {
 	private List<BTEpisode> btEpisodes = new ArrayList<BTEpisode>();
 	private List<SubURI> subList;
 	private String time_token;
+	private String pic_url;
 	
 	private int edite_state = 0;
 	public int getId() {
@@ -56,12 +57,12 @@ public class MoviePlayHistoryInfo {
 	public void setPush_url(String push_url) {
 		this.push_url = push_url;
 	}
-	public String getLocal_url() {
-		return local_url;
-	}
-	public void setLocal_url(String local_url) {
-		this.local_url = local_url;
-	}
+//	public String getLocal_url() {
+//		return local_url;
+//	}
+//	public void setLocal_url(String local_url) {
+//		this.local_url = local_url;
+//	}
 	public int getDuration() {
 		return duration;
 	}
@@ -164,5 +165,11 @@ public class MoviePlayHistoryInfo {
 	}
 	public void setSubList(List<SubURI> subList) {
 		this.subList = subList;
+	}
+	public String getPic_url() {
+		return pic_url;
+	}
+	public void setPic_url(String pic_url) {
+		this.pic_url = pic_url;
 	}
 }
