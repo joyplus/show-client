@@ -383,7 +383,7 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
     mContext = ctx;
     mVideoWidth = 0;
     mVideoHeight = 0;
-    getHolder().setFormat(PixelFormat.RGBA_8888); // PixelFormat.RGB_565
+    //getHolder().setFormat(PixelFormat.RGBA_8888); // PixelFormat.RGB_565
     getHolder().addCallback(mSHCallback);
     setFocusable(true);
     setFocusableInTouchMode(true);
@@ -442,6 +442,7 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
       mMediaPlayer.setOnSeekCompleteListener(mSeekCompleteListener);
       mMediaPlayer.setOnTimedTextListener(mTimedTextListener);
       mMediaPlayer.setDataSource(mContext, mUri);
+      mMediaPlayer.setVideoChroma(MediaPlayer.VIDEOCHROMA_RGB565);
       mMediaPlayer.setDisplay(mSurfaceHolder);
       mMediaPlayer.setScreenOnWhilePlaying(true);
       mMediaPlayer.prepareAsync();
