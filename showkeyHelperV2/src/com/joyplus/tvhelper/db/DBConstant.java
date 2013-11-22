@@ -30,7 +30,7 @@ public class DBConstant {
 	public static final String KEY_PLAY_INFO_PUSH_ID 						= "push_id";
 	public static final String KEY_PLAY_INFO_PUSH_URL 						= "push_url";
 	public static final String KEY_PLAY_INFO_PLAY_BACK_TIME 				= "play_back_time";
-	public static final String KEY_PLAY_INFO_FILE_PATH 						= "file_path";
+	public static final String KEY_PLAY_INFO_FILE_PATH 						= "file_path";//以前存储本地播放路径，一直没用 现在记录影片缩略图
 	public static final String KEY_PLAY_INFO_DOWNLOADUUID 					= "downloaduuid";
 	
 	

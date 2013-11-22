@@ -19,9 +19,10 @@ public:
 	CREATE_FUNC(PincodeLayer);
 	void setSelected(bool isSelected);
 	void runBreath(CCTime dt);
+	void setPincode(const char* pincode);
 
 private:
-	UILayer * m_uiLayer;
+//	UILayer * m_uiLayer;
 	CCSprite * m_background;
 };
 

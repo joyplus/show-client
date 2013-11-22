@@ -9,6 +9,14 @@ public class BTEpisode {
 	private int duration;
 	private int playback_time;
 	private int defination;
+	private String pic_url;
+	
+	public String getPic_url() {
+		return pic_url;
+	}
+	public void setPic_url(String pic_url) {
+		this.pic_url = pic_url;
+	}
 	public int getDefination() {
 		return defination;
 	}
@@ -42,6 +50,7 @@ public class BTEpisode {
 			obj.put("duration", duration);
 			obj.put("playback_time", playback_time);
 			obj.put("defination", defination);
+			obj.put("pic_url", pic_url);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -67,6 +76,9 @@ public class BTEpisode {
 			}
 			if(data.has("defination")){
 				this.defination = data.getInt("defination");
+			}
+			if(data.has("pic_url")){
+				this.pic_url = data.getString("pic_url");
 			}
 		}catch (Exception e) {
 			// TODO: handle exception

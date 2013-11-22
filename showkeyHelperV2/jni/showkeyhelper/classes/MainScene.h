@@ -23,8 +23,6 @@ using namespace std;
 class MainScene : public cocos2d::CCLayer, public PageLayerItemClickDelegate
 {
 
-private:
-	PageLayer * layout_pageLayer;
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();  
@@ -48,8 +46,10 @@ public:
 
     virtual ~MainScene();
 
+    void disPlayPincode();
 
-    static void onGetFinished(CCNode* node,CCObject* obj);
+private :
+    PageLayer * m_pageLayer;
 };
 
 #endif  // __MAINSCENE_SCENE_H__

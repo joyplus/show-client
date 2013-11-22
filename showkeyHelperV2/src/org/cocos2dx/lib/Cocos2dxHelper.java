@@ -23,12 +23,23 @@ THE SOFTWARE.
  ****************************************************************************/
 package org.cocos2dx.lib;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.zxing.WriterException;
+import com.joyplus.tvhelper.db.DBServices;
+import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.XLLXUserInfo;
+import com.joyplus.tvhelper.utils.EncodingHandler;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
+import com.joyplus.tvhelper.utils.Utils;
 import com.joyplus.tvhelper.utils.XunLeiLiXianUtil;
 
 import android.app.Activity;
@@ -36,9 +47,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -103,6 +114,8 @@ public class Cocos2dxHelper {
 	private static native void nativeSetXunLeiLoginDialogResult(final int isBack);
 	
 	private static native void nativeSetBaiduLoginDialogResult(final int isBack);
+	
+	private static native void nativeSetPincodeResult(final int isSuccess);
 
 	public static String getCocos2dxPackageName() {
 		return Cocos2dxHelper.sPackageName;
@@ -258,7 +271,7 @@ public class Cocos2dxHelper {
 	private static void showBaiduLoginDialog(){
 		Cocos2dxHelper.sCocos2dxHelperListener.showBaiduDailog();
 	}
-
+	
 	public static void setEditTextDialogResult(final String pResult) {
 		try {
 			final byte[] bytesUTF8 = pResult.getBytes("UTF8");
@@ -423,6 +436,89 @@ public class Cocos2dxHelper {
     	return PreferencesUtils.getBaiduAccessToken(sContext);
     }
     
+    public static String getPincode(){
+    	return PreferencesUtils.getPincode(sContext);
+    }
+    
+    public static void setPincode(String pincode){
+    	PreferencesUtils.setPincode(sContext, pincode);
+    }
+    
+    public static void setChannel(String channel){
+    	PreferencesUtils.setChannel(sContext, channel);
+    }
+    
+    public static String getMac(){
+    	return Utils.getMacAdd(sContext);
+    }
+    
+    public static void startService(){
+    	Cocos2dxHelper.sCocos2dxHelperListener.startService();
+    }
+    
+    public static void 	generatePincode(){
+    	//pincode\\\
+    	Cocos2dxHelper.sCocos2dxHelperListener.generatePincode();
+    }
+    
+    public static byte[] generateErweima(String date, int width){
+    	try {
+    		Bitmap b = EncodingHandler.createQRCode(date, width);
+    		if(b!=null){
+    			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    			b.compress(Bitmap.CompressFormat.PNG, 100, baos);
+    			return baos.toByteArray();
+    		}else{
+    			return null;
+    		}
+		} catch (WriterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
+    
+    public static String getPlayList(){
+    	try{
+    		DBServices services = DBServices.getInstance(sContext);
+        	List<MoviePlayHistoryInfo> infoLists =  services.queryMoviePlayHistoryList();
+        	JSONObject obj = new JSONObject();
+        	JSONArray arrary = new JSONArray();
+        	for(MoviePlayHistoryInfo info:infoLists){
+        		JSONObject infoObj = new JSONObject();
+        		infoObj.put("_id", info.getId());
+        		infoObj.put("type", info.getPlay_type());
+        		infoObj.put("duration", info.getDuration());
+        		infoObj.put("playback_time", info.getPlayback_time());
+        		infoObj.put("episodes", info.getBtEpisodesString());
+        		infoObj.put("name", info.getName());
+        		infoObj.put("push_url", info.getPush_url());
+        		infoObj.put("pic_url", info.getPic_url());
+        		arrary.put(infoObj);
+        	}
+        	obj.put("list", arrary);
+        	Log.d("Helper", obj.toString());
+        	return obj.toString();
+    	}catch (Exception e) {
+			// TODO: handle exception
+    		e.printStackTrace();
+    		return "";
+		}
+    }
+    
+    public static void setGeneratePincodeResult(boolean isSuccessed){
+    	try {
+			final int successed = isSuccessed?1:0;
+			Cocos2dxHelper.sCocos2dxHelperListener.runOnGLThread(new Runnable() {
+				@Override
+				public void run() {
+					Cocos2dxHelper.nativeSetPincodeResult(successed);
+				}
+			});
+		} catch (Exception Exception) {
+			/* Nothing. */
+		}
+    }
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
@@ -436,6 +532,10 @@ public class Cocos2dxHelper {
 		public void showXunLeiLoginDialog();
 		
 		public void showBaiduDailog();
+		
+		public void startService();
+		
+		public void generatePincode();
 		
 		public void runOnGLThread(final Runnable pRunnable);
 	}

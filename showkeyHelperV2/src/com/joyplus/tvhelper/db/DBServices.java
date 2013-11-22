@@ -296,7 +296,7 @@ public class DBServices {
 		ContentValues values = new ContentValues();
 		values.put(DBConstant.KEY_PLAY_INFO_NAME, info.getName());
 		values.put(DBConstant.KEY_PLAY_INFO_PUSH_ID, info.getPush_id());
-		values.put(DBConstant.KEY_PLAY_INFO_FILE_PATH, info.getLocal_url());
+		values.put(DBConstant.KEY_PLAY_INFO_FILE_PATH, info.getPic_url());
 		values.put(DBConstant.KEY_PLAY_INFO_PUSH_URL, info.getPush_url());
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
 		values.put(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME, info.getPlayback_time());
@@ -319,7 +319,7 @@ public class DBServices {
         ContentValues values = new ContentValues();
 		values.put(DBConstant.KEY_PLAY_INFO_NAME, info.getName());
 		values.put(DBConstant.KEY_PLAY_INFO_PUSH_ID, info.getPush_id());
-		values.put(DBConstant.KEY_PLAY_INFO_FILE_PATH, info.getLocal_url());
+		values.put(DBConstant.KEY_PLAY_INFO_FILE_PATH, info.getPic_url());
 		values.put(DBConstant.KEY_PLAY_INFO_PUSH_URL, info.getPush_url());
 		values.put(DBConstant.KEY_PLAY_INFO_TYPE, info.getPlay_type());
 		values.put(DBConstant.KEY_SYN2, info.getDefination());
@@ -391,7 +391,7 @@ public class DBServices {
     		info.setCreat_time(cr.getLong(cr.getColumnIndex(DBConstant.KEY_SYN3)));
     		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
     		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
-    		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+    		info.setPic_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
 //    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
     		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
     		info.setTime_token(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C3)));
@@ -417,15 +417,47 @@ public class DBServices {
     		info.setPush_id(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_ID)));
     		info.setPlayback_time(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME)));
     		info.setDuration(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN1)));
+    		info.setDefination(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN2)));
     		info.setCreat_time(cr.getLong(cr.getColumnIndex(DBConstant.KEY_SYN3)));
     		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
     		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
-    		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+    		info.setPic_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
 //    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+    		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
+    		info.setTime_token(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C3)));
+			info.setBtEpisodes(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C4)));
         }
         cr.close();
         db.close();
         return info;
+	}
+	public synchronized MoviePlayHistoryInfo queryMoviePlayHistoryById(int id){
+		SQLiteDatabase db = getConnection();
+		Cursor cr = db.query(DBConstant.TABLE_PLAY_INFO, null,
+				DBConstant.KEY_ID + " =? ", new String[] {
+				String.valueOf(id)}, null, null, null);
+		MoviePlayHistoryInfo info = null;
+		while (cr.moveToNext()) {
+			info = new MoviePlayHistoryInfo();
+			
+			info.setId(cr.getInt(cr.getColumnIndex(DBConstant.KEY_ID)));
+    		info.setPlay_type(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_TYPE)));
+    		info.setPush_id(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_ID)));
+    		info.setPlayback_time(cr.getInt(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PLAY_BACK_TIME)));
+    		info.setDuration(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN1)));
+    		info.setDefination(cr.getInt(cr.getColumnIndex(DBConstant.KEY_SYN2)));
+    		info.setCreat_time(cr.getLong(cr.getColumnIndex(DBConstant.KEY_SYN3)));
+    		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
+    		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
+    		info.setPic_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+//    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
+    		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
+    		info.setTime_token(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C3)));
+			info.setBtEpisodes(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C4)));
+		}
+		cr.close();
+		db.close();
+		return info;
 	}
 	
 	public synchronized MoviePlayHistoryInfo hasMoviePlayHistory(int type,String url){
@@ -454,10 +486,11 @@ public class DBServices {
 	    		info.setCreat_time(cr.getLong(cr.getColumnIndex(DBConstant.KEY_SYN3)));
 	    		info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
 	    		info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
-	    		info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+	    		info.setPic_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
 //	    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
 	    		info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
 	    		info.setTime_token(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C3)));
+				info.setBtEpisodes(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C4)));
 			}
 		}
 		cr.close();
@@ -486,9 +519,10 @@ public class DBServices {
 				info.setCreat_time(cr.getLong(cr.getColumnIndex(DBConstant.KEY_SYN3)));
 				info.setName(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_NAME)));
 				info.setPush_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_PUSH_URL)));
-				info.setLocal_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
+				info.setPic_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_PLAY_INFO_FILE_PATH)));
 //	    		info.setDownload_url(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C1)));
 				info.setRecivedDonwLoadUrls(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C2)));
+				info.setBtEpisodes(cr.getString(cr.getColumnIndex(DBConstant.KEY_SYN_C4)));
 			}
 		}
 		cr.close();

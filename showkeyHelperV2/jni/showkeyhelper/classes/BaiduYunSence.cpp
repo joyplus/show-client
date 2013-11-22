@@ -103,18 +103,22 @@ cocos2d::CCScene* BaiduYunSence::scene() {
 
 void BaiduYunSence::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		unsigned int idx) {
-	LOGD("HistoryScnce","item %u Clicked",idx);
-	BaiduVideoInfo info = m_dates.at(idx);
-	CSJson::Value root;
-	CSJson::Value jsonobj;
-	jsonobj["fs_id"] = (double)info.getFsId();
-	jsonobj["path"] = info.getPath();
-	jsonobj["filename"] = info.getFileName();
-	root["date"] = jsonobj;
-	root["type"] = 3;
-	CSJson::FastWriter writer;
-	LOGD("HistoryScnce","baidu play video ---> %s",root.toStyledString().c_str());
-	playVideoJNI(writer.write(root).c_str());
+	LOGD("HistoryScnce","item %u Clicked m_dates size = %d",idx-1, m_dates.size());
+	if(idx == 0){
+		//注销
+	}else{
+		BaiduVideoInfo info = m_dates.at(idx-1);
+		CSJson::Value root;
+		CSJson::Value jsonobj;
+		jsonobj["fs_id"] = (double)info.getFsId();
+		jsonobj["path"] = info.getPath();
+		jsonobj["filename"] = info.getFileName();
+		root["date"] = jsonobj;
+		root["type"] = 3;
+		CSJson::FastWriter writer;
+//		LOGD("HistoryScnce","baidu play video ---> %s",root.toStyledString().c_str());
+		playVideoJNI(writer.write(root).c_str());
+	}
 }
 
 void BaiduYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
@@ -169,12 +173,12 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pImage->setPosition(ccp(170,506));
 		pImage->setTag(1);
 		pCell->addChild(pImage);
-		pSprite = CCSprite::create("push_thumb.png");
+		pSprite = CCSprite::create("baidu_thumb.png");
 		pSprite->setAnchorPoint(CCPointZero);
 		pSprite->setPosition(ccp(0,405));
 		pSprite->setTag(2);
 		pCell->addChild(pSprite);
-		pLabelBack = CCTableCellForHistory::create("push_card_activated.png");
+		pLabelBack = CCTableCellForHistory::create("baidu_card_activated.png");
 		pLabelBack->setAnchorPoint(ccp(0,1));
 		pLabelBack->setPosition(ccp(0,540));
 		pLabelBack->setTag(3);
@@ -201,6 +205,9 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		}else{
 			pLabel->setString(username.c_str());
 		}
+		pSprite->initWithFile("baidu_id.png");
+		pSprite->setAnchorPoint(CCPointZero);
+		pSprite->setPosition(ccp(0,405));
 	}else{
 		BaiduVideoInfo info  = m_dates.at(idx-1);
 		pLabel->setString(info.getFileName().c_str());
@@ -210,7 +217,9 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		}else{
 			pLabelBack->setPosition(ccp(0,540));
 		}
-
+		pSprite->initWithFile("baidu_thumb.png");
+		pSprite->setAnchorPoint(CCPointZero);
+		pSprite->setPosition(ccp(0,405));
 		pImage->setVisible(true);
 		pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
 	}
@@ -309,12 +318,12 @@ void BaiduYunSence::onGetBaiduVideoListComplete(CCNode* node, CCObject* obj) {
 
 		 }else
 		 {
-			 LOGD("BaiduYunSence","getVideoList json parse Filed");
+			 LOGD("BaiduYunSence","getVideoList json parse Filed %s", response->getErrorBuffer());
 		 }
 
 
 	 }else{
-		 LOGD("BaiduYunSence","getVideoList Filed");
+		 LOGD("BaiduYunSence","getVideoList Filed %s", response->getErrorBuffer());
 	 }
 }
 
@@ -356,9 +365,24 @@ void BaiduYunSence::onBaiduLoginUserComplete(CCNode* node, CCObject* obj) {
 			 LOGD("BaiduYunSence","getBaiduLoginUserInfo json parse Filed");
 		 }
 	 }else{
-		 LOGD("BaiduYunSence","getBaiduLoginUserInfo Filed");
+		 LOGD("BaiduYunSence","getBaiduLoginUserInfo Filed %s", response->getErrorBuffer());
 		 if(response->getResponseCode()==401){
-			 showBaiduLoginDialog(baiduDilogCallbackFunc,this);
+			 string errormsg = string(response->getErrorBuffer());
+			 CSJson::Value jsonobj;
+			 CSJson::Reader reader;
+			 if(reader.parse(errormsg,jsonobj)){
+				 int error_code = jsonobj["error_code"].asInt();
+				 /*
+				  *	HTTP状态码  	错误码		错误信息					备注
+				  *		401		110		Access token invalid 	Access token
+				  *						or no longer valid		无效或已失效
+				  *		401		111		Access token expired	Access token已过期
+				  *		401 	112		Session key expired		会话密钥已过期
+				  */
+				 if(error_code == 110||error_code == 111 || error_code == 112){
+					 showBaiduLoginDialog(baiduDilogCallbackFunc,this);
+				 }
+			 }
 		 }
 	 }
 }

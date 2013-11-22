@@ -1,4 +1,5 @@
 #include "XunLeiYunSence.h"
+#include "XunLeiBTdetailSence.h"
 
 XunLeiYunSence::~XunLeiYunSence()
 {
@@ -128,10 +129,11 @@ void XunLeiYunSence::getXunleiVideoList(int index) {
 //						+ cacheNum + "/req_offset/" + cacheNum * (pageIndex - 1);
 
 	const char* url_p = "http://i.vod.xunlei.com/req_history_play_list/req_num/%d/req_offset/%d?type=all&order=create&t=%s";
-	char url[128] = {};
-	sprintf(url,url_p,10,10*(index),getCurrentTimeJNI().c_str());
-	LOGD("XunLeiYunSence","url -- > %s",url);
-	httpReq->setUrl(url);
+//	char url[128] = {};
+//	sprintf(url,url_p,30,30*(index),getCurrentTimeJNI().c_str());
+	CCString * url = CCString::createWithFormat(url_p,30,30*(index),getCurrentTimeJNI().c_str());
+	LOGD("XunLeiYunSence","url -- > %s",url->getCString());
+	httpReq->setUrl(url->getCString());
 	std::vector	<std::string> pHeaders;
 	string key_cookies = "cookie: "+cookies;
 //	string key_type = "type: all";
@@ -174,19 +176,20 @@ void XunLeiYunSence::onGetXunleiVideoListComplete(CCNode* node, CCObject* obj) {
 			   LOGD("XunLeiYunSence","%d --> create time = %s",i,videoInfo.getCreateTime().c_str());
 			   videoInfo.setDuration(arrayObj[i]["duration"].asInt());
 			   LOGD("XunLeiYunSence","%d --> Duration = %d",i,videoInfo.getDuration());
-			   videoInfo.setFileName(arrayObj[i]["file_name"].asString());
+			   videoInfo.setFileName(getDecodeStringFromJNI(arrayObj[i]["file_name"].asString().c_str()));
 			   LOGD("XunLeiYunSence","%d --> FileName = %s",i,videoInfo.getFileName().c_str());
 			   videoInfo.setFilesize(arrayObj[i]["file_size"].asDouble());
 			   LOGD("XunLeiYunSence","%d --> Filesize = %d",i,videoInfo.getFilesize());
 			   videoInfo.setGcid(arrayObj[i]["gcid"].asString());
 			   LOGD("XunLeiYunSence","%d --> Gcid = %s",i,videoInfo.getGcid().c_str());
-			   videoInfo.setSrcUrl(arrayObj[i]["src_url"].asString());
+			   videoInfo.setSrcUrl(getDecodeStringFromJNI(arrayObj[i]["src_url"].asString().c_str()));
+			   LOGD("XunLeiYunSence","%d --> src_url = %s",i,getDecodeStringFromJNI(videoInfo.getSrcUrl().c_str()).c_str());
 			   if(videoInfo.getSrcUrl().find(string("bt://"))<videoInfo.getSrcUrl().length()){//包含
 				   videoInfo.setIsDir(true);
 			   }else{
 				   videoInfo.setIsDir(false);
 			   }
-			   LOGD("XunLeiYunSence","%d --> setIsDir",i);
+			   LOGD("XunLeiYunSence","%d --> setIsDir = %s",i, videoInfo.isIsDir()?"true":"false");
 			   char pic_url[128] = {};
 			   sprintf(pic_url,pic_p,videoInfo.getGcid().c_str());
 			   LOGD("XunLeiYunSence","%d -->  pic_url = %s",i,pic_url);
@@ -232,23 +235,60 @@ void XunLeiYunSence::popSence() {
 
 void XunLeiYunSence::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		unsigned int idx) {
+	if(idx == 0){
+
+	}else{
+		XunLeiVideInfo info = m_dates.at(idx-1);
+		if(info.isIsDir()){
+			CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,XunLeiBTdetailSence::scene(info)));
+		}else{
+			CSJson::Value root;
+			CSJson::Value jsonobj;
+			jsonobj["createTime"] = info.getCreateTime();
+			jsonobj["duration"] = (double)info.getDuration();
+			jsonobj["file_name"] = info.getFileName();
+			jsonobj["filesize"] = info.getFilesize();
+			jsonobj["gcid"] = info.getGcid();
+			jsonobj["src_url"] = info.getSrcUrl();
+			jsonobj["userid"] = info.getUserid();
+			jsonobj["isDir"] = 0;
+			root["date"] = jsonobj;
+			root["type"] = 2;
+			CSJson::FastWriter writer;
+	//		LOGD("HistoryScnce","baidu play video ---> %s",root.toStyledString().c_str());
+			playVideoJNI(writer.write(root).c_str());
+		}
+	}
 }
 
 void XunLeiYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 		unsigned int idx) {
 	LOGD("HistoryScnce","item %u Selected",idx);
-	if(m_selectedCell)
-	{
-		CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(124);
-		sLabelBack->stopAllActions();
-		sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+	if(idx==0){
+		if(m_selectedCell)
+		{
+			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
+			sLabelBack->stopAllActions();
+			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+		}
+		if(cell){
+			//、、
+		}
+		m_selectedCell = NULL;
+	}else{
+		if(m_selectedCell)
+		{
+			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
+			sLabelBack->stopAllActions();
+			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+		}
+		if(cell){
+			CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
+			pLabelBack->stopAllActions();
+			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+		}
+		m_selectedCell = cell;
 	}
-	if(cell){
-		CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(124);
-		pLabelBack->stopAllActions();
-		pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
-	}
-	m_selectedCell = cell;
 }
 
 CCSize XunLeiYunSence::tableCellSizeForIndex(CCListView* table,
@@ -258,44 +298,83 @@ CCSize XunLeiYunSence::tableCellSizeForIndex(CCListView* table,
 
 CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 		unsigned int idx) {
-	XunLeiVideInfo info = m_dates.at(idx);
+
+
+//	CCString *pString = CCString::createWithFormat("%s", info.getName().c_str());
 	CCTableViewCell *pCell = table->dequeueCell();
+	CCImageView *pImage;
+	CCSprite *pSprite;
+	CCTableCellForHistory *pLabelBack;
+	CCLabelTTF *pLabel;
+	CCLabelTTF *pTimeLabel;
 	if (!pCell) {
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
-		CCImageView *pImage = CCImageView::createWithNetUrl(info.getPicUrl().c_str(),"defulte_avatar.png",ccp(264,140));
+		pImage = new CCImageView();
 		pImage->setPosition(ccp(170,506));
-		pImage->setTag(125);
+		pImage->setTag(1);
+		pImage->autorelease();
 		pCell->addChild(pImage);
-		CCSprite *pSprite = CCSprite::create("push_thumb.png");
+		pSprite = CCSprite::create("xunlei_thumb.png");
 		pSprite->setAnchorPoint(CCPointZero);
 		pSprite->setPosition(ccp(0,405));
+		pSprite->setTag(2);
 		pCell->addChild(pSprite);
-		CCTableCellForHistory *pLabelBack = CCTableCellForHistory::create("push_card_activated.png");
+		pLabelBack = CCTableCellForHistory::create("xunlei_card_activated.png");
 		pLabelBack->setAnchorPoint(ccp(0,1));
 		pLabelBack->setPosition(ccp(0,540));
-		pLabelBack->setTag(124);
+		pLabelBack->setTag(3);
 		pCell->addChild(pLabelBack);
-		CCLabelTTF *pLabel = CCLabelTTF::create(info.getFileName().c_str(), "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
+		pLabel = CCLabelTTF::create("", "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
 		pLabel->setPosition(ccp(35,300));
 		pLabel->setAnchorPoint(ccp(0,1));
-		pLabel->setTag(123);
+		pLabel->setTag(4);
 		pCell->addChild(pLabel);
+		pTimeLabel = CCLabelTTF::create("","Arial", 27.0);
+		pTimeLabel->setPosition(ccp(170,350));
+		pTimeLabel->setTag(5);
+		pCell->addChild(pTimeLabel);
 	}
 	else
 	{
-		CCLabelTTF *pLabel = (CCLabelTTF*)pCell->getChildByTag(123);
-		pLabel->setString(info.getFileName().c_str());
-		CCTableCellForHistory *pLabelBack = (CCTableCellForHistory*)pCell->getChildByTag(124);
+		pImage = (CCImageView*)pCell->getChildByTag(1);
+		pSprite = (CCSprite*)pCell->getChildByTag(2);
+		pLabelBack = (CCTableCellForHistory*)pCell->getChildByTag(3);
+		pLabel = (CCLabelTTF*)pCell->getChildByTag(4);
+		pTimeLabel = (CCLabelTTF*)pCell->getChildByTag(5);
+	}
+	if(idx == 0){
+		pSprite->initWithFile("xunlei_id.png");
+		pSprite->setAnchorPoint(CCPointZero);
+		pSprite->setPosition(ccp(0,405));
 		pLabelBack->setPosition(ccp(0,540));
-		CCImageView *pImag = (CCImageView *)pCell->getChildByTag(125);
-		pImag->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+		pImage->setVisible(false);
+		pLabel->setString(getXunLeiUserInfoJNI().c_str());
+	}else{
+		XunLeiVideInfo info = m_dates.at(idx-1);
+		pLabel->setString(info.getFileName().c_str());
+		if(info.isIsDir()){
+			pSprite->initWithFile("xunlei_thumb_folder.png");
+		}else{
+			pSprite->initWithFile("xunlei_thumb.png");
+		}
+		pSprite->setAnchorPoint(CCPointZero);
+		pSprite->setPosition(ccp(0,405));
+		if(idx == table->getSelected()){
+			pLabelBack->setPosition(ccp(0,405));
+			m_selectedCell = pCell;
+		}else{
+			pLabelBack->setPosition(ccp(0,540));
+		}
+		pImage->setVisible(true);
+		pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+		pImage->setBoundSize(ccp(264,140));
 	}
 	return pCell;
 }
 
 unsigned int XunLeiYunSence::numberOfCellsInTableView(CCListView* table) {
-	return m_dates.size();
+	return m_dates.size()+1;
 //	return 2;
 }
 

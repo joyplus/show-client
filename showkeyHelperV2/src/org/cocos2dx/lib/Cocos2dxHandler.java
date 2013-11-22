@@ -42,6 +42,8 @@ public class Cocos2dxHandler extends Handler {
 	public final static int HANDLER_SHOW_EDITBOX_DIALOG = 2;
 	public final static int HANDLER_SHOW_XUNLEI_lOGGIN_DIALOG = 3;
 	public final static int HANDLER_SHOW_BAIDU_lOGGIN_DIALOG = 4;
+	public final static int MESSAGE_GETPINCODE_SUCCESS = 5;
+	public final static int MESSAGE_GETPINCODE_FAILE = 6;
 	
 	// ===========================================================
 	// Fields
@@ -80,6 +82,12 @@ public class Cocos2dxHandler extends Handler {
 			break;
 		case Cocos2dxHandler.HANDLER_SHOW_BAIDU_lOGGIN_DIALOG:
 			showBaiduLoginDialog(msg);
+			break;
+		case Cocos2dxHandler.MESSAGE_GETPINCODE_SUCCESS:
+			Cocos2dxHelper.setGeneratePincodeResult(true);
+			break;
+		case Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE:
+			Cocos2dxHelper.setGeneratePincodeResult(false);
 			break;
 		}
 	}

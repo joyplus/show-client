@@ -1,4 +1,5 @@
 #include "HistoryScnce.h"
+#include "HistoryBtDetailsSence.h"
 
 CCScene* HistoryScnce::scene()
 {
@@ -30,8 +31,54 @@ bool HistoryScnce::init()
 			break;
 		}
 		m_selectedCell = NULL;
+		m_dates.clear();
 
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+		string playList = getPlayHistoryListJNI();
+		LOGD("HistoryScnce","play list ---> %s", playList.c_str());
+		CSJson::Value root;
+		CSJson::Reader reader;
+		if(reader.parse(playList,root)){
+			const CSJson::Value arrayObj = root["list"];
+			for(int i=0; i< arrayObj.size(); i++){
+				LOGD("HistoryScnce","play list %d , name : %s", i , arrayObj[i]["name"].asString().c_str());
+				PlayHistoryInfo info;
+				info.setId(arrayObj[i]["_id"].asInt());
+				info.setName(arrayObj[i]["name"].asString());
+				info.setDuration(arrayObj[i]["duration"].asInt());
+				info.setPlaybackTime(arrayObj[i]["playback_time"].asInt());
+				info.setPushUrl(arrayObj[i]["push_url"].asString());
+				info.setPicUrl(arrayObj[i]["pic_url"].asString());
+				info.setType(arrayObj[i]["type"].asInt());
+				string btes = arrayObj[i]["episodes"].asString();
+				info.setIsDir(false);
+				if(!btes.empty()){
+					CSJson::Value btepisodesObj;
+					CSJson::Reader btepisodesreader;
+					if(btepisodesreader.parse(btes,btepisodesObj)){
+						std::vector<BTEpisode> btepisodes;
+						for(int j=0; j<btepisodesObj.size(); j++){
+							BTEpisode bteInfo;
+							bteInfo.setName(btepisodesObj[j]["name"].asString());
+							LOGD("HistoryScnce","%s bt name--> %s", info.getName().c_str(), bteInfo.getName().c_str());
+							bteInfo.setDuration(btepisodesObj[j]["duration"].asInt());
+							bteInfo.setPlaybackTime(btepisodesObj[j]["playback_time"].asInt());
+							bteInfo.setPicUrl(btepisodesObj[j]["pic_url"].asString());
+							btepisodes.push_back(bteInfo);
+						}
+						info.setBtepisodes(btepisodes);
+						info.setIsDir(true);
+					}else{
+
+					}
+
+				}
+				m_dates.push_back(info);
+			}
+		}else{
+			LOGD("HistoryScnce", "play list json parse failed");
+		}
 
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 		tableView->setAnchorPoint(ccp(0,1));
@@ -39,7 +86,7 @@ bool HistoryScnce::init()
 		tableView->setDelegate(this);
 		tableView->setDirection(kCCScrollViewDirectionHorizontal);
 		tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-		tableView->setSelection(1);
+		tableView->setSelection(0);
 		this->addChild(tableView);
 //		tableView->reloadData();
 		this->setKeypadEnabled(true);
@@ -77,47 +124,79 @@ void HistoryScnce::keyArrowClicked(int arrow)
 cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		CCListView* table, unsigned int idx)
 {
-	CCString *pString = CCString::createWithFormat("生活大爆炸S07E04].The.Big.Bang.Theory.S01E%d.中英字幕.HR-HDTV.AC3", idx);
+	PlayHistoryInfo info = m_dates.at(idx);
+	CCString *pString = CCString::createWithFormat("%s", info.getName().c_str());
 	CCTableViewCell *pCell = table->dequeueCell();
+	CCImageView *pImage;
+	CCSprite *pSprite;
+	CCTableCellForHistory *pLabelBack;
+	CCLabelTTF *pLabel;
+	CCLabelTTF *pTimeLabel;
 	if (!pCell) {
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
-
-		CCImageView *pImage = CCImageView::createWithNetUrl("http://i2.xlpan.kanimg.com/pic/DD397F381C888480FFF462C97E1C90FC5C467848_X168.jpg","defulte_avatar.png",ccp(264,140));
+		pImage = new CCImageView();
 		pImage->setPosition(ccp(170,506));
+		pImage->setTag(1);
+		pImage->autorelease();
 		pCell->addChild(pImage);
-
-		CCSprite *pSprite = CCSprite::create("push_thumb.png");
+		pSprite = CCSprite::create("push_thumb.png");
 		pSprite->setAnchorPoint(CCPointZero);
 		pSprite->setPosition(ccp(0,405));
+		pSprite->setTag(2);
 		pCell->addChild(pSprite);
-
-		CCTableCellForHistory *pLabelBack = CCTableCellForHistory::create("push_card_activated.png");
+		pLabelBack = CCTableCellForHistory::create("push_card_activated.png");
 		pLabelBack->setAnchorPoint(ccp(0,1));
 		pLabelBack->setPosition(ccp(0,540));
-		pLabelBack->setTag(124);
+		pLabelBack->setTag(3);
 		pCell->addChild(pLabelBack);
-
-		CCLabelTTF *pLabel = CCLabelTTF::create(pString->getCString(), "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
+		pLabel = CCLabelTTF::create("", "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
 		pLabel->setPosition(ccp(35,300));
 		pLabel->setAnchorPoint(ccp(0,1));
-		pLabel->setTag(123);
+		pLabel->setTag(4);
 		pCell->addChild(pLabel);
+		pTimeLabel = CCLabelTTF::create("","Arial", 27.0);
+		pTimeLabel->setPosition(ccp(170,350));
+		pTimeLabel->setTag(5);
+		pCell->addChild(pTimeLabel);
 	}
 	else
 	{
-		CCLabelTTF *pLabel = (CCLabelTTF*)pCell->getChildByTag(123);
-		pLabel->setString(pString->getCString());
-		CCTableCellForHistory *pLabelBack = (CCTableCellForHistory*)pCell->getChildByTag(124);
+		pImage = (CCImageView*)pCell->getChildByTag(1);
+		pSprite = (CCSprite*)pCell->getChildByTag(2);
+		pLabelBack = (CCTableCellForHistory*)pCell->getChildByTag(3);
+		pLabel = (CCLabelTTF*)pCell->getChildByTag(4);
+		pTimeLabel = (CCLabelTTF*)pCell->getChildByTag(5);
+	}
+	if(info.getName().empty()){
+		pLabel->setString(info.getPushUrl().c_str());
+	}else{
+		pLabel->setString(info.getName().c_str());
+	}
+	if(info.isIsDir()){
+		pSprite->initWithFile("push_thumb_folder.png");
+	}else{
+		pSprite->initWithFile("push_thumb.png");
+	}
+	pSprite->setAnchorPoint(CCPointZero);
+	pSprite->setPosition(ccp(0,405));
+	if(idx == table->getSelected()){
+		pLabelBack->setPosition(ccp(0,405));
+		m_selectedCell = pCell;
+	}else{
 		pLabelBack->setPosition(ccp(0,540));
 	}
-
-//	if(idx==0||idx==numberOfCellsInTableView(table)-1){
-//		pCell->setVisible(false);
-//	}else{
-//		pCell->setVisible(true);
-//	}
-
+	if(info.getDuration()-info.getPlaybackTime()<10&&info.getDuration()>10){
+		pTimeLabel->setString("已看完");
+	}else{
+		CCString* time = CCString::createWithFormat("%s/%s",fomartTime(info.getPlaybackTime()).c_str(),
+										fomartTime(info.getDuration()).c_str());
+		pTimeLabel->setString(time->getCString());
+	}
+	pSprite->setAnchorPoint(CCPointZero);
+	pSprite->setPosition(ccp(0,405));
+	pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+	pImage->setBoundSize(ccp(264,140));
 	return pCell;
 }
 
@@ -131,16 +210,32 @@ unsigned int HistoryScnce::numberOfCellsInTableView(CCListView* table)
 {
 //	LOGD(TAG_HistoryScnce,"return number of cells %d",20);
 //	LOGD(TAG_HistoryScnce,"view size %f",table->getViewSize().width);
-	return 30;
+	return m_dates.size();
 }
 
 void HistoryScnce::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		unsigned int idx) {
 	LOGD("HistoryScnce","item %u Clicked",idx);
-	m_selectedCell = NULL;
-	tableView->reloadData();
-	tableView->setSelection(tableView->getSelected());
-
+	PlayHistoryInfo info = m_dates.at(idx);
+	if(info.isIsDir()){//分集
+//		HistoryBtDetailsSence* sence = HistoryBtDetailsSence::scene(info);
+		CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,HistoryBtDetailsSence::scene(info)));
+	}else{
+		CSJson::Value root;
+		CSJson::Value jsonobj;
+		CSJson::FastWriter writer;
+		if(info.getType() == 2){
+			jsonobj["_id"] = info.getId();
+			root["date"] = jsonobj;
+			root["type"] = 1;
+		}else{
+			jsonobj["_id"] = info.getId();
+			jsonobj["isDir"] = 0;
+			root["date"] = jsonobj;
+			root["type"] = 0;
+		}
+		playVideoJNI(writer.write(root).c_str());
+	}
 }
 
 void HistoryScnce::tableCellSelected(CCListView* table, CCTableViewCell* cell,
@@ -148,14 +243,29 @@ void HistoryScnce::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 	LOGD("HistoryScnce","item %u Selected",idx);
 	if(m_selectedCell)
 	{
-		CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(124);
+		CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
 		sLabelBack->stopAllActions();
 		sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+		CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+		pLabel->setDimensions(ccp(270, 150));
+//		CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,540)),
+//				CCCallFuncND::create(this,
+//						callfuncND_selector(HistoryScnce::callBackAnim),
+//						pLabel),NULL);
+//		sLabelBack->runAction(actions);
 	}
 	if(cell){
-		CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(124);
+		CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
 		pLabelBack->stopAllActions();
-		pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+//		pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+		CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
+		CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
+						CCCallFuncND::create(this,
+								callfuncND_selector(HistoryScnce::callBackAnim),
+								pLabel),NULL);
+		pLabelBack->runAction(actions);
+
+//		pLabel->setDimensions(ccp(270, 240));
 	}
 	m_selectedCell = cell;
 }
@@ -177,4 +287,9 @@ CCSize HistoryScnce::tableCellSizeForIndex(CCListView* list,
 HistoryScnce::~HistoryScnce() {
 	// TODO Auto-generated destructor stub
 }
+
+void HistoryScnce::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {
+	pLabel->setDimensions(ccp(270, 240));
+}
+
 

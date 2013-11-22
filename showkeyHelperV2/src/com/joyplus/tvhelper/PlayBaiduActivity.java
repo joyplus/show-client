@@ -121,7 +121,14 @@ private void startPlayer(){
 								finish();
 							}
 						});
-
+				tDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+					
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						// TODO Auto-generated method stub
+						finish();
+					}
+				});
 				tDialog.show();
 			}else{
 				AlertDialog.Builder tDialog = new AlertDialog.Builder(this);
@@ -133,6 +140,14 @@ private void startPlayer(){
 								finish();
 							}
 						});
+				tDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+					
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						// TODO Auto-generated method stub
+						finish();
+					}
+				});
 				tDialog.show();
 			}
 			

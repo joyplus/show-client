@@ -30,6 +30,7 @@ THE SOFTWARE.
 typedef void (*EditTextCallback)(const char* pText, void* ctx);
 typedef void (*XunLeiLoginCallback)(bool isBack, void* ctx);
 typedef void (*BaiduLoginCallback)(bool isBack, void* ctx);
+typedef void (*MainGeneratePincode)(bool isSuccess, void* ctx);
 
 extern const char * getApkPath();
 extern void showDialogJNI(const char * pszMsg, const char * pszTitle);
@@ -44,11 +45,17 @@ extern std::string getFileDirectoryJNI();
 extern std::string getXunLeiUserInfoJNI();
 extern std::string getXunleiCookiesJNI();
 extern std::string getBaiduTokenJNI();
+extern std::string getPincodeJNI();
+extern void startFayeService();
+extern void generatePincode(MainGeneratePincode pfXunLeiLoginCallback, void* ctx);
 extern std::vector<std::string> stringSplit(std::string str,std::string pattern);
 std::string getCurrentTimeJNI();
 extern void enableAccelerometerJNI();
 extern void disableAccelerometerJNI();
 extern void setAccelerometerIntervalJNI(float interval);
+extern void* getErweimaDateJNI(const char* date, int width, unsigned int * pSize);
+extern std::string getPlayHistoryListJNI();
+extern std::string fomartTime(int s);
 // functions for CCUserDefault
 extern bool getBoolForKeyJNI(const char* pKey, bool defaultValue);
 extern int getIntegerForKeyJNI(const char* pKey, int defaultValue);
@@ -62,5 +69,7 @@ extern void setDoubleForKeyJNI(const char* pKey, double value);
 extern void setStringForKeyJNI(const char* pKey, const char* value);
 extern std::string getStringResouceByKeyJNI(const char* pKey);
 extern std::string getDecodeStringFromJNI(const char* pKey);
+
+
 
 #endif /* __Java_org_cocos2dx_lib_Cocos2dxHelper_H__ */

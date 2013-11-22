@@ -5,22 +5,20 @@ import org.cocos2dx.lib.Cocos2dxHelper;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
@@ -49,6 +47,8 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 	private static final int LOGIN_ERROR = 2;
 	private static final int LOGIN_SUCESS = 1;
 	private static final int GET_USERINFO_SUCCESS = 3;
+	private static final int VERIFY_CODE_SUCCESS = 6;
+	private static final int VERIFY_CODE_FAIL = 7;
 	
 	private Handler mHandler = new Handler(){
 		public void handleMessage(Message msg) {
@@ -64,10 +64,12 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 				int loginErrorFlag = msg.arg1;
 				switch (loginErrorFlag) {
 				case 1:
-//					if(verifyLayout.getVisibility() == View.VISIBLE){
-//						Utils.showToast(XunLeiLXActivity.this, "输入有误，请重新输入");
-//					}else {
+					if(mYanZhengMaLoyout.getVisibility() == View.VISIBLE){
+						Utils.showToast(getContext(), "输入有误，请重新输入");
+					}else {
+						mYanZhengMaLoyout.setVisibility(View.VISIBLE);
 						Utils.showToast(getContext(), "请手动输入验证码");
+					}
 //					}
 //					
 //					verifyLayout.setVisibility(View.VISIBLE);
@@ -95,14 +97,52 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 				}
 				mProgressBar.setVisibility(View.GONE);
 				mLayout.setVisibility(View.VISIBLE);
+				if(mYanZhengMaLoyout.getVisibility() == View.VISIBLE){
+					mYanzhengMaEditText.setText("");
+					getVerifyBitmap();
+				}
 				break;
 			case GET_USERINFO_SUCCESS:
 				dismiss();
 				Cocos2dxHelper.setXunLeiLoginDialogResult(false);
+				break;
+			case VERIFY_CODE_SUCCESS:
+				Bitmap bitmap = (Bitmap) msg.obj;
+				if(bitmap != null){
+					mYanzhengMa.setBackgroundDrawable(new BitmapDrawable(getContext().getResources(),bitmap));
+				}else{
+					
+					mYanzhengMa.setBackgroundDrawable(null);
+					Utils.showToast(getContext(), "获取验证码图片失败,检查网络是否连接");
+				}
+				break;
+			case VERIFY_CODE_FAIL:
+				Utils.showToast(getContext(), "获取验证码图片失败,检查网络是否连接");
+				break;
 			}
-		};
+		}
 	};
-	
+	private void getVerifyBitmap() {
+		// TODO Auto-generated method stub
+		MyApp.pool.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				if(!TextUtils.isEmpty(mAccountEditText.getText().toString())){
+					Bitmap bitmap = XunLeiLiXianUtil.getVerifyCodeBitmap(getContext(),
+							mAccountEditText.getText().toString());
+					if(bitmap != null){
+						Message message = mHandler.obtainMessage(VERIFY_CODE_SUCCESS, bitmap);
+						mHandler.sendMessage(message);
+						return;
+					}
+				}
+				Message message = mHandler.obtainMessage(VERIFY_CODE_FAIL);
+				mHandler.sendMessage(message);
+			}
+		});
+	};
 
 	// ===========================================================
 	// Constructors
@@ -170,6 +210,10 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 //			handler.sendEmptyMessage(START_LOGIN);
 //			showDialog(DIALOG_WAITING);
 //		}
+		if(mYanZhengMaLoyout.getVisibility() == View.VISIBLE){
+			mYanzhengMaEditText.setText("");
+			getVerifyBitmap();
+		}
 	}
 	
 	private void login(){
@@ -216,7 +260,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 						getContext(), 
 						MD5Util.getMD5String(mPassWordEditText.getText().toString()));
 			}else{
-				if(!TextUtils.isEmpty(XunLeiLiXianUtil.getLoginUserPasswd(getContext()))&&!XunLeiLiXianUtil.getLoginUserPasswd(getContext()).equals(
+				if(!TextUtils.isEmpty(XunLeiLiXianUtil.getLoginUserPasswd(getContext()))&&XunLeiLiXianUtil.getLoginUserPasswd(getContext()).equals(
 						mPassWordEditText.getText().toString())){
 					XunLeiLiXianUtil.saveLoginUserPasswd(
 							getContext(), 

@@ -75,6 +75,7 @@ public class Cocos2dxBaiduDialog extends Dialog {
 			case MESSAGE_GET_ACCESSTOKEN_SUCESS:
 				//通知登陆成功
 				dismiss();
+				mHandler.removeCallbacksAndMessages(null);
 				Cocos2dxHelper.setBaiduLoginDialogResult(false);
 				break;
 			case MESSAGE_GET_ACCESSTOKEN_FAILE:
@@ -100,8 +101,8 @@ public class Cocos2dxBaiduDialog extends Dialog {
 	@Override
 	protected void onCreate(final Bundle pSavedInstanceState) {
 		super.onCreate(pSavedInstanceState);
-
 //		this.getWindow().setBackgroundDrawable(new ColorDrawable(0x80000000));
+		
 		this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		View	contetnView  = this.getLayoutInflater().inflate(R.layout.dialog_baidu_login, null);
 		aq = new AQuery(getOwnerActivity());
@@ -118,12 +119,14 @@ public class Cocos2dxBaiduDialog extends Dialog {
 			}
 		});
 		
+		
 		this.setOnCancelListener(new OnCancelListener() {
 			
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				// TODO Auto-generated method stub
 				dismiss();
+				mHandler.removeCallbacksAndMessages(null);
 				Cocos2dxHelper.setBaiduLoginDialogResult(true);
 			}
 		});
