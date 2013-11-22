@@ -60,9 +60,11 @@ bool XunLeiYunSence::init()
 //		passWordEditView->setTag(TAG_XUNLEI_PASSWORD);
 //		this->addChild(passWordEditView);
 
-
-		showXunLeiLoginDialog(xunLeiDilogCallbackFunc, (void*)this);
-
+		if(getXunleiCookiesJNI().empty()){
+			showXunLeiLoginDialog(xunLeiDilogCallbackFunc, (void*)this);
+		}else{
+			loginXunleiSuccess();
+		}
 		this->setKeypadEnabled(true);
 		bRet = true;
 	} while (0);
@@ -113,9 +115,11 @@ void XunLeiYunSence::loginXunleiSuccess()
 	reader.parse(userString,jsonobj);
 	string nickname = jsonobj["nickname"].asString();
 	string username = jsonobj["usrname"].asString();
+	int level = jsonobj["level"].asInt();
 	LOGD("XunLeiYunSence","nickname -> %s",nickname.c_str());
 	LOGD("XunLeiYunSence","username -> %s",username.c_str());
-
+	m_userInfo.setName(nickname);
+	m_userInfo.setVipLevel(level);
 	getXunleiVideoList(0);
 }
 
@@ -349,10 +353,12 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 		pSprite->setPosition(ccp(0,405));
 		pLabelBack->setPosition(ccp(0,540));
 		pImage->setVisible(false);
-		pLabel->setString(getXunLeiUserInfoJNI().c_str());
+		pLabel->setHorizontalAlignment(CCTextAlignment(kCCTextAlignmentCenter));
+		pLabel->setString(m_userInfo.getName().c_str());
 	}else{
 		XunLeiVideInfo info = m_dates.at(idx-1);
 		pLabel->setString(info.getFileName().c_str());
+		pLabel->setHorizontalAlignment(CCTextAlignment(kCCTextAlignmentLeft));
 		if(info.isIsDir()){
 			pSprite->initWithFile("xunlei_thumb_folder.png");
 		}else{

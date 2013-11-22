@@ -12,6 +12,29 @@ USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
 
+class XunleiUserInfo {
+private:
+	string name;
+	int vipLevel;
+
+public:
+	string getName() const {
+		return name;
+	}
+
+	void setName(string name) {
+		this->name = name;
+	}
+
+	int getVipLevel() const {
+		return vipLevel;
+	}
+
+	void setVipLevel(int vipLevel) {
+		this->vipLevel = vipLevel;
+	}
+};
+
 class XunLeiVideInfo : public CCObject{
 
 private:
@@ -152,7 +175,7 @@ private :
 
 	CCListView * tableView;
 	CCTableViewCell * m_selectedCell;
-
+	XunleiUserInfo m_userInfo;
 	void initTableView();
 };
 
