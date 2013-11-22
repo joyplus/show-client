@@ -916,7 +916,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 					break;
 				}
 			}else if(Global.ACTION_RECIVE_NEW_PUSH_MOVIE.equals(action)){
-				finish();
+				finishActivity();
 			}
 		}
 	};
