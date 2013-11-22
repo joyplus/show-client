@@ -1,0 +1,224 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:layout_weight="1"
+    xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
+    <LinearLayout 
+            android:id="@+id/top_empty"
+            android:layout_width="fill_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="3">
+	</LinearLayout>
+	<LinearLayout       android:id="@+id/all_center"
+	                    android:layout_width="fill_parent"
+	       		        android:layout_height="0dp"
+	       		        android:orientation="horizontal"
+	       		        android:layout_weight="5">
+	    <LinearLayout 
+	        android:id="@+id/all_center_left"
+	        android:layout_width="0dp"
+            android:layout_weight="0.85"
+            android:layout_height="fill_parent">
+        </LinearLayout>
+        <LinearLayout 
+            android:id="@+id/all_center_content"
+            android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:background="@drawable/setting_content"
+	        android:layout_weight="6">
+	        	   <LinearLayout 
+	        	       android:layout_width="fill_parent"
+	        	       android:layout_height="fill_parent">
+	        	       	<LinearLayout android:layout_width="0dp"
+	       		            android:layout_height="fill_parent"
+	       		            android:layout_weight="0.2">
+	       		        </LinearLayout>
+	       		        <LinearLayout android:layout_width="0dp"
+	       		            android:layout_height="fill_parent"
+	       		            android:id="@+id/layout_setting"
+	       		            android:layout_weight="3"
+	       		            android:orientation="vertical">
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="36dp">
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/immediately_show"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="稍后观看"
+	       		                    android:layout_weight="10"/>
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center"
+	       		                    android:textSize="24dp"
+	       		                    android:id="@+id/immediately_show_text"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="关"
+	       		                    android:layout_weight="3"/>
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/decode_mode"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="播放解码"
+	       		                    android:layout_weight="10"/>
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center"
+	       		                    android:textSize="24dp"
+	       		                    android:id="@+id/decode_mode_text"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="硬解"
+	       		                    android:layout_weight="3"/>
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/default_decrease"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="字幕默认"
+	       		                    android:layout_weight="10"/>
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center"
+	       		                    android:textSize="24dp"
+	       		                    android:id="@+id/default_decrease_text"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="开"
+	       		                    android:layout_weight="3"/>
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/default_resolution"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="默认清晰度"
+	       		                    android:layout_weight="10"/>
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center"
+	       		                    android:textSize="24dp"
+	       		                    android:id="@+id/default_resolution_text"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="超清"
+	       		                    android:layout_weight="3"/>
+	       		            </LinearLayout>
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/size_decrease"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="字幕大小"
+	       		                    android:layout_weight="10"/>
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center"
+	       		                    android:focusable="true"
+	       		                    android:textSize="24dp"
+	       		                    android:id="@+id/size_decrease_text"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="中"
+	       		                    android:layout_weight="3"
+	       		                    android:visibility="visible"/>
+	       		            </LinearLayout>
+	       		            
+	       		        </LinearLayout>
+	       		        
+	       		        <LinearLayout android:layout_width="0dp"
+	       		            android:layout_height="fill_parent"
+	       		            android:layout_weight="0.2">
+	       		        </LinearLayout>
+	       		      </LinearLayout>
+         </LinearLayout>
+    
+     	<LinearLayout 
+     	    android:id="@+id/all_center_tip_content"
+     	    android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="2"
+	        android:orientation="vertical">
+	        	   <LinearLayout android:layout_width="fill_parent"
+	        	       android:layout_height="0dp"
+	        	       android:layout_weight="6"
+	        	       android:paddingLeft="10dp"
+	        	       android:background="@drawable/setting_tip"
+	        	       android:orientation="horizontal">
+	        	          <TextView android:layout_width="wrap_content"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="fill_horizontal"
+	       		                    android:textSize="25dp"
+	       		                    android:padding="30dp"
+	       		                    android:id="@+id/all_center_tip_content_text"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text=""/>
+	        	     </LinearLayout>
+	        	     <LinearLayout android:layout_width="fill_parent"
+	        	                   android:layout_height="0dp"
+	        	                   android:layout_weight="1"></LinearLayout>
+	    </LinearLayout>
+	
+    	<LinearLayout 
+    	    android:id="@+id/all_center_right"
+    	    android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="2">
+    	</LinearLayout>
+	
+    </LinearLayout>
+	
+	<LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:id="@+id/bottom_empty"
+	        android:layout_height="0dp"
+	        android:layout_weight="2">
+	</LinearLayout>
+</LinearLayout>
