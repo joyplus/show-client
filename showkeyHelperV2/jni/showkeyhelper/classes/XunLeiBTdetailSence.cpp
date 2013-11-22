@@ -78,13 +78,13 @@ void XunLeiBTdetailSence::tableCellClicked(CCListView* table,
 	for(int i=0; i<m_dates.size();i++){
 		CSJson::Value item;
 		XunLeiVideInfo info_item = m_dates.at(idx);
-		item["createTime"] = info_item.getCreateTime();
+		item["createTime"] = m_xunLeiVideInfo.getCreateTime();
 		item["duration"] = (double)info_item.getDuration();
 		item["file_name"] = info_item.getFileName();
 		item["filesize"] = info_item.getFilesize();
 		item["gcid"] = info_item.getGcid();
 		item["src_url"] = info_item.getSrcUrl();
-		item["userid"] = info_item.getUserid();
+		item["userid"] = m_xunLeiVideInfo.getUserid();
 		arrayObj.append(item);
 	}
 	jsonobj["item_list"] = arrayObj;
@@ -227,8 +227,8 @@ void XunLeiBTdetailSence::getChilds() {
 		string str = m_xunLeiVideInfo.getSrcUrl();
 		LOGD("XunLeiBTdetailSence","bt src -- >%s",str.c_str());
 		string str_sub;
-		if(str.length()>7){
-			str_sub = str.substr(7);
+		if(str.length()>5){
+			str_sub = str.substr(5);
 		}
 		LOGD("XunLeiBTdetailSence","sub bt src -- >%s",str_sub.c_str());
 		const char* url_p = "http://i.vod.xunlei.com/req_subBT/info_hash/%s/req_num/1000/req_offset/0";

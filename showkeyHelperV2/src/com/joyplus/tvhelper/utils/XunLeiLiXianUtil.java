@@ -464,7 +464,11 @@ public class XunLeiLiXianUtil {
 			XLLXFileInfo xllxFileInfo) {
 		ArrayList<VideoPlayUrl> localArrayList = getLXPlayUrl4Vod_dl_all(context,xllxFileInfo);//can drag
 		ArrayList<VideoPlayUrl> tempArrayList = getLXPlayUrlReferer(context, xllxFileInfo);//can't drag
-		localArrayList.addAll(tempArrayList);
+		for(VideoPlayUrl playUrl:tempArrayList){
+			localArrayList.add(playUrl);
+			Log.d(TAG, "playUrl  sharp"+ playUrl.sharp);
+		}
+//		localArrayList.addAll(tempArrayList);
 
 //		if (localArrayList.size() > 0) {
 			
@@ -748,12 +752,19 @@ public class XunLeiLiXianUtil {
 							for (int j = 0; j < localJSONArray.length(); j++) {
 
 								VideoPlayUrl localVideoPlayUrl = new VideoPlayUrl();
+								VideoPlayUrl localVideoPlayUrl_1 = new VideoPlayUrl();
 								localVideoPlayUrl.playurl = localJSONArray
+										.getJSONObject(j).getString("vod_url_dt17");
+								localVideoPlayUrl_1.playurl = localJSONArray
 										.getJSONObject(j).getString("vod_url");
-								localVideoPlayUrl.sharp = SharpnessEnum
-										.getSharp(j);
-								localVideoPlayUrl.isCanDrag = false;
+//								localVideoPlayUrl.playurl = localJSONArray
+//										.getJSONObject(j).getString("vod_url");
+								localVideoPlayUrl.sharp = SharpnessEnum.getSharp(j);
+								localVideoPlayUrl_1.sharp = SharpnessEnum.getSharp(j);
+								localVideoPlayUrl.isCanDrag = true;
+								localVideoPlayUrl_1.isCanDrag = true;
 								localArrayList.add(localVideoPlayUrl);
+								localArrayList.add(localVideoPlayUrl_1);
 							}
 							
 							//subtitle

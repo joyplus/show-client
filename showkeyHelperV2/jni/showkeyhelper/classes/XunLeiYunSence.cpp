@@ -182,9 +182,9 @@ void XunLeiYunSence::onGetXunleiVideoListComplete(CCNode* node, CCObject* obj) {
 			   LOGD("XunLeiYunSence","%d --> Filesize = %d",i,videoInfo.getFilesize());
 			   videoInfo.setGcid(arrayObj[i]["gcid"].asString());
 			   LOGD("XunLeiYunSence","%d --> Gcid = %s",i,videoInfo.getGcid().c_str());
-			   videoInfo.setSrcUrl(arrayObj[i]["src_url"].asString());
-			   LOGD("XunLeiYunSence","%d --> src_url = %s",i,videoInfo.getSrcUrl().c_str());
-			   if(videoInfo.getSrcUrl().find(string("bt%3A//"))<videoInfo.getSrcUrl().length()){//包含
+			   videoInfo.setSrcUrl(getDecodeStringFromJNI(arrayObj[i]["src_url"].asString().c_str()));
+			   LOGD("XunLeiYunSence","%d --> src_url = %s",i,getDecodeStringFromJNI(videoInfo.getSrcUrl().c_str()).c_str());
+			   if(videoInfo.getSrcUrl().find(string("bt://"))<videoInfo.getSrcUrl().length()){//包含
 				   videoInfo.setIsDir(true);
 			   }else{
 				   videoInfo.setIsDir(false);
