@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.cocos2dx.lib.Cocos2dxHelper.Cocos2dxHelperListener;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +51,7 @@ import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BaiduVideoInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
+import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
@@ -188,20 +190,23 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 				int isDir = date.getInt("isDir");
 				String sub_name = null;
 				MoviePlayHistoryInfo playInfo = dbServices.queryMoviePlayHistoryById(_id);
+				if(playInfo==null){
+					com.joyplus.tvhelper.utils.Log.e(TAG, "play_info is null");
+					return;
+				}
+				playDate = new CurrentPlayDetailData();
 				if(isDir == 1){
 					sub_name = date.getString("sub_name");
 					if(sub_name==null){
 						com.joyplus.tvhelper.utils.Log.e(TAG, "sub_name is null");
 						return ;
 					}
+					playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_PUSH_BT_EPISODE;
+					playDate.prod_sub_name = sub_name;
+				}else{
+					playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_PUSH;
 				}
-				if(playInfo==null){
-					com.joyplus.tvhelper.utils.Log.e(TAG, "play_info is null");
-					return;
-				}
-				playDate = new CurrentPlayDetailData();
 				playDate.prod_name = playInfo.getName();
-				playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_PUSH;
 				playDate.obj = playInfo;
 				Log.d(TAG, "prod_type" + playDate.prod_type);
 				if((playInfo.getDuration()-playInfo.getPlayback_time())<=Constant.END_TIME){
@@ -229,6 +234,51 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 				startActivity(intent_baidu);
 				break;
 			case 2://迅雷离线
+				XLLXFileInfo xunleiInfo = new XLLXFileInfo();
+				xunleiInfo.createTime = date.getString("createTime");
+				xunleiInfo.duration = date.getString("duration");
+				xunleiInfo.file_name = date.getString("file_name");
+				xunleiInfo.filesize = date.getString("filesize");
+				xunleiInfo.gcid = date.getString("gcid");
+				xunleiInfo.src_url = date.getString("src_url");
+				xunleiInfo.userid = date.getString("userid");
+				xunleiInfo.isDir = (date.getInt("isDir")==1)?true:false;
+				String sub_name_xunlei = null;
+				if(xunleiInfo.isDir){
+					sub_name_xunlei = date.getString("sub_name");
+					JSONArray array = date.getJSONArray("item_list");
+					XLLXFileInfo [] btfiles = new XLLXFileInfo[array.length()];
+					for(int i=0; i<array.length(); i++){
+						JSONObject item =  array.getJSONObject(i);
+						XLLXFileInfo info_item = new XLLXFileInfo();
+						info_item.createTime = item.getString("createTime");
+						info_item.duration = item.getString("duration");
+						info_item.file_name = item.getString("file_name");
+						info_item.filesize = item.getString("filesize");
+						info_item.gcid = item.getString("gcid");
+						info_item.src_url = item.getString("src_url");
+						info_item.userid = item.getString("userid");
+						btfiles[i] = info_item;
+					}
+					xunleiInfo.btFiles = btfiles;
+					CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
+					currentPlayDetailData.prod_url = xunleiInfo.src_url;
+					currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI_BT_EPISODE;
+					currentPlayDetailData.prod_name = xunleiInfo.file_name;
+					currentPlayDetailData.prod_sub_name = sub_name_xunlei;
+					currentPlayDetailData.obj = xunleiInfo.btFiles;
+					app.setmCurrentPlayDetailData(currentPlayDetailData);
+					startActivity(Utils.getIntent(getContext()));
+				}else{
+					CurrentPlayDetailData currentPlayDetailData = new CurrentPlayDetailData();
+					currentPlayDetailData.prod_url = xunleiInfo.src_url;
+					currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI;
+					currentPlayDetailData.prod_name = xunleiInfo.file_name;
+
+					currentPlayDetailData.obj = xunleiInfo;
+					app.setmCurrentPlayDetailData(currentPlayDetailData);
+					startActivity(Utils.getIntent(getContext()));
+				}
 				
 				break;
 			case 3://百度云

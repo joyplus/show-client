@@ -21,6 +21,7 @@ private:
 	string file_name;
 	double filesize;
 	string gcid;
+	string cid;
 	bool isDir;
 	string src_url;
 	string userid;
@@ -104,7 +105,7 @@ public:
 		this->duration = duration;
 	}
 
-	int getFilesize() const {
+	double getFilesize() const {
 		return filesize;
 	}
 

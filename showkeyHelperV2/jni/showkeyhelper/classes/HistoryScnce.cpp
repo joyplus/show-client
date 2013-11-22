@@ -1,4 +1,5 @@
 #include "HistoryScnce.h"
+#include "HistoryBtDetailsSence.h"
 
 CCScene* HistoryScnce::scene()
 {
@@ -173,7 +174,7 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		pLabel->setString(info.getName().c_str());
 	}
 	if(info.isIsDir()){
-		pSprite->initWithFile("baidu_thumb.png");
+		pSprite->initWithFile("push_thumb_folder.png");
 	}else{
 		pSprite->initWithFile("push_thumb.png");
 	}
@@ -217,7 +218,8 @@ void HistoryScnce::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 	LOGD("HistoryScnce","item %u Clicked",idx);
 	PlayHistoryInfo info = m_dates.at(idx);
 	if(info.isIsDir()){//分集
-
+//		HistoryBtDetailsSence* sence = HistoryBtDetailsSence::scene(info);
+		CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,HistoryBtDetailsSence::scene(info)));
 	}else{
 		CSJson::Value root;
 		CSJson::Value jsonobj;
@@ -225,7 +227,7 @@ void HistoryScnce::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		if(info.getType() == 2){
 			jsonobj["_id"] = info.getId();
 			root["date"] = jsonobj;
-			root["type"] = 3;
+			root["type"] = 1;
 		}else{
 			jsonobj["_id"] = info.getId();
 			jsonobj["isDir"] = 0;
