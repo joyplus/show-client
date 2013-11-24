@@ -29,6 +29,7 @@ public class SystemVitamioPlayerVideoView extends LinearLayout  implements ViewI
 		mVideoView.setOnCompletionListener(this);
 		mVideoView.setOnPreparedListener(this);
 		mVideoView.setOnInfoListener(this);
+		mVideoView.setBufferSize(2048); 
 	}
 
 	public SystemVitamioPlayerVideoView(Context context) {
