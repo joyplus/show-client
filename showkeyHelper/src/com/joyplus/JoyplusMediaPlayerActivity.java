@@ -146,10 +146,11 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 						m.arg1 = (int) seekto;
 						PlayerHandler.sendMessage(m);
 					}else{
-						if(mVideoView.getPlayer() != null)
+						if(mVideoView.getPlayer() != null){
 							mVideoView.getPlayer().SetVideoPaths(path);
-						if(lastTime>0){
-							mVideoView.getPlayer().SeekVideo(seekto);
+							if(lastTime>0){
+								mVideoView.getPlayer().SeekVideo(seekto);
+							}
 						}
 					}
 					
