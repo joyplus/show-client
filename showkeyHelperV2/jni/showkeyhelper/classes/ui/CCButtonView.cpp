@@ -22,6 +22,7 @@ CCButtonView* CCButtonView::create(const char* path, const char* highlight_path,
 bool CCButtonView::init(const char* path, const char* highlight_path, const char* label,float paddingL,float paddingT,float paddingR,float paddingB) {
 	CCSprite* backgound =  CCSprite::create(path);
 	backgound->setPosition(CCPointZero);
+	backgound->setTag(0);
 	addChild(backgound);
 
 	m_background =  CCSprite::create(highlight_path);
@@ -32,6 +33,7 @@ bool CCButtonView::init(const char* path, const char* highlight_path, const char
 	CCLabelTTF* label_name = CCLabelTTF::create(label, "Arial", 30.0);
 	label_name->setPosition(ccp((paddingL-paddingR)/2,(paddingB-paddingT)/2));
 	label_name->setAnchorPoint(ccp(0.5,0.5));
+	label_name->setTag(1);
 	this->addChild(label_name);
 	setContentSize(backgound->getContentSize());
 	return true;
@@ -41,13 +43,19 @@ void CCButtonView::setSelected(bool isSelected) {
 //	m_background->setVisible(isSelected);
 	unscheduleAllSelectors();
 	m_background->stopAllActions();
+	CCSprite* backgound = (CCSprite*)getChildByTag(0);
+	CCLabelTTF* label_name = (CCLabelTTF*)getChildByTag(1);
 	if(isSelected){
 		CCActionInterval* fadeIn = CCFadeIn::create(0.4f);
 		m_background->runAction(fadeIn);
 		this->schedule(schedule_selector(CCButtonView::runBreath),8.0f);
+		backgound->setOpacity(255);
+		label_name->setOpacity(255);
 	}else{
 		CCActionInterval* fadeOut = CCFadeOut::create(0.4f);
 		m_background->runAction(fadeOut);
+		backgound->setOpacity(125);
+		label_name->setOpacity(125);
 	}
 }
 
