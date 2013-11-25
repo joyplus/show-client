@@ -173,6 +173,10 @@ void XunLeiYunSence::onGetXunleiVideoListComplete(CCNode* node, CCObject* obj) {
 		 if(reader.parse(buff,jsonobj))
 		 {
 			 const CSJson::Value arrayObj = jsonobj["resp"]["history_play_list"];
+			 if(!arrayObj.isArray()){
+				showXunLeiLoginDialog(xunLeiDilogCallbackFunc,this);
+				return;
+			 }
 			 LOGD("XunLeiYunSence","history_play_list size =  %d",arrayObj.size());
 			 for (int i=0; i<arrayObj.size(); i++) {
 			   XunLeiVideInfo videoInfo;

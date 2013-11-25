@@ -317,10 +317,10 @@ public class SettingActivity extends Activity implements OnClickListener{
 			
 			}
 			break;
-		case KeyEvent.KEYCODE_ENTER:
-		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_BACK:
 		case KeyEvent.KEYCODE_ESCAPE:
+			finish();
+			break;
 		default:
 			break;
 		}

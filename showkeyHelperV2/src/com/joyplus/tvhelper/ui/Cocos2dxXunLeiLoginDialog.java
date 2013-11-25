@@ -194,6 +194,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 		});
 		
 		setContentView(contetnView);
+		XunLeiLiXianUtil.saveCookies(getContext(), null);
 	}
 
 	private void initView(){

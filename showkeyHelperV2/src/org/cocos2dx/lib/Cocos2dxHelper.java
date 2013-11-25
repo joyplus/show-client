@@ -456,6 +456,10 @@ public class Cocos2dxHelper {
     	Cocos2dxHelper.sCocos2dxHelperListener.startService();
     }
     
+    public static void startSetting(){
+    	Cocos2dxHelper.sCocos2dxHelperListener.startSetting();
+    }
+    
     public static void 	generatePincode(){
     	//pincode\\\
     	Cocos2dxHelper.sCocos2dxHelperListener.generatePincode();
@@ -525,6 +529,7 @@ public class Cocos2dxHelper {
 
 	public static interface Cocos2dxHelperListener {
 		public void showDialog(final String pTitle, final String pMessage);
+		public void startSetting();
 		public void playVideo(String date);
 		
 		public void showEditTextDialog(final String pTitle, final String pMessage, final int pInputMode, final int pInputFlag, final int pReturnType, final int pMaxLength);

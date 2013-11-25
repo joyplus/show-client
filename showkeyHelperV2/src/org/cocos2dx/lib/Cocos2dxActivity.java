@@ -47,6 +47,7 @@ import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.PlayBaiduActivity;
 import com.joyplus.tvhelper.R;
+import com.joyplus.tvhelper.SettingActivity;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BaiduVideoInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
@@ -313,6 +314,12 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	public void startService() {
 		// TODO Auto-generated method stub
 		startService(new Intent(this,FayeService.class));
+	}
+	
+	@Override
+	public void startSetting() {
+		// TODO Auto-generated method stub
+		startActivity(new Intent(this,SettingActivity.class));
 	}
 	
 	

@@ -47,6 +47,7 @@ extern std::string getXunleiCookiesJNI();
 extern std::string getBaiduTokenJNI();
 extern std::string getPincodeJNI();
 extern void startFayeService();
+extern void startSetting();
 extern void generatePincode(MainGeneratePincode pfXunLeiLoginCallback, void* ctx);
 extern std::vector<std::string> stringSplit(std::string str,std::string pattern);
 std::string getCurrentTimeJNI();

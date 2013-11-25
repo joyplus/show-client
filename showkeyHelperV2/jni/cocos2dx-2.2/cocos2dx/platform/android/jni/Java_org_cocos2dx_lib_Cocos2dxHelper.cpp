@@ -575,6 +575,14 @@ std::string fomartTime(int t) {
 	}
 }
 
+void startSetting() {
+	JniMethodInfo t;
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "startSetting", "()V")) {
+		t.env->CallStaticVoidMethod(t.classID, t.methodID);
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+
 std::string getDecodeStringFromJNI(const char* pKey)
 {
 	JniMethodInfo t;

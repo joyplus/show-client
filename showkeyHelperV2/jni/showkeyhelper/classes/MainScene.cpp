@@ -172,6 +172,7 @@ void MainScene::onPageItemClick(int page_Tag)
 		break;
 	case SPRITE_TAG(TAG_JINGXI):
 		LOGD("MainScene","jingxi click");
+		startSetting();
 		break;
 	case SPRITE_TAG(TAG_HISTORY):
 		LOGD("MainScene","history click");
