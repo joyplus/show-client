@@ -559,7 +559,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		// TODO Auto-generated method stub
 		if((info.getState().toInt()>=STATE.MEDIA_STATE_INITED.toInt()&&!StateOk)){ 
 			mVideoView.getPlayer().StartVideo();
-			if(mVideoView.hasMediaInfoChange()){
+			if(mVideoView.hasMediaInfoChange(info)){
 				mMiddleControl.JoyplussetVisible(false, 0);
 				mTopBottomController.JoyplussetVisible(true, 0);
 //				if(mJoyplusSubManager.CheckSubAviable())mSubTitleView.displaySubtitle();

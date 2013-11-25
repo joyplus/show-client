@@ -126,6 +126,11 @@ public class JoyplusMediaPlayerVideoView implements JoyplusMediaPlayerInterface{
 	public int getScreenLayoutParams(){
 		return VideoView.getScreenLayoutParams();
 	}
+	public boolean hasMediaInfoChange(MediaInfo mediainfo){
+		long delay = Math.abs(CurrentMediaInfo.getCurrentTime()-mediainfo.getCurrentTime());
+		if(Debug)Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");
+		return (delay<3000&&delay>=300);
+	}
 	public boolean hasMediaInfoChange(){
 		long delay = Math.abs(CurrentMediaInfo.getCurrentTime()-PreMediaInfo.getCurrentTime());
 		if(Debug)Log.e(TAG,"eeeeeeeeeeeeeeeee  "+delay +" eeeeeeeeeeee");
