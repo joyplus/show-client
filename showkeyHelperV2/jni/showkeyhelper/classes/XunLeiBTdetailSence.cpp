@@ -114,7 +114,7 @@ void XunLeiBTdetailSence::tableCellSelected(CCListView* table,
 			CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
 			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
 							CCCallFuncND::create(this,
-									callfuncND_selector(HistoryScnce::callBackAnim),
+									callfuncND_selector(XunLeiBTdetailSence::callBackAnim),
 									pLabel),NULL);
 			pLabelBack->runAction(actions);
 		}
@@ -186,7 +186,8 @@ CCTableViewCell* XunLeiBTdetailSence::tableCellAtIndex(CCListView* table,
 //										fomartTime(info.getDuration()).c_str());
 //		pTimeLabel->setString(time->getCString());
 //	}
-	pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+	pImage->setVisible(true);
+	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
 	pImage->setBoundSize(ccp(264,140));
 	return pCell;
 }

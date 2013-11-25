@@ -296,6 +296,8 @@ void XunLeiYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
 			sLabelBack->stopAllActions();
 			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+			CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+			pLabel->setDimensions(ccp(270, 150));
 		}
 		if(cell){
 			//、、
@@ -307,11 +309,19 @@ void XunLeiYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
 			sLabelBack->stopAllActions();
 			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+			CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+			pLabel->setDimensions(ccp(270, 150));
 		}
 		if(cell){
 			CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
 			pLabelBack->stopAllActions();
-			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+			CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
+			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
+							CCCallFuncND::create(this,
+									callfuncND_selector(XunLeiYunSence::callBackAnim),
+									pLabel),NULL);
+			pLabelBack->runAction(actions);
+//			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
 		}
 		m_selectedCell = cell;
 	}
@@ -398,7 +408,7 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 			pLabelBack->setPosition(ccp(0,540));
 		}
 		pImage->setVisible(true);
-		pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
 		pImage->setBoundSize(ccp(264,140));
 	}
 	return pCell;
@@ -407,6 +417,10 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 unsigned int XunLeiYunSence::numberOfCellsInTableView(CCListView* table) {
 	return m_dates.size()+1;
 //	return 2;
+}
+
+void XunLeiYunSence::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {
+	pLabel->setDimensions(ccp(270, 240));
 }
 
 void XunLeiYunSence::initTableView() {

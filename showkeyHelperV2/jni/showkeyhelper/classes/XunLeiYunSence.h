@@ -169,6 +169,7 @@ public:
 
 	virtual unsigned int numberOfCellsInTableView(CCListView *table);
 
+	void callBackAnim(CCNode* sender, CCLabelTTF *pLabel);
 private :
 
 	std::vector<XunLeiVideInfo> m_dates;

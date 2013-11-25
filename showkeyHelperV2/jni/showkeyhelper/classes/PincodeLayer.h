@@ -20,10 +20,7 @@ public:
 	void setSelected(bool isSelected);
 	void runBreath(CCTime dt);
 	void setPincode(const char* pincode);
-
-private:
-//	UILayer * m_uiLayer;
-	CCSprite * m_background;
+	CCSprite* createMaskedSprite(CCImageView* src, const char* maskFile);
 };
 
 #endif

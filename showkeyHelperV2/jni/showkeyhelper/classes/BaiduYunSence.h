@@ -96,6 +96,7 @@ public:
 	void getBaiduLoginUserInfo();
 	void onBaiduLoginUserComplete(CCNode* node,CCObject* obj);
 	void onGetBaiduVideoListComplete(CCNode* node,CCObject* obj);
+	void callBackAnim(CCNode* sender, CCLabelTTF *pLabel);
 
 private:
 	std::vector<BaiduVideoInfo> m_dates;

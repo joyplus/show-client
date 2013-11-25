@@ -172,7 +172,6 @@ void MainScene::onPageItemClick(int page_Tag)
 		break;
 	case SPRITE_TAG(TAG_JINGXI):
 		LOGD("MainScene","jingxi click");
-		startSetting();
 		break;
 	case SPRITE_TAG(TAG_HISTORY):
 		LOGD("MainScene","history click");
@@ -186,7 +185,14 @@ void MainScene::onPageItemClick(int page_Tag)
 		LOGD("MainScene","baidu click");
 		CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,BaiduYunSence::scene()));
 		break;
-
+	case SPRITE_TAG(TAG_BANNER):
+		break;
+	case SPRITE_TAG(TAG_BUTTON_REFRESH):
+		generatePincode(pincodeCallbackFunc,this);
+		break;
+	case SPRITE_TAG(TAG_BUTTON_SETTING):
+		startSetting();
+		break;
 	}
 }
 
@@ -209,23 +215,10 @@ void MainScene::onPageItemClick(int page_Tag)
 void MainScene::disPlayPincode() {
 	m_pageLayer->setPincode(getPincodeJNI().c_str());
 	startFayeService();
-	unsigned int size = 0;
-	void* date = getErweimaDateJNI("http://www.baidu.com/", 250, &size);
-	if(date){
-		CCImage * image = new CCImage();
-		image->initWithImageData(date,size);
-		free(date);
-		CCTexture2D* texture = new cocos2d::CCTexture2D();
-		bool isImg = texture->initWithImage(image);
-		image->release();
-		if(isImg){
-			CCSprite *s = CCSprite::createWithTexture(texture);
-			s->setPosition(ccp(500,300));
-			addChild(s);
-		}
-		texture->release();
-	}
+	CCString* str = CCString::createWithFormat("tt.showkey.tv?pincode=%s",getPincodeJNI().c_str());
+	m_pageLayer->displayErWeiMa(str->getCString());
 }
+
 
 
 

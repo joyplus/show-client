@@ -21,6 +21,7 @@ bool MainItemLayer::init(const char* path_back,const char *path_img,const char *
 //	m_background->setVisible(false);
 	m_background->setOpacity(0);
 	setContentSize(image->getContentSize());
+	return true;
 }
 
 void MainItemLayer::setSelected(bool isSelected) {

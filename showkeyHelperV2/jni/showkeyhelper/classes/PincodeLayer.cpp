@@ -11,98 +11,43 @@ bool PincodeLayer::init()
 				break;
 			}
 
-			m_background = CCSprite::create("selected1_user.png");
-			m_background->setPosition(ccp(522,274));
-			m_background->setOpacity(0);
-			this->addChild(m_background);
+//			m_background = CCSprite::create("selected1_user.png");
+//			m_background->setPosition(ccp(522,274));
+//			m_background->setOpacity(0);
+//			this->addChild(m_background);
 
-			CCImageView * imag_touxiang = CCImageView::createWithNetUrl("http://avatar.cavatar.11111.jpg","defaultphoto.png",CCSizeMake(195,195));
-			imag_touxiang->setPosition(ccp(160,357));
-			addChild(imag_touxiang);
+			CCImageView * imag_touxiang = CCImageView::createWithNetUrl("http://avatar.cavatar.11111.jpg","defaultphoto.png",CCSizeMake(105,105));
+			imag_touxiang->setPosition(ccp(164,510));
+			CCSprite* imag_touxiang_1 = createMaskedSprite(imag_touxiang,"yuan.png");
+			imag_touxiang_1->setPosition(ccp(164,510));
+			addChild(imag_touxiang_1);
 
 
 			CCSprite * sprite  = CCSprite::create("back1_user.png");
 			sprite->setAnchorPoint(ccp(0,0));
-			sprite->setPosition(ccp(0,0));
+			sprite->setPosition(ccp(0,176));
 			addChild(sprite);
 
 			CCSprite * light = CCSprite::create("light.png");
-			light->setPosition(ccp(160,357));
+			light->setPosition(ccp(164,510));
 			addChild(light);
 			light->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 
-			CCSprite * sprite_notice  = CCSprite::create("back1_banner.png");
-			sprite_notice->setAnchorPoint(ccp(0,0));
-			sprite_notice->setPosition(ccp(sprite->getContentSize().width,0));
-			addChild(sprite_notice);
+			setContentSize(CCSizeMake(sprite->getContentSize().width, 550));
 
-			setContentSize(CCSizeMake(sprite->getContentSize().width+sprite_notice->getContentSize().width, sprite->getContentSize().height));
-
-//			m_uiLayer = UILayer::create();
-//			m_uiLayer->scheduleUpdate();
-//			addChild(m_uiLayer);
-
-
-
-//			UILabel *label_notice_pushed = UILabel::create();
-//			label_notice_pushed->setFocused(false);
-//			label_notice_pushed->setText(getStringResouceByKeyJNI("main_pushed").c_str());
-////			label_notice_pushed->setAnchorPoint(ccp(0,0));
-//			label_notice_pushed->setFontSize(18);
-//			label_notice_pushed->setPosition(ccp(60,55));
-//			m_uiLayer->addWidget(label_notice_pushed);
-//
-//			UILabel *label_notice_see = UILabel::create();
-//			label_notice_see->setFocused(false);
-//			label_notice_see->setText(getStringResouceByKeyJNI("main_see").c_str());
-////			label_notice_see->setAnchorPoint(ccp(0,0));
-//			label_notice_see->setFontSize(18);
-//			label_notice_see->setPosition(ccp(150,55));
-//			m_uiLayer->addWidget(label_notice_see);
-//
-//
-//			UILabel *label_pushed_count = UILabel::create();
-//			label_pushed_count->setFocused(false);
-//			label_pushed_count->setText("123");
-////			label_pushed_count->setAnchorPoint(ccp(0.5,0.5));
-//			label_pushed_count->setFontSize(18);
-//			label_pushed_count->setPosition(ccp(60,25));
-//			m_uiLayer->addWidget(label_pushed_count);
-//
-//
-//			UILabel *label_see_count = UILabel::create();
-//			label_see_count->setFocused(false);
-//			label_see_count->setText("0");
-//			label_see_count->setFontSize(18);
-////			label_see_count->setAnchorPoint(ccp(0,0));
-//			label_see_count->setPosition(ccp(150,25));
-//			m_uiLayer->addWidget(label_see_count);
-//
-//			UILabel *label_divider = UILabel::create();
-//			label_divider->setFocused(false);
-//			label_divider->setText("l");
-//			label_divider->setFontSize(36);
-////			label_divider->setAnchorPoint(ccp(0,0));
-//			label_divider->setPosition(ccp(115,40));
-//			m_uiLayer->addWidget(label_divider);
-
-
-//			UILabel *label_pincode = UILabel::create();
-//			label_pincode->setFocused(false);
-//			//label_pincode->setText(("PIN:"+getStringForKeyJNI("pincode","")).c_str());
-//			label_pincode->setFontSize(27);
-//			label_pincode->setTag(0);
-//			label_pincode->setPosition(ccp(155,105));
-//			m_uiLayer->addWidget(label_pincode);
+			CCSprite* pincode_back = CCSprite::create("pin.png");
+			pincode_back->setPosition(ccp(164,285));
+			this->addChild(pincode_back);
 
 			CCLabelTTF* label_pincode = CCLabelTTF::create("", "Arial", 27.0);
-			label_pincode->setPosition(ccp(155,105));
+			label_pincode->setPosition(ccp(164,285));
 			label_pincode->setAnchorPoint(ccp(0.5,0.5));
 			label_pincode->setTag(0);
 			this->addChild(label_pincode);
 
+
 			CCLabelTTF* label_name = CCLabelTTF::create("QQ", "Arial", 30.0);
-			label_name->setPosition(ccp(155,195));
+			label_name->setPosition(ccp(164,375));
 			label_name->setAnchorPoint(ccp(0.5,0.5));
 			this->addChild(label_name);
 
@@ -119,24 +64,8 @@ bool PincodeLayer::init()
 }
 
 void PincodeLayer::setSelected(bool isSelected) {
-//	m_background->setVisible(isSelected);
-	unscheduleAllSelectors();
-	m_background->stopAllActions();
-	if(isSelected){
-		CCActionInterval* fadeIn = CCFadeIn::create(0.4f);
-		m_background->runAction(fadeIn);
-		schedule(schedule_selector(PincodeLayer::runBreath),8.0f);
-	}else{
-		CCActionInterval* fadeOut = CCFadeOut::create(0.4f);
-		m_background->runAction(fadeOut);
-	}
 }
 void PincodeLayer::runBreath(CCTime dt) {
-//	LOGD("MainItemLayer","runBreath");
-	CCActionInterval* fadeTo = CCFadeTo::create(0.5f,127);
-	CCActionInterval* fadeToBack = CCFadeTo::create(0.5f,255);
-//	CCActionInterval* fadeIn = fadeTo->reverse();
-	m_background->runAction(CCSequence::create(fadeTo,fadeToBack,NULL));
 }
 
 void PincodeLayer::setPincode(const char* pincode){
@@ -144,5 +73,40 @@ void PincodeLayer::setPincode(const char* pincode){
 	CCString* str = CCString::createWithFormat("PIN:%s",pincode);
 //	label_pincode->setText(str->getCString());
 	label_pincode->initWithString(str->getCString(), "Arial", 27.0);
+}
+
+CCSprite*  PincodeLayer::createMaskedSprite(CCImageView* src, const char* maskFile)
+{
+    CCSprite * mask = CCSprite::create(maskFile);
+
+    assert(src);
+    assert(mask);
+
+    CCSize srcContent = src->getBoundSize();
+    CCSize maskContent = mask->getContentSize();
+
+    CCRenderTexture * rt = CCRenderTexture::create(srcContent.width, srcContent.height, kTexture2DPixelFormat_RGBA8888);
+
+    float ratiow = srcContent.width / maskContent.width;
+    float ratioh = srcContent.height / maskContent.height;
+    mask->setScaleX(ratiow);
+    mask->setScaleY(ratioh);
+
+    mask->setPosition(ccp(srcContent.width / 2, srcContent.height / 2));
+    src->setPosition(ccp(srcContent.width / 2, srcContent.height / 2));
+
+    ccBlendFunc blendFunc2 = { GL_ONE, GL_ZERO };
+    mask->setBlendFunc(blendFunc2);
+    ccBlendFunc blendFunc3 = { GL_DST_ALPHA, GL_ZERO };
+    src->setBlendFunc(blendFunc3);
+
+    rt->begin();
+    mask->visit();
+    src->visit();
+    rt->end();
+
+    CCSprite * retval = CCSprite::createWithTexture(rt->getSprite()->getTexture());
+    retval->setFlipY(true);
+    return retval;
 }
 

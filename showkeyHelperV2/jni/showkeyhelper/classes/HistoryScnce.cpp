@@ -195,7 +195,8 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 	}
 	pSprite->setAnchorPoint(CCPointZero);
 	pSprite->setPosition(ccp(0,405));
-	pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+	pImage->setVisible(true);
+	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
 	pImage->setBoundSize(ccp(264,140));
 	return pCell;
 }

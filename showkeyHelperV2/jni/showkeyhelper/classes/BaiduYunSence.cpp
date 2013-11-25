@@ -130,6 +130,8 @@ void BaiduYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
 			sLabelBack->stopAllActions();
 			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+			CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+			pLabel->setDimensions(ccp(270, 150));
 		}
 		if(cell){
 			//、、
@@ -141,11 +143,19 @@ void BaiduYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
 			sLabelBack->stopAllActions();
 			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+			CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+			pLabel->setDimensions(ccp(270, 150));
 		}
 		if(cell){
 			CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
 			pLabelBack->stopAllActions();
-			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+//			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+			CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
+			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
+							CCCallFuncND::create(this,
+									callfuncND_selector(BaiduYunSence::callBackAnim),
+									pLabel),NULL);
+			pLabelBack->runAction(actions);
 		}
 		m_selectedCell = cell;
 	}
@@ -221,7 +231,8 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pSprite->setAnchorPoint(CCPointZero);
 		pSprite->setPosition(ccp(0,405));
 		pImage->setVisible(true);
-		pImage->initWithUrl(info.getPicUrl().c_str(),"defulte_avatar.png");
+		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
+		pImage->setBoundSize(ccp(264,140));
 	}
 	return pCell;
 }
@@ -385,6 +396,10 @@ void BaiduYunSence::onBaiduLoginUserComplete(CCNode* node, CCObject* obj) {
 			 }
 		 }
 	 }
+}
+
+void BaiduYunSence::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {
+	pLabel->setDimensions(ccp(270, 240));
 }
 
 void BaiduYunSence::initTableView() {

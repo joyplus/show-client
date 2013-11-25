@@ -13,6 +13,7 @@ LOCAL_SRC_FILES := showkeyhelper/main.cpp \
                    showkeyhelper/classes/MainScene.cpp\
                    showkeyhelper/classes/PageLayer.cpp\
                    showkeyhelper/classes/MainItemLayer.cpp\
+                   showkeyhelper/classes/BannerLayer.cpp\
                    showkeyhelper/classes/PincodeLayer.cpp\
                    showkeyhelper/classes/HistoryScnce.cpp\
                    showkeyhelper/classes/XunLeiYunSence.cpp\
@@ -21,7 +22,8 @@ LOCAL_SRC_FILES := showkeyhelper/main.cpp \
                    showkeyhelper/classes/XunLeiBTdetailSence.cpp\
                    showkeyhelper/classes/ui/CCImageView.cpp\
                    showkeyhelper/classes/ui/CCListView.cpp\
-                   showkeyhelper/classes/ui/CCTableCellForHistory.cpp
+                   showkeyhelper/classes/ui/CCTableCellForHistory.cpp\
+                   showkeyhelper/classes/ui/CCButtonView.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/showkeyhelper/classes \
 					$(LOCAL_PATH)cocos2dx-2.2/extensions
