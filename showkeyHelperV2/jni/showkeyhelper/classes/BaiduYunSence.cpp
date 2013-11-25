@@ -281,8 +281,8 @@ void BaiduYunSence::onGetBaiduVideoListComplete(CCNode* node, CCObject* obj) {
 				 m_hasMore = false;
 			 }else{
 				 m_hasMore = true;
-				 m_requset_baidu_index += 1;
 			 }
+			 m_requset_baidu_index += 1;
 			 for (int i=0; i<arrayObj.size(); i++) {
 			   BaiduVideoInfo videoInfo;
 			   videoInfo.setFsId(arrayObj[i]["fs_id"].asDouble());

@@ -177,6 +177,9 @@ private :
 	CCTableViewCell * m_selectedCell;
 	XunleiUserInfo m_userInfo;
 	void initTableView();
+	int m_req_index;
+	bool m_hasMore;
+	bool m_isRequesting;
 };
 
 #endif /* _JOYPLUS_XUNLEIYUNSENCE_H_ */

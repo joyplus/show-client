@@ -28,6 +28,9 @@ bool XunLeiYunSence::init()
 		}
 
 		m_dates.clear();
+		m_req_index = 0;
+		m_hasMore = true;
+		m_isRequesting = false;
 
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -120,15 +123,19 @@ void XunLeiYunSence::loginXunleiSuccess()
 	LOGD("XunLeiYunSence","username -> %s",username.c_str());
 	m_userInfo.setName(nickname);
 	m_userInfo.setVipLevel(level);
-	getXunleiVideoList(0);
+	m_req_index = 0;
+	getXunleiVideoList(m_req_index);
 }
 
 void XunLeiYunSence::getXunleiVideoList(int index) {
+	if(!m_hasMore){
+		return;
+	}
+	m_isRequesting = true;
 	string cookies = getXunleiCookiesJNI();
 	CCHttpClient* httpClient = CCHttpClient::getInstance();
 	CCHttpRequest* httpReq =new CCHttpRequest();
 	httpReq->setRequestType(CCHttpRequest::kHttpGet);
-
 //	String listUrl = "http://i.vod.xunlei.com/req_history_play_list/req_num/"
 //						+ cacheNum + "/req_offset/" + cacheNum * (pageIndex - 1);
 
@@ -157,7 +164,8 @@ void XunLeiYunSence::getXunleiVideoList(int index) {
 }
 
 void XunLeiYunSence::onGetXunleiVideoListComplete(CCNode* node, CCObject* obj) {
-	 CCHttpResponse *response = (CCHttpResponse*)obj;
+	m_isRequesting = false;
+	CCHttpResponse *response = (CCHttpResponse*)obj;
 	 if (!response)
 	 {
 		return;
@@ -173,10 +181,16 @@ void XunLeiYunSence::onGetXunleiVideoListComplete(CCNode* node, CCObject* obj) {
 		 if(reader.parse(buff,jsonobj))
 		 {
 			 const CSJson::Value arrayObj = jsonobj["resp"]["history_play_list"];
-			 if(!arrayObj.isArray()){
+			 if(jsonobj["resp"]["ret"].asInt()==1){
 				showXunLeiLoginDialog(xunLeiDilogCallbackFunc,this);
 				return;
 			 }
+			 if(arrayObj.size()<30){
+				 m_hasMore = false;
+			 }else{
+				 m_hasMore = true;
+			 }
+			 m_req_index += 1;
 			 LOGD("XunLeiYunSence","history_play_list size =  %d",arrayObj.size());
 			 for (int i=0; i<arrayObj.size(); i++) {
 			   XunLeiVideInfo videoInfo;
@@ -205,7 +219,11 @@ void XunLeiYunSence::onGetXunleiVideoListComplete(CCNode* node, CCObject* obj) {
 
 			   m_dates.push_back(videoInfo);
 			 }
-			 initTableView();
+			 if(m_req_index==1){
+				 initTableView();
+			 }else{
+				 tableView->reloadData();
+			 }
 		 }else
 		 {
 			 LOGD("XunLeiYunSence","json parse Filed");
@@ -296,6 +314,9 @@ void XunLeiYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
 		}
 		m_selectedCell = cell;
+	}
+	if(idx>(tableView->getDataSource()->numberOfCellsInTableView(tableView)-10)&&m_hasMore&&!m_isRequesting){
+		getXunleiVideoList(m_req_index);
 	}
 }
 
