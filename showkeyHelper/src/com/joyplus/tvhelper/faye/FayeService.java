@@ -25,6 +25,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.joyplus.mediaplayer.JoyplusMediaPlayerDataManager;
+import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.network.filedownload.manager.DownLoadListner;
 import com.joyplus.network.filedownload.manager.DownloadManager;
 import com.joyplus.network.filedownload.model.DownloadTask;
@@ -64,6 +66,8 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 	
 	private static File APK_PATH = null;
 	private static File MOVIE_PATH = null;
+
+	private JoyplusMediaPlayerDataManager mediaPlayerDataManager;
 	
 	private static final long TIME_OUT = 60*1000;
 //	private boolean isNeedReconnect = false;
@@ -151,6 +155,11 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							
 						}
 						playDate.prod_name = play_info.getName();
+						if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
+							playDate.prod_qua = Constant.DEFINATION_HD;
+						}else{
+							playDate.prod_qua = Constant.DEFINATION_HD2;
+						}
 //						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
 						playDate.isOnline = true;
@@ -335,6 +344,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 		// TODO Auto-generated method stub
 		super.onCreate();
 //		com.joyplus.utils.Log.mbLoggable = true;
+		mediaPlayerDataManager = new JoyplusMediaPlayerDataManager(this);
 		APK_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/apk");
 		MOVIE_PATH = new File(Environment.getExternalStorageDirectory(), "showkey/movie");
 		app = (MyApp) getApplication();
@@ -1444,7 +1454,12 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //							playDate.prod_url = play_info.getDownload_url();
 //							playDate.prod_src = json.getString("prod_src");
 //							playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-							playDate.prod_qua = play_info.getDefination();
+							if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
+								playDate.prod_qua = Constant.DEFINATION_HD;
+							}else{
+								playDate.prod_qua = Constant.DEFINATION_HD2;
+							}
+//							playDate.prod_qua = play_info.getDefination();
 //							if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //								if(json.has("prod_subname")){//旧版android 没有传递该参数
 //									playDate.prod_sub_name = json.getString("prod_subname");

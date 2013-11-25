@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
@@ -24,12 +23,14 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerDataManager;
+import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tvhelper.adapter.PlayExpandListAdapter;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
-import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.entity.XLLXUserInfo;
 import com.joyplus.tvhelper.ui.WaitingDialog;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.MD5Util;
 import com.joyplus.tvhelper.utils.Utils;
@@ -59,6 +60,7 @@ public class XunLeiLXActivity extends Activity {
 	private Button returnBt,refreshBt,verifyBt;
 
 	private PlayExpandListAdapter playerExpandListAdapter;
+	private JoyplusMediaPlayerDataManager mediaPlayerDataManager;
 
 	private MyApp app;
 
@@ -75,6 +77,7 @@ public class XunLeiLXActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.xunlei_login_main);
 		app = (MyApp) getApplication();
+		mediaPlayerDataManager = new JoyplusMediaPlayerDataManager(this);
 		initView();
 		addViewListener();
 		initViewData();
@@ -201,6 +204,11 @@ public class XunLeiLXActivity extends Activity {
 										currentPlayDetailData.prod_name = xllxFileInfo.file_name;
 
 										currentPlayDetailData.obj = xllxFileInfo;
+										if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
+											currentPlayDetailData.prod_qua = Constant.DEFINATION_HD;
+										}else{
+											currentPlayDetailData.prod_qua = Constant.DEFINATION_HD2;
+										}
 										app.setmCurrentPlayDetailData(currentPlayDetailData);
 										startActivity(Utils.getIntent(XunLeiLXActivity.this));
 									}
@@ -290,6 +298,11 @@ public class XunLeiLXActivity extends Activity {
 										currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI_BT_EPISODE;
 										currentPlayDetailData.prod_sub_name = xllxFileInfo.file_name;										
 										currentPlayDetailData.obj = parentInfo.btFiles;
+										if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
+											currentPlayDetailData.prod_qua = Constant.DEFINATION_HD;
+										}else{
+											currentPlayDetailData.prod_qua = Constant.DEFINATION_HD2;
+										}
 										app.setmCurrentPlayDetailData(currentPlayDetailData);
 										startActivity(Utils.getIntent(XunLeiLXActivity.this));
 									}
