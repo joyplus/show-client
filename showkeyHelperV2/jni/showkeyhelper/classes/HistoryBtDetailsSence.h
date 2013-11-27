@@ -17,6 +17,8 @@ class HistoryBtDetailsSence : public CCLayer , public CCListViewDataResouce , pu
 public:
 	virtual ~HistoryBtDetailsSence();
 	virtual bool init();
+	void onEnterTransitionDidFinish();
+	void onExitTransitionDidStart();
 	virtual void keyBackClicked();//Android 返回键
 	virtual void keyArrowClicked(int arrow);//方向键
 	virtual void keyEnterClicked();//回车键

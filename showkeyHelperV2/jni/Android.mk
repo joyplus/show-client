@@ -20,6 +20,7 @@ LOCAL_SRC_FILES := showkeyhelper/main.cpp \
                    showkeyhelper/classes/BaiduYunSence.cpp\
                    showkeyhelper/classes/HistoryBtDetailsSence.cpp\
                    showkeyhelper/classes/XunLeiBTdetailSence.cpp\
+                   showkeyhelper/classes/TransitionScenes.cpp\
                    showkeyhelper/classes/ui/CCImageView.cpp\
                    showkeyhelper/classes/ui/CCListView.cpp\
                    showkeyhelper/classes/ui/CCTableCellForHistory.cpp\

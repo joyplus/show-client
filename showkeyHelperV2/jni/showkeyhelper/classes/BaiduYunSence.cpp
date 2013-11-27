@@ -32,14 +32,13 @@ bool BaiduYunSence::init() {
 
 			CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
-			if(getBaiduTokenJNI().empty()){
-				showBaiduLoginDialog(baiduDilogCallbackFunc, (void*)this);
-			}else{
-//				getBaiduVideoList(m_requset_baidu_index);
-				getBaiduLoginUserInfo();
-			}
+			CCSprite* loading = CCSprite::create("waiting.png");
+			loading->setPosition(ccp(winSize.width/2,winSize.height/2));
+			loading->setTag(250);
+			loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
+			addChild(loading);
 
-			this->setKeypadEnabled(true);
+//			this->setKeypadEnabled(true);
 			bRet = true;
 		} while (0);
 		return bRet;
@@ -180,7 +179,7 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
 		pImage = CCImageView::createWithNetUrl(m_dates.at(0).getPicUrl().c_str(),"defulte_avatar.png",ccp(264,140));
-		pImage->setPosition(ccp(170,506));
+		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
 		pCell->addChild(pImage);
 		pSprite = CCSprite::create("baidu_thumb.png");
@@ -232,7 +231,7 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pSprite->setPosition(ccp(0,405));
 		pImage->setVisible(true);
 		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
-		pImage->setBoundSize(ccp(264,140));
+		pImage->setBoundSize(ccp(264,145));
 	}
 	return pCell;
 }
@@ -402,16 +401,36 @@ void BaiduYunSence::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {
 	pLabel->setDimensions(ccp(270, 240));
 }
 
+void BaiduYunSence::onEnterTransitionDidFinish() {
+	CCLayer::onEnterTransitionDidFinish();
+	if(getBaiduTokenJNI().empty()){
+		showBaiduLoginDialog(baiduDilogCallbackFunc, (void*)this);
+	}else{
+//				getBaiduVideoList(m_requset_baidu_index);
+		getBaiduLoginUserInfo();
+	}
+	this->setKeypadEnabled(true);
+	LOGD("BaiduYunSence","----------onEnterTransitionDidFinish----------");
+}
+
+void BaiduYunSence::onExitTransitionDidStart() {
+	CCLayer::onExitTransitionDidStart();
+	this->setKeypadEnabled(false);
+	LOGD("BaiduYunSence","----------onExitTransitionDidStart----------");
+}
+
 void BaiduYunSence::initTableView() {
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-
+	CCSprite* loading = (CCSprite*)getChildByTag(250);
+	loading->stopAllActions();
+	loading->setVisible(false);
 	tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 	tableView->setAnchorPoint(ccp(0,1));
 	tableView->setPosition(0,188);
 	tableView->setDelegate(this);
 	tableView->setDirection(kCCScrollViewDirectionHorizontal);
 	tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-	tableView->setSelection(0);
+	tableView->setSelection(1);
 	this->addChild(tableView);
 }
 

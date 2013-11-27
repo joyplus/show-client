@@ -34,6 +34,11 @@ bool XunLeiYunSence::init()
 
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
+		CCSprite* loading = CCSprite::create("waiting.png");
+		loading->setPosition(ccp(winSize.width/2,winSize.height/2));
+		loading->setTag(250);
+		loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
+		addChild(loading);
 //		CCEditBox *m_pEditName = CCEditBox::create(CCSizeMake(1000,50),CCScale9Sprite::create("green_edit.png"));
 //		m_pEditName->setPosition(ccp(winSize.width/2,winSize.height/2));
 //
@@ -63,12 +68,7 @@ bool XunLeiYunSence::init()
 //		passWordEditView->setTag(TAG_XUNLEI_PASSWORD);
 //		this->addChild(passWordEditView);
 
-		if(getXunleiCookiesJNI().empty()){
-			showXunLeiLoginDialog(xunLeiDilogCallbackFunc, (void*)this);
-		}else{
-			loginXunleiSuccess();
-		}
-		this->setKeypadEnabled(true);
+//		this->setKeypadEnabled(true);
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -111,6 +111,9 @@ void XunLeiYunSence::keyEnterClicked()
 
 void XunLeiYunSence::loginXunleiSuccess()
 {
+	CCSprite* loading = (CCSprite*)getChildByTag(250);
+	loading->setVisible(true);
+	loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 	LOGD("XunLeiYunSence","loginXunlei ->loginXunleiSuccess");
 	string userString = getXunLeiUserInfoJNI();
 	CSJson::Value jsonobj;
@@ -350,7 +353,7 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
 		pImage = new CCImageView();
-		pImage->setPosition(ccp(170,506));
+		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
 		pImage->autorelease();
 		pCell->addChild(pImage);
@@ -409,7 +412,7 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 		}
 		pImage->setVisible(true);
 		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
-		pImage->setBoundSize(ccp(264,140));
+		pImage->setBoundSize(ccp(264,145));
 	}
 	return pCell;
 }
@@ -423,16 +426,40 @@ void XunLeiYunSence::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {
 	pLabel->setDimensions(ccp(270, 240));
 }
 
-void XunLeiYunSence::initTableView() {
-	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+void XunLeiYunSence::onEnterTransitionDidFinish() {
+	CCLayer::onEnterTransitionDidFinish();
+	LOGD("XunLeiYunSence","----------onEnterTransitionDidFinish----------");
+	if(getXunleiCookiesJNI().empty()){
+//		CCSprite* loading = (CCSprite*)getChildByTag(250);
+//		loading->stopAllActions();
+//		loading->setVisible(false);
+		showXunLeiLoginDialog(xunLeiDilogCallbackFunc, (void*)this);
+	}else{
+		loginXunleiSuccess();
+	}
+	this->setKeypadEnabled(true);
 
+}
+
+void XunLeiYunSence::onExitTransitionDidStart() {
+	CCLayer::onExitTransitionDidStart();
+	LOGD("XunLeiYunSence","----------onExitTransitionDidStart----------");
+	this->setKeypadEnabled(false);
+
+}
+
+void XunLeiYunSence::initTableView() {
+	CCSprite* loading = (CCSprite*)getChildByTag(250);
+	loading->stopAllActions();
+	loading->setVisible(false);
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 	tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 	tableView->setAnchorPoint(ccp(0,1));
 	tableView->setPosition(0,188);
 	tableView->setDelegate(this);
 	tableView->setDirection(kCCScrollViewDirectionHorizontal);
 	tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-	tableView->setSelection(0);
+	tableView->setSelection(1);
 	this->addChild(tableView);
 }
 

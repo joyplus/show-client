@@ -154,6 +154,11 @@ public:
 
 	CREATE_FUNC(HistoryScnce);
 
+	void onEnter();
+	void onEnterTransitionDidFinish();
+	void onExit();
+	void onExitTransitionDidStart();
+
 	virtual ~HistoryScnce();
 
 

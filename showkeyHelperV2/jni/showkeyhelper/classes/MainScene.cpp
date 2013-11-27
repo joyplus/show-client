@@ -65,7 +65,7 @@ bool MainScene::init()
 //        this->addChild(layout_historyLayer);
 
        // this->scheduleUpdate();
-        this->setKeypadEnabled(true);
+//        this->setKeypadEnabled(true);
         bRet = true;
     } while (0);
     return bRet;
@@ -194,6 +194,20 @@ void MainScene::onPageItemClick(int page_Tag)
 		startSetting();
 		break;
 	}
+}
+
+void MainScene::onEnterTransitionDidFinish() {
+	CCLayer::onEnterTransitionDidFinish();
+	this->setKeypadEnabled(true);
+	LOGD("MainScene","----------onEnterTransitionDidFinish----------");
+}
+
+
+
+void MainScene::onExitTransitionDidStart() {
+	CCLayer::onExitTransitionDidStart();
+	this->setKeypadEnabled(false);
+	LOGD("MainScene","----------onExitTransitionDidStart----------");
 }
 
 //void MainScene::getPincode() {

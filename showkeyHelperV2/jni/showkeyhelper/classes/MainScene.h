@@ -8,6 +8,7 @@
 #include "HistoryScnce.h"
 #include "XunLeiYunSence.h"
 #include "BaiduYunSence.h"
+#include "TransitionScenes.h"
 #include <vector>
 #include <string>
 
@@ -26,6 +27,8 @@ class MainScene : public cocos2d::CCLayer, public PageLayerItemClickDelegate
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();  
+    void onEnterTransitionDidFinish();
+	void onExitTransitionDidStart();
 
     virtual void keyBackClicked();//Android 返回键
     //virtual void keyMenuClicked();//Android 菜单键

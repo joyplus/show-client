@@ -18,6 +18,8 @@ class XunLeiBTdetailSence : public CCLayer , public CCListViewDataResouce , publ
 public:
 	virtual ~XunLeiBTdetailSence();
 	virtual bool init();
+	void onEnterTransitionDidFinish();
+	void onExitTransitionDidStart();
 	virtual void keyBackClicked();//Android 返回键
 	virtual void keyArrowClicked(int arrow);//方向键
 	virtual void keyEnterClicked();//回车键

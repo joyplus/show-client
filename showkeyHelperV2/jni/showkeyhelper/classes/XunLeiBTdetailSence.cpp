@@ -16,6 +16,11 @@ bool XunLeiBTdetailSence::init() {
 			m_selectedCell = NULL;
 
 			CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+			CCSprite* loading = CCSprite::create("waiting.png");
+			loading->setPosition(ccp(winSize.width/2,winSize.height/2));
+			loading->setTag(250);
+			loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
+			addChild(loading);
 			tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 			tableView->setAnchorPoint(ccp(0,1));
 			tableView->setPosition(0,188);
@@ -24,8 +29,7 @@ bool XunLeiBTdetailSence::init() {
 			tableView->setVerticalFillOrder(kCCListViewFillTopDown);
 			tableView->setSelection(0);
 			this->addChild(tableView);
-			getChilds();
-			this->setKeypadEnabled(true);
+//			this->setKeypadEnabled(true);
 			bRet = true;
 		} while (0);
 		return bRet;
@@ -140,7 +144,7 @@ CCTableViewCell* XunLeiBTdetailSence::tableCellAtIndex(CCListView* table,
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
 		pImage = new CCImageView();
-		pImage->setPosition(ccp(170,506));
+		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
 		pImage->autorelease();
 		pCell->addChild(pImage);
@@ -188,7 +192,7 @@ CCTableViewCell* XunLeiBTdetailSence::tableCellAtIndex(CCListView* table,
 //	}
 	pImage->setVisible(true);
 	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
-	pImage->setBoundSize(ccp(264,140));
+	pImage->setBoundSize(ccp(264,145));
 	return pCell;
 }
 
@@ -248,6 +252,19 @@ void XunLeiBTdetailSence::getChilds() {
 		httpReq=NULL;
 }
 
+void XunLeiBTdetailSence::onEnterTransitionDidFinish() {
+	CCLayer::onEnterTransitionDidFinish();
+	this->setKeypadEnabled(true);
+	getChilds();
+	LOGD("XunLeiBTdetailSence","----------onEnterTransitionDidFinish----------");
+}
+
+void XunLeiBTdetailSence::onExitTransitionDidStart() {
+	CCLayer::onExitTransitionDidStart();
+	this->setKeypadEnabled(false);
+	LOGD("XunLeiBTdetailSence","----------onExitTransitionDidStart----------");
+}
+
 void XunLeiBTdetailSence::onGetChildsComplete(CCNode* node, CCObject* obj) {
 	CCHttpResponse *response = (CCHttpResponse*)obj;
 	if (!response)
@@ -279,6 +296,9 @@ void XunLeiBTdetailSence::onGetChildsComplete(CCNode* node, CCObject* obj) {
 				 info.setUserid(m_xunLeiVideInfo.getUserid());
 				 m_dates.push_back(info);
 			 }
+			 CCSprite* loading = (CCSprite*)getChildByTag(250);
+			 loading->stopAllActions();
+			 loading->setVisible(false);
 			 tableView->reloadData();
 			 tableView->setSelection(0);
 		 }else{

@@ -24,7 +24,7 @@ bool HistoryBtDetailsSence::init() {
 			tableView->setVerticalFillOrder(kCCListViewFillTopDown);
 			tableView->setSelection(0);
 			this->addChild(tableView);
-			this->setKeypadEnabled(true);
+//			this->setKeypadEnabled(true);
 			bRet = true;
 		} while (0);
 		return bRet;
@@ -114,7 +114,7 @@ CCTableViewCell* HistoryBtDetailsSence::tableCellAtIndex(CCListView* table,
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
 		pImage = new CCImageView();
-		pImage->setPosition(ccp(170,506));
+		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
 		pImage->autorelease();
 		pCell->addChild(pImage);
@@ -164,7 +164,7 @@ CCTableViewCell* HistoryBtDetailsSence::tableCellAtIndex(CCListView* table,
 	pSprite->setPosition(ccp(0,405));
 	pImage->setVisible(true);
 	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
-	pImage->setBoundSize(ccp(264,140));
+	pImage->setBoundSize(ccp(264,145));
 	return pCell;
 }
 
@@ -191,6 +191,18 @@ CCScene* HistoryBtDetailsSence::scene(PlayHistoryInfo info) {
 
 	// return the scene
 	return scene;
+}
+
+void HistoryBtDetailsSence::onEnterTransitionDidFinish() {
+	CCLayer::onEnterTransitionDidFinish();
+	this->setKeypadEnabled(true);
+	LOGD("HistoryBtDetailsSence","----------onEnterTransitionDidFinish----------");
+}
+
+void HistoryBtDetailsSence::onExitTransitionDidStart() {
+	CCLayer::onExitTransitionDidStart();
+	this->setKeypadEnabled(false);
+	LOGD("HistoryBtDetailsSence","----------onExitTransitionDidStart----------");
 }
 
 void HistoryBtDetailsSence::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {

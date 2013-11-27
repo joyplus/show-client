@@ -35,61 +35,13 @@ bool HistoryScnce::init()
 
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
-		string playList = getPlayHistoryListJNI();
-		LOGD("HistoryScnce","play list ---> %s", playList.c_str());
-		CSJson::Value root;
-		CSJson::Reader reader;
-		if(reader.parse(playList,root)){
-			const CSJson::Value arrayObj = root["list"];
-			for(int i=0; i< arrayObj.size(); i++){
-				LOGD("HistoryScnce","play list %d , name : %s", i , arrayObj[i]["name"].asString().c_str());
-				PlayHistoryInfo info;
-				info.setId(arrayObj[i]["_id"].asInt());
-				info.setName(arrayObj[i]["name"].asString());
-				info.setDuration(arrayObj[i]["duration"].asInt());
-				info.setPlaybackTime(arrayObj[i]["playback_time"].asInt());
-				info.setPushUrl(arrayObj[i]["push_url"].asString());
-				info.setPicUrl(arrayObj[i]["pic_url"].asString());
-				info.setType(arrayObj[i]["type"].asInt());
-				string btes = arrayObj[i]["episodes"].asString();
-				info.setIsDir(false);
-				if(!btes.empty()){
-					CSJson::Value btepisodesObj;
-					CSJson::Reader btepisodesreader;
-					if(btepisodesreader.parse(btes,btepisodesObj)){
-						std::vector<BTEpisode> btepisodes;
-						for(int j=0; j<btepisodesObj.size(); j++){
-							BTEpisode bteInfo;
-							bteInfo.setName(btepisodesObj[j]["name"].asString());
-							LOGD("HistoryScnce","%s bt name--> %s", info.getName().c_str(), bteInfo.getName().c_str());
-							bteInfo.setDuration(btepisodesObj[j]["duration"].asInt());
-							bteInfo.setPlaybackTime(btepisodesObj[j]["playback_time"].asInt());
-							bteInfo.setPicUrl(btepisodesObj[j]["pic_url"].asString());
-							btepisodes.push_back(bteInfo);
-						}
-						info.setBtepisodes(btepisodes);
-						info.setIsDir(true);
-					}else{
+		CCSprite* loading = CCSprite::create("waiting.png");
+		loading->setPosition(ccp(winSize.width/2,winSize.height/2));
+		loading->setTag(250);
+		loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
+		addChild(loading);
 
-					}
-
-				}
-				m_dates.push_back(info);
-			}
-		}else{
-			LOGD("HistoryScnce", "play list json parse failed");
-		}
-
-		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
-		tableView->setAnchorPoint(ccp(0,1));
-		tableView->setPosition(0,188);
-		tableView->setDelegate(this);
-		tableView->setDirection(kCCScrollViewDirectionHorizontal);
-		tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-		tableView->setSelection(0);
-		this->addChild(tableView);
 //		tableView->reloadData();
-		this->setKeypadEnabled(true);
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -136,7 +88,7 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
 		pImage = new CCImageView();
-		pImage->setPosition(ccp(170,506));
+		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
 		pImage->autorelease();
 		pCell->addChild(pImage);
@@ -197,7 +149,7 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 	pSprite->setPosition(ccp(0,405));
 	pImage->setVisible(true);
 	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
-	pImage->setBoundSize(ccp(264,140));
+	pImage->setBoundSize(ccp(264,145));
 	return pCell;
 }
 
@@ -287,6 +239,83 @@ CCSize HistoryScnce::tableCellSizeForIndex(CCListView* list,
 
 HistoryScnce::~HistoryScnce() {
 	// TODO Auto-generated destructor stub
+}
+
+void HistoryScnce::onEnter() {
+	CCLayer::onEnter();
+	LOGD("HistoryScnce","----------onEnter----------");
+}
+
+void HistoryScnce::onEnterTransitionDidFinish() {
+	LOGD("HistoryScnce","----------onEnterTransitionDidFinish----------");
+	CCLayer::onEnterTransitionDidFinish();
+	string playList = getPlayHistoryListJNI();
+	LOGD("HistoryScnce","play list ---> %s", playList.c_str());
+	CSJson::Value root;
+	CSJson::Reader reader;
+	if(reader.parse(playList,root)){
+		const CSJson::Value arrayObj = root["list"];
+		for(int i=0; i< arrayObj.size(); i++){
+			LOGD("HistoryScnce","play list %d , name : %s", i , arrayObj[i]["name"].asString().c_str());
+			PlayHistoryInfo info;
+			info.setId(arrayObj[i]["_id"].asInt());
+			info.setName(arrayObj[i]["name"].asString());
+			info.setDuration(arrayObj[i]["duration"].asInt());
+			info.setPlaybackTime(arrayObj[i]["playback_time"].asInt());
+			info.setPushUrl(arrayObj[i]["push_url"].asString());
+			info.setPicUrl(arrayObj[i]["pic_url"].asString());
+			info.setType(arrayObj[i]["type"].asInt());
+			string btes = arrayObj[i]["episodes"].asString();
+			info.setIsDir(false);
+			if(!btes.empty()){
+				CSJson::Value btepisodesObj;
+				CSJson::Reader btepisodesreader;
+				if(btepisodesreader.parse(btes,btepisodesObj)){
+					std::vector<BTEpisode> btepisodes;
+					for(int j=0; j<btepisodesObj.size(); j++){
+						BTEpisode bteInfo;
+						bteInfo.setName(btepisodesObj[j]["name"].asString());
+						LOGD("HistoryScnce","%s bt name--> %s", info.getName().c_str(), bteInfo.getName().c_str());
+						bteInfo.setDuration(btepisodesObj[j]["duration"].asInt());
+						bteInfo.setPlaybackTime(btepisodesObj[j]["playback_time"].asInt());
+						bteInfo.setPicUrl(btepisodesObj[j]["pic_url"].asString());
+						btepisodes.push_back(bteInfo);
+					}
+					info.setBtepisodes(btepisodes);
+					info.setIsDir(true);
+				}else{
+
+				}
+			}
+			m_dates.push_back(info);
+		}
+	}else{
+		LOGD("HistoryScnce", "play list json parse failed");
+	}
+	CCSprite* loading = (CCSprite*)getChildByTag(250);
+	loading->stopAllActions();
+	loading->setVisible(false);
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+	tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
+	tableView->setAnchorPoint(ccp(0,1));
+	tableView->setPosition(0,188);
+	tableView->setDelegate(this);
+	tableView->setDirection(kCCScrollViewDirectionHorizontal);
+	tableView->setVerticalFillOrder(kCCListViewFillTopDown);
+	tableView->setSelection(0);
+	this->addChild(tableView);
+	this->setKeypadEnabled(true);
+}
+
+void HistoryScnce::onExit() {
+	CCLayer::onExit();
+	LOGD("HistoryScnce","----------onExit----------");
+}
+
+void HistoryScnce::onExitTransitionDidStart() {
+	CCLayer::onExitTransitionDidStart();
+	this->setKeypadEnabled(false);
+	LOGD("HistoryScnce","----------onExitTransitionDidStart----------");
 }
 
 void HistoryScnce::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {

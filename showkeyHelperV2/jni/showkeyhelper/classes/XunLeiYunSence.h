@@ -143,6 +143,8 @@ public:
 	virtual ~XunLeiYunSence();
 
 	virtual bool init();
+	void onEnterTransitionDidFinish();
+	void onExitTransitionDidStart();
 
 	virtual void keyBackClicked();//Android 返回键
 	//virtual void keyMenuClicked();//Android 菜单键

@@ -35,6 +35,8 @@ bool CCButtonView::init(const char* path, const char* highlight_path, const char
 	label_name->setAnchorPoint(ccp(0.5,0.5));
 	label_name->setTag(1);
 	this->addChild(label_name);
+	backgound->setOpacity(76);
+	label_name->setOpacity(76);
 	setContentSize(backgound->getContentSize());
 	return true;
 }
@@ -54,8 +56,8 @@ void CCButtonView::setSelected(bool isSelected) {
 	}else{
 		CCActionInterval* fadeOut = CCFadeOut::create(0.4f);
 		m_background->runAction(fadeOut);
-		backgound->setOpacity(125);
-		label_name->setOpacity(125);
+		backgound->setOpacity(76);
+		label_name->setOpacity(76);
 	}
 }
 
