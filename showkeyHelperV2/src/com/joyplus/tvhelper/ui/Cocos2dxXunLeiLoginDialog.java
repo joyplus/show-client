@@ -39,7 +39,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 	private ImageView mYanzhengMa;
 	private Button mLoginButton;
 	
-	private LinearLayout mProgressBar;
+//	private LinearLayout mProgressBar;
 	private LinearLayout mLayout;
 	private LinearLayout mYanZhengMaLoyout;
 
@@ -95,7 +95,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 					Utils.showToast(getContext(), "网络超时，稍后重试");
 					break;
 				}
-				mProgressBar.setVisibility(View.GONE);
+//				mProgressBar.setVisibility(View.GONE);
 				mLayout.setVisibility(View.VISIBLE);
 				if(mYanZhengMaLoyout.getVisibility() == View.VISIBLE){
 					mYanzhengMaEditText.setText("");
@@ -159,13 +159,15 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 
 //		this.getWindow().setBackgroundDrawable(new ColorDrawable(0x80000000));
 		this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		XunLeiLiXianUtil.clearCookies(getContext());
+		XunLeiLiXianUtil.saveLoginUserPasswd(getContext(), null);
 		View	contetnView  = this.getLayoutInflater().inflate(R.layout.dialog_xunlei_login, null);
 		
 		mAccountEditText = (EditText)contetnView.findViewById(R.id.account_edit);
 		mPassWordEditText = (EditText)contetnView.findViewById(R.id.passowrd_edit);
 		mYanzhengMaEditText = (EditText)contetnView.findViewById(R.id.yanzhengma_edit);
 		
-		mProgressBar = (LinearLayout)contetnView.findViewById(R.id.layout_xunlei_progress);
+//		mProgressBar = (LinearLayout)contetnView.findViewById(R.id.layout_xunlei_progress);
 		mYanZhengMaLoyout = (LinearLayout) contetnView.findViewById(R.id.layout_yamzhengma);
 		mLayout = (LinearLayout) contetnView.findViewById(R.id.layout_xunlei_login);
 		
@@ -194,7 +196,6 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 		});
 		
 		setContentView(contetnView);
-		XunLeiLiXianUtil.saveCookies(getContext(), null);
 	}
 
 	private void initView(){
@@ -218,7 +219,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 	}
 	
 	private void login(){
-		mProgressBar.setVisibility(View.VISIBLE);
+//		mProgressBar.setVisibility(View.VISIBLE);
 		mLayout.setVisibility(View.INVISIBLE);
 		MyApp.pool.execute(new Runnable() {
 			

@@ -8,6 +8,7 @@
 #include "ui/CCTableCellForHistory.h"
 #include "ui/CCListView.h"
 #include "ui/CCImageView.h"
+#include "ui/CCButtonView.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
@@ -183,6 +184,8 @@ private :
 	int m_req_index;
 	bool m_hasMore;
 	bool m_isRequesting;
+	unsigned int m_selected_id;
+	CCButtonView* m_selectedButton;
 };
 
 #endif /* _JOYPLUS_XUNLEIYUNSENCE_H_ */

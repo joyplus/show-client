@@ -8,6 +8,7 @@
 #include "ui/CCTableCellForHistory.h"
 #include "ui/CCListView.h"
 #include "ui/CCImageView.h"
+#include "ui/CCButtonView.h"
 USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
@@ -79,7 +80,7 @@ public:
 
 	void popSence();
 
-	void loginXunleiSuccess();
+	void loginBaiduSuccess();
 	static cocos2d::CCScene* scene();
 	CREATE_FUNC(BaiduYunSence);
 
@@ -105,6 +106,8 @@ private:
 
 	CCListView * tableView;
 	CCTableViewCell * m_selectedCell;
+	unsigned int m_selected_id;
+	CCButtonView* m_selectedButton;
 
 	string username;
 

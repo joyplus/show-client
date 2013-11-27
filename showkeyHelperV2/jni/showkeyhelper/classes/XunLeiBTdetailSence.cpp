@@ -116,7 +116,7 @@ void XunLeiBTdetailSence::tableCellSelected(CCListView* table,
 			pLabelBack->stopAllActions();
 	//		pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
 			CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
-			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
+			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,450)),
 							CCCallFuncND::create(this,
 									callfuncND_selector(XunLeiBTdetailSence::callBackAnim),
 									pLabel),NULL);
@@ -159,7 +159,8 @@ CCTableViewCell* XunLeiBTdetailSence::tableCellAtIndex(CCListView* table,
 		pLabelBack->setTag(3);
 		pCell->addChild(pLabelBack);
 		pLabel = CCLabelTTF::create("", "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
-		pLabel->setPosition(ccp(35,300));
+		pLabel->setPosition(ccp(35,330));
+//		pLabel->setPosition(ccp(35,300));
 		pLabel->setAnchorPoint(ccp(0,1));
 		pLabel->setTag(4);
 		pCell->addChild(pLabel);
@@ -178,7 +179,7 @@ CCTableViewCell* XunLeiBTdetailSence::tableCellAtIndex(CCListView* table,
 	}
 	pLabel->setString(info.getFileName().c_str());
 	if(idx == table->getSelected()){
-		pLabelBack->setPosition(ccp(0,405));
+		pLabelBack->setPosition(ccp(0,450));
 		m_selectedCell = pCell;
 	}else{
 		pLabelBack->setPosition(ccp(0,540));

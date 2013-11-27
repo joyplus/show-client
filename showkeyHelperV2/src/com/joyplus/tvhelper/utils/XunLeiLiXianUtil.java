@@ -844,6 +844,15 @@ public class XunLeiLiXianUtil {
 			localEditor.commit();
 		}
 	}
+	
+	public static void clearCookies(Context context){
+		SharedPreferences localSharedPreferences = context
+				.getSharedPreferences(XL_PREFERENCES, Context.MODE_PRIVATE);
+		SharedPreferences.Editor localEditor = localSharedPreferences
+				.edit();
+		localEditor.putString("cookie", null);
+		localEditor.commit();
+	}
 
 	public static String getCookie(Context context) {
 

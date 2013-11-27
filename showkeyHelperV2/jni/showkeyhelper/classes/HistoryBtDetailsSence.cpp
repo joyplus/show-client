@@ -86,7 +86,7 @@ void HistoryBtDetailsSence::tableCellSelected(CCListView* table,
 			pLabelBack->stopAllActions();
 	//		pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
 			CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
-			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
+			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,450)),
 							CCCallFuncND::create(this,
 									callfuncND_selector(HistoryBtDetailsSence::callBackAnim),
 									pLabel),NULL);
@@ -148,7 +148,7 @@ CCTableViewCell* HistoryBtDetailsSence::tableCellAtIndex(CCListView* table,
 	}
 	pLabel->setString(info.getName().c_str());
 	if(idx == table->getSelected()){
-		pLabelBack->setPosition(ccp(0,405));
+		pLabelBack->setPosition(ccp(0,450));
 		m_selectedCell = pCell;
 	}else{
 		pLabelBack->setPosition(ccp(0,540));

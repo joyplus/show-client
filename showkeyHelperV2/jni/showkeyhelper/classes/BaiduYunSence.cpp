@@ -10,7 +10,8 @@ static void baiduDilogCallbackFunc(bool isBack,void* ctx)
 	if(isBack){
 		thiz->popSence();
 	}else{
-		thiz->loginXunleiSuccess();
+		thiz->loginBaiduSuccess();
+
 	}
 }
 
@@ -55,12 +56,30 @@ void BaiduYunSence::keyArrowClicked(int arrow) {
 			case ccKeypadMSGType(kTypeLeftArrowClicked):
 				break;
 			case ccKeypadMSGType(kTypeUpArrowClicked):
-				tableView->setSelection(tableView->getSelected()-5);
+				if(tableView->getSelected()>0){
+					tableView->setSelection(tableView->getSelected()-5);
+				}else{
+					if(m_selectedButton->getTag()==7){
+						m_selectedButton->setSelected(false);
+						CCButtonView * button = (CCButtonView *)m_selectedCell->getChildByTag(6);
+						button->setSelected(true);
+						m_selectedButton = button;
+					}
+				}
 				break;
 			case ccKeypadMSGType(kTypeRightArrowClicked):
 				break;
 			case ccKeypadMSGType(kTypeDownArrowClicked):
-				tableView->setSelection(tableView->getSelected()+5);
+				if(tableView->getSelected()>0){
+					tableView->setSelection(tableView->getSelected()+5);
+				}else{
+					if(m_selectedButton->getTag()==6){
+						m_selectedButton->setSelected(false);
+						CCButtonView * button = (CCButtonView *)m_selectedCell->getChildByTag(7);
+						button->setSelected(true);
+						m_selectedButton = button;
+					}
+				}
 				break;
 		}
 }
@@ -74,11 +93,17 @@ void BaiduYunSence::popSence() {
 	CCDirector::sharedDirector()->popScene(CCTransitionSlideInL::create(0.2f, prevScene));
 }
 
-void BaiduYunSence::loginXunleiSuccess() {
+void BaiduYunSence::loginBaiduSuccess() {
 	string access_token = getBaiduTokenJNI();
 	LOGD("BaiduYunSence","access_token--> %s",access_token.c_str());
+
 //	getBaiduVideoList(0);
 //	getBaiduVideoList(m_requset_baidu_index);
+	m_requset_baidu_index = 0;
+	m_hasMore = true;
+//	CCSprite* loading = (CCSprite*)getChildByTag(250);
+//	loading->setVisible(true);
+//	loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 	getBaiduLoginUserInfo();
 }
 
@@ -104,7 +129,24 @@ void BaiduYunSence::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		unsigned int idx) {
 	LOGD("HistoryScnce","item %u Clicked m_dates size = %d",idx-1, m_dates.size());
 	if(idx == 0){
-		//注销
+		if(m_selectedButton->getTag()==6){//刷新
+			m_requset_baidu_index = 0;
+			m_hasMore = true;
+			m_dates.clear();
+			getBaiduVideoList(m_requset_baidu_index);
+			CCSprite* loading = (CCSprite*)getChildByTag(250);
+			loading->setZOrder(2);
+			loading->setVisible(true);
+			loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
+		}else{//注销
+			m_dates.clear();
+			tableView->setVisible(false);
+	//		tableView->reloadData();
+			CCSprite* loading = (CCSprite*)getChildByTag(250);
+			loading->setVisible(true);
+			loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
+			showBaiduLoginDialog(baiduDilogCallbackFunc,this);
+		}
 	}else{
 		BaiduVideoInfo info = m_dates.at(idx-1);
 		CSJson::Value root;
@@ -134,30 +176,50 @@ void BaiduYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 		}
 		if(cell){
 			//、、
+			CCButtonView *button = (CCButtonView *)cell->getChildByTag(6);
+			button->setSelected(true);
+			m_selectedButton = button;
 		}
-		m_selectedCell = NULL;
 	}else{
-		if(m_selectedCell)
-		{
-			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
-			sLabelBack->stopAllActions();
-			sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
-			CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
-			pLabel->setDimensions(ccp(270, 150));
+		if(m_selected_id==0&&idx==1){
+			if(m_selectedButton){
+				m_selectedButton->setSelected(false);
+			}
+			if(cell){
+				CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
+				pLabelBack->stopAllActions();
+	//			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+				CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
+				CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,450)),
+								CCCallFuncND::create(this,
+										callfuncND_selector(BaiduYunSence::callBackAnim),
+										pLabel),NULL);
+				pLabelBack->runAction(actions);
+			}
+		}else{
+			if(m_selectedCell){
+				CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
+				sLabelBack->stopAllActions();
+				sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+				CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+				pLabel->setDimensions(ccp(270, 150));
+			}
+			if(cell){
+				CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
+				pLabelBack->stopAllActions();
+	//			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
+				CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
+				CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,450)),
+								CCCallFuncND::create(this,
+										callfuncND_selector(BaiduYunSence::callBackAnim),
+										pLabel),NULL);
+				pLabelBack->runAction(actions);
+			}
 		}
-		if(cell){
-			CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
-			pLabelBack->stopAllActions();
-//			pLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,405)));
-			CCLabelTTF *pLabel = (CCLabelTTF*)cell->getChildByTag(4);
-			CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,405)),
-							CCCallFuncND::create(this,
-									callfuncND_selector(BaiduYunSence::callBackAnim),
-									pLabel),NULL);
-			pLabelBack->runAction(actions);
-		}
-		m_selectedCell = cell;
+		m_selectedButton = NULL;
 	}
+	m_selectedCell = cell;
+	m_selected_id = idx;
 	if(idx>(tableView->getDataSource()->numberOfCellsInTableView(tableView)-10)&&m_hasMore&&!m_isRequesting){
 		getBaiduVideoList(m_requset_baidu_index);
 	}
@@ -175,6 +237,8 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 	CCSprite *pSprite;
 	CCTableCellForHistory *pLabelBack;
 	CCLabelTTF *pLabel;
+	CCButtonView * pButton;
+	CCButtonView * pRefreshButton;
 	if (!pCell) {
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
@@ -193,10 +257,23 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pLabelBack->setTag(3);
 		pCell->addChild(pLabelBack);
 		pLabel = CCLabelTTF::create(m_dates.at(0).getFileName().c_str(), "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
-		pLabel->setPosition(ccp(35,300));
+		pLabel->setPosition(ccp(35,330));
+//		pLabel->setPosition(ccp(35,300));
 		pLabel->setAnchorPoint(ccp(0,1));
 		pLabel->setTag(4);
 		pCell->addChild(pLabel);
+
+		pButton = CCButtonView::create("baidu_button_refresh.png","baidu_selected_button.png","刷  新",70,0,0,0);
+		pButton->setAnchorPoint(ccp(0.5,0.5));
+		pButton->setPosition(ccp(165,178));
+		pButton->setTag(6);
+		pCell->addChild(pButton);
+
+		pRefreshButton = CCButtonView::create("baidu_button_logout.png","baidu_selected_button.png","注  销",70,0,0,0);
+		pRefreshButton->setAnchorPoint(ccp(0.5,0.5));
+		pRefreshButton->setPosition(ccp(165,89));
+		pRefreshButton->setTag(7);
+		pCell->addChild(pRefreshButton);
 	}
 	else
 	{
@@ -204,24 +281,29 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pSprite = (CCSprite*)pCell->getChildByTag(2);
 		pLabelBack = (CCTableCellForHistory*)pCell->getChildByTag(3);
 		pLabel = (CCLabelTTF*)pCell->getChildByTag(4);
-
+		pButton = (CCButtonView*)pCell->getChildByTag(6);
+		pRefreshButton= (CCButtonView*)pCell->getChildByTag(7);
 	}
 	if(idx==0){
-		pLabelBack->setPosition(ccp(0,540));
+		pLabelBack->setPosition(ccp(0,632));
 		pImage->setVisible(false);
 		if(username.empty()){
 			pLabel->setString("unkown");
 		}else{
 			pLabel->setString(username.c_str());
 		}
+		pLabel->setHorizontalAlignment(CCTextAlignment(kCCTextAlignmentCenter));
 		pSprite->initWithFile("baidu_id.png");
 		pSprite->setAnchorPoint(CCPointZero);
 		pSprite->setPosition(ccp(0,405));
+		pButton->setVisible(true);
+		pRefreshButton->setVisible(true);
 	}else{
 		BaiduVideoInfo info  = m_dates.at(idx-1);
 		pLabel->setString(info.getFileName().c_str());
+		pLabel->setHorizontalAlignment(CCTextAlignment(kCCTextAlignmentLeft));
 		if(idx == table->getSelected()){
-			pLabelBack->setPosition(ccp(0,405));
+			pLabelBack->setPosition(ccp(0,450));
 			m_selectedCell = pCell;
 		}else{
 			pLabelBack->setPosition(ccp(0,540));
@@ -232,6 +314,8 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pImage->setVisible(true);
 		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
 		pImage->setBoundSize(ccp(264,145));
+		pButton->setVisible(false);
+		pRefreshButton->setVisible(false);
 	}
 	return pCell;
 }
@@ -405,6 +489,9 @@ void BaiduYunSence::onEnterTransitionDidFinish() {
 	CCLayer::onEnterTransitionDidFinish();
 	if(getBaiduTokenJNI().empty()){
 		showBaiduLoginDialog(baiduDilogCallbackFunc, (void*)this);
+//		CCSprite* loading = (CCSprite*)getChildByTag(250);
+//		loading->stopAllActions();
+//		loading->setVisible(false);
 	}else{
 //				getBaiduVideoList(m_requset_baidu_index);
 		getBaiduLoginUserInfo();
@@ -424,14 +511,20 @@ void BaiduYunSence::initTableView() {
 	CCSprite* loading = (CCSprite*)getChildByTag(250);
 	loading->stopAllActions();
 	loading->setVisible(false);
-	tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
-	tableView->setAnchorPoint(ccp(0,1));
-	tableView->setPosition(0,188);
-	tableView->setDelegate(this);
-	tableView->setDirection(kCCScrollViewDirectionHorizontal);
-	tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-	tableView->setSelection(1);
-	this->addChild(tableView);
+	if(tableView){
+		tableView->setVisible(true);
+		tableView->reloadData();
+		tableView->setSelection(1);
+	}else{
+		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
+		tableView->setAnchorPoint(ccp(0,1));
+		tableView->setPosition(0,188);
+		tableView->setDelegate(this);
+		tableView->setDirection(kCCScrollViewDirectionHorizontal);
+		tableView->setVerticalFillOrder(kCCListViewFillTopDown);
+		tableView->setSelection(1);
+		this->addChild(tableView);
+	}
 }
 
 

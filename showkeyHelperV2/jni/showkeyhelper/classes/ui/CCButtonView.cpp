@@ -48,16 +48,25 @@ void CCButtonView::setSelected(bool isSelected) {
 	CCSprite* backgound = (CCSprite*)getChildByTag(0);
 	CCLabelTTF* label_name = (CCLabelTTF*)getChildByTag(1);
 	if(isSelected){
-		CCActionInterval* fadeIn = CCFadeIn::create(0.4f);
+		CCActionInterval* fadeIn = CCFadeIn::create(0.2f);
 		m_background->runAction(fadeIn);
 		this->schedule(schedule_selector(CCButtonView::runBreath),8.0f);
-		backgound->setOpacity(255);
-		label_name->setOpacity(255);
+		CCActionInterval* fadeTo = CCFadeTo::create(0.2f,255);
+		CCActionInterval* fadeTo_1 = CCFadeTo::create(0.2f,255);
+		backgound->runAction(fadeTo);
+		label_name->runAction(fadeTo_1);
+//		backgound->setOpacity(255);
+//		label_name->setOpacity(255);
 	}else{
-		CCActionInterval* fadeOut = CCFadeOut::create(0.4f);
+		CCActionInterval* fadeOut = CCFadeOut::create(0.2f);
 		m_background->runAction(fadeOut);
-		backgound->setOpacity(76);
-		label_name->setOpacity(76);
+
+		CCActionInterval* fadeTo = CCFadeTo::create(0.2f,76);
+		CCActionInterval* fadeTo_1 = CCFadeTo::create(0.2f,76);
+		backgound->runAction(fadeTo);
+		label_name->runAction(fadeTo_1);
+//		backgound->setOpacity(76);
+//		label_name->setOpacity(76);
 	}
 }
 
