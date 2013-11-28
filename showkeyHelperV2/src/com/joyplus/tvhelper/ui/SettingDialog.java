@@ -129,9 +129,10 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		private void bingQqCode() {
 			// TODO Auto-generated method stub
 			if(detail_cancel_qq){
-            	bing_qq_code.setTextColor(Color.parseColor("#FFFFFF"));			
+				bing_qq_code.setTextColor(Color.parseColor("#BEBEBE"));
 			}else{
-				bing_qq_code.setTextColor(Color.parseColor("#000000"));
+				bing_qq_code.setTextColor(Color.parseColor("#FFFFFF"));			
+				
 			}
 		}
 
@@ -149,7 +150,7 @@ public class SettingDialog extends Dialog implements OnClickListener{
 					ViewGroup viewGroup = (ViewGroup) v; 	
 					switchTip(v);
 					//Log.d(TAG, "hasonFocusChange--->TextView:"+viewGroup);
-					if(viewGroup != null && viewGroup.getChildCount() > 0){
+					if(viewGroup != null && viewGroup.getChildCount() > 1){
 						for(int i=0;i<viewGroup.getChildCount();i++){
 							
 							View view = viewGroup.getChildAt(i);
@@ -170,17 +171,17 @@ public class SettingDialog extends Dialog implements OnClickListener{
 					}
 				}else {
 					
-					ViewGroup viewGroup = (ViewGroup) v;
+					ViewGroup viewGroup = (ViewGroup) v; 
 					if(viewGroup != null && viewGroup.getChildCount() > 0){
 						for(int i=0;i<viewGroup.getChildCount();i++){
-							
+							Log.d(TAG,"i::::"+i);
 							View view = viewGroup.getChildAt(i);
 							if(view instanceof TextView){
 								mstatue_textview = (TextView) view;
-								Log.d(TAG, "outonFocusChange--->TextView:"+view);
+							//	Log.d(TAG, "outonFocusChange--->TextView:"+view);
 								if(mstatue_textview.getId()>0){
 									mstatue_textview = (TextView) view;
-									Log.d(TAG, "id"+mstatue_textview);
+							//		Log.d(TAG, "id"+mstatue_textview);
 									mstatue_textview.setBackgroundDrawable(null);
 								   
 								};
@@ -404,6 +405,7 @@ public class SettingDialog extends Dialog implements OnClickListener{
 				case STATUE_SETTING_BACK:
 					Log.d(TAG,"setting_back");
 					detail_setting_back=true;
+					bingQqCode();
 					break;
 				case STATUE_CANCEL_QQ:
 					Log.d(TAG,"cancel_qq");
