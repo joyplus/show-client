@@ -1,9 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@drawable/back"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent" 
+    android:layout_weight="1"
+    android:background="@drawable/back"
+    xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
     <LinearLayout 
             android:id="@+id/top_empty"
             android:layout_width="fill_parent"
@@ -27,6 +29,7 @@
 	        android:layout_height="fill_parent"
 	        android:background="@drawable/setting_content"
 	        android:layout_weight="6">
+	        	   
 	        	   <LinearLayout 
 	        	       android:layout_width="fill_parent"
 	        	       android:layout_height="fill_parent">
@@ -34,14 +37,23 @@
 	       		            android:layout_height="fill_parent"
 	       		            android:layout_weight="0.2">
 	       		        </LinearLayout>
+	       		        
 	       		        <LinearLayout android:layout_width="0dp"
 	       		            android:layout_height="fill_parent"
 	       		            android:id="@+id/layout_setting"
 	       		            android:layout_weight="3"
 	       		            android:orientation="vertical">
+	       		            
 	       		            <LinearLayout android:layout_width="fill_parent"
-	       		                android:layout_height="36dp">
+	       		                android:layout_height="0dp"
+	       		                android:layout_weight="1">
 	       		            </LinearLayout>
+	       		            <ScrollView android:layout_width="fill_parent"
+	        	                        android:layout_height="0dp"
+	        	                        android:layout_weight="6">
+	        	            <LinearLayout android:layout_width="fill_parent"
+	        	                android:layout_height="fill_parent"
+	        	                android:orientation="vertical">
 	       		            <LinearLayout android:layout_width="fill_parent"
 	       		                android:layout_height="55dp"
 	       		                android:paddingLeft="30dp"
@@ -170,13 +182,59 @@
 	       		                    android:visibility="visible"/>
 	       		            </LinearLayout>
 	       		            
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/cancel_qq"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:id="@+id/cancel_qq_text"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="解绑QQ账户"
+	       		                    android:layout_weight="10"/>
+	       		                
+	       		            </LinearLayout>
+	       		            
+	       		            <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="55dp"
+	       		                android:paddingLeft="30dp"
+	       		                android:paddingRight="40dp"
+	       		                android:focusable="true"
+	       		            	android:id="@+id/setting_back"
+	       		            	android:background="@drawable/setting_content_selector"
+	       		                android:orientation="horizontal"
+	       		                android:visibility="visible">
+	       		                <TextView android:layout_width="0dp"
+	       		                    android:layout_height="fill_parent"
+	       		                    android:gravity="center_vertical"
+	       		                    android:textSize="24dp"
+	       		                    android:textColor="#FFFFFF"
+	       		                    android:text="恢复出厂设置"
+	       		                    android:layout_weight="10"/>
+	       		            </LinearLayout>
+	       		            </LinearLayout>
+	       		            
+	       		             </ScrollView> 
+	       		             <LinearLayout android:layout_width="fill_parent"
+	       		                android:layout_height="0dp"
+	       		                android:layout_weight="1">
+	       		            </LinearLayout>
 	       		        </LinearLayout>
-	       		        
+	       		      
 	       		        <LinearLayout android:layout_width="0dp"
 	       		            android:layout_height="fill_parent"
 	       		            android:layout_weight="0.2">
 	       		        </LinearLayout>
 	       		      </LinearLayout>
+	       		      
+	        	   
          </LinearLayout>
     
      	<LinearLayout 

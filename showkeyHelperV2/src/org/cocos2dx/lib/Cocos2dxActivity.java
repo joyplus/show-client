@@ -319,7 +319,10 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	@Override
 	public void startSetting() {
 		// TODO Auto-generated method stub
-		startActivity(new Intent(this,SettingActivity.class));
+		
+		Message msg = new Message();
+		msg.what = Cocos2dxHandler.HANDLER_SHOW_SETTING_DIALOG;
+		this.mHandler.sendMessage(msg);
 	}
 	
 	

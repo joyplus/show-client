@@ -44,4 +44,6 @@
      <string name="setting_default_decrease_tip">如果您经常推送已有字幕的视频，可将其关闭</string>
      <string name="setting_default_resolution_tip">您可以根据自己的带宽水平调整清晰度，当然是推荐超清啦</string>
      <string name="setting_size_decrease_tip">字幕小了，改大点再试试</string>
+     <string name="setting_back_tip">可以还原出厂的设置</string>
+     <string name="setting_cancel_qq_tip">解绑后，将不能再通过您的QQ账户推送视频至此设备</string>     
 </resources>

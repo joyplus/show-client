@@ -28,6 +28,8 @@ import java.lang.ref.WeakReference;
 
 import com.joyplus.tvhelper.ui.Cocos2dxBaiduDialog;
 import com.joyplus.tvhelper.ui.Cocos2dxXunLeiLoginDialog;
+import com.joyplus.tvhelper.ui.SettingDialog;
+
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -44,6 +46,7 @@ public class Cocos2dxHandler extends Handler {
 	public final static int HANDLER_SHOW_BAIDU_lOGGIN_DIALOG = 4;
 	public final static int MESSAGE_GETPINCODE_SUCCESS = 5;
 	public final static int MESSAGE_GETPINCODE_FAILE = 6;
+	public final static int HANDLER_SHOW_SETTING_DIALOG=7;
 	
 	// ===========================================================
 	// Fields
@@ -89,6 +92,8 @@ public class Cocos2dxHandler extends Handler {
 		case Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE:
 			Cocos2dxHelper.setGeneratePincodeResult(false);
 			break;
+		case Cocos2dxHandler.HANDLER_SHOW_SETTING_DIALOG:
+			SettingDialog(msg);
 		}
 	}
 	
@@ -100,7 +105,10 @@ public class Cocos2dxHandler extends Handler {
 		// TODO Auto-generated method stub
 		new Cocos2dxBaiduDialog(this.mActivity.get()).show();
 	}
-
+	private void SettingDialog(Message msg) {
+		// TODO Auto-generated method stub
+		new SettingDialog(this.mActivity.get()).show();
+	}
 	private void showDialog(Message msg) {
 		Cocos2dxActivity theActivity = this.mActivity.get();
 		DialogMessage dialogMessage = (DialogMessage)msg.obj;
