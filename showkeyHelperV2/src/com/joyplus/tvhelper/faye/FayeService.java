@@ -175,6 +175,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							}
 						}, 0);
 						sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
+						sendBroadcast(new Intent(Global.ACTION_BAND_SUCCESS));
 					}
 				}
 				
@@ -1428,7 +1429,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 						pincode_md5 = data.getString("md5_code");
 						Log.d(TAG, pincode_md5);
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+								&&(PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)||PreferencesUtils.getToken(FayeService.this).equals(pincode_md5))){
 							CurrentPlayDetailData playDate = new CurrentPlayDetailData();
 //							final Intent intent = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 							final Intent intent = Utils.getIntent(FayeService.this);
@@ -1600,7 +1601,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							services.updateMoviePlayHistory(play_info);
 						}
 						if(PreferencesUtils.getPincodeMd5(FayeService.this)!=null
-								&&PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)){
+								&&(PreferencesUtils.getPincodeMd5(FayeService.this).equals(pincode_md5)||PreferencesUtils.getToken(FayeService.this).equals(pincode_md5))){
 //							if(baidu_play_url.startsWith("bdhd")){
 								Intent intent = new Intent(FayeService.this,PlayBaiduActivity.class);
 								intent.putExtra("url", baidu_play_url);

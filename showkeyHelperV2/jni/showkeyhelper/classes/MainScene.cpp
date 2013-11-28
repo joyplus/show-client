@@ -9,6 +9,11 @@ static void pincodeCallbackFunc(bool isSuccess,void* ctx)
 
 	}
 }
+static void updateQQCallback(void* ctx)
+{
+	MainScene* thiz = (MainScene*)ctx;
+	thiz->updateQQDisplay();
+}
 
 CCScene* MainScene::scene()
 {
@@ -229,9 +234,18 @@ void MainScene::onExitTransitionDidStart() {
 void MainScene::disPlayPincode() {
 	m_pageLayer->setPincode(getPincodeJNI().c_str());
 	startFayeService();
-	CCString* str = CCString::createWithFormat("tt.showkey.tv?pincode=%s",getPincodeJNI().c_str());
+	CCString* str = CCString::createWithFormat(getErweimaUrlJNI().c_str());
 	m_pageLayer->displayErWeiMa(str->getCString());
+	setUpdateQQCallback(updateQQCallback,this);
 }
+
+void MainScene::updateQQDisplay() {
+	LOGD("MainScene","-----------updateQQDisplay---------------");
+	LOGD("MainScene","qq name -- > %s",getQQNameJNI().c_str());
+	LOGD("MainScene","qq touxiang url -- > %s",getQQAvatarJNI().c_str());
+	m_pageLayer->updateQQDisplay(getQQNameJNI().c_str(),getQQAvatarJNI().c_str());
+}
+
 
 
 

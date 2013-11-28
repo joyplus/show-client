@@ -47,6 +47,7 @@ public class Cocos2dxHandler extends Handler {
 	public final static int MESSAGE_GETPINCODE_SUCCESS = 5;
 	public final static int MESSAGE_GETPINCODE_FAILE = 6;
 	public final static int HANDLER_SHOW_SETTING_DIALOG=7;
+	public final static int HANDLER_UPDATE_QQ=8;
 	
 	// ===========================================================
 	// Fields
@@ -94,6 +95,10 @@ public class Cocos2dxHandler extends Handler {
 			break;
 		case Cocos2dxHandler.HANDLER_SHOW_SETTING_DIALOG:
 			SettingDialog(msg);
+			break;
+		case HANDLER_UPDATE_QQ:
+			Cocos2dxHelper.updateQQdisplay();
+			break;
 		}
 	}
 	

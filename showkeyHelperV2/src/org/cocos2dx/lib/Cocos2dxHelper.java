@@ -37,6 +37,7 @@ import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.XLLXUserInfo;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.EncodingHandler;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -117,6 +118,8 @@ public class Cocos2dxHelper {
 	private static native void nativeSetBaiduLoginDialogResult(final int isBack);
 	
 	private static native void nativeSetPincodeResult(final int isSuccess);
+	
+	private static native void nativeUpdateQQ();
 	
 	private static native void nativeSetSettingResult(final int isSuccess);
 
@@ -469,12 +472,46 @@ public class Cocos2dxHelper {
     	return Utils.getMacAdd(sContext);
     }
     
+    public static String getErweimaUrl(){
+    	String str = PreferencesUtils.getErweima_url(sContext);
+    	if(str!=null){
+    		return str;
+    	}else{
+    		return "";
+    	}
+    }
+    
+    public static String getQQName(){
+    	String str = PreferencesUtils.getQQName(sContext);
+    	if(str!=null){
+    		return str;
+    	}else{
+    		return "";
+    	}
+    }
+    public static String getQQAvatar(){
+    	String str = PreferencesUtils.getQQAvatar(sContext);
+    	if(str!=null){
+    		return str;
+    	}else{
+    		return "";
+    	}
+    }
+    
+//    public static String getRequestUserInfoUrl(){
+//    	return Constant.BASE_URL + "/account/getuserinfo?pin="+getPincode()+"&md="+getMac()+"&app_key="+Constant.APPKEY;
+//    }
+    
     public static void startService(){
     	Cocos2dxHelper.sCocos2dxHelperListener.startService();
     }
     
     public static void startSetting(){
     	Cocos2dxHelper.sCocos2dxHelperListener.startSetting();
+    }
+    
+    public static void updateQQ(){
+    	Cocos2dxHelper.sCocos2dxHelperListener.updateQQ();
     }
     
     public static void 	generatePincode(){
@@ -527,6 +564,19 @@ public class Cocos2dxHelper {
 		}
     }
     
+    public static void updateQQdisplay(){
+    	try {
+			Cocos2dxHelper.sCocos2dxHelperListener.runOnGLThread(new Runnable() {
+				@Override
+				public void run() {
+					Cocos2dxHelper.nativeUpdateQQ();
+				}
+			});
+		} catch (Exception Exception) {
+			/* Nothing. */
+		}
+    }
+    
     public static void deletePlayList(final String str){
     	MyApp.pool.execute(new Runnable() {
 			
@@ -549,6 +599,8 @@ public class Cocos2dxHelper {
 			}
 		});
     }
+    
+    
     
     public static void setGeneratePincodeResult(boolean isSuccessed){
     	try {
@@ -581,6 +633,8 @@ public class Cocos2dxHelper {
 		public void startService();
 		
 		public void generatePincode();
+		
+		public void updateQQ();
 		
 		public void runOnGLThread(final Runnable pRunnable);
 	}

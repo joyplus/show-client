@@ -20,16 +20,7 @@ CCImageView* CCImageView::createWithLocalPath(const char *path)
  */
 CCImageView* CCImageView::createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize)
 {
-	CCImageView * image_view = new CCImageView();
-	if(image_view&&image_view->initWithUrl(url,default_local_path))
-	{
-		image_view->autorelease();
-		image_view->setBoundSize(boundsize);
-		LOGD("CCImageView","create success");
-		return image_view;
-	}
-	CC_SAFE_DELETE(image_view);
-	return NULL;
+	return CCImageView::createWithNetUrl(url,default_local_path,boundsize,true,NULL);
 }
 
 bool CCImageView::initWithUrl(const char *url, const char *defult)
@@ -74,6 +65,9 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 	if (!response->isSucceed())
 	{
 		LOGD("onGetFinished","Receive Error! %s\n",response->getErrorBuffer());
+		if(delegere){
+			delegere->onResult(response->getHttpRequest()->getUrl(),false);
+		}
 		return ;
 	}
 
@@ -87,16 +81,67 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 	unsigned char* pBuffer = NULL;
 	unsigned long bufferSize = 0;
 	vector<char> *buffer = response->getResponseData();
-	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+ getFileNameFromUrl(response->getHttpRequest()->getUrl());
-	pBuffer = CCFileUtils::sharedFileUtils()->getFileData(path.c_str(), "r", &bufferSize);
-	string buff(buffer->begin(),buffer->end());
 
-	//保存到本地文件
-	LOGD("CCImageView","path: %s",path.c_str());
-	FILE *fp = fopen(path.c_str(), "wb+");
-	fwrite(buff.c_str(), 1,buffer->size(),  fp);
-	fclose(fp);
-	initWithDownLoadFile(path.c_str());
+	string buff(buffer->begin(),buffer->end());
+	if(isSave){
+		//保存到本地文件
+		string path = CCFileUtils::sharedFileUtils()->getWritablePath()+ getFileNameFromUrl(response->getHttpRequest()->getUrl());
+		pBuffer = CCFileUtils::sharedFileUtils()->getFileData(path.c_str(), "r", &bufferSize);
+		LOGD("CCImageView","path: %s",path.c_str());
+		FILE *fp = fopen(path.c_str(), "wb+");
+		fwrite(buff.c_str(), 1,buffer->size(),  fp);
+		fclose(fp);
+		initWithDownLoadFile(path.c_str());
+		if(delegere){
+			delegere->onResult(response->getHttpRequest()->getUrl(),true);
+		}
+	}else{
+		CCImage* img = new CCImage;
+		LOGD("CCImageView","img not save %d",buff.size());
+		img->initWithImageData((char *)buff.c_str(),buff.size());
+		free(pBuffer);
+		CCTexture2D* texture = new cocos2d::CCTexture2D();
+		bool isImg = texture->initWithImage(img);
+		img->release();
+		if(isImg){
+			LOGD("CCImageView","--------is  img--------------");
+			initWithTexture(texture);
+			if(getContentSize().width!=0&&getContentSize().height!=0)
+			{
+				setScaleX(m_size.width/getContentSize().width);
+				setScaleY(m_size.height/getContentSize().height);
+			}
+			texture->release();
+			if(delegere){
+				delegere->onResult(response->getHttpRequest()->getUrl(),true);
+			}
+		}else{
+			LOGD("CCImageView","--------not  img--------------");
+		}
+	}
+}
+
+CCImageView* CCImageView::createWithNetUrl(const char* url,
+		const char* default_local_path, CCSize boundsize, bool isSave, CCImageViewDownLoadDelegte * delegte)
+{
+	CCImageView * image_view = new CCImageView();
+	if(image_view&&image_view->initWithUrl(url,default_local_path))
+	{
+		image_view->autorelease();
+		image_view->isSave = isSave;
+		image_view->delegere = delegte;
+		image_view->setBoundSize(boundsize);
+		LOGD("CCImageView","create success");
+		return image_view;
+	}
+	CC_SAFE_DELETE(image_view);
+	return NULL;
+}
+
+bool CCImageView::initWithUrl(const char* url, const char* default_local_path,
+		bool isSave) {
+	this->isSave = isSave;
+	return initWithUrl(url,default_local_path);
 }
 
 bool CCImageView::initWithDownLoadFile(const char * filePath)

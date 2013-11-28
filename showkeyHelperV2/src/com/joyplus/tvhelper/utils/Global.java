@@ -103,4 +103,8 @@ public class Global {
 	 */
 	public static final String ACTION_RECIVE_NEW_PUSH_MOVIE = "action_recive_new_push_movie";
 	
+	/**
+	 * 绑定成功
+	 */
+	public static final String ACTION_BAND_SUCCESS = "action_band_success";
 }

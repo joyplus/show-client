@@ -23,6 +23,7 @@ THE SOFTWARE.
  ****************************************************************************/
 package org.cocos2dx.lib;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +33,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -56,6 +59,7 @@ import com.joyplus.tvhelper.entity.XLLXFileInfo;
 import com.joyplus.tvhelper.faye.FayeService;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
@@ -82,6 +86,19 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		return sContext;
 	}
 	
+	
+	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(Global.ACTION_BAND_SUCCESS.equals(action)){
+				Cocos2dxHelper.updateQQdisplay();
+			}
+		}
+	};
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -96,6 +113,9 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
 		Cocos2dxHelper.init(this, this);
 		app = (MyApp)getApplication();
+		
+		IntentFilter filter = new IntentFilter(Global.ACTION_BAND_SUCCESS);
+		registerReceiver(mReceiver, filter);
 	}
 
 	// ===========================================================
@@ -151,20 +171,25 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Map<String, String> params = new HashMap<String, String>();
-				params.put("app_key", Constant.APPKEY);
-				params.put("mac_address", Utils.getMacAdd(Cocos2dxActivity.this));
-				params.put("client", new Build().MODEL);
+//				Map<String, String> params = new HashMap<String, String>();
+//				params.put("md", Utils.getMacAdd(Cocos2dxActivity.this));
+//				params.put("c", new Build().MODEL);
 //				Log.d(TAG, "client = " + new Build().MODEL);
-				String str = HttpTools.post(Cocos2dxActivity.this, Constant.BASE_URL+"/generatePinCode", params);
+//				String str = HttpTools.post(Cocos2dxActivity.this, Constant.BASE_URL+"/make_pin", params);
+				String str = HttpTools.get(Cocos2dxActivity.this, Constant.BASE_URL+"/make_pin?md="+
+						Utils.getMacAdd(Cocos2dxActivity.this)+"&c="+URLEncoder.encode(new Build().MODEL));
 				Log.d(TAG, str);
 				try {
 					JSONObject data = new JSONObject(str);
 					String pincode = data.getString("pinCode");
 					String channel = data.getString("channel");
+					String token = data.getString("token");
+					String erweima_url = data.getString("pre_url");
 					PreferencesUtils.setPincode(Cocos2dxActivity.this, pincode);
 					PreferencesUtils.setChannel(Cocos2dxActivity.this, channel);
 					PreferencesUtils.setPincodeMd5(Cocos2dxActivity.this, null);
+					PreferencesUtils.setToken(sContext, token);
+					PreferencesUtils.setErweima_url(sContext, erweima_url);
 					mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_SUCCESS);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -325,6 +350,44 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		this.mHandler.sendMessage(msg);
 	}
 	
+	@Override
+	public void updateQQ() {
+		// TODO Auto-generated method stub
+		MyApp.pool.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				String url = Constant.BASE_URL + "/account/getuserinfo?pin="+
+				PreferencesUtils.getPincode(sContext)+"&md="+Utils.getMacAdd(sContext);
+				
+				String str = HttpTools.get(sContext, url);
+				Log.d(TAG, "updateQQ-->result-->"+str);
+				try{
+					
+					JSONObject obj = new JSONObject(str);
+					boolean statue = obj.getBoolean("status");
+					if(statue){
+						String nickname = obj.getString("nickname");
+						String avatare = obj.getString("figureurl");
+						PreferencesUtils.setQQName(sContext, nickname);
+						PreferencesUtils.setQQAvatare(sContext, avatare);
+					}else{
+						//失败了、、
+					}
+					
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+				
+				Message msg = new Message();
+				msg.what = Cocos2dxHandler.HANDLER_UPDATE_QQ;
+				mHandler.sendMessage(msg);
+			}
+		});
+	}
 	
 	@Override
 	public void showBaiduDailog() {
@@ -413,6 +476,13 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	   return true;
 //	   return this.mGLSurfaceView.onKeyDown(keyCode, event);
 //	return super.onKeyDown(keyCode, event);
+}
+   
+   @Override
+protected void onDestroy() {
+	// TODO Auto-generated method stub
+	 unregisterReceiver(mReceiver);
+	super.onDestroy();
 }
    
 	// ===========================================================

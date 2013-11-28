@@ -42,7 +42,7 @@ void BannerLayer::setSelected(bool isSelected) {
 void BannerLayer::displayErWeiMa(const char* str) {
 	removeChildByTag(111);
 	unsigned int size = 0;
-	void* date = getErweimaDateJNI(str, 320, &size);
+	void* date = getErweimaDateJNI(str, 300, &size);
 	if(date){
 		CCImage * image = new CCImage();
 		image->initWithImageData(date,size);

@@ -289,6 +289,11 @@ void PageLayer::displayErWeiMa(const char* str) {
 	banner->displayErWeiMa(str);
 }
 
+void PageLayer::updateQQDisplay(const char* name, const char* url) {
+	PincodeLayer *pincode = (PincodeLayer *)getChildByTag(TAG_PINCODE);
+	pincode->updateQQDisplay(name,url);
+}
+
 PageLayer::~PageLayer()
 {
 

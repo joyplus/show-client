@@ -19,6 +19,7 @@ static XunLeiLoginCallback s_pfXunLeiLoginCallback = NULL;
 static BaiduLoginCallback s_pfBaiduLoginCallback = NULL;
 static MainGeneratePincode s_pfMainGeneratePincode = NULL;
 static SettingDilogCallback s_pfSettingCallBack = NULL;
+static MainUpdateQQCallback s_pfMainUpdateQQCallback = NULL;
 static void* s_ctx = NULL;
 static void* x_ctx = NULL;
 static void* b_ctx = NULL;
@@ -147,6 +148,11 @@ extern "C" {
 		}
 		if (s_pfSettingCallBack){
 			s_pfSettingCallBack(successed,set_ctx);
+		}
+    }
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeUpdateQQ(JNIEnv * env, jobject obj) {
+		if (s_pfMainUpdateQQCallback){
+			s_pfMainUpdateQQCallback(m_ctx);
 		}
     }
 
@@ -463,7 +469,6 @@ std::string getPincodeJNI() {
 		t.env->DeleteLocalRef(t.classID);
 		t.env->DeleteLocalRef(str);
 	}
-
 	return ret;
 }
 
@@ -605,6 +610,57 @@ void deleatePlayHistoryListJNI(const char* date) {
 		t.env->DeleteLocalRef(t.classID);
 		t.env->DeleteLocalRef(stringArg);
 	}
+}
+
+std::string getErweimaUrlJNI() {
+	JniMethodInfo t;
+	std::string ret("");
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getErweimaUrl", "()Ljava/lang/String;")) {
+		jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+		ret = JniHelper::jstring2string(str);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(str);
+	}
+
+	return ret;
+}
+
+void setUpdateQQCallback(MainUpdateQQCallback mainUpdateQQCallback,
+		void* ctx) {
+	m_ctx = ctx;
+	s_pfMainUpdateQQCallback = mainUpdateQQCallback;
+	JniMethodInfo t;
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "updateQQ", "()V")) {
+		t.env->CallStaticVoidMethod(t.classID, t.methodID);
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+
+std::string getQQNameJNI() {
+	JniMethodInfo t;
+	std::string ret("");
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getQQName", "()Ljava/lang/String;")) {
+		jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+		ret = JniHelper::jstring2string(str);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(str);
+	}
+	return ret;
+}
+
+std::string getQQAvatarJNI() {
+	JniMethodInfo t;
+	std::string ret("");
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getQQAvatar", "()Ljava/lang/String;")) {
+		jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+		ret = JniHelper::jstring2string(str);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(str);
+	}
+	return ret;
 }
 
 std::string getDecodeStringFromJNI(const char* pKey)

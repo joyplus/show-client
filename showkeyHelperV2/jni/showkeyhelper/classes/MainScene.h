@@ -52,6 +52,8 @@ public:
 
     void disPlayPincode();
 
+    void updateQQDisplay();
+
 private :
     PageLayer * m_pageLayer;
 };

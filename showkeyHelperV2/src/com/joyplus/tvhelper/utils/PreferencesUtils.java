@@ -17,6 +17,10 @@ public class PreferencesUtils {
 	private static final String DISPLAYURL = "web_url";
 	private static final String LASTVERSION = "last_version";
 	private static final String BAIDU_ACCESS_TOKEN = "baidu_access_token";
+	private static final String TOKEN = "token";
+	private static final String ERWEIMA_URL = "erweima_url";
+	private static final String QQ_NAME = "qq_name";
+	private static final String QQ_AVATAR = "qq_avatar";
 	
 	public static void changeAcceptedStatue(Context c ,boolean isAccepted){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
@@ -31,6 +35,35 @@ public class PreferencesUtils {
 		editor.putString(PINCODE, pincode);
 		editor.commit();
 	}
+	
+	public static void setQQName(Context c ,String nickname){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(QQ_NAME, nickname);
+		editor.commit();
+	}
+	
+	public static void setQQAvatare(Context c ,String avatare){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(QQ_AVATAR, avatare);
+		editor.commit();
+	}
+	
+	public static void setToken(Context c ,String token){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(TOKEN, token);
+		editor.commit();
+	}
+	
+	public static void setErweima_url(Context c ,String erweima_url){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putString(ERWEIMA_URL, erweima_url);
+		editor.commit();
+	}
+	
 	public static void setMac(Context c ,String macAddr){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
 		Editor editor = s.edit();
@@ -88,6 +121,23 @@ public class PreferencesUtils {
 	public static String getPincode(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
 		return s.getString(PINCODE, null);
+	}
+	
+	public static String getQQName(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(QQ_NAME, "");
+	}
+	public static String getQQAvatar(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(QQ_AVATAR, "");
+	}
+	public static String getToken(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(TOKEN, "");
+	}
+	public static String getErweima_url(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getString(ERWEIMA_URL, "");
 	}
 	
 	public static String getMac(Context c){

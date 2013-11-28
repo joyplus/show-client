@@ -81,7 +81,7 @@ void XunLeiBTdetailSence::tableCellClicked(CCListView* table,
 	jsonobj["userid"] = m_xunLeiVideInfo.getUserid();
 	for(int i=0; i<m_dates.size();i++){
 		CSJson::Value item;
-		XunLeiVideInfo info_item = m_dates.at(idx);
+		XunLeiVideInfo info_item = m_dates.at(i);
 		item["createTime"] = m_xunLeiVideInfo.getCreateTime();
 		item["duration"] = (double)info_item.getDuration();
 		item["file_name"] = info_item.getFileName();

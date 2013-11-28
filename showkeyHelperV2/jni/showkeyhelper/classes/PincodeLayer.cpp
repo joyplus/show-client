@@ -16,11 +16,8 @@ bool PincodeLayer::init()
 //			m_background->setOpacity(0);
 //			this->addChild(m_background);
 
-			CCImageView * imag_touxiang = CCImageView::createWithNetUrl("http://avatar.cavatar.11111.jpg","defaultphoto.png",CCSizeMake(105,105));
+			imag_touxiang = CCImageView::createWithNetUrl("","defaultphoto.png",CCSizeMake(105,105),false, this);
 			imag_touxiang->setPosition(ccp(164,510));
-			CCSprite* imag_touxiang_1 = createMaskedSprite(imag_touxiang,"yuan.png");
-			imag_touxiang_1->setPosition(ccp(164,510));
-			addChild(imag_touxiang_1);
 
 
 			CCSprite * sprite  = CCSprite::create("back1_user.png");
@@ -46,9 +43,10 @@ bool PincodeLayer::init()
 			this->addChild(label_pincode);
 
 
-			CCLabelTTF* label_name = CCLabelTTF::create("QQ", "Arial", 30.0);
+			CCLabelTTF* label_name = CCLabelTTF::create("", "Arial", 30.0);
 			label_name->setPosition(ccp(164,375));
 			label_name->setAnchorPoint(ccp(0.5,0.5));
+			label_name->setTag(2);
 			this->addChild(label_name);
 
 //			UILabel *label_name = UILabel::create();
@@ -69,10 +67,19 @@ void PincodeLayer::runBreath(CCTime dt) {
 }
 
 void PincodeLayer::setPincode(const char* pincode){
+	LOGD("pincode","%s",pincode);
 	CCLabelTTF* label_pincode = (CCLabelTTF*)this->getChildByTag(0);
-	CCString* str = CCString::createWithFormat("PIN:%s",pincode);
-//	label_pincode->setText(str->getCString());
-	label_pincode->initWithString(str->getCString(), "Arial", 27.0);
+	CCString* str = CCString::createWithFormat("%s",pincode);
+	label_pincode->setString(str->getCString());
+//	label_pincode->initWithString(pincode, "Arial", 30.0);
+}
+
+void PincodeLayer::updateQQDisplay(const char* name, const char* url) {
+
+	imag_touxiang = CCImageView::createWithNetUrl(url,"defaultphoto.png",CCSizeMake(105,105),false,this);
+	imag_touxiang->setPosition(ccp(164,510));
+	CCLabelTTF* label_name = (CCLabelTTF*)getChildByTag(2);
+	label_name->setString(name);
 }
 
 CCSprite*  PincodeLayer::createMaskedSprite(CCImageView* src, const char* maskFile)
@@ -109,4 +116,13 @@ CCSprite*  PincodeLayer::createMaskedSprite(CCImageView* src, const char* maskFi
     retval->setFlipY(true);
     return retval;
 }
+
+void PincodeLayer::onResult(const char* url, bool isSucced) {
+	removeChildByTag(1);
+	CCSprite* imag_touxiang_1 = createMaskedSprite(imag_touxiang,"yuan.png");
+	imag_touxiang_1->setPosition(ccp(164,510));
+	imag_touxiang_1->setTag(1);
+	addChild(imag_touxiang_1);
+}
+
 

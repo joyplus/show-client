@@ -40,6 +40,7 @@ public:
 	bool onKeyEnterClicked();//回车键
 	void setPincode(const char* pincode);
 	void displayErWeiMa(const char* pincode);
+	void updateQQDisplay(const char* name, const char* url);
 	virtual ~PageLayer();
 	CREATE_FUNC(PageLayer);
 private:

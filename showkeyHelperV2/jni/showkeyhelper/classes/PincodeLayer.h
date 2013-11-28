@@ -12,7 +12,7 @@ USING_NS_CC;
 using namespace std;
 
 
-class PincodeLayer : public CCLayer
+class PincodeLayer : public CCLayer ,public CCImageViewDownLoadDelegte
 {
 public:
 	virtual bool init();
@@ -20,7 +20,12 @@ public:
 	void setSelected(bool isSelected);
 	void runBreath(CCTime dt);
 	void setPincode(const char* pincode);
+	void updateQQDisplay(const char* name, const char* url);
 	CCSprite* createMaskedSprite(CCImageView* src, const char* maskFile);
+	virtual void onResult(const char* url, bool isSucced);
+
+private:
+	CCImageView * imag_touxiang;
 };
 
 #endif
