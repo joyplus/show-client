@@ -3,7 +3,7 @@
 
 CCScene* HistoryScnce::scene()
 {
-	 CCScene * scene = NULL;
+	CCScene * scene = NULL;
 	do
 	{
 		// 'scene' is an autorelease object
@@ -32,6 +32,7 @@ bool HistoryScnce::init()
 		}
 		m_selectedCell = NULL;
 		m_dates.clear();
+		m_selected_button = NULL;
 
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -41,7 +42,58 @@ bool HistoryScnce::init()
 		loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 		addChild(loading);
 
-//		tableView->reloadData();
+		CCSprite* menu_back = CCSprite::create("menu.png");
+		menu_back->setPosition(ccp(winSize.width/2,menu_back->getContentSize().height/2));
+		menu_back->setTag(15);
+		menu_back->setVisible(false);
+		addChild(menu_back);
+
+//		CCSprite* menu_selected_all = CCSprite::create("selected_quanxuan.png");
+//		menu_selected_all->setPosition(ccp(160+menu_selected_all->getContentSize().width/2,menu_selected_all->getContentSize().height/2));
+//		addChild(menu_selected_all);
+//
+//		CCSprite* menu_delete = CCSprite::create("selected_delete.png");
+//		menu_delete->setPosition(ccp(160+menu_selected_all->getContentSize().width/2,menu_selected_all->getContentSize().height/2));
+//		addChild(menu_delete);
+//		CCSprite* menu_delete1 = CCSprite::create("unselected_delete.png");
+//		menu_delete1->setPosition(ccp(160+menu_selected_all->getContentSize().width/2,menu_selected_all->getContentSize().height/2));
+//		addChild(menu_delete1);
+//		CCSprite* menu_delete2 = CCSprite::create("unselected_quanxuan.png");
+//		menu_delete2->setPosition(ccp(160+menu_selected_all->getContentSize().width/2,menu_selected_all->getContentSize().height/2));
+//		addChild(menu_delete2);
+
+		m_button_select_all = joyplus::CCButton::create("unselected_quanxuan.png","selected_quanxuan.png","");
+		m_button_select_all->setAnchorPoint(ccp(0.5f,0.5f));
+		m_button_select_all->setTag(13);
+		m_button_select_all->setVisible(false);
+		m_button_select_all->setPosition(ccp(160+m_button_select_all->getContentSize().width/2,m_button_select_all->getContentSize().height/2));
+		addChild(m_button_select_all);
+
+		m_button_delete = joyplus::CCButton::create("unselected_delete.png","selected_delete.png","");
+		m_button_delete->setAnchorPoint(ccp(0.5f,0.5f));
+		m_button_delete->setTag(14);
+		m_button_delete->setVisible(false);
+		m_button_delete->setPosition(ccp(m_button_select_all->getPosition().x + 100 + m_button_delete->getContentSize().width,m_button_delete->getContentSize().height/2));
+		addChild(m_button_delete);
+
+		CCSprite * notice_edit_back = CCSprite::create("tip_quitedit.png");
+		notice_edit_back->setPosition(ccp(1760-notice_edit_back->getContentSize().width/2,notice_edit_back->getContentSize().height/2));
+		notice_edit_back->setTag(10);
+		notice_edit_back->setVisible(false);
+		addChild(notice_edit_back);
+
+		CCSprite * notice_back = CCSprite::create("tip_return.png");
+		notice_back->setPosition(ccp(1760-notice_back->getContentSize().width/2,notice_back->getContentSize().height/2));
+		notice_back->setTag(11);
+		notice_back->setVisible(false);
+		addChild(notice_back);
+
+		CCSprite * notice_menu = CCSprite::create("tip_more.png");
+		notice_menu->setPosition(ccp(160+notice_menu->getContentSize().width/2,notice_menu->getContentSize().height/2));
+		notice_menu->setTag(12);
+		notice_menu->setVisible(false);
+		addChild(notice_menu);
+
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -51,25 +103,128 @@ bool HistoryScnce::init()
 
 void HistoryScnce::keyEnterClicked()
 {
-	if(tableView->onKeyEnterClicked()) return;
+	if(m_dates.size()<=0){
+			return;
+		}
+	if(m_selected_button){
+		if(m_selected_button->getTag()==13){//Delete
+			for(int i=0; i<m_dates.size(); i++){
+				PlayHistoryInfo info = m_dates.at(i);
+				info.setEditeStatue(mSelected);
+				m_dates[i] = info;
+			}
+			tableView->reloadData();
+		}else if(m_selected_button->getTag()==14){//All
+			//delete seleted item;
+			CSJson::Value root;
+			CSJson::Value list;
+			for(vector<PlayHistoryInfo>::iterator it=m_dates.begin(); it!=m_dates.end(); )
+			{
+//				PlayHistoryInfo &info = it;
+				if(it->getEditeStatue() == mSelected)
+				{
+					list.append(it->getId());
+					it = m_dates.erase(it); //不能写成arr.erase(it);
+				}
+				else
+				{
+					it->setEditeStatue(mNormal);
+					++it;
+				}
+			}
+//			for(int i=0; i<m_dates.size(); i++){
+//				PlayHistoryInfo info = m_dates.at(i);
+//				info.setEditeStatue(mNormal);
+//				m_dates[i] = info;
+//			}
+			root["list"] = list;
+			CSJson::FastWriter writer;
+			if(m_dates.size()>0){
+				tableView->setSelection(tableView->getSelected()+1-list.size());
+			}else{
+				//。。。。。
+				CCSprite* menu_back = (CCSprite*)getChildByTag(15);
+				CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+				CCSprite* notice_back = (CCSprite*)getChildByTag(11);
+
+				menu_back->setVisible(false);
+				notice_menu->setVisible(false);
+				notice_back->setVisible(false);
+			}
+
+			LOGD("HistoryScnce","delete --->%s",writer.write(root).c_str());
+			deleatePlayHistoryListJNI(writer.write(root).c_str());
+			keyBackClicked();
+		}else{
+//。。。
+		}
+	}else{
+		if(tableView->onKeyEnterClicked()) return;
+	}
 }
 
 void HistoryScnce::keyArrowClicked(int arrow)
 {
-	if(tableView->onKeyArrowClicked(arrow)) return;
-	switch (arrow)
+	if(m_dates.size()<=0){
+			return;
+		}
+	if(isEditeStatue){
+		switch(arrow)
 		{
 			case ccKeypadMSGType(kTypeLeftArrowClicked):
+					if(!m_selected_button){
+						tableView->onKeyArrowClicked(arrow);
+					}else{
+						if(m_selected_button->getTag()==14){
+							m_selected_button->setSelected(false);
+							joyplus::CCButton* button = (joyplus::CCButton*)getChildByTag(13);
+							button->setSelected(true);
+							m_selected_button=button;
+						}
+					}
 				break;
 			case ccKeypadMSGType(kTypeUpArrowClicked):
-				tableView->setSelection(tableView->getSelected()-5);
+					if(m_selected_button){
+						m_selected_button->setSelected(false);
+						m_selected_button = NULL;
+					}
 				break;
 			case ccKeypadMSGType(kTypeRightArrowClicked):
+					if(m_selected_button){
+						if(m_selected_button->getTag()==13){
+							m_selected_button->setSelected(false);
+							joyplus::CCButton* button = (joyplus::CCButton*)getChildByTag(14);
+							button->setSelected(true);
+							m_selected_button=button;
+						}
+					}else{
+						tableView->onKeyArrowClicked(arrow);
+					}
 				break;
 			case ccKeypadMSGType(kTypeDownArrowClicked):
-				tableView->setSelection(tableView->getSelected()+5);
+					if(!m_selected_button){
+						joyplus::CCButton* button = (joyplus::CCButton*)getChildByTag(13);
+						button->setSelected(true);
+						m_selected_button=button;
+					}
 				break;
 		}
+	}else{
+		if(tableView->onKeyArrowClicked(arrow)) return;
+		switch (arrow)
+			{
+				case ccKeypadMSGType(kTypeLeftArrowClicked):
+					break;
+				case ccKeypadMSGType(kTypeUpArrowClicked):
+					tableView->setSelection(tableView->getSelected()-5);
+					break;
+				case ccKeypadMSGType(kTypeRightArrowClicked):
+					break;
+				case ccKeypadMSGType(kTypeDownArrowClicked):
+					tableView->setSelection(tableView->getSelected()+5);
+					break;
+			}
+	}
 
 }
 
@@ -84,6 +239,7 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 	CCTableCellForHistory *pLabelBack;
 	CCLabelTTF *pLabel;
 	CCLabelTTF *pTimeLabel;
+	CCSprite *pEdite;
 	if (!pCell) {
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
@@ -111,6 +267,10 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		pTimeLabel->setPosition(ccp(170,350));
 		pTimeLabel->setTag(5);
 		pCell->addChild(pTimeLabel);
+		pEdite = CCSprite::create("unselected.png");
+		pEdite->setPosition(ccp(pEdite->getContentSize().width/2,405));
+		pEdite->setTag(6);
+		pCell->addChild(pEdite);
 	}
 	else
 	{
@@ -119,6 +279,7 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		pLabelBack = (CCTableCellForHistory*)pCell->getChildByTag(3);
 		pLabel = (CCLabelTTF*)pCell->getChildByTag(4);
 		pTimeLabel = (CCLabelTTF*)pCell->getChildByTag(5);
+		pEdite = (CCSprite*)pCell->getChildByTag(6);
 	}
 	if(info.getName().empty()){
 		pLabel->setString(info.getPushUrl().c_str());
@@ -130,13 +291,26 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 	}else{
 		pSprite->initWithFile("push_thumb.png");
 	}
+	LOGD("HistoryScnce","info--getEditeStatue -->%d",info.getEditeStatue());
+	if(info.getEditeStatue()==mNormal){
+		pEdite->setVisible(false);
+	}else if(info.getEditeStatue()==mEdite){
+		pEdite->setVisible(true);
+		pEdite->initWithFile("unselected.png");
+	}else{
+		pEdite->setVisible(true);
+		pEdite->initWithFile("selected.png");
+	}
+	pEdite->setPosition(ccp(15+pEdite->getContentSize().width/2,405-pEdite->getContentSize().height/2));
 	pSprite->setAnchorPoint(CCPointZero);
 	pSprite->setPosition(ccp(0,405));
 	if(idx == table->getSelected()){
 		pLabelBack->setPosition(ccp(0,450));
+		pLabel->setDimensions(ccp(270, 240));
 		m_selectedCell = pCell;
 	}else{
 		pLabelBack->setPosition(ccp(0,540));
+		pLabel->setDimensions(ccp(270, 150));
 	}
 	if(info.getDuration()-info.getPlaybackTime()<10&&info.getDuration()>10){
 		pTimeLabel->setString("已看完");
@@ -154,8 +328,32 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 }
 
 void HistoryScnce::keyBackClicked() {
-	CCScene *prevScene = CCDirector::sharedDirector()->previousScene();
-	CCDirector::sharedDirector()->popScene(CCTransitionSlideInL::create(0.2f, prevScene));
+	if(isEditeStatue){
+		CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+		CCSprite* notice_back = (CCSprite*)getChildByTag(11);
+		CCSprite* notice_menu_back = (CCSprite*)getChildByTag(10);
+
+		notice_menu->setVisible(true);
+		notice_back->setVisible(true);
+		notice_menu_back->setVisible(false);
+
+		m_button_delete->setVisible(false);
+		m_button_select_all->setVisible(false);
+		if(m_selected_button){
+			m_selected_button->setSelected(false);
+			m_selected_button=NULL;
+		}
+		isEditeStatue = false;
+		for(int i=0; i<m_dates.size(); i++){
+			PlayHistoryInfo info = m_dates.at(i);
+			info.setEditeStatue(mNormal);
+			m_dates[i] = info;
+		}
+		tableView->reloadData();
+	}else{
+		CCScene *prevScene = CCDirector::sharedDirector()->previousScene();
+		CCDirector::sharedDirector()->popScene(CCTransitionSlideInL::create(0.2f, prevScene));
+	}
 //	CCDirector::sharedDirector()->popScene();
 }
 
@@ -169,25 +367,32 @@ unsigned int HistoryScnce::numberOfCellsInTableView(CCListView* table)
 void HistoryScnce::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		unsigned int idx) {
 	LOGD("HistoryScnce","item %u Clicked",idx);
-	PlayHistoryInfo info = m_dates.at(idx);
-	if(info.isIsDir()){//分集
-//		HistoryBtDetailsSence* sence = HistoryBtDetailsSence::scene(info);
-		CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,HistoryBtDetailsSence::scene(info)));
+	if(isEditeStatue){
+		PlayHistoryInfo info = m_dates.at(idx);
+		info.setEditeStatue(mSelected);
+		m_dates[idx] = info;
+		tableView->reloadData();
 	}else{
-		CSJson::Value root;
-		CSJson::Value jsonobj;
-		CSJson::FastWriter writer;
-		if(info.getType() == 2){
-			jsonobj["_id"] = info.getId();
-			root["date"] = jsonobj;
-			root["type"] = 1;
+		PlayHistoryInfo info = m_dates.at(idx);
+		if(info.isIsDir()){//分集
+	//		HistoryBtDetailsSence* sence = HistoryBtDetailsSence::scene(info);
+			CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,HistoryBtDetailsSence::scene(info)));
 		}else{
-			jsonobj["_id"] = info.getId();
-			jsonobj["isDir"] = 0;
-			root["date"] = jsonobj;
-			root["type"] = 0;
+			CSJson::Value root;
+			CSJson::Value jsonobj;
+			CSJson::FastWriter writer;
+			if(info.getType() == 2){
+				jsonobj["_id"] = info.getId();
+				root["date"] = jsonobj;
+				root["type"] = 1;
+			}else{
+				jsonobj["_id"] = info.getId();
+				jsonobj["isDir"] = 0;
+				root["date"] = jsonobj;
+				root["type"] = 0;
+			}
+			playVideoJNI(writer.write(root).c_str());
 		}
-		playVideoJNI(writer.write(root).c_str());
 	}
 }
 
@@ -267,6 +472,7 @@ void HistoryScnce::onEnterTransitionDidFinish() {
 				info.setPushUrl(arrayObj[i]["push_url"].asString());
 				info.setPicUrl(arrayObj[i]["pic_url"].asString());
 				info.setType(arrayObj[i]["type"].asInt());
+				info.setEditeStatue(mNormal);
 				string btes = arrayObj[i]["episodes"].asString();
 				info.setIsDir(false);
 				if(!btes.empty()){
@@ -297,6 +503,15 @@ void HistoryScnce::onEnterTransitionDidFinish() {
 		CCSprite* loading = (CCSprite*)getChildByTag(250);
 		loading->stopAllActions();
 		loading->setVisible(false);
+		if(m_dates.size()>0){
+			CCSprite* menu_back = (CCSprite*)getChildByTag(15);
+			CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+			CCSprite* notice_back = (CCSprite*)getChildByTag(11);
+
+			menu_back->setVisible(true);
+			notice_menu->setVisible(true);
+			notice_back->setVisible(true);
+		}
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 		tableView->setAnchorPoint(ccp(0,1));
@@ -321,6 +536,33 @@ void HistoryScnce::onExitTransitionDidStart() {
 	CCLayer::onExitTransitionDidStart();
 	this->setKeypadEnabled(false);
 	LOGD("HistoryScnce","----------onExitTransitionDidStart----------");
+}
+
+void HistoryScnce::keyMenuClicked() {
+	if(m_dates.size()<=0){
+		return;
+	}
+	isEditeStatue = true;
+	CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+	CCSprite* notice_back = (CCSprite*)getChildByTag(11);
+	CCSprite* notice_menu_back = (CCSprite*)getChildByTag(10);
+
+	notice_menu->setVisible(false);
+	notice_back->setVisible(false);
+	notice_menu_back->setVisible(true);
+
+	m_button_delete->setVisible(true);
+	m_button_select_all->setVisible(true);
+
+//	m_button_select_all->setSelected(true);
+//	m_selected_button = m_button_select_all;
+	for(int i=0; i<m_dates.size(); i++){
+		PlayHistoryInfo info = m_dates.at(i);
+		info.setEditeStatue(mEdite);
+		m_dates[i] = info;
+		LOGD("HistoryScnce","info setEditeStatue %d",info.getEditeStatue());
+	}
+	tableView->reloadData();
 }
 
 void HistoryScnce::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {

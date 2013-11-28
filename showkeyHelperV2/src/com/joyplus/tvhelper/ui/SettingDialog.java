@@ -118,7 +118,14 @@ public class SettingDialog extends Dialog implements OnClickListener{
 	        bg_setting_choose=this.getContext().getResources().getDrawable(R.drawable.setting_choose);
 			bing_qq_code=(TextView)findViewById(R.id.cancel_qq_text);
 	        
-	        
+	        setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					Cocos2dxHelper.setSettingResult(true);
+				}
+			});
 	        
 	        bingQqCode();
 		}
@@ -412,9 +419,9 @@ public class SettingDialog extends Dialog implements OnClickListener{
 				}
 				break;
 			case KeyEvent.KEYCODE_BACK:
-				dismiss();
 			case KeyEvent.KEYCODE_ESCAPE:
 				dismiss();
+				Cocos2dxHelper.setSettingResult(true);
 				break;
 			default:
 				break;

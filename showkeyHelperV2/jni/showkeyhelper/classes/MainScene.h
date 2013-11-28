@@ -8,6 +8,7 @@
 #include "HistoryScnce.h"
 #include "XunLeiYunSence.h"
 #include "BaiduYunSence.h"
+#include "SettingSence.h"
 #include "TransitionScenes.h"
 #include <vector>
 #include <string>

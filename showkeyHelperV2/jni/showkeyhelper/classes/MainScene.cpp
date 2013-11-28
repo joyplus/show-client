@@ -191,7 +191,7 @@ void MainScene::onPageItemClick(int page_Tag)
 		generatePincode(pincodeCallbackFunc,this);
 		break;
 	case SPRITE_TAG(TAG_BUTTON_SETTING):
-		startSetting();
+		CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(0.2f,SettingSence::scene()));
 		break;
 	}
 }

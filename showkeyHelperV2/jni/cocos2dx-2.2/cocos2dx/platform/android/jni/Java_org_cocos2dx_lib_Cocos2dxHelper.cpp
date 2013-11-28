@@ -18,10 +18,12 @@ static EditTextCallback s_pfEditTextCallback = NULL;
 static XunLeiLoginCallback s_pfXunLeiLoginCallback = NULL;
 static BaiduLoginCallback s_pfBaiduLoginCallback = NULL;
 static MainGeneratePincode s_pfMainGeneratePincode = NULL;
+static SettingDilogCallback s_pfSettingCallBack = NULL;
 static void* s_ctx = NULL;
 static void* x_ctx = NULL;
 static void* b_ctx = NULL;
 static void* m_ctx = NULL;
+static void* set_ctx = NULL;
 
 using namespace cocos2d;
 using namespace std;
@@ -136,6 +138,15 @@ extern "C" {
 		}
 		if (s_pfMainGeneratePincode){
 			s_pfMainGeneratePincode(successed,m_ctx);
+		}
+    }
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetSettingResult(JNIEnv * env, jobject obj,jint isSuccess) {
+    	bool successed = false;
+		if(isSuccess!=0){
+			successed = true;
+		}
+		if (s_pfSettingCallBack){
+			s_pfSettingCallBack(successed,set_ctx);
 		}
     }
 
@@ -575,11 +586,24 @@ std::string fomartTime(int t) {
 	}
 }
 
-void startSetting() {
+void startSetting(SettingDilogCallback pfSettingDilogCallbackFunc,void* ctx){
+	s_pfSettingCallBack = pfSettingDilogCallbackFunc;
+	set_ctx = ctx;
 	JniMethodInfo t;
 	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "startSetting", "()V")) {
 		t.env->CallStaticVoidMethod(t.classID, t.methodID);
 		t.env->DeleteLocalRef(t.classID);
+	}
+}
+
+void deleatePlayHistoryListJNI(const char* date) {
+	JniMethodInfo t;
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "deletePlayList", "(Ljava/lang/String;)V")) {
+		jstring stringArg = t.env->NewStringUTF(date);
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(stringArg);
 	}
 }
 

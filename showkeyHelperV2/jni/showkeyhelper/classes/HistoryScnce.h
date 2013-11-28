@@ -8,10 +8,15 @@
 #include "ui/CCListView.h"
 #include "Log.h"
 #include "platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h"
+#include "ui/CCButton.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
-
+enum STATUE_EDITE{
+	mNormal = 0,
+	mEdite,
+	mSelected
+};
 class BTEpisode{
 private:
 	string name;
@@ -65,6 +70,7 @@ private :
 	int id;
 	bool isDir;
 	int type;
+	int edite_statue;
 	std::vector<BTEpisode> btepisodes;
 public:
 
@@ -140,12 +146,21 @@ public:
 	void setType(int type) {
 		this->type = type;
 	}
+
+	int getEditeStatue() const {
+		return edite_statue;
+	}
+
+	void setEditeStatue(int editeStatue) {
+		edite_statue = editeStatue;
+	}
 };
 
 class HistoryScnce : public CCLayer , public CCListViewDataResouce , public CCListViewDelegate
 {
 public:
 	virtual bool init();
+	virtual void keyMenuClicked();
 	virtual void keyBackClicked();//Android 返回键
 	virtual void keyArrowClicked(int arrow);//方向键
 	virtual void keyEnterClicked();//回车键
@@ -179,6 +194,12 @@ private :
 	CCTableViewCell * m_selectedCell;
 
 	std::vector<PlayHistoryInfo> m_dates;
+
+	joyplus::CCButton * m_button_select_all;
+	joyplus::CCButton * m_button_delete;
+
+	joyplus::CCButton * m_selected_button;
+	bool isEditeStatue;
 };
 
 #endif //_JOYPLUS_HISTORYSENCE_H_

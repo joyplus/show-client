@@ -149,9 +149,11 @@ CCTableViewCell* HistoryBtDetailsSence::tableCellAtIndex(CCListView* table,
 	pLabel->setString(info.getName().c_str());
 	if(idx == table->getSelected()){
 		pLabelBack->setPosition(ccp(0,450));
+		pLabel->setDimensions(ccp(270, 240));
 		m_selectedCell = pCell;
 	}else{
 		pLabelBack->setPosition(ccp(0,540));
+		pLabel->setDimensions(ccp(270, 150));
 	}
 	if(info.getDuration()-info.getPlaybackTime()<10&&info.getDuration()>10){
 		pTimeLabel->setString("已看完");

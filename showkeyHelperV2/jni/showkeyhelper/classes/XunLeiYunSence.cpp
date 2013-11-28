@@ -483,9 +483,11 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 		pSprite->setPosition(ccp(0,405));
 		if(idx == table->getSelected()){
 			pLabelBack->setPosition(ccp(0,450));
+			pLabel->setDimensions(ccp(270, 240));
 			m_selectedCell = pCell;
 		}else{
 			pLabelBack->setPosition(ccp(0,540));
+			pLabel->setDimensions(ccp(270, 150));
 		}
 		pImage->setVisible(true);
 		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");

@@ -31,6 +31,7 @@ typedef void (*EditTextCallback)(const char* pText, void* ctx);
 typedef void (*XunLeiLoginCallback)(bool isBack, void* ctx);
 typedef void (*BaiduLoginCallback)(bool isBack, void* ctx);
 typedef void (*MainGeneratePincode)(bool isSuccess, void* ctx);
+typedef void (*SettingDilogCallback)(bool isSuccess, void* ctx);
 
 extern const char * getApkPath();
 extern void showDialogJNI(const char * pszMsg, const char * pszTitle);
@@ -38,6 +39,7 @@ extern void showEditTextDialogJNI(const char* pszTitle, const char* pszContent, 
 extern void showXunLeiLoginDialog(XunLeiLoginCallback pfXunLeiLoginCallback, void* ctx);
 extern void showBaiduLoginDialog(BaiduLoginCallback pfXunLeiLoginCallback, void* ctx);
 extern void playVideoJNI(const char* date);
+extern void deleatePlayHistoryListJNI(const char* date);
 extern void terminateProcessJNI();
 extern std::string getCurrentLanguageJNI();
 extern std::string getPackageNameJNI();
@@ -47,7 +49,7 @@ extern std::string getXunleiCookiesJNI();
 extern std::string getBaiduTokenJNI();
 extern std::string getPincodeJNI();
 extern void startFayeService();
-extern void startSetting();
+extern void startSetting(SettingDilogCallback pfSettingDilogCallbackFunc,void* ctx);
 extern void generatePincode(MainGeneratePincode pfXunLeiLoginCallback, void* ctx);
 extern std::vector<std::string> stringSplit(std::string str,std::string pattern);
 std::string getCurrentTimeJNI();

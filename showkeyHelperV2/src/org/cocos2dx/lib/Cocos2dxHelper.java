@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.zxing.WriterException;
+import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.MoviePlayHistoryInfo;
 import com.joyplus.tvhelper.entity.XLLXUserInfo;
@@ -116,6 +117,8 @@ public class Cocos2dxHelper {
 	private static native void nativeSetBaiduLoginDialogResult(final int isBack);
 	
 	private static native void nativeSetPincodeResult(final int isSuccess);
+	
+	private static native void nativeSetSettingResult(final int isSuccess);
 
 	public static String getCocos2dxPackageName() {
 		return Cocos2dxHelper.sPackageName;
@@ -315,6 +318,20 @@ public class Cocos2dxHelper {
 			/* Nothing. */
 		}
 	}
+	
+	public static void setSettingResult(final boolean isBack){
+		try {
+			final int isBackClick = isBack?1:0;
+			Cocos2dxHelper.sCocos2dxHelperListener.runOnGLThread(new Runnable() {
+				@Override
+				public void run() {
+					Cocos2dxHelper.nativeSetSettingResult(isBackClick);
+				}
+			});
+		} catch (Exception Exception) {
+			/* Nothing. */
+		}
+	}
 
     public static int getDPI()
     {
@@ -508,6 +525,29 @@ public class Cocos2dxHelper {
     		e.printStackTrace();
     		return "";
 		}
+    }
+    
+    public static void deletePlayList(final String str){
+    	MyApp.pool.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Log.d("Helper", "delete-->" +str);
+		    	try{
+		    		DBServices services = DBServices.getInstance(sContext);
+		    		JSONObject obj = new JSONObject(str);
+		    		JSONArray array = obj.getJSONArray("list");
+		    		for(int i=0; i<array.length(); i++){
+		    			int id = array.getInt(i);
+		    			services.deleteMoviePlayHistory(id);
+		    		}
+		    	}catch (Exception e) {
+					// TODO: handle exception
+		    		e.printStackTrace();
+				}
+			}
+		});
     }
     
     public static void setGeneratePincodeResult(boolean isSuccessed){

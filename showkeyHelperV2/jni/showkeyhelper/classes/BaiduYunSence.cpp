@@ -304,9 +304,11 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pLabel->setHorizontalAlignment(CCTextAlignment(kCCTextAlignmentLeft));
 		if(idx == table->getSelected()){
 			pLabelBack->setPosition(ccp(0,450));
+			pLabel->setDimensions(ccp(270, 240));
 			m_selectedCell = pCell;
 		}else{
 			pLabelBack->setPosition(ccp(0,540));
+			pLabel->setDimensions(ccp(270, 150));
 		}
 		pSprite->initWithFile("baidu_thumb.png");
 		pSprite->setAnchorPoint(CCPointZero);

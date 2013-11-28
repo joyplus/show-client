@@ -369,6 +369,15 @@ public class DBServices {
 		Log.i(TAG, rows + "rows deleted");
 		db.close();
 	}
+	public synchronized void deleteMoviePlayHistory(int id){
+		SQLiteDatabase db = getConnection();
+		int rows = db.delete(DBConstant.TABLE_PLAY_INFO,
+				DBConstant.KEY_ID + " = ? ", new String[] {
+				String.valueOf(id)
+		});
+		Log.i(TAG, rows + "rows deleted");
+		db.close();
+	}
 	
 	
 	public synchronized List<MoviePlayHistoryInfo> queryMoviePlayHistoryList(){

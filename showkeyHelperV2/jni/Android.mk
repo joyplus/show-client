@@ -19,12 +19,14 @@ LOCAL_SRC_FILES := showkeyhelper/main.cpp \
                    showkeyhelper/classes/XunLeiYunSence.cpp\
                    showkeyhelper/classes/BaiduYunSence.cpp\
                    showkeyhelper/classes/HistoryBtDetailsSence.cpp\
+                   showkeyhelper/classes/SettingSence.cpp\
                    showkeyhelper/classes/XunLeiBTdetailSence.cpp\
                    showkeyhelper/classes/TransitionScenes.cpp\
                    showkeyhelper/classes/ui/CCImageView.cpp\
                    showkeyhelper/classes/ui/CCListView.cpp\
                    showkeyhelper/classes/ui/CCTableCellForHistory.cpp\
-                   showkeyhelper/classes/ui/CCButtonView.cpp
+                   showkeyhelper/classes/ui/CCButtonView.cpp\
+                   showkeyhelper/classes/ui/CCButton.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/showkeyhelper/classes \
 					$(LOCAL_PATH)cocos2dx-2.2/extensions
