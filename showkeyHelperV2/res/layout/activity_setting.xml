@@ -215,7 +215,7 @@
 	       		                    android:gravity="center_vertical"
 	       		                    android:textSize="24dp"
 	       		                    android:textColor="#FFFFFF"
-	       		                    android:text="恢复出厂设置"
+	       		                    android:text="恢复默认设置"
 	       		                    android:layout_weight="10"/>
 	       		            </LinearLayout>
 	       		            </LinearLayout>
