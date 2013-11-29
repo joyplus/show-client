@@ -25,12 +25,21 @@ package com.joyplus.tvhelper;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
+
 import android.os.Bundle;
 
 public class MainActivity extends Cocos2dxActivity{
 
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		MobclickAgent.onError(this);
+		UmengUpdateAgent.setUpdateOnlyWifi(false);
+		UmengUpdateAgent.setUpdateAutoPopup(false);
+		UmengUpdateAgent.update(this);
+		MobclickAgent.setDebugMode(false);
+		MobclickAgent.updateOnlineConfig(this);
 	}
 	
     static {

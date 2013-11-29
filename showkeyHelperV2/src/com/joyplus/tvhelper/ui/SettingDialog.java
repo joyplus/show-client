@@ -2,55 +2,34 @@ package com.joyplus.tvhelper.ui;
 
 
 
-import com.joyplus.mediaplayer.JoyplusMediaPlayerDataManager;
-import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
-import com.joyplus.tvhelper.utils.Log;
-
-import android.R.drawable;
-import android.app.Activity;
-import android.os.Bundle;
-
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-
-
 import org.cocos2dx.lib.Cocos2dxHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.renderscript.Element.DataType;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.androidquery.AQuery;
-import com.baidu.oauth.BaiduOAuth;
-import com.baidu.oauth.BaiduOAuth.BaiduOAuthResponse;
+import com.joyplus.mediaplayer.JoyplusMediaPlayerDataManager;
+import com.joyplus.mediaplayer.VideoViewInterface.DecodeType;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.SettingActivity;
-import com.joyplus.tvhelper.helper.HttpClientHelper;
-import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
+import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
+import com.joyplus.tvhelper.utils.Utils;
 
 
 public class SettingDialog extends Dialog implements OnClickListener{
@@ -69,6 +48,8 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		public static final int FONT_SIZE_MIDDLE = 36;
 		public static final int FONT_SIZE_SMALL = 30;
 		
+		private static final int MESSAGE_UNBAND_SUCCESS = 0;
+		private static final int MESSAGE_UNBAND_FAILE = MESSAGE_UNBAND_SUCCESS+1;
 		
 		private LinearLayout mstatue_immediately_show,mstatue_decode_mode,mstatue_default_decrease,mstatue_default_resolution,mstatue_size_decrease,mstatue_setting_back,mstatue_cancel_qq;
 		private int mstatue = 0;
@@ -80,7 +61,7 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		private boolean detail_default_decrease;
 		
 		private boolean detail_setting_back=false;
-		private boolean detail_cancel_qq=false;
+		private boolean detail_cancel_qq;
 		
 		private String tip_immediately_show,tip_decode_mode,tip_default_decrease,
 				tip_default_resolution,tip_size_decrease,tip_setting_back,tip_cancel_qq;
@@ -91,6 +72,8 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		private TextView textview_default_resolution;
 		private TextView textview_size_decrease;
 		
+		private LinearLayout progress;
+		
 		private JoyplusMediaPlayerDataManager mJoyplusMediaPlayerDataManager;
 		private TextView mstatue_textview,tip_textview,bing_qq_code;
 		private Drawable bg_setting_choose;
@@ -98,6 +81,26 @@ public class SettingDialog extends Dialog implements OnClickListener{
 			super(pContext, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
 		}
 		
+		
+		private Handler mHandler = new Handler(){
+			public void handleMessage(android.os.Message msg) {
+				switch (msg.what) {
+				case MESSAGE_UNBAND_SUCCESS:
+					detail_cancel_qq = true;
+					progress.setVisibility(View.GONE);
+					PreferencesUtils.setQQAvatare(getContext(), "");
+					PreferencesUtils.setQQName(getContext(), "");
+					updateUnbandQQdisplay();
+					getContext().sendBroadcast(new Intent(Global.ACTION_UN_BAND_SUCCESS));
+					break;
+				case MESSAGE_UNBAND_FAILE:
+					detail_cancel_qq = false;
+					progress.setVisibility(View.GONE);
+					updateUnbandQQdisplay();
+					break;
+				}
+			};
+		};
 		
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +116,7 @@ public class SettingDialog extends Dialog implements OnClickListener{
 			mstatue_size_decrease=(LinearLayout)findViewById(R.id.size_decrease);
 			mstatue_setting_back=(LinearLayout)findViewById(R.id.setting_back);
 			mstatue_cancel_qq=(LinearLayout)findViewById(R.id.cancel_qq);
+			progress = (LinearLayout)findViewById(R.id.layout_progress);
 			
 			textview_immediately_show = (TextView)findViewById(R.id.immediately_show_text);
 			textview_decode_mode = (TextView)findViewById(R.id.decode_mode_text);
@@ -142,7 +146,12 @@ public class SettingDialog extends Dialog implements OnClickListener{
 				}
 			});
 	        initView();
-	        bingQqCode();
+	        if("".equals(PreferencesUtils.getQQName(getContext()))){
+				detail_cancel_qq = true;
+			}else{
+				detail_cancel_qq = false;
+			}
+	        updateUnbandQQdisplay();
 		}
 		
 		private void initView(){
@@ -180,13 +189,12 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		
 		
 		
-		private void bingQqCode() {
+		private void updateUnbandQQdisplay() {
 			// TODO Auto-generated method stub
 			if(detail_cancel_qq){
-				bing_qq_code.setTextColor(Color.parseColor("#BEBEBE"));
+				bing_qq_code.setTextColor(Color.parseColor("#505050"));
 			}else{
 				bing_qq_code.setTextColor(Color.parseColor("#FFFFFF"));			
-				
 			}
 		}
 
@@ -325,7 +333,7 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		
 		
 		private void switchDetailDecodemode(){
-			DecodeType type = DecodeType.Decode_HW;;
+			DecodeType type = DecodeType.Decode_HW;
 			
 			switch(detail_decode_mode){
 			case 0:
@@ -399,6 +407,7 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		@Override
 		public boolean onKeyDown(int keyCode, KeyEvent event) {
 			// TODO Auto-generated method stub
+			Log.d(TAG, "keyCode = " + keyCode + "mstatue = "+mstatue);
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_DPAD_LEFT:
 				switch(mstatue){
@@ -537,15 +546,18 @@ public class SettingDialog extends Dialog implements OnClickListener{
 				}
 				break;
 			case KeyEvent.KEYCODE_ENTER:
+			case KeyEvent.KEYCODE_DPAD_CENTER:
 				switch (mstatue){
 				case STATUE_SETTING_BACK:
 					Log.d(TAG,"setting_back");
 					detail_setting_back=true;
-					bingQqCode();
+					setSettingBack();
 					break;
 				case STATUE_CANCEL_QQ:
 					Log.d(TAG,"cancel_qq");
-					detail_cancel_qq=true;
+					if(!detail_cancel_qq){
+						unBandQQ();
+					}
 					break;
 				}
 				break;
@@ -559,6 +571,46 @@ public class SettingDialog extends Dialog implements OnClickListener{
 			}
 			return super.onKeyUp(keyCode, event);
 		}
+
+		private void unBandQQ() {
+			// TODO Auto-generated method stub
+			progress.setVisibility(View.VISIBLE);
+			MyApp.pool.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					String url = Constant.BASE_URL + "/device/unbind?pin="+PreferencesUtils.getPincode(getContext())+
+							"&md="+Utils.getMacAdd(getContext());
+					String str = HttpTools.get(getContext(), url);
+					try{
+						JSONObject obj = new JSONObject(str);
+						if(obj.getBoolean("status")){
+							mHandler.sendEmptyMessage(MESSAGE_UNBAND_SUCCESS);
+						}else{
+							mHandler.sendEmptyMessage(MESSAGE_UNBAND_FAILE);
+						}
+						
+					}catch (Exception e) {
+						// TODO: handle exception
+						mHandler.sendEmptyMessage(MESSAGE_UNBAND_FAILE);
+					}
+				}
+			});
+		}
+
+
+		private void setSettingBack() {
+			// TODO Auto-generated method stub
+			PreferencesUtils.removeDefualteDefination(getContext());
+			PreferencesUtils.removeDefualtePlayChoice(getContext());
+			PreferencesUtils.removeSubSize(getContext());
+			PreferencesUtils.removeSubSwitch(getContext());
+			mJoyplusMediaPlayerDataManager.setDecodeType(DecodeType.Decode_HW);
+			initDate();
+			initView();
+		}
+
 
 		@Override
 		public void onClick(View v) {

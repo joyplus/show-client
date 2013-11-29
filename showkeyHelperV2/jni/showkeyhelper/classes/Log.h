@@ -3,7 +3,7 @@
 
 #include <android/log.h>
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if !defined(DEBUG) || DEBUG == 0
 #define LOGD(LOG_TAG ,...) do{}while(0)

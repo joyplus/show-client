@@ -28,10 +28,11 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import com.joyplus.tvhelper.utils.Log;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.opengl.ETC1Util;
-import android.util.Log;
 
 public class Cocos2dxETCLoader {
 	private static final String ASSETS_PATH = "assets/";

@@ -27,6 +27,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
 
+import com.joyplus.tvhelper.utils.Log;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -39,7 +41,6 @@ import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.FloatMath;
-import android.util.Log;
 
 public class Cocos2dxBitmap {
 	// ===========================================================

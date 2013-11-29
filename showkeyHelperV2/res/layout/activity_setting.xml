@@ -1,11 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    android:layout_weight="1"
-    xmlns:app="http://schemas.android.com/apk/res/com.joyplus.tvhelper">
-    <LinearLayout 
+    android:layout_height="fill_parent" >
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+       <LinearLayout 
             android:id="@+id/top_empty"
             android:layout_width="fill_parent"
 	        android:layout_height="0dp"
@@ -275,5 +276,15 @@
 	        android:id="@+id/bottom_empty"
 	        android:layout_height="0dp"
 	        android:layout_weight="20">
-	</LinearLayout>
-</LinearLayout>
+	</LinearLayout> 
+    </LinearLayout>
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/layout_progress"
+        android:visibility="gone"
+        android:gravity="center">
+		<ProgressBar android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:indeterminateDrawable="@drawable/a_popup_dialog_loading"/>
+    </LinearLayout>
+</RelativeLayout>

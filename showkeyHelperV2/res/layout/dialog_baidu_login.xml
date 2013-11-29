@@ -76,10 +76,18 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
-                    <ImageView android:layout_weight="6"
-	                    android:layout_height="0dp"
+                    <LinearLayout android:layout_height="0dp"
+                        android:layout_weight="6"
+                        android:orientation="vertical"
 	                    android:background="@drawable/login_baidu_tip"
-	                    android:layout_width="fill_parent"/>
+	                    android:layout_width="fill_parent">
+                        <TextView android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:padding="30dp"
+                            android:textColor="#ffffff"
+                            android:textSize="25dp"
+                            android:text="请将视频文件转存到：\n全部文件\\我的应用数据源\\testyunpan"/>
+                    </LinearLayout>
                     <TextView android:layout_width="fill_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"/>

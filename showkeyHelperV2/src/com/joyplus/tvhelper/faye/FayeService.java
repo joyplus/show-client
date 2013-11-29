@@ -155,11 +155,12 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							
 						}
 						playDate.prod_name = play_info.getName();
-						if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
-							playDate.prod_qua = Constant.DEFINATION_HD;
-						}else{
-							playDate.prod_qua = Constant.DEFINATION_HD2;
-						}
+//						if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
+//							playDate.prod_qua = Constant.DEFINATION_HD;
+//						}else{
+//							playDate.prod_qua = Constant.DEFINATION_HD2;
+//						}
+						playDate.prod_qua = play_info.getDefination();
 //						playDate.prod_time =  Math.round(play_info.getPlayback_time()*1000);
 						playDate.obj = play_info;
 						playDate.isOnline = true;
@@ -171,7 +172,11 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								startActivity(intent_play);
+								if(!PreferencesUtils.getDefualtePlayChoice(app)){
+									startActivity(intent_play);
+								}else{
+									
+								}
 							}
 						}, 0);
 						sendBroadcast(new Intent(Global.ACTION_RECIVE_NEW_PUSH_MOVIE));
@@ -1397,7 +1402,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
 							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
 //							play_info.setId((int)services.insertMoviePlayHistory(play_info));
-							play_info.setDefination(Constant.DEFINATION_HD2);
+							
 							play_info.setCreat_time(System.currentTimeMillis());
 							play_info.setTime_token(time_token+",");
 							if(es!=null && es.size()>0){
@@ -1406,7 +1411,6 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							}
 							play_info.setId((int)services.insertMoviePlayHistory(play_info));
 						}else{
-							play_info.setDefination(Constant.DEFINATION_HD2);
 							play_info.setName(data.getString("name"));
 							play_info.setRecivedDonwLoadUrls(data.getString("downurl"));
 							play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);
@@ -1425,6 +1429,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 							Log.d(TAG, "subList size = " +subList.size());
 						}
 						play_info.setSubList(subList);
+						play_info.setDefination(PreferencesUtils.getDefualteDefination(app));
 						push_type = 1;
 						pincode_md5 = data.getString("md5_code");
 						Log.d(TAG, pincode_md5);
@@ -1455,12 +1460,12 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //							playDate.prod_url = play_info.getDownload_url();
 //							playDate.prod_src = json.getString("prod_src");
 //							playDate.prod_time = Math.round(Float.valueOf(json.getString("prod_time"))*1000);
-							if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
-								playDate.prod_qua = Constant.DEFINATION_HD;
-							}else{
-								playDate.prod_qua = Constant.DEFINATION_HD2;
-							}
-//							playDate.prod_qua = play_info.getDefination();
+//							if(mediaPlayerDataManager.getDecodeType()==DecodeType.Decode_SW){
+//								playDate.prod_qua = Constant.DEFINATION_HD;
+//							}else{
+//								playDate.prod_qua = Constant.DEFINATION_HD2;
+//							}
+							playDate.prod_qua = play_info.getDefination();
 //							if(playDate.prod_type==2||playDate.prod_type==3||playDate.prod_type==131){
 //								if(json.has("prod_subname")){//旧版android 没有传递该参数
 //									playDate.prod_sub_name = json.getString("prod_subname");
@@ -1477,7 +1482,11 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 								@Override
 								public void run() {
 									// TODO Auto-generated method stub
-									startActivity(intent);
+									if(!PreferencesUtils.getDefualtePlayChoice(app)){
+										startActivity(intent);
+									}else{
+										
+									}
 								}
 							}, 0);
 							

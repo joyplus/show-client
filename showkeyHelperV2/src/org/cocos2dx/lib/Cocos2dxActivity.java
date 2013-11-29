@@ -40,17 +40,19 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.PlayBaiduActivity;
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.SettingActivity;
 import com.joyplus.tvhelper.db.DBServices;
 import com.joyplus.tvhelper.entity.BaiduVideoInfo;
 import com.joyplus.tvhelper.entity.CurrentPlayDetailData;
@@ -95,6 +97,8 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 			String action = intent.getAction();
 			if(Global.ACTION_BAND_SUCCESS.equals(action)){
 				Cocos2dxHelper.updateQQdisplay();
+			}else if(Global.ACTION_UN_BAND_SUCCESS.equals(action)){
+				Cocos2dxHelper.updateQQdisplay();
 			}
 		}
 	};
@@ -115,6 +119,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		app = (MyApp)getApplication();
 		
 		IntentFilter filter = new IntentFilter(Global.ACTION_BAND_SUCCESS);
+		filter.addAction(Global.ACTION_UN_BAND_SUCCESS);
 		registerReceiver(mReceiver, filter);
 	}
 
@@ -292,6 +297,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 					currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI_BT_EPISODE;
 					currentPlayDetailData.prod_name = xunleiInfo.file_name;
 					currentPlayDetailData.prod_sub_name = sub_name_xunlei;
+					currentPlayDetailData.prod_qua = PreferencesUtils.getDefualteDefination(sContext);
 					currentPlayDetailData.obj = xunleiInfo.btFiles;
 					app.setmCurrentPlayDetailData(currentPlayDetailData);
 					startActivity(Utils.getIntent(getContext()));
@@ -300,7 +306,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 					currentPlayDetailData.prod_url = xunleiInfo.src_url;
 					currentPlayDetailData.prod_type = JoyplusMediaPlayerActivity.TYPE_XUNLEI;
 					currentPlayDetailData.prod_name = xunleiInfo.file_name;
-
+					currentPlayDetailData.prod_qua = PreferencesUtils.getDefualteDefination(sContext);
 					currentPlayDetailData.obj = xunleiInfo;
 					app.setmCurrentPlayDetailData(currentPlayDetailData);
 					startActivity(Utils.getIntent(getContext()));
@@ -316,6 +322,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 				playDate.obj = info;
 				playDate.prod_name = info.getFileName();
 				playDate.prod_type = JoyplusMediaPlayerActivity.TYPE_BAIDU;
+				playDate.prod_qua = PreferencesUtils.getDefualteDefination(sContext);
 				playDate.obj = info;
 				app.setmCurrentPlayDetailData(playDate);
 				startActivity(Utils.getIntent(getContext()));
@@ -421,6 +428,9 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         ViewGroup.LayoutParams back_params =
         		new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
         				ViewGroup.LayoutParams.FILL_PARENT);
+        ViewGroup.LayoutParams label_params =
+        		new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+        				ViewGroup.LayoutParams.WRAP_CONTENT);
         Cocos2dxEditText edittext = new Cocos2dxEditText(this);
         ImageView back = new ImageView(this);
         back.setScaleType(ScaleType.FIT_XY);
@@ -428,9 +438,15 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         back.setLayoutParams(back_params);
         edittext.setLayoutParams(edittext_layout_params);
 
+        TextView tv = new TextView(this);
+        tv.setText("V2内测版");
+        tv.setGravity(Gravity.RIGHT);
+        tv.setTextSize(20);
+        tv.setPadding(0	, Utils.getStandardValue(this, 50), Utils.getStandardValue(this, 40), 0);
         // ...add to FrameLayout
         framelayout.addView(edittext);
         framelayout.addView(back);
+        framelayout.addView(tv);
         // Cocos2dxGLSurfaceView
         this.mGLSurfaceView = this.onCreateView();
 
