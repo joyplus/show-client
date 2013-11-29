@@ -39,6 +39,20 @@ bool BaiduYunSence::init() {
 			loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 			addChild(loading);
 
+			CCSprite* navagtor_main = CCSprite::create("nav_home.png");
+			navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
+					820));
+			addChild(navagtor_main);
+
+			CCSprite* divider = CCSprite::create("nav_dot.png");
+			divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
+					820));
+			addChild(divider);
+
+			CCLabelTTF* navagtor_title = CCLabelTTF::create("百度云", "Arial", 32.0);
+			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
+					820));
+			addChild(navagtor_title);
 //			this->setKeypadEnabled(true);
 			bRet = true;
 		} while (0);
