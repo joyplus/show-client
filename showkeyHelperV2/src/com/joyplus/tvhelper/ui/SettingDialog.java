@@ -273,26 +273,42 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		
 		private void switchDetailDecodemode(){
 			Log.d(TAG,"inswitchDetailDecodemode--->"+detail_decode_mode);
+			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(getContext());	               
+			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
+			Log.d(TAG,"type 1 = "+type.name());
+			
 			switch(detail_decode_mode){
 			case 0:
 				mstatue_textview.setText("硬解");
+				type= DecodeType.Decode_HW;
 			    break;
 			case 1:
 				mstatue_textview.setText("软解");
+				type= DecodeType.Decode_SW;
 				break;
 				
 			}
-			switchMode();
+			mJoyplusMediaPlayerDataManager.setDecodeType(type);
+			DecodeType type2 = mJoyplusMediaPlayerDataManager.getDecodeType();
+			Log.d(TAG,"type 2 = "+type.name());
+//			switchMode(); 
 		}
-		private void switchMode(){
-//			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(SettingActivity.this);
-//	                    Log.d(TAG, "mJoyplusMediaPlayerDataManager--->"+mJoyplusMediaPlayerDataManager);
-//						DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
-//				if(type == DecodeType.Decode_HW)type= DecodeType.Decode_SW;
-//				else type= DecodeType.Decode_HW;
-//				mJoyplusMediaPlayerDataManager.setDecodeType(type);
-		}
-			
+//		private void switchMode(){
+//			
+//			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(getContext());	               
+//			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
+//			Log.d(TAG,"type 1 = "+type.name());
+//			
+//			if(type == DecodeType.Decode_HW)
+//				type= DecodeType.Decode_SW;
+//			else 
+//				type= DecodeType.Decode_HW;			    
+//			mJoyplusMediaPlayerDataManager.setDecodeType(type);
+//		   
+//			DecodeType type2 = mJoyplusMediaPlayerDataManager.getDecodeType();
+//			Log.d(TAG,"type 2 = "+type.name());
+//		}
+//			
 
 		
 		
