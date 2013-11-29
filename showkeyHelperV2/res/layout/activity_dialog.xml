@@ -1,50 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
-    <LinearLayout android:layout_width="340dp"
-        android:layout_height="190dp"
-        android:background="#f0f0f0"
-        android:orientation="vertical">
-        <TextView android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="提示"
-            android:textSize="16dp"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:background="#d1d1d1"
-            android:textColor="#000000"/>
-        <TextView android:layout_width="fill_parent"
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="220dp">
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="165dp"
+        android:background="@drawable/tooltip">
+        <LinearLayout android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight="30">
+            <TextView android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:gravity="center"
-            android:textSize="20dp"
-			android:text="是否接受来自网页端的绑定"
-            android:textColor="#000000"/>
-        <LinearLayout android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
+            android:textSize="36dp"
+			android:text="是否接受来自客户端的绑定?"
+            android:textColor="#FFFFFF"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="15"
+            android:gravity="center"
             android:padding="10dp"
             android:orientation="horizontal">
-            <Button android:layout_width="75dp"
-            android:layout_height="30dp"
+            <Button android:layout_width="160dp"
+            android:layout_height="70dp"
             android:id="@+id/btn_canle"
-            android:textSize="16dp"
-            android:textColor="@color/common_black_btn_textcolor"
-            android:background="@drawable/bg_btn_band"
+            android:textSize="28dp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/dialog_cancel_selector"
             android:text="拒绝"/>
-	        <Button android:layout_width="75dp"
-	            android:layout_height="30dp"
+	        <Button android:layout_width="160dp"
+	            android:layout_height="70dp"
 	            android:layout_marginLeft="10dp"
 	            android:id="@+id/btn_ok"
-	            android:textSize="16dp"
-	            android:textColor="@color/common_black_btn_textcolor"
-	            android:background="@drawable/bg_btn_band"
+	            android:textSize="28dp"
+	            android:textColor="#FFFFFF"
+	            android:background="@drawable/dialog_yes_selector"
 	            android:text="绑定"/>
         </LinearLayout>
     </LinearLayout>
-	
+
+ 
+   <LinearLayout android:layout_width="fill_parent"
+       android:layout_height="375dp"
+       >
+   </LinearLayout>
 </LinearLayout>
