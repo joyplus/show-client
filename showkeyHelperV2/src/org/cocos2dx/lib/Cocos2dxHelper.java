@@ -24,6 +24,7 @@ THE SOFTWARE.
 package org.cocos2dx.lib;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
@@ -51,6 +52,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -87,6 +89,7 @@ public class Cocos2dxHelper {
 
 		Cocos2dxHelper.sPackageName = applicationInfo.packageName;
 		Cocos2dxHelper.sFileDirectory = pContext.getFilesDir().getAbsolutePath();
+		Log.d("helper", "sFileDirectory");
 		Cocos2dxHelper.nativeSetApkPath(applicationInfo.sourceDir);
 
 		Cocos2dxHelper.sCocos2dxAccelerometer = new Cocos2dxAccelerometer(pContext);
@@ -96,6 +99,7 @@ public class Cocos2dxHelper {
 		Cocos2dxBitmap.setContext(pContext);
 		Cocos2dxETCLoader.setContext(pContext);
 	}
+	
 
 	// ===========================================================
 	// Getter & Setter
@@ -128,7 +132,18 @@ public class Cocos2dxHelper {
 	}
 
 	public static String getCocos2dxWritablePath() {
-		return Cocos2dxHelper.sFileDirectory;
+		//
+		File localFile;
+		if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+			localFile = Environment.getExternalStorageDirectory();
+			if(localFile.canWrite()){
+				return localFile.getAbsolutePath()+"/showkeyhelper";
+			}else{
+				return Cocos2dxHelper.sFileDirectory;
+			}
+		}else{
+			return Cocos2dxHelper.sFileDirectory;
+		}
 	}
 
 	public static String getCurrentLanguage() {
