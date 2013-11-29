@@ -33,6 +33,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.Element.DataType;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -47,6 +48,7 @@ import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.SettingActivity;
 import com.joyplus.tvhelper.helper.HttpClientHelper;
 import com.joyplus.tvhelper.https.HttpUtils;
+import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 
@@ -63,21 +65,34 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		private static final int STATUE_SETTING_BACK=STATUE_CANCEL_QQ+1;
 		
 		
+		public static final int FONT_SIZE_BIG = 42;
+		public static final int FONT_SIZE_MIDDLE = 36;
+		public static final int FONT_SIZE_SMALL = 30;
+		
 		
 		private LinearLayout mstatue_immediately_show,mstatue_decode_mode,mstatue_default_decrease,mstatue_default_resolution,mstatue_size_decrease,mstatue_setting_back,mstatue_cancel_qq;
 		private int mstatue = 0;
-		private int detail_default_resolution=1;
-		private int detail_size_decrease=1;
-		private int detail_immediately_show=0;
 		private int detail_decode_mode=0;
-		private int detail_default_decrease=1;
+		
+		private int detail_default_resolution;
+		private int detail_size_decrease;
+		private boolean detail_immediately_show;
+		private boolean detail_default_decrease;
+		
 		private boolean detail_setting_back=false;
 		private boolean detail_cancel_qq=false;
 		
+		private String tip_immediately_show,tip_decode_mode,tip_default_decrease,
+				tip_default_resolution,tip_size_decrease,tip_setting_back,tip_cancel_qq;
+		
+		private TextView textview_immediately_show;
+		private TextView textview_decode_mode;
+		private TextView textview_default_decrease;
+		private TextView textview_default_resolution;
+		private TextView textview_size_decrease;
 		
 		private JoyplusMediaPlayerDataManager mJoyplusMediaPlayerDataManager;
 		private TextView mstatue_textview,tip_textview,bing_qq_code;
-		private String tip_immediately_show,tip_decode_mode,tip_default_decrease,tip_default_resolution,tip_size_decrease,tip_setting_back,tip_cancel_qq;
 		private Drawable bg_setting_choose;
 		public SettingDialog(final Context pContext) {
 			super(pContext, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
@@ -89,7 +104,8 @@ public class SettingDialog extends Dialog implements OnClickListener{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_setting);
 			
-
+			initDate();
+			
 			mstatue_immediately_show=(LinearLayout)findViewById(R.id.immediately_show);
 			mstatue_decode_mode=(LinearLayout)findViewById(R.id.decode_mode);
 			mstatue_default_decrease=(LinearLayout)findViewById(R.id.default_decrease);
@@ -97,6 +113,12 @@ public class SettingDialog extends Dialog implements OnClickListener{
 			mstatue_size_decrease=(LinearLayout)findViewById(R.id.size_decrease);
 			mstatue_setting_back=(LinearLayout)findViewById(R.id.setting_back);
 			mstatue_cancel_qq=(LinearLayout)findViewById(R.id.cancel_qq);
+			
+			textview_immediately_show = (TextView)findViewById(R.id.immediately_show_text);
+			textview_decode_mode = (TextView)findViewById(R.id.decode_mode_text);
+			textview_default_decrease = (TextView)findViewById(R.id.default_decrease_text);
+			textview_default_resolution = (TextView)findViewById(R.id.default_resolution_text);
+			textview_size_decrease = (TextView)findViewById(R.id.size_decrease_text);
 			
 			mstatue_immediately_show.setOnFocusChangeListener(itemFocusListener);
 			mstatue_decode_mode.setOnFocusChangeListener(itemFocusListener);
@@ -107,13 +129,6 @@ public class SettingDialog extends Dialog implements OnClickListener{
 			mstatue_cancel_qq.setOnFocusChangeListener(itemFocusListener);
 			
 			tip_textview=(TextView)findViewById(R.id.all_center_tip_content_text);
-			tip_immediately_show=this.getContext().getResources().getString(R.string.setting_immediately_show_tip);
-	        tip_decode_mode=this.getContext().getResources().getString(R.string.setting_decode_mode_tip);
-	        tip_default_decrease=this.getContext().getResources().getString(R.string.setting_default_decrease_tip);
-	        tip_default_resolution=this.getContext().getResources().getString(R.string.setting_default_resolution_tip);
-	        tip_size_decrease=this.getContext().getResources().getString(R.string.setting_size_decrease_tip);
-	        tip_setting_back=this.getContext().getResources().getString(R.string.setting_back_tip);
-	        tip_cancel_qq=this.getContext().getResources().getString(R.string.setting_cancel_qq_tip);
 	        
 	        bg_setting_choose=this.getContext().getResources().getDrawable(R.drawable.setting_choose);
 			bing_qq_code=(TextView)findViewById(R.id.cancel_qq_text);
@@ -126,10 +141,42 @@ public class SettingDialog extends Dialog implements OnClickListener{
 					Cocos2dxHelper.setSettingResult(true);
 				}
 			});
-	        
+	        initView();
 	        bingQqCode();
 		}
 		
+		private void initView(){
+			switchDetailDecodemode();
+			switchDetailDefaultDecrease();
+			switchDetailImmediatelyShow();
+			switchDetailSizeDecrease();
+			switchDetailDefaultResolution();
+		}
+		
+		private void initDate(){
+			detail_default_resolution=PreferencesUtils.getDefualteDefination(getContext());
+			detail_size_decrease=PreferencesUtils.getSubSize(getContext());
+			detail_immediately_show=PreferencesUtils.getDefualtePlayChoice(getContext());
+			detail_default_decrease=PreferencesUtils.getSubSwitch(getContext());
+			
+			tip_immediately_show=this.getContext().getResources().getString(R.string.setting_immediately_show_tip);
+	        tip_decode_mode=this.getContext().getResources().getString(R.string.setting_decode_mode_tip);
+	        tip_default_decrease=this.getContext().getResources().getString(R.string.setting_default_decrease_tip);
+	        tip_default_resolution=this.getContext().getResources().getString(R.string.setting_default_resolution_tip);
+	        tip_size_decrease=this.getContext().getResources().getString(R.string.setting_size_decrease_tip);
+	        tip_setting_back=this.getContext().getResources().getString(R.string.setting_back_tip);
+	        tip_cancel_qq=this.getContext().getResources().getString(R.string.setting_cancel_qq_tip);
+			
+	        Log.d(TAG,"inswitchDetailDecodemode--->"+detail_decode_mode);
+			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(getContext());	               
+			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
+			Log.d(TAG,"type 1 = "+type.name());
+			if(type == DecodeType.Decode_HW){
+				detail_decode_mode = 0;
+			}else{
+				detail_decode_mode = 1;
+			}
+		}
 		
 		
 		
@@ -242,55 +289,57 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		private void switchDetailDefaultResolution(){
 			Log.d(TAG,"inswitchDetailDefaultResolution--->"+detail_default_resolution);
 			switch(detail_default_resolution){
-			case 0:
-				mstatue_textview.setText("流畅");
+			case Constant.DEFINATION_FLV:
+				textview_default_resolution.setText("流畅");
 			    break;
-			case 1:
-				mstatue_textview.setText("标清");
+			case Constant.DEFINATION_MP4:
+				textview_default_resolution.setText("标清");
 				break;
-			case 2:
-				mstatue_textview.setText("高清");
+			case Constant.DEFINATION_HD:
+				textview_default_resolution.setText("高清");
 				break;
-			case 3:
-				mstatue_textview.setText("超清");
+			case Constant.DEFINATION_HD2:
+				textview_default_resolution.setText("超清");
 				break;
-			
 			}
+			PreferencesUtils.setDefualteDefination(getContext(), detail_default_resolution);
 		}
 		
 		private void switchDetailImmediatelyShow(){
 			Log.d(TAG,"inswitchImmediatelyShow--->"+detail_immediately_show);
-			switch(detail_immediately_show){
-			case 0:
-				mstatue_textview.setText("关");
-			    break;
-			case 1:
-				mstatue_textview.setText("开");
-				break;
+			if(detail_immediately_show){
+				textview_immediately_show.setText("开");
+			}else{
+				textview_immediately_show.setText("关");
 			}
+			PreferencesUtils.setDefualtePlayChoice(getContext(), detail_immediately_show);
+//			switch(detail_immediately_show){
+//			case 0:
+//				mstatue_textview.setText("关");
+//			    break;
+//			case 1:
+//				mstatue_textview.setText("开");
+//				break;
+//			}
 		}
 		
 		
 		private void switchDetailDecodemode(){
-			Log.d(TAG,"inswitchDetailDecodemode--->"+detail_decode_mode);
-			mJoyplusMediaPlayerDataManager = new JoyplusMediaPlayerDataManager(getContext());	               
-			DecodeType type = mJoyplusMediaPlayerDataManager.getDecodeType();
-			Log.d(TAG,"type 1 = "+type.name());
+			DecodeType type = DecodeType.Decode_HW;;
 			
 			switch(detail_decode_mode){
 			case 0:
-				mstatue_textview.setText("硬解");
+				textview_decode_mode.setText("硬解");
 				type= DecodeType.Decode_HW;
 			    break;
 			case 1:
-				mstatue_textview.setText("软解");
+				textview_decode_mode.setText("软解");
 				type= DecodeType.Decode_SW;
 				break;
-				
 			}
 			mJoyplusMediaPlayerDataManager.setDecodeType(type);
-			DecodeType type2 = mJoyplusMediaPlayerDataManager.getDecodeType();
-			Log.d(TAG,"type 2 = "+type.name());
+//			DecodeType type2 = mJoyplusMediaPlayerDataManager.getDecodeType();
+//			Log.d(TAG,"type 2 = "+type.name());
 //			switchMode(); 
 		}
 //		private void switchMode(){
@@ -314,31 +363,38 @@ public class SettingDialog extends Dialog implements OnClickListener{
 		
 		private void switchDetailDefaultDecrease(){
 			Log.d(TAG,"inswitchDetailDefaultDecrease--->"+detail_default_decrease);
-			switch(detail_default_decrease){
-			case 0:
-				mstatue_textview.setText("关");
-			    break;
-			case 1:
-				mstatue_textview.setText("开");
-				break;
-			
+			if(detail_default_decrease){
+				textview_default_decrease.setText("开");
+			}else{
+				textview_default_decrease.setText("关");
 			}
+			PreferencesUtils.setSubSwitch(getContext(), detail_default_decrease);
+//			switch(detail_default_decrease){
+//			case 0:
+//				mstatue_textview.setText("关");
+//			    break;
+//			case 1:
+//				mstatue_textview.setText("开");
+//				break;
+//			
+//			}
 		}
 		
 		
 		private void switchDetailSizeDecrease(){
 			Log.d(TAG,"inswitchDetailSizeDecrease--->"+detail_size_decrease);
 			switch(detail_size_decrease){
-			case 0:
-				mstatue_textview.setText("小");
+			case FONT_SIZE_SMALL:
+				textview_size_decrease.setText("小");
 			    break;
-			case 1:
-				mstatue_textview.setText("中");
+			case FONT_SIZE_MIDDLE:
+				textview_size_decrease.setText("中");
 				break;
-			case 2:
-				mstatue_textview.setText("大");
+			case FONT_SIZE_BIG:
+				textview_size_decrease.setText("大");
 				break;
 			}
+			PreferencesUtils.setSubSize(getContext(), detail_size_decrease);
 		}
 		@Override
 		public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -348,8 +404,8 @@ public class SettingDialog extends Dialog implements OnClickListener{
 				switch(mstatue){
 				case STATUE_DEFAULT_DECREASE:
 					Log.d(TAG, "字幕默认选择左");
-					if(detail_default_decrease<1){
-						detail_default_decrease=detail_default_decrease+1;
+					if(!detail_default_decrease){
+						detail_default_decrease=true;
 					}
 					switchDetailDefaultDecrease();
 					break;
@@ -362,22 +418,49 @@ public class SettingDialog extends Dialog implements OnClickListener{
 					break;
 				case STATUE_IMMEDIATELY_SHOW:
 					Log.d(TAG,"推送立即显示选择左");
-					if(detail_immediately_show<1){
-						detail_immediately_show=detail_immediately_show+1;
+					if(!detail_immediately_show){
+						detail_immediately_show=true;
 					}
 					switchDetailImmediatelyShow();
 					break;
 				case STATUE_DEFAULT_RESOLUTION:
-					if(detail_default_resolution<3 ){
-					detail_default_resolution=detail_default_resolution+1;
+//					if(detail_default_resolution<3 ){
+//					detail_default_resolution=detail_default_resolution+1;
+//					}
+					switch (detail_default_resolution) {
+					case Constant.DEFINATION_HD2:
+						break;
+					case Constant.DEFINATION_HD:
+						detail_default_resolution = Constant.DEFINATION_HD2;
+						break;
+					case Constant.DEFINATION_MP4:
+						detail_default_resolution = Constant.DEFINATION_HD;
+						break;
+					case Constant.DEFINATION_FLV:
+						detail_default_resolution = Constant.DEFINATION_MP4;
+						break;
+					default:
+						break;
 					}
 					Log.d(TAG, "默认清晰度选择左"+detail_default_resolution);
 					switchDetailDefaultResolution();
 					break;
 				case STATUE_SIZE_DECREASE:
-					if(detail_size_decrease<2){
-					detail_size_decrease=detail_size_decrease+1;
+					switch (detail_size_decrease) {
+					case FONT_SIZE_BIG:
+						break;
+					case FONT_SIZE_MIDDLE:
+						detail_size_decrease = FONT_SIZE_BIG;
+						break;
+					case FONT_SIZE_SMALL:
+						detail_size_decrease = FONT_SIZE_MIDDLE;
+						break;
+					default:
+						break;
 					}
+//					if(detail_size_decrease<2){
+//					detail_size_decrease=detail_size_decrease+1;
+//					}
 					Log.d(TAG, "字幕大小选择左");
 					switchDetailSizeDecrease();
 					break;
@@ -387,9 +470,12 @@ public class SettingDialog extends Dialog implements OnClickListener{
 				switch (mstatue){
 				case STATUE_DEFAULT_DECREASE:
 					Log.d(TAG, "字幕默认选择右");
-					if(detail_default_decrease>0){
-						detail_default_decrease=detail_default_decrease-1;
+					if(detail_default_decrease){
+						detail_default_decrease = false;
 					}
+//					if(detail_default_decrease>0){
+//						detail_default_decrease=detail_default_decrease-1;
+//					}
 					switchDetailDefaultDecrease();
 					break;
 				case STATUE_DECODE_MODE:
@@ -401,21 +487,48 @@ public class SettingDialog extends Dialog implements OnClickListener{
 					break;
 				case STATUE_IMMEDIATELY_SHOW:
 					Log.d(TAG,"推送立即显示选择右");
-					if(detail_immediately_show>0){
-						detail_immediately_show=detail_immediately_show-1;
+					if(detail_immediately_show){
+						detail_immediately_show=false;
 					}
 					switchDetailImmediatelyShow();
 					break;
 				case STATUE_DEFAULT_RESOLUTION:
-					if(detail_default_resolution>0 ){
-					detail_default_resolution=detail_default_resolution-1;
+//					if(detail_default_resolution>0 ){
+//					detail_default_resolution=detail_default_resolution-1;
+//					}
+					switch (detail_default_resolution) {
+					case Constant.DEFINATION_HD2:
+						detail_default_resolution = Constant.DEFINATION_HD;
+						break;
+					case Constant.DEFINATION_HD:
+						detail_default_resolution = Constant.DEFINATION_MP4;
+						break;
+					case Constant.DEFINATION_MP4:
+						detail_default_resolution = Constant.DEFINATION_FLV;
+						break;
+					case Constant.DEFINATION_FLV:
+						break;
+					default:
+						break;
 					}
 					Log.d(TAG, "默认清晰度选择右"+detail_default_resolution);
 					switchDetailDefaultResolution();
 					break;
 				case STATUE_SIZE_DECREASE:
-					if(detail_size_decrease>0){
-					detail_size_decrease=detail_size_decrease-1;
+//					if(detail_size_decrease>0){
+//					detail_size_decrease=detail_size_decrease-1;
+//					}
+					switch (detail_size_decrease) {
+					case FONT_SIZE_BIG:
+						detail_size_decrease = FONT_SIZE_MIDDLE;
+						break;
+					case FONT_SIZE_MIDDLE:
+						detail_size_decrease = FONT_SIZE_SMALL;
+						break;
+					case FONT_SIZE_SMALL:
+						break;
+					default:
+						break;
 					}
 					Log.d(TAG, "字幕大小选择右");
 					switchDetailSizeDecrease();

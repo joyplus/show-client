@@ -475,6 +475,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 					if(subManager.IsSubEnable()){
 						subManager.setSubEnable(false);
 					}
+					mContext.setSubevisble(false);
 				}else{
 					Log.i("JoyplusMediaPlayerMenuDialog", "subManager.getCurrentSubIndex()-->" + subManager.getCurrentSubIndex()
 							+ " position" + (position));
@@ -489,6 +490,7 @@ public class JoyplusMediaPlayerMenuDialog extends AlertDialog implements OnItemC
 							}
 						}).start();
 					}
+					mContext.setSubevisble(true);
 				}
 			}
 			break;

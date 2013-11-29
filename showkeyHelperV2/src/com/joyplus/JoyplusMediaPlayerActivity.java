@@ -92,6 +92,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	
 	private boolean Debug   = true;
 	
+	private boolean isSubVisible = true;
+	
 	private String  TAG     = "JoyplusMediaPlayerActivity";
 	/*videoview layout      msg 100-199  level 3*/
 	public JoyplusMediaPlayerVideoView     mVideoView;
@@ -209,6 +211,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.joyplusvideoview);
+		isSubVisible = PreferencesUtils.getSubSwitch(this);
+		Log.d(TAG, "---isSubVisible-----"+isSubVisible);
 		new Runnable(){
 			@Override
 			public void run() {
@@ -336,6 +340,13 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
     	mURLManager = JoyplusMediaPlayerManager.getInstance().getURLManager();
     	mJoyplusSubManager = (JoyplusSubManager) JoyplusMediaPlayerManager.getInstance().getSubManager();
     	mJoyplusSubManager.registerListener(mSubTitleView);
+    	if(isSubVisible){
+    		if(mSubTitleView != null)mSubTitleView.displaySubtitle();
+			mJoyplusSubManager.setSubEnable(true);
+		}else{
+			if(mSubTitleView != null)mSubTitleView.hiddenSubtitle();
+			mJoyplusSubManager.setSubEnable(false);
+		}
     	if(mSubTitleView != null)mSubTitleView.hiddenSubtitle();
 	}
 	
@@ -1078,7 +1089,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 									mJoyplusSubManager.AddSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
-									mSubTitleView.displaySubtitle();
+									Log.d(TAG, "SubEnable = " + mJoyplusSubManager.IsSubEnable());
 								}
 							}
 						}
@@ -3080,5 +3091,9 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				mHandler.sendEmptyMessage(MESSAGE_URLS_READY);
 			}
 		});
+	}
+	
+	public void setSubevisble(boolean visible){
+		isSubVisible = visible;
 	}
 }

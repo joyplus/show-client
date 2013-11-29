@@ -107,4 +107,8 @@ public class Global {
 	 * 绑定成功
 	 */
 	public static final String ACTION_BAND_SUCCESS = "action_band_success";
+	/**
+	 * 绑定成功
+	 */
+	public static final String ACTION_UN_BAND_SUCCESS = "action_un_band_success";
 }

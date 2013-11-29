@@ -12,6 +12,8 @@ import com.joyplus.sub.Element;
 import com.joyplus.sub.JoyplusSubListener;
 import com.joyplus.sub.JoyplusSubManager;
 import com.joyplus.tvhelper.utils.Log;
+import com.joyplus.tvhelper.utils.PreferencesUtils;
+import com.joyplus.tvhelper.utils.Utils;
 
 public class SubTitleView extends TextView implements JoyplusSubListener{
 	private static final String TAG = "SubTitleView";
@@ -166,6 +168,7 @@ public class SubTitleView extends TextView implements JoyplusSubListener{
 	public void Init(JoyplusMediaPlayerActivity activity){
 		if(activity == null)return ;
 		mActivity = activity;
+		setTextSize(Utils.getStandardValue(mActivity, PreferencesUtils.getSubSize(mActivity)));
 	}
 	private MediaInfo getMediaInfo(){
 		if(mActivity == null || mActivity.getPlayer()==null)return new MediaInfo();

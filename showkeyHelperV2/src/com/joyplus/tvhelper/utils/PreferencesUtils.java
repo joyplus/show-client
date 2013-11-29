@@ -1,5 +1,7 @@
 package com.joyplus.tvhelper.utils;
 
+import com.joyplus.tvhelper.ui.SettingDialog;
+
 import android.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,6 +23,10 @@ public class PreferencesUtils {
 	private static final String ERWEIMA_URL = "erweima_url";
 	private static final String QQ_NAME = "qq_name";
 	private static final String QQ_AVATAR = "qq_avatar";
+    private static final String SUB_SIZE  = "sub_size";
+    private static final String SUB_SWITCH = "sub_visible_switch";
+    private static final String PLAY_IF_JUST_NOW = "play_if_just_now";
+    private static final String PLAY_DEFINATION = "play_defination";
 	
 	public static void changeAcceptedStatue(Context c ,boolean isAccepted){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
@@ -183,4 +189,72 @@ public class PreferencesUtils {
 		editor.putInt(LASTVERSION, version);
 		editor.commit();
 	}
+	
+	public static void setSubSize(Context c, int size){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putInt(SUB_SIZE, size);
+		editor.commit();
+	}
+	
+	public static void removeSubSize(Context c){
+		removeByKey(c, SUB_SIZE);
+	}
+	
+	private static void removeByKey(Context c, String key){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.remove(key);
+		editor.commit();
+	}
+	
+	public static int getSubSize(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getInt(SUB_SIZE, SettingDialog.FONT_SIZE_MIDDLE);
+	}
+	
+	public static void setSubSwitch(Context c, boolean isOn){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putBoolean(SUB_SWITCH, isOn);
+		editor.commit();
+	}
+	public static void removeSubSwitch(Context c){
+		removeByKey(c, SUB_SWITCH);
+	}
+	public static boolean getSubSwitch(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getBoolean(SUB_SWITCH, true);
+	}
+	
+	public static void setDefualteDefination(Context c, int defination){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putInt(PLAY_DEFINATION, defination);
+		editor.commit();
+	}
+	public static void removeDefualteDefination(Context c){
+		removeByKey(c, PLAY_DEFINATION);
+	}
+	public static int getDefualteDefination(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getInt(PLAY_DEFINATION, Constant.DEFINATION_HD2);
+	}
+	
+	public static void setDefualtePlayChoice(Context c, boolean isJustNow){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		Editor editor = s.edit();
+		editor.putBoolean(PLAY_IF_JUST_NOW, isJustNow);
+		editor.commit();
+	}
+	public static void removeDefualtePlayChoice(Context c){
+		removeByKey(c, PLAY_IF_JUST_NOW);
+	}
+	
+	public static boolean getDefualtePlayChoice(Context c){
+		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
+		return s.getBoolean(PLAY_IF_JUST_NOW, true);
+	}
+	
+	
 }

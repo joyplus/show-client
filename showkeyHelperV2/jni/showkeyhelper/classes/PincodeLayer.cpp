@@ -23,10 +23,12 @@ bool PincodeLayer::init()
 			CCSprite * sprite  = CCSprite::create("back1_user.png");
 			sprite->setAnchorPoint(ccp(0,0));
 			sprite->setPosition(ccp(0,176));
+			sprite->setZOrder(1);
 			addChild(sprite);
 
 			CCSprite * light = CCSprite::create("light.png");
 			light->setPosition(ccp(164,510));
+			light->setZOrder(1);
 			addChild(light);
 			light->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 
@@ -34,11 +36,13 @@ bool PincodeLayer::init()
 
 			CCSprite* pincode_back = CCSprite::create("pin.png");
 			pincode_back->setPosition(ccp(164,285));
+			pincode_back->setZOrder(1);
 			this->addChild(pincode_back);
 
 			CCLabelTTF* label_pincode = CCLabelTTF::create("", "Arial", 36.0);
 			label_pincode->setPosition(ccp(164,285));
 			label_pincode->setAnchorPoint(ccp(0.5,0.5));
+			label_pincode->setZOrder(1);
 			label_pincode->setTag(0);
 			this->addChild(label_pincode);
 
@@ -46,6 +50,7 @@ bool PincodeLayer::init()
 			CCLabelTTF* label_name = CCLabelTTF::create("", "Arial", 30.0);
 			label_name->setPosition(ccp(164,375));
 			label_name->setAnchorPoint(ccp(0.5,0.5));
+			label_name->setZOrder(1);
 			label_name->setTag(2);
 			this->addChild(label_name);
 
@@ -136,6 +141,7 @@ void PincodeLayer::onResult(const char* url, bool isSucced) {
 	CCSprite* imag_touxiang_1 = createMaskedSprite(imag_touxiang,"yuan.png");
 	imag_touxiang_1->setPosition(ccp(164,510));
 	imag_touxiang_1->setTag(1);
+	imag_touxiang_1->setZOrder(0);
 	addChild(imag_touxiang_1);
 }
 
