@@ -36,7 +36,7 @@ bool PincodeLayer::init()
 			pincode_back->setPosition(ccp(164,285));
 			this->addChild(pincode_back);
 
-			CCLabelTTF* label_pincode = CCLabelTTF::create("", "Arial", 27.0);
+			CCLabelTTF* label_pincode = CCLabelTTF::create("", "Arial", 36.0);
 			label_pincode->setPosition(ccp(164,285));
 			label_pincode->setAnchorPoint(ccp(0.5,0.5));
 			label_pincode->setTag(0);
@@ -68,8 +68,22 @@ void PincodeLayer::runBreath(CCTime dt) {
 
 void PincodeLayer::setPincode(const char* pincode){
 	LOGD("pincode","%s",pincode);
+	string buffer(pincode);
+	char buff[17] = {};
+	for(int i=0; i<buffer.size()*3;){
+		if(i==15){
+			buff[i]=buffer.at(i/3);
+			buff[i+1]='\0';
+		}else{
+			buff[i]=buffer.at(i/3);
+			buff[i+1]=' ';
+			buff[i+2]=' ';
+		}
+		i+=3;
+	}
+	LOGD("pincode","%s",buff);
 	CCLabelTTF* label_pincode = (CCLabelTTF*)this->getChildByTag(0);
-	CCString* str = CCString::createWithFormat("%s",pincode);
+	CCString* str = CCString::createWithFormat("%s",buff);
 	label_pincode->setString(str->getCString());
 //	label_pincode->initWithString(pincode, "Arial", 30.0);
 }
