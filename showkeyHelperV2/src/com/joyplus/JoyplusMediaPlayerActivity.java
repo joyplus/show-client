@@ -1187,6 +1187,8 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 							}else{
 								new Thread(new RequestNewUrl()).start();
 							}
+						}else{
+							showDialog(0);
 						}
 					}
 				}

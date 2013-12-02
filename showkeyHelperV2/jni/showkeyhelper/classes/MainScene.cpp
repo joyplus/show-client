@@ -51,11 +51,84 @@ bool MainScene::init()
 //        CC_BREAK_IF(! background);
 //        background->setPosition(ccp(size.width/2, size.height/2));
 //        this->addChild(background, 0);
+//        CCParticleSnow *snow=CCParticleSnow::create();
+//        snow->setPosition(ccp(size.width/2,size.height));
+//        snow->setTextureWithRect(CCTextureCache::sharedTextureCache()->addImage("snow.png"),CCRectMake(0,0,50,50));
+//        snow->setSpeed(10.0f);
+//        addChild(snow);
+//        CCParticleSnow *snow= new CCParticleSnow;
+//        snow->setPosition(ccp(size.width/2,size.height));
+//        snow->setTextureWithRect(CCTextureCache::sharedTextureCache()->addImage("snow.png"),CCRectMake(0,0,50,50));
+//
+//        snow->setSpeed(10.0f);
+//        snow->setDuration(-1);
+//
+//        snow->setGravity(CCPointZero);
+//
+//        snow->setAngle(90);
+//        snow->setAngleVar(360);
+//
+//        snow->setTangentialAccel(30);
+//        snow->setTangentialAccelVar(0);
+//
+//        snow->setPosVar(CCPointZero);
+//
+//	      // life of particles
+//        snow->setLife(4);
+//        snow->setLifeVar(1);
+//
+//	      // spin of particles
+//        snow->setStartSpin(0);
+//        snow->setStartSizeVar(0);
+//        snow->setEndSpin(0);
+//        snow->setEndSpinVar(0);
+//
+//	      // color of particles
+//	    ccColor4F startColor = {0.5f, 0.5f, 0.5f, 1.0f};
+//	    snow->setStartColor(startColor);
+//
+//	    ccColor4F startColorVar = {0.5f, 0.5f, 0.5f, 1.0f};
+//	    snow->setStartColorVar(startColorVar);
+//
+//	    ccColor4F endColor = {0.1f, 0.1f, 0.1f, 0.2f};
+//	    snow->setEndColor(endColor);
+//
+//	    ccColor4F endColorVar = {0.1f, 0.1f, 0.1f, 0.2f};
+//	    snow->setEndColorVar(endColorVar);
+//
+//	      // size, in pixels
+//	    snow->setStartSize(80.0f);
+//	    snow->setStartSizeVar(40.0f);
+//	    snow->setEndSize(kParticleStartSizeEqualToEndSize);
+//
+//	      // emits per second
+//	    snow->setEmissionRate(snow->getTotalParticles()/snow->getLife());
+//
+//	      // additive
+////	    snow->setIsBlendAdditive(true);
+//
+//	    snow->setRadialAccel(-120);
+//	    snow->setRadialAccelVar(0);
+//	    snow->setAutoRemoveOnFinish(true);
+//        snow->autorelease();
+//        addChild(snow);
+
+//        CCDirector::sharedDirector()->
+
+//        CCParticleRain  *rain=CCParticleRain ::create();
+//        rain->setPosition(ccp(size.width/2,size.height));
+//        rain->setTextureWithRect(CCTextureCache::sharedTextureCache()->addImage("snow.png"),CCRectMake(0,0,50,50));
+//        addChild(rain);
+//        CCParticleSystem  *particleSystem=CCParticleMeteor ::create();
+//        particleSystem->setTexture(CCTextureCache::sharedTextureCache()->addImage("snow.png"));
+//        particleSystem->setPosition(ccp(size.width/2,size.height/2));
+//        addChild(particleSystem);
 
         m_pageLayer = PageLayer::create();
         m_pageLayer->setPosition(CCSizeZero);
         m_pageLayer->setItemClickDelegate(this);
         this->addChild(m_pageLayer);
+
 
         string pincode = getPincodeJNI();
         if(!pincode.empty()){

@@ -8,14 +8,14 @@ bool BannerLayer::init() {
 	bool res = false;
 	do
 	{
+		CCSprite * image = CCSprite::create("back1_banner.png");
+		image->setPosition(CCPointZero);
+		this->addChild(image);
+
 		m_background = CCSprite::create("selected1_user.png");
 		m_background->setPosition(CCPointZero);
 		m_background->setOpacity(0);
 		this->addChild(m_background);
-
-		CCSprite * image = CCSprite::create("back1_banner.png");
-		image->setPosition(CCPointZero);
-		this->addChild(image);
 
 		m_background->setOpacity(0);
 		setContentSize(image->getContentSize());

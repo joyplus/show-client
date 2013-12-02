@@ -6,13 +6,15 @@ MainItemLayer::~MainItemLayer() {
 
 bool MainItemLayer::init(const char* path_back,const char *path_img,const char *path_logo)
 {
-	m_background = CCSprite::create(path_back);
-	m_background->setPosition(CCPointZero);
-	this->addChild(m_background);
 
 	CCSprite * image = CCSprite::create(path_img);
 	image->setPosition(CCPointZero);
 	this->addChild(image);
+
+	m_background = CCSprite::create(path_back);
+	m_background->setPosition(CCPointZero);
+	this->addChild(m_background);
+
 
 	CCSprite * logo = CCSprite::create(path_logo);
 	logo->setPosition(ccp(0,50));

@@ -556,7 +556,8 @@ void XunLeiYunSence::initTableView() {
 	if(tableView){
 		tableView->setVisible(true);
 		tableView->reloadData();
-		tableView->setSelection(1);
+
+
 	}else{
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 		tableView->setAnchorPoint(ccp(0,1));
@@ -564,8 +565,12 @@ void XunLeiYunSence::initTableView() {
 		tableView->setDelegate(this);
 		tableView->setDirection(kCCScrollViewDirectionHorizontal);
 		tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-		tableView->setSelection(1);
 		this->addChild(tableView);
+	}
+	if(m_dates.size()>0){
+		tableView->setSelection(1);
+	}else{
+		tableView->setSelection(0);
 	}
 }
 

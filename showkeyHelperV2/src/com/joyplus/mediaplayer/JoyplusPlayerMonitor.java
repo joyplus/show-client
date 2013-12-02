@@ -96,6 +96,16 @@ public class JoyplusPlayerMonitor{
 	    private void CheckMediaInfo(){
 	    	mCurrentInfo = mPlayer.getMediaInfo();
 	    	if(mCurrentInfo.getState() == STATE.MEDIA_STATE_PLAYING
+	    			||  mCurrentInfo.getState() == STATE.MEDIA_STATE_PUSE
+	    			||  mCurrentInfo.getState() == STATE.MEDIA_STATE_INITED){
+	    		if(mCurrentInfo.getTotleTime()<=0 
+	    				|| (mCurrentInfo.getCurrentTime()>mCurrentInfo.getTotleTime())){
+	    			mCurrentInfo.setCurrentTime(0);
+	    			mCurrentInfo.setTotleTime(0);
+	    			mCurrentInfo.setState(STATE.MEDIA_STATE_UNKNOW);
+	    		}
+	    	}
+	    	if(mCurrentInfo.getState() == STATE.MEDIA_STATE_PLAYING
 	    			&& mPreMediaInfo.getState() == STATE.MEDIA_STATE_PLAYING){
 	    		if(mCurrentInfo.getCurrentTime() == mPreMediaInfo.getCurrentTime()){
 	    			if(++Count>=MAXCount)mCurrentInfo.setState(STATE.MEDIA_STATE_UNKNOW);
