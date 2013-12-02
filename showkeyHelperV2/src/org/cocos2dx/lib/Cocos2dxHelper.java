@@ -25,6 +25,7 @@ package org.cocos2dx.lib;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
@@ -137,7 +138,19 @@ public class Cocos2dxHelper {
 		if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
 			localFile = Environment.getExternalStorageDirectory();
 			if(localFile.canWrite()){
-				return localFile.getAbsolutePath()+"/showkeyhelper";
+				localFile = new File(localFile.getAbsolutePath()+"/showkeyhelper");
+				if(!localFile.exists()){
+					try {
+						localFile.mkdir();
+						return localFile.getAbsolutePath();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return Cocos2dxHelper.sFileDirectory;
+					}
+				}
+				return localFile.getAbsolutePath();
+				
 			}else{
 				return Cocos2dxHelper.sFileDirectory;
 			}

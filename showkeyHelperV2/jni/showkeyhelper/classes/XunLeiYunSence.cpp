@@ -355,6 +355,9 @@ void XunLeiYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 		}
 		if(cell){
 			//、、
+			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
+			sLabelBack->stopAllActions();
+			sLabelBack->setPosition(ccp(0,632));
 			CCButtonView *button = (CCButtonView *)cell->getChildByTag(6);
 			button->setSelected(true);
 			m_selectedButton = button;
@@ -505,7 +508,7 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 			pLabel->setDimensions(ccp(270, 150));
 		}
 		pImage->setVisible(true);
-		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
+		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png",true);
 		pImage->setBoundSize(ccp(264,145));
 		pButton->setVisible(false);
 		pRefreshButton->setVisible(false);

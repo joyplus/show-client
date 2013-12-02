@@ -190,6 +190,9 @@ void BaiduYunSence::tableCellSelected(CCListView* table, CCTableViewCell* cell,
 		}
 		if(cell){
 			//、、
+			CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)cell->getChildByTag(3);
+			sLabelBack->stopAllActions();
+			sLabelBack->setPosition(ccp(0,632));
 			CCButtonView *button = (CCButtonView *)cell->getChildByTag(6);
 			button->setSelected(true);
 			m_selectedButton = button;
@@ -256,7 +259,7 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 	if (!pCell) {
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
-//		pImage = CCImageView::createWithNetUrl(m_dates.at(0).getPicUrl().c_str(),"default_video_photo.png",ccp(264,140));
+//		pImage = CCImageView::createWithNetUrl("","default_video_photo.png",ccp(264,140));
 		pImage = new CCImageView();
 		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
@@ -272,7 +275,7 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pLabelBack->setPosition(ccp(0,540));
 		pLabelBack->setTag(3);
 		pCell->addChild(pLabelBack);
-		pLabel = CCLabelTTF::create(m_dates.at(0).getFileName().c_str(), "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
+		pLabel = CCLabelTTF::create("", "Arial", 27.0, CCSizeMake(270, 150), CCTextAlignment(kCCTextAlignmentLeft));
 		pLabel->setPosition(ccp(35,330));
 //		pLabel->setPosition(ccp(35,300));
 		pLabel->setAnchorPoint(ccp(0,1));
@@ -330,7 +333,7 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 		pSprite->setAnchorPoint(CCPointZero);
 		pSprite->setPosition(ccp(0,405));
 		pImage->setVisible(true);
-		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
+		pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png",true);
 		pImage->setBoundSize(ccp(264,145));
 		pButton->setVisible(false);
 		pRefreshButton->setVisible(false);
@@ -391,8 +394,10 @@ void BaiduYunSence::onGetBaiduVideoListComplete(CCNode* node, CCObject* obj) {
 			 LOGD("BaiduYunSence","history_play_list size =  %d",arrayObj.size());
 			 if(arrayObj.size()<20){
 				 m_hasMore = false;
+				 LOGD("BaiduYunSence","has not more, size = %d" ,arrayObj.size());
 			 }else{
 				 m_hasMore = true;
+				 LOGD("BaiduYunSence","has more");
 			 }
 			 m_requset_baidu_index += 1;
 			 for (int i=0; i<arrayObj.size(); i++) {
@@ -532,15 +537,24 @@ void BaiduYunSence::initTableView() {
 	if(tableView){
 		tableView->setVisible(true);
 		tableView->reloadData();
-		tableView->setSelection(1);
+		if(m_dates.size()>0){
+			tableView->setSelection(1);
+		}else{
+			tableView->setSelection(0);
+		}
 	}else{
+		LOGD("BaiduYunSence","initTableView date size = %d" ,m_dates.size());
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
 		tableView->setAnchorPoint(ccp(0,1));
 		tableView->setPosition(0,188);
 		tableView->setDelegate(this);
 		tableView->setDirection(kCCScrollViewDirectionHorizontal);
 		tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-		tableView->setSelection(1);
+		if(m_dates.size()>0){
+			tableView->setSelection(1);
+		}else{
+			tableView->setSelection(0);
+		}
 		this->addChild(tableView);
 	}
 }

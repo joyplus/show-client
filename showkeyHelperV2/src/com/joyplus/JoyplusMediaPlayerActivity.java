@@ -1403,8 +1403,10 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 				strSrc = "P 2 P";
 			} else if (mProd_src.equalsIgnoreCase("XUNLEI")) {
 				strSrc = "迅  雷";
-			}else {
-				strSrc = "PPTV";
+			}else if(mProd_src.equalsIgnoreCase("baiduyun")){
+				strSrc = "百  度  云";
+			}else{
+				strSrc = "";
 			}
 			//add by Jas
 			mInfo.mFrom = strSrc;

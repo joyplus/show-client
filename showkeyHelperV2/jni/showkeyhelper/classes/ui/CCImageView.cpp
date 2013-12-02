@@ -1,36 +1,38 @@
 #include "CCImageView.h"
 
-CCImageView* CCImageView::createWithLocalPath(const char *path)
-{
-	CCImageView * image_view = new CCImageView();
-	if(image_view&&image_view->initWithFile(path))
-	{
-		image_view->autorelease();
-		return image_view;
-	}
-	CC_SAFE_DELETE(image_view);
-	return NULL;
-}
-/**
- * url : http url
- *
- * default_loacl_path : default pic. local path
- *
- * boundsize : the size of CCImageView
- */
-CCImageView* CCImageView::createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize)
-{
-	return CCImageView::createWithNetUrl(url,default_local_path,boundsize,true,NULL);
-}
+//CCImageView* CCImageView::createWithLocalPath(const char *path)
+//{
+//	CCImageView * image_view = new CCImageView();
+//	if(image_view&&image_view->initWithFile(path))
+//	{
+//		image_view->autorelease();
+//		return image_view;
+//	}
+//	CC_SAFE_DELETE(image_view);
+//	return NULL;
+//}
+///**
+// * url : http url
+// *
+// * default_loacl_path : default pic. local path
+// *
+// * boundsize : the size of CCImageView
+// */
+//CCImageView* CCImageView::createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize)
+//{
+//	return CCImageView::createWithNetUrl(url,default_local_path,boundsize,true,NULL);
+//}
 
 bool CCImageView::initWithUrl(const char *url, const char *defult)
 {
 	CCAssert(url != NULL, "Invalid url for sprite");
 
+	setDefaultPic(defult);
 //	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+"test1.png";
 	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+ getFileNameFromUrl(url);
 	if(initWithDownLoadFile(path.c_str()))
 	{
+		LOGD("CCImageView","initWithDownLoadFile success");
 		return true;
 	}else
 	{
@@ -62,19 +64,23 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 {
 	CCHttpResponse* response = (CCHttpResponse*)obj;
 //    判断是否响应成功
-	if (!response->isSucceed())
-	{
-		LOGD("onGetFinished","Receive Error! %s\n",response->getErrorBuffer());
-		if(delegere){
-			delegere->onResult(response->getHttpRequest()->getUrl(),false);
-		}
-		return ;
-	}
-
 	const char* tag = response->getHttpRequest()->getTag();
 	if (0 != strcmp("PicGet",tag))
 	{
 		return;
+	}
+	if (!response->isSucceed())
+	{
+		LOGD("onGetFinished","Receive Error! %s\n",response->getErrorBuffer());
+		if(delegere){
+			LOGD("onGetFinished","notice the delegete false");
+			delegere->onResult(response->getHttpRequest()->getUrl(),false);
+		}
+		if(initWithFile(default_pic)){
+		}else{
+			LOGD("onDownLoadComplete","init with default pic %s",default_pic);
+		}
+		return ;
 	}
 
 	// 数据转存
@@ -89,12 +95,20 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 		pBuffer = CCFileUtils::sharedFileUtils()->getFileData(path.c_str(), "r", &bufferSize);
 		LOGD("CCImageView","path: %s",path.c_str());
 		FILE *fp = fopen(path.c_str(), "wb+");
-		fwrite(buff.c_str(), 1,buffer->size(),  fp);
-		fclose(fp);
-		initWithDownLoadFile(path.c_str());
-		if(delegere){
-			delegere->onResult(response->getHttpRequest()->getUrl(),true);
+		if(fp){
+			fwrite(buff.c_str(), 1,buffer->size(),  fp);
+			fclose(fp);
+			if(!initWithDownLoadFile(path.c_str())){
+				initWithFile(default_pic);
+			}
+			if(delegere){
+				delegere->onResult(response->getHttpRequest()->getUrl(),true);
+			}
+		}else{
+			LOGD("CCImageView","file：path: %s file is null",path.c_str());
+			initWithFile(default_pic);
 		}
+
 	}else{
 		CCImage* img = new CCImage;
 		LOGD("CCImageView","img not save %d",buff.size());
@@ -116,6 +130,7 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 				delegere->onResult(response->getHttpRequest()->getUrl(),true);
 			}
 		}else{
+			initWithFile(default_pic);
 			LOGD("CCImageView","--------not  img--------------");
 		}
 	}
@@ -125,12 +140,15 @@ CCImageView* CCImageView::createWithNetUrl(const char* url,
 		const char* default_local_path, CCSize boundsize, bool isSave, CCImageViewDownLoadDelegte * delegte)
 {
 	CCImageView * image_view = new CCImageView();
-	if(image_view&&image_view->initWithUrl(url,default_local_path))
-	{
+	if(image_view){
 		image_view->autorelease();
 		image_view->isSave = isSave;
-		image_view->delegere = delegte;
+		image_view->setDefaultPic(default_local_path);
+		if(delegte){
+			image_view->delegere = delegte;
+		}
 		image_view->setBoundSize(boundsize);
+		image_view->initWithUrl(url,default_local_path);
 		LOGD("CCImageView","create success");
 		return image_view;
 	}
@@ -159,6 +177,7 @@ bool CCImageView::initWithDownLoadFile(const char * filePath)
 		bool isImg = texture->initWithImage(img);
 		img->release();
 		if(!isImg){
+			LOGD("CCImageView","%s is not image" ,filePath);
 			return false;
 		}
 		initWithTexture(texture);
@@ -169,6 +188,7 @@ bool CCImageView::initWithDownLoadFile(const char * filePath)
 		}
 		texture->release();
 	}else{
+		LOGD("CCImageView","%s is not exists" ,filePath);
 		return false;
 	}
 
