@@ -168,7 +168,7 @@ public class SubTitleView extends TextView implements JoyplusSubListener{
 	public void Init(JoyplusMediaPlayerActivity activity){
 		if(activity == null)return ;
 		mActivity = activity;
-		setTextSize(Utils.getStandardValue(mActivity, PreferencesUtils.getSubSize(mActivity)));
+		setTextSize(PreferencesUtils.getSubSize(mActivity));
 	}
 	private MediaInfo getMediaInfo(){
 		if(mActivity == null || mActivity.getPlayer()==null)return new MediaInfo();

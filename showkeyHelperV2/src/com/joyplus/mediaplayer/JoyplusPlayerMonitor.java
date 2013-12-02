@@ -17,6 +17,11 @@ public class JoyplusPlayerMonitor{
 	    public  Handler mHandler;
 	    private VideoViewInterface  mPlayer;
 	    private static  int DELAY = 500;
+	    /**
+	     * {@link #JoyplusMediaPlayerFeature.FEATURE_REPLAY_ERRORURL}<br/>
+	     * when player report complete current time maybe != total time 
+	     */
+	    private static final int DEVIATION = 30*1000;
 	    private boolean Flog = false;
 	    public  static final int MSG_STATEUPDATE       = 1;
 	    public  static final int MSG_NOPROCESSCOMMEND  = 2;
@@ -50,8 +55,8 @@ public class JoyplusPlayerMonitor{
 	    	synchronized (mObject) {
 		    	Flog = false;
 		    	mRunnable = null;
-				if(mHandler != null)
-					mHandler.removeCallbacksAndMessages(null);
+//				if(mHandler != null)
+//					mHandler.removeCallbacksAndMessages(null);
 				mHandler = null;
 	    	}
 	    }
@@ -100,7 +105,7 @@ public class JoyplusPlayerMonitor{
 	    	}else Count = 0;
 	    	if(JoyplusMediaPlayerFeature.FEATURE_REPLAY_ERRORURL){
 		    	if(mCurrentInfo.getState() == STATE.MEDIA_STATE_FINISH){
-		    		if(mCurrentInfo.getCurrentTime()<mCurrentInfo.getTotleTime()){
+		    		if(mCurrentInfo.getCurrentTime()<(mCurrentInfo.getTotleTime()-DEVIATION)){
 		    			if(ErrorReport){
 		    				ErrorReport = false;//it only report once.
 		    				mCurrentInfo.setState(STATE.MEDIA_STATE_ERROR_FINISH);

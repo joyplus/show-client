@@ -96,7 +96,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
 			if(Global.ACTION_BAND_SUCCESS.equals(action)){
-				Cocos2dxHelper.updateQQdisplay();
+				updateQQ();
 			}else if(Global.ACTION_UN_BAND_SUCCESS.equals(action)){
 				Cocos2dxHelper.updateQQdisplay();
 			}

@@ -10,7 +10,7 @@ import android.content.SharedPreferences.Editor;
 public class PreferencesUtils {
 	private static final String JOYPLUS = "ijoypus";
 	private static final String ISACCEPTED = "isAccepted";
-	private static final String PINCODE = "pincode";
+	private static final String PINCODE = "pincode1";
 	private static final String CHANNEL = "channel";
 	private static final String ISNEEDCONFIRM = "isneedconfirm";
 	private static final String ISAUTODELETE = "isautodelete";
@@ -253,7 +253,7 @@ public class PreferencesUtils {
 	
 	public static boolean getDefualtePlayChoice(Context c){
 		SharedPreferences s = c.getSharedPreferences(JOYPLUS, 0);
-		return s.getBoolean(PLAY_IF_JUST_NOW, true);
+		return s.getBoolean(PLAY_IF_JUST_NOW, false);
 	}
 	
 	

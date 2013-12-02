@@ -1089,6 +1089,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 									mJoyplusSubManager.AddSubUri(XunLeiLiXianUtil
 													.getSubtitle4Push(subTitleUrl,
 															Constant.APPKEY));
+									mSubTitleView.displaySubtitle();
 									Log.d(TAG, "SubEnable = " + mJoyplusSubManager.IsSubEnable());
 								}
 							}

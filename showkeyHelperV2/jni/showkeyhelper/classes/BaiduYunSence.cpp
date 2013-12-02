@@ -256,9 +256,11 @@ CCTableViewCell* BaiduYunSence::tableCellAtIndex(CCListView* table,
 	if (!pCell) {
 		pCell = new CCTableViewCell();
 		pCell->autorelease();
-		pImage = CCImageView::createWithNetUrl(m_dates.at(0).getPicUrl().c_str(),"defulte_avatar.png",ccp(264,140));
+//		pImage = CCImageView::createWithNetUrl(m_dates.at(0).getPicUrl().c_str(),"default_video_photo.png",ccp(264,140));
+		pImage = new CCImageView();
 		pImage->setPosition(ccp(165,506));
 		pImage->setTag(1);
+		pImage->autorelease();
 		pCell->addChild(pImage);
 		pSprite = CCSprite::create("baidu_thumb.png");
 		pSprite->setAnchorPoint(CCPointZero);

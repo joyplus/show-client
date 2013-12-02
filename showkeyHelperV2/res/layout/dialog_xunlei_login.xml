@@ -76,7 +76,7 @@
 			                    android:id="@+id/passowrd_edit"
 			                    android:singleLine="true"
 			                    android:hint="密  码"
-			                    android:inputType="numberPassword"
+			                    android:inputType="textPassword"
 			                    android:background="@drawable/bg_edite_login_xunlei_password"
 			                    android:layout_marginLeft="10dp"
 			                    android:layout_weight="1"/>
