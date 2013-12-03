@@ -16,9 +16,14 @@ bool PincodeLayer::init()
 //			m_background->setOpacity(0);
 //			this->addChild(m_background);
 
-			imag_touxiang = CCImageView::createWithNetUrl("","defaultphoto.png",CCSizeMake(105,105),false, this);
-			imag_touxiang->setPosition(ccp(164,510));
+//			imag_touxiang = CCImageView::createWithNetUrl("","defaultphoto.png",CCSizeMake(105,105),false, this);
+//			imag_touxiang->setPosition(ccp(164,510));
 
+			imag_touxiang = new CCImageView();
+			imag_touxiang->setDownLoadDelegte(this);
+			imag_touxiang->initWithUrl("","defaultphoto.png",false);
+			imag_touxiang->setBoundSize(CCSizeMake(105,105));
+			imag_touxiang->setPosition(ccp(164,510));
 
 			CCSprite * sprite  = CCSprite::create("back1_user.png");
 			sprite->setAnchorPoint(ccp(0,0));
@@ -95,7 +100,12 @@ void PincodeLayer::setPincode(const char* pincode){
 
 void PincodeLayer::updateQQDisplay(const char* name, const char* url) {
 
-	imag_touxiang = CCImageView::createWithNetUrl(url,"defaultphoto.png",CCSizeMake(105,105),false,this);
+//	imag_touxiang = CCImageView::createWithNetUrl(url,"defaultphoto.png",CCSizeMake(105,105),false,this);
+
+	imag_touxiang = new CCImageView();
+	imag_touxiang->setDownLoadDelegte(this);
+	imag_touxiang->initWithUrl(url,"defaultphoto.png",false);
+	imag_touxiang->setBoundSize(CCSizeMake(105,105));
 	imag_touxiang->setPosition(ccp(164,510));
 	CCLabelTTF* label_name = (CCLabelTTF*)getChildByTag(2);
 	label_name->setString(name);

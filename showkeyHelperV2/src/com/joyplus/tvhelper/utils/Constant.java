@@ -9,17 +9,17 @@ public class Constant {
 	public static boolean isSimple = false;
 	public static boolean isNeedGuid = true;
 	 //正式环境
-//	 public static final boolean TestEnv = false;
-//	 public static String APPKEY = "ijoyplus_android_0001bj";
-//	 public static String BASE_URL = "http://api.showkey.tv";//视频直播源
-//	 public static String FAYE_SERVICE = "http://comet.showkey.tv";
+	 public static final boolean TestEnv = false;
+	 public static String APPKEY = "ijoyplus_android_0001bj";
+	 public static String BASE_URL = "http://api.showkey.tv";//视频直播源
+	 public static String FAYE_SERVICE = "http://comet.showkey.tv";
 	 
 	 
 	//测试环境控制
-	public static final boolean TestEnv = true;
-	 public static String APPKEY = "ijoyplus_android_0001bj";
-	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
-	 public static String FAYE_SERVICE = BASE_URL;
+//	public static final boolean TestEnv = true;
+//	 public static String APPKEY = "ijoyplus_android_0001bj";
+//	 public static final String BASE_URL = "http://tt.yue001.com:8080";//视频直播源
+//	 public static String FAYE_SERVICE = BASE_URL;
 	 
 	//刘洋环境
 //	 public static String APPKEY = "ijoyplus_android_0001bj";

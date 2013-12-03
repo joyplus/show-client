@@ -715,7 +715,7 @@ public class XunLeiLiXianUtil {
 		if (xllxFileInfo.src_url != null) {
 
 			try {
-				for (int i = 2; i > 0; i--) {
+				for (int i = 2; i >= 0; i--) {
 
 					Header[] arrayOfHeader = new Header[2];
 					arrayOfHeader[0] = new BasicHeader("cookie",getCookie(context));
@@ -774,8 +774,7 @@ public class XunLeiLiXianUtil {
 								xllxFileInfo.lx_gcid = src_infoJsonObject.getString("gcid");
 								xllxFileInfo.lx_cid = src_infoJsonObject.getString("cid");
 							}
-
-							return localArrayList;
+//							return localArrayList;
 						}
 					}
 				}

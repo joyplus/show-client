@@ -3024,6 +3024,7 @@ public class JoyplusMediaPlayerActivity extends Activity implements JoyplusMedia
 		MyApp.pool.execute(new Runnable() {
 			public void run() {
 				XLLXFileInfo xllxFileInfo = null;
+				playUrls.clear();
 				if(mProd_type == TYPE_XUNLEI){
 					try {
 						xllxFileInfo = (XLLXFileInfo) app.getmCurrentPlayDetailData().obj;

@@ -108,6 +108,11 @@ bool HistoryScnce::init()
 		notice_menu->setVisible(false);
 		addChild(notice_menu);
 
+		m_empty_back = CCSprite::create("null_baidu.png");
+		m_empty_back->setPosition(ccp(200+320+m_empty_back->getContentSize().width/2,winSize.height/2-45));
+		m_empty_back->setVisible(false);
+		addChild(m_empty_back);
+
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -121,14 +126,14 @@ void HistoryScnce::keyEnterClicked()
 			return;
 		}
 	if(m_selected_button){
-		if(m_selected_button->getTag()==13){//Delete
+		if(m_selected_button->getTag()==13){//All
 			for(int i=0; i<m_dates.size(); i++){
 				PlayHistoryInfo info = m_dates.at(i);
 				info.setEditeStatue(mSelected);
 				m_dates[i] = info;
 			}
 			tableView->reloadData();
-		}else if(m_selected_button->getTag()==14){//All
+		}else if(m_selected_button->getTag()==14){//Delete
 			//delete seleted item;
 			CSJson::Value root;
 			CSJson::Value list;
@@ -168,7 +173,23 @@ void HistoryScnce::keyEnterClicked()
 
 			LOGD("HistoryScnce","delete --->%s",writer.write(root).c_str());
 			deleatePlayHistoryListJNI(writer.write(root).c_str());
-			keyBackClicked();
+			CCSprite* menu_back = (CCSprite*)getChildByTag(15);
+			CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+			CCSprite* notice_back = (CCSprite*)getChildByTag(11);
+			CCSprite* notice_edit_back = (CCSprite*)getChildByTag(10);
+			if(m_dates.size()<=0){
+				tableView->reloadData();
+				menu_back->setVisible(false);
+				notice_menu->setVisible(false);
+				notice_back->setVisible(false);
+				notice_edit_back->setVisible(false);
+				m_empty_back->setVisible(true);
+				m_button_select_all->setVisible(false);
+				m_button_delete->setVisible(false);
+				isEditeStatue = false;
+			}else{
+				keyBackClicked();
+			}
 		}else{
 //。。。
 		}
@@ -329,14 +350,18 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 	if(info.getDuration()-info.getPlaybackTime()<10&&info.getDuration()>10){
 		pTimeLabel->setString("已看完");
 	}else{
-		CCString* time = CCString::createWithFormat("%s/%s",fomartTime(info.getPlaybackTime()).c_str(),
-										fomartTime(info.getDuration()).c_str());
-		pTimeLabel->setString(time->getCString());
+		if(info.getDuration()==0&&info.getPlaybackTime()==0){
+			pTimeLabel->setString("");
+		}else{
+			CCString* time = CCString::createWithFormat("%s/%s",fomartTime(info.getPlaybackTime()).c_str(),
+													fomartTime(info.getDuration()).c_str());
+			pTimeLabel->setString(time->getCString());
+		}
 	}
 	pSprite->setAnchorPoint(CCPointZero);
 	pSprite->setPosition(ccp(0,405));
 	pImage->setVisible(true);
-	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
+	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png",true);
 	pImage->setBoundSize(ccp(264,145));
 	return pCell;
 }
@@ -517,14 +542,19 @@ void HistoryScnce::onEnterTransitionDidFinish() {
 		CCSprite* loading = (CCSprite*)getChildByTag(250);
 		loading->stopAllActions();
 		loading->setVisible(false);
+		CCSprite* menu_back = (CCSprite*)getChildByTag(15);
+		CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+		CCSprite* notice_back = (CCSprite*)getChildByTag(11);
 		if(m_dates.size()>0){
-			CCSprite* menu_back = (CCSprite*)getChildByTag(15);
-			CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
-			CCSprite* notice_back = (CCSprite*)getChildByTag(11);
-
 			menu_back->setVisible(true);
 			notice_menu->setVisible(true);
 			notice_back->setVisible(true);
+			m_empty_back->setVisible(false);
+		}else{
+			m_empty_back->setVisible(true);
+			menu_back->setVisible(false);
+			notice_menu->setVisible(false);
+			notice_back->setVisible(false);
 		}
 		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);

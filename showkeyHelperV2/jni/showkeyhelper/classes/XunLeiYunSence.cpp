@@ -54,36 +54,12 @@ bool XunLeiYunSence::init()
 		navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
 				820));
 		addChild(navagtor_title);
-//		CCEditBox *m_pEditName = CCEditBox::create(CCSizeMake(1000,50),CCScale9Sprite::create("green_edit.png"));
-//		m_pEditName->setPosition(ccp(winSize.width/2,winSize.height/2));
-//
-//		m_pEditName->setFontSize(5);
-//		m_pEditName->setFontColor(ccRED);
-//		m_pEditName->setPlaceHolder("Name:");
-//		m_pEditName->setPlaceholderFontColor(ccWHITE);
-//		m_pEditName->setMaxLength(18);
-//
-//		this->addChild(m_pEditName);
-//
-//		usrNmaeEditView = CCTextFieldTTF::textFieldWithPlaceHolder("密码", "Arial", 34);
-//		usrNmaeEditView->setPosition(ccp(winSize.width/2,winSize.height/3+230));
-//		usrNmaeEditView->setColor(ccc3(0, 255, 0));
-//		usrNmaeEditView->setTag(TAG_XUNLEI_ACCOUNT);
-//		usrNmaeEditView->setDelegate(this);
-//		usrNmaeEditView->attachWithIME();
-//
-//		m_selectedTag = TAG_XUNLEI_ACCOUNT;
-//
-//		this->addChild(usrNmaeEditView);
-//
-//		passWordEditView = CCTextFieldTTF::textFieldWithPlaceHolder("名称", "Arial", 34);
-//		passWordEditView->setPosition(ccp(winSize.width/2,winSize.height/3+330));
-//		passWordEditView->setColor(ccc3(0, 255, 0));
-//		passWordEditView->setDelegate(this);
-//		passWordEditView->setTag(TAG_XUNLEI_PASSWORD);
-//		this->addChild(passWordEditView);
 
-//		this->setKeypadEnabled(true);
+		m_empty_back = CCSprite::create("null_baidu.png");
+		m_empty_back->setPosition(ccp(200+320+m_empty_back->getContentSize().width/2,winSize.height/2-45));
+		m_empty_back->setVisible(false);
+		addChild(m_empty_back);
+
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -109,8 +85,12 @@ void XunLeiYunSence::keyArrowClicked(int arrow)
 			case ccKeypadMSGType(kTypeLeftArrowClicked):
 				break;
 			case ccKeypadMSGType(kTypeUpArrowClicked):
-				if(tableView->getSelected()>0){
-					tableView->setSelection(tableView->getSelected()-5);
+				if(tableView->getSelected()>1){
+					if(tableView->getSelected()>5){
+						tableView->setSelection(tableView->getSelected()-5);
+					}else{
+						tableView->setSelection(1);
+					}
 				}else{
 					if(m_selectedButton->getTag()==7){
 						m_selectedButton->setSelected(false);
@@ -569,8 +549,10 @@ void XunLeiYunSence::initTableView() {
 	}
 	if(m_dates.size()>0){
 		tableView->setSelection(1);
+		m_empty_back->setVisible(false);
 	}else{
 		tableView->setSelection(0);
+		m_empty_back->setVisible(true);
 	}
 }
 

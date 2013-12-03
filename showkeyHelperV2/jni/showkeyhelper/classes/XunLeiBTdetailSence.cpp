@@ -221,7 +221,7 @@ CCTableViewCell* XunLeiBTdetailSence::tableCellAtIndex(CCListView* table,
 //		pTimeLabel->setString(time->getCString());
 //	}
 	pImage->setVisible(true);
-	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
+	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png",true);
 	pImage->setBoundSize(ccp(264,145));
 	return pCell;
 }

@@ -23,7 +23,7 @@ class CCImageView : public cocos2d::CCSprite
 public:
 //	static CCImageView* createWithLocalPath(const char *path);
 //	static CCImageView* createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize);
-	static CCImageView* createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize, bool isSave,CCImageViewDownLoadDelegte * delegte);
+//	static CCImageView* createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize, bool isSave,CCImageViewDownLoadDelegte * delegte);
 	void onDownLoadComplete(CCNode* node,CCObject* obj);
 	CCSize getBoundSize();
 	void setBoundSize(CCSize size);
@@ -31,6 +31,10 @@ public:
 	bool initWithUrl(const char *url,const char *default_local_path,bool isSave);
 	bool isSave;
 	CCImageViewDownLoadDelegte * delegere;
+
+	void setDownLoadDelegte(CCImageViewDownLoadDelegte* d){
+		delegere = d;
+	}
 
 	void setDefaultPic(const char *defaultPic_path){
 		default_pic = defaultPic_path;
@@ -42,5 +46,6 @@ private:
 	CCSize m_size;
 
 	const char* default_pic;
+	const char* m_pic_url;
 };
 #endif

@@ -26,7 +26,7 @@
 bool CCImageView::initWithUrl(const char *url, const char *defult)
 {
 	CCAssert(url != NULL, "Invalid url for sprite");
-
+	m_pic_url = url;
 	setDefaultPic(defult);
 //	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+"test1.png";
 	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+ getFileNameFromUrl(url);
@@ -49,7 +49,7 @@ bool CCImageView::initWithUrl(const char *url, const char *defult)
 	//    请求完成后回调
 		httpReq->setResponseCallback(this,callfuncND_selector(CCImageView::onDownLoadComplete));
 	//   为请求设置标签,后面可以根据这个标签来获取我们要的数据
-		httpReq->setTag("PicGet");
+		httpReq->setTag(m_pic_url);
 	//    设置连接超时时间
 		httpClient->setTimeoutForConnect(30);
 		httpClient->send(httpReq);
@@ -65,7 +65,8 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 	CCHttpResponse* response = (CCHttpResponse*)obj;
 //    判断是否响应成功
 	const char* tag = response->getHttpRequest()->getTag();
-	if (0 != strcmp("PicGet",tag))
+	LOGD("onDownLoadComplete","tag = %s \n url = %s",tag,m_pic_url);
+	if (0 != strcmp(m_pic_url,tag))
 	{
 		return;
 	}
@@ -136,25 +137,25 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 	}
 }
 
-CCImageView* CCImageView::createWithNetUrl(const char* url,
-		const char* default_local_path, CCSize boundsize, bool isSave, CCImageViewDownLoadDelegte * delegte)
-{
-	CCImageView * image_view = new CCImageView();
-	if(image_view){
-		image_view->autorelease();
-		image_view->isSave = isSave;
-		image_view->setDefaultPic(default_local_path);
-		if(delegte){
-			image_view->delegere = delegte;
-		}
-		image_view->setBoundSize(boundsize);
-		image_view->initWithUrl(url,default_local_path);
-		LOGD("CCImageView","create success");
-		return image_view;
-	}
-	CC_SAFE_DELETE(image_view);
-	return NULL;
-}
+//CCImageView* CCImageView::createWithNetUrl(const char* url,
+//		const char* default_local_path, CCSize boundsize, bool isSave, CCImageViewDownLoadDelegte * delegte)
+//{
+//	CCImageView * image_view = new CCImageView();
+//	if(image_view){
+//		image_view->autorelease();
+//		image_view->isSave = isSave;
+//		image_view->setDefaultPic(default_local_path);
+//		if(delegte){
+//			image_view->delegere = delegte;
+//		}
+//		image_view->setBoundSize(boundsize);
+//		image_view->initWithUrl(url,default_local_path);
+//		LOGD("CCImageView","create success");
+//		return image_view;
+//	}
+//	CC_SAFE_DELETE(image_view);
+//	return NULL;
+//}
 
 bool CCImageView::initWithUrl(const char* url, const char* default_local_path,
 		bool isSave) {

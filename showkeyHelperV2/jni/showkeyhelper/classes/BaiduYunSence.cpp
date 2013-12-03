@@ -53,6 +53,11 @@ bool BaiduYunSence::init() {
 			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
 					820));
 			addChild(navagtor_title);
+
+			m_empty_back = CCSprite::create("null_baidu.png");
+			m_empty_back->setPosition(ccp(200+320+m_empty_back->getContentSize().width/2,winSize.height/2-45));
+			m_empty_back->setVisible(false);
+			addChild(m_empty_back);
 //			this->setKeypadEnabled(true);
 			bRet = true;
 		} while (0);
@@ -70,9 +75,13 @@ void BaiduYunSence::keyArrowClicked(int arrow) {
 			case ccKeypadMSGType(kTypeLeftArrowClicked):
 				break;
 			case ccKeypadMSGType(kTypeUpArrowClicked):
-				if(tableView->getSelected()>0){
-					tableView->setSelection(tableView->getSelected()-5);
-				}else{
+				if(tableView->getSelected()>1){
+					if(tableView->getSelected()>5){
+						tableView->setSelection(tableView->getSelected()-5);
+					}else{
+						tableView->setSelection(1);
+					}
+				}else if(tableView->getSelected()==0){
 					if(m_selectedButton->getTag()==7){
 						m_selectedButton->setSelected(false);
 						CCButtonView * button = (CCButtonView *)m_selectedCell->getChildByTag(6);
@@ -86,7 +95,7 @@ void BaiduYunSence::keyArrowClicked(int arrow) {
 			case ccKeypadMSGType(kTypeDownArrowClicked):
 				if(tableView->getSelected()>0){
 					tableView->setSelection(tableView->getSelected()+5);
-				}else{
+				}else if(tableView->getSelected()==0){
 					if(m_selectedButton->getTag()==6){
 						m_selectedButton->setSelected(false);
 						CCButtonView * button = (CCButtonView *)m_selectedCell->getChildByTag(7);
@@ -537,11 +546,7 @@ void BaiduYunSence::initTableView() {
 	if(tableView){
 		tableView->setVisible(true);
 		tableView->reloadData();
-		if(m_dates.size()>0){
-			tableView->setSelection(1);
-		}else{
-			tableView->setSelection(0);
-		}
+
 	}else{
 		LOGD("BaiduYunSence","initTableView date size = %d" ,m_dates.size());
 		tableView = CCListView::create(this,CCSizeMake(winSize.width, 608),NULL,160.0f,0.0f,160.0f,0.0f);
@@ -550,12 +555,14 @@ void BaiduYunSence::initTableView() {
 		tableView->setDelegate(this);
 		tableView->setDirection(kCCScrollViewDirectionHorizontal);
 		tableView->setVerticalFillOrder(kCCListViewFillTopDown);
-		if(m_dates.size()>0){
-			tableView->setSelection(1);
-		}else{
-			tableView->setSelection(0);
-		}
 		this->addChild(tableView);
+	}
+	if(m_dates.size()>0){
+		tableView->setSelection(1);
+		m_empty_back->setVisible(false);
+	}else{
+		tableView->setSelection(0);
+		m_empty_back->setVisible(true);
 	}
 }
 

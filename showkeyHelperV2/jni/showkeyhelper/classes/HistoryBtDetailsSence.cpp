@@ -184,14 +184,19 @@ CCTableViewCell* HistoryBtDetailsSence::tableCellAtIndex(CCListView* table,
 	if(info.getDuration()-info.getPlaybackTime()<10&&info.getDuration()>10){
 		pTimeLabel->setString("已看完");
 	}else{
-		CCString* time = CCString::createWithFormat("%s/%s",fomartTime(info.getPlaybackTime()).c_str(),
-										fomartTime(info.getDuration()).c_str());
-		pTimeLabel->setString(time->getCString());
+		if(info.getDuration()==0&&info.getPlaybackTime()==0){
+			pTimeLabel->setString("");
+		}else{
+			CCString* time = CCString::createWithFormat("%s/%s",fomartTime(info.getPlaybackTime()).c_str(),
+													fomartTime(info.getDuration()).c_str());
+			pTimeLabel->setString(time->getCString());
+		}
+
 	}
 	pSprite->setAnchorPoint(CCPointZero);
 	pSprite->setPosition(ccp(0,405));
 	pImage->setVisible(true);
-	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png");
+	pImage->initWithUrl(info.getPicUrl().c_str(),"default_video_photo.png",true);
 	pImage->setBoundSize(ccp(264,145));
 	return pCell;
 }

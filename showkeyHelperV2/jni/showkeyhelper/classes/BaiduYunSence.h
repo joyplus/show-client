@@ -108,6 +108,7 @@ private:
 	CCTableViewCell * m_selectedCell;
 	unsigned int m_selected_id;
 	CCButtonView* m_selectedButton;
+	CCSprite* m_empty_back;
 
 	string username;
 

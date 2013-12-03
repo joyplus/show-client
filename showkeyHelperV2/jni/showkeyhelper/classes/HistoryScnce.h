@@ -200,6 +200,7 @@ private :
 
 	joyplus::CCButton * m_selected_button;
 	bool isEditeStatue;
+	CCSprite* m_empty_back;
 };
 
 #endif //_JOYPLUS_HISTORYSENCE_H_

@@ -186,6 +186,7 @@ private :
 	bool m_isRequesting;
 	unsigned int m_selected_id;
 	CCButtonView* m_selectedButton;
+	CCSprite* m_empty_back;
 };
 
 #endif /* _JOYPLUS_XUNLEIYUNSENCE_H_ */
