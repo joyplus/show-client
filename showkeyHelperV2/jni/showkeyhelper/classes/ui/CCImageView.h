@@ -26,6 +26,14 @@ public:
 //	static CCImageView* createWithNetUrl(const char *url, const char *default_local_path, CCSize boundsize, bool isSave,CCImageViewDownLoadDelegte * delegte);
 	void onDownLoadComplete(CCNode* node,CCObject* obj);
 	CCSize getBoundSize();
+
+	CCImageView(){
+		m_size = CCSizeZero;
+		default_pic = NULL;
+		m_pic_url = NULL;
+		isSave = false;
+	};
+
 	void setBoundSize(CCSize size);
 	bool initWithUrl(const char *url,const char *default_local_path);
 	bool initWithUrl(const char *url,const char *default_local_path,bool isSave);
@@ -34,10 +42,26 @@ public:
 
 	void setDownLoadDelegte(CCImageViewDownLoadDelegte* d){
 		delegere = d;
-	}
+	};
 
 	void setDefaultPic(const char *defaultPic_path){
 		default_pic = defaultPic_path;
+	};
+
+	void setUrl(const char* pic_url){
+		m_pic_url = pic_url;
+	};
+
+	const char* getUrl(){
+		return m_pic_url;
+	};
+
+	const char* getDefaultPic(){
+		return default_pic;
+	};
+
+	CCImageViewDownLoadDelegte* getDownLoadDelegate(){
+		return delegere;
 	};
 private:
 	string getFileNameFromUrl(const char * url);

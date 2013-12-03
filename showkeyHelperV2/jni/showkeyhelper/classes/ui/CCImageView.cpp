@@ -26,54 +26,60 @@
 bool CCImageView::initWithUrl(const char *url, const char *defult)
 {
 	CCAssert(url != NULL, "Invalid url for sprite");
-	m_pic_url = url;
 	setDefaultPic(defult);
 //	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+"test1.png";
 	string path = CCFileUtils::sharedFileUtils()->getWritablePath()+ getFileNameFromUrl(url);
-	if(initWithDownLoadFile(path.c_str()))
-	{
-		LOGD("CCImageView","initWithDownLoadFile success");
-		return true;
-	}else
-	{
-		LOGD("CCImageView","load from url --> %s", url);
-		initWithFile(defult);
-		CCHttpClient* httpClient = CCHttpClient::getInstance();
-		CCHttpRequest* httpReq =new CCHttpRequest();
-	//    设置请求类型
-		httpReq->setRequestType(CCHttpRequest::kHttpGet);
-	//  设置请求Url(可以更具需要从json 或xml,甚至html里解析获得到这个图片url)
-//		httpReq->setUrl("http://avatar.csdn.net/A/6/5/1_qqxj2012.jpg");
-		httpReq->setUrl(url);
-//		    httpReq->setUrl("http://bs.baidu.com/netdisk/BaiduYunSetup_web_1T.apk");
-	//    请求完成后回调
-		httpReq->setResponseCallback(this,callfuncND_selector(CCImageView::onDownLoadComplete));
-	//   为请求设置标签,后面可以根据这个标签来获取我们要的数据
-		httpReq->setTag(m_pic_url);
-	//    设置连接超时时间
-		httpClient->setTimeoutForConnect(30);
-		httpClient->send(httpReq);
-		httpReq->release();
-		httpReq=NULL;
-		return true;
+	if(isSave){
+		if(initWithDownLoadFile(path.c_str()))
+		{
+			LOGD("CCImageView","initWithDownLoadFile success");
+			return true;
+		}
 	}
-
+//	string str(url);
+//	if(str.empty()){
+//		LOGD("CCImageView","init defult %s",defult);
+//		return initWithFile(defult);
+//	}
+	setUrl(url);
+	LOGD("CCImageView","load from url --> %s \n tag = %s", url,m_pic_url);
+	initWithFile(defult);
+	CCHttpClient* httpClient = CCHttpClient::getInstance();
+	CCHttpRequest* httpReq =new CCHttpRequest();
+//    设置请求类型
+	httpReq->setRequestType(CCHttpRequest::kHttpGet);
+//  设置请求Url(可以更具需要从json 或xml,甚至html里解析获得到这个图片url)
+//		httpReq->setUrl("http://avatar.csdn.net/A/6/5/1_qqxj2012.jpg");
+	httpReq->setUrl(url);
+//		    httpReq->setUrl("http://bs.baidu.com/netdisk/BaiduYunSetup_web_1T.apk");
+//    请求完成后回调
+	httpReq->setResponseCallback(this,callfuncND_selector(CCImageView::onDownLoadComplete));
+//   为请求设置标签,后面可以根据这个标签来获取我们要的数据
+	httpReq->setTag(url);
+//    设置连接超时时间
+	httpClient->setTimeoutForConnect(30);
+	httpClient->send(httpReq);
+	httpReq->release();
+	httpReq=NULL;
+	return true;
 }
 
 void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 {
 	CCHttpResponse* response = (CCHttpResponse*)obj;
+//	CCImageView* image = (CCImageView*)node;
 //    判断是否响应成功
 	const char* tag = response->getHttpRequest()->getTag();
 	LOGD("onDownLoadComplete","tag = %s \n url = %s",tag,m_pic_url);
-	if (0 != strcmp(m_pic_url,tag))
-	{
-		return;
-	}
+//	if (0 != strcmp(m_pic_url,tag))
+//	{
+//		initWithFile(default_pic);
+//		return;
+//	}
 	if (!response->isSucceed())
 	{
 		LOGD("onGetFinished","Receive Error! %s\n",response->getErrorBuffer());
-		if(delegere){
+		if(!isSave&&delegere!=NULL){
 			LOGD("onGetFinished","notice the delegete false");
 			delegere->onResult(response->getHttpRequest()->getUrl(),false);
 		}
@@ -90,21 +96,29 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 	vector<char> *buffer = response->getResponseData();
 
 	string buff(buffer->begin(),buffer->end());
+	LOGD("onDownLoadComplete"," step %d",1);
 	if(isSave){
 		//保存到本地文件
+		LOGD("onDownLoadComplete"," step %d",2);
 		string path = CCFileUtils::sharedFileUtils()->getWritablePath()+ getFileNameFromUrl(response->getHttpRequest()->getUrl());
+		LOGD("onDownLoadComplete"," step %d",3);
 		pBuffer = CCFileUtils::sharedFileUtils()->getFileData(path.c_str(), "r", &bufferSize);
 		LOGD("CCImageView","path: %s",path.c_str());
 		FILE *fp = fopen(path.c_str(), "wb+");
 		if(fp){
+			LOGD("onDownLoadComplete"," step %d",4);
 			fwrite(buff.c_str(), 1,buffer->size(),  fp);
 			fclose(fp);
+			LOGD("onDownLoadComplete"," step %d",5);
 			if(!initWithDownLoadFile(path.c_str())){
+				LOGD("onDownLoadComplete"," step %d",6);
 				initWithFile(default_pic);
 			}
-			if(delegere){
-				delegere->onResult(response->getHttpRequest()->getUrl(),true);
-			}
+			LOGD("onDownLoadComplete"," step %d",7);
+//			CCImageViewDownLoadDelegte * delegete = CCImageView::getDownLoadDelegate();
+//			if(delegete){
+//				delegete->onResult(response->getHttpRequest()->getUrl(),true);
+//			}
 		}else{
 			LOGD("CCImageView","file：path: %s file is null",path.c_str());
 			initWithFile(default_pic);
@@ -127,8 +141,9 @@ void CCImageView::onDownLoadComplete(CCNode* node,CCObject* obj)
 				setScaleY(m_size.height/getContentSize().height);
 			}
 			texture->release();
-			if(delegere){
-				delegere->onResult(response->getHttpRequest()->getUrl(),true);
+			CCImageViewDownLoadDelegte * delegete = CCImageView::getDownLoadDelegate();
+			if(delegete){
+				delegete->onResult(response->getHttpRequest()->getUrl(),true);
 			}
 		}else{
 			initWithFile(default_pic);
@@ -172,15 +187,21 @@ bool CCImageView::initWithDownLoadFile(const char * filePath)
 	if(bufferSize!=0){
 
 		CCImage* img = new CCImage;
+		LOGD("initWithDownLoadFile"," step %d",1);
 		img->initWithImageData(pBuffer,bufferSize);
+		LOGD("initWithDownLoadFile"," step %d",2);
 		free(pBuffer);
+		LOGD("initWithDownLoadFile"," step %d",3);
 		CCTexture2D* texture = new cocos2d::CCTexture2D();
+		LOGD("initWithDownLoadFile"," step %d",4);
 		bool isImg = texture->initWithImage(img);
+		LOGD("initWithDownLoadFile"," step %d",5);
 		img->release();
 		if(!isImg){
 			LOGD("CCImageView","%s is not image" ,filePath);
 			return false;
 		}
+		LOGD("initWithDownLoadFile"," step %d",6);
 		initWithTexture(texture);
 		if(getContentSize().width!=0&&getContentSize().height!=0)
 		{

@@ -222,6 +222,14 @@ void HistoryScnce::keyArrowClicked(int arrow)
 					if(m_selected_button){
 						m_selected_button->setSelected(false);
 						m_selected_button = NULL;
+						CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
+						pLabelBack->stopAllActions();
+						CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+						CCFiniteTimeAction* actions=CCSequence::create(CCMoveTo::create(0.2f,ccp(0,450)),
+										CCCallFuncND::create(this,
+												callfuncND_selector(HistoryScnce::callBackAnim),
+												pLabel),NULL);
+						pLabelBack->runAction(actions);
 					}
 				break;
 			case ccKeypadMSGType(kTypeRightArrowClicked):
@@ -241,6 +249,13 @@ void HistoryScnce::keyArrowClicked(int arrow)
 						joyplus::CCButton* button = (joyplus::CCButton*)getChildByTag(13);
 						button->setSelected(true);
 						m_selected_button=button;
+						if(m_selectedCell){
+						CCTableCellForHistory * sLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
+						sLabelBack->stopAllActions();
+						sLabelBack->runAction(CCMoveTo::create(0.2f,ccp(0,540)));
+						CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+						pLabel->setDimensions(ccp(270, 150));
+					}
 					}
 				break;
 		}
@@ -408,7 +423,11 @@ void HistoryScnce::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 	LOGD("HistoryScnce","item %u Clicked",idx);
 	if(isEditeStatue){
 		PlayHistoryInfo info = m_dates.at(idx);
-		info.setEditeStatue(mSelected);
+		if(info.getEditeStatue()==mEdite){
+			info.setEditeStatue(mSelected);
+		}else if(info.getEditeStatue()==mSelected){
+			info.setEditeStatue(mEdite);
+		}
 		m_dates[idx] = info;
 		tableView->reloadData();
 	}else{
@@ -586,27 +605,32 @@ void HistoryScnce::keyMenuClicked() {
 	if(m_dates.size()<=0){
 		return;
 	}
-	isEditeStatue = true;
-	CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
-	CCSprite* notice_back = (CCSprite*)getChildByTag(11);
-	CCSprite* notice_menu_back = (CCSprite*)getChildByTag(10);
+	if(isEditeStatue){
+		keyBackClicked();
+	}else{
+		isEditeStatue = true;
+		CCSprite* notice_menu = (CCSprite*)getChildByTag(12);
+		CCSprite* notice_back = (CCSprite*)getChildByTag(11);
+		CCSprite* notice_menu_back = (CCSprite*)getChildByTag(10);
 
-	notice_menu->setVisible(false);
-	notice_back->setVisible(false);
-	notice_menu_back->setVisible(true);
+		notice_menu->setVisible(false);
+		notice_back->setVisible(false);
+		notice_menu_back->setVisible(true);
 
-	m_button_delete->setVisible(true);
-	m_button_select_all->setVisible(true);
+		m_button_delete->setVisible(true);
+		m_button_select_all->setVisible(true);
 
-//	m_button_select_all->setSelected(true);
-//	m_selected_button = m_button_select_all;
-	for(int i=0; i<m_dates.size(); i++){
-		PlayHistoryInfo info = m_dates.at(i);
-		info.setEditeStatue(mEdite);
-		m_dates[i] = info;
-		LOGD("HistoryScnce","info setEditeStatue %d",info.getEditeStatue());
+	//	m_button_select_all->setSelected(true);
+	//	m_selected_button = m_button_select_all;
+		for(int i=0; i<m_dates.size(); i++){
+			PlayHistoryInfo info = m_dates.at(i);
+			info.setEditeStatue(mEdite);
+			m_dates[i] = info;
+			LOGD("HistoryScnce","info setEditeStatue %d",info.getEditeStatue());
+		}
+		tableView->reloadData();
 	}
-	tableView->reloadData();
+
 }
 
 void HistoryScnce::callBackAnim(CCNode* sender, CCLabelTTF* pLabel) {
