@@ -16,18 +16,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.baidu.oauth.BaiduOAuth;
 import com.baidu.oauth.BaiduOAuth.BaiduOAuthResponse;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.R;
-import com.joyplus.tvhelper.helper.HttpClientHelper;
 import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
+import com.joyplus.tvhelper.utils.Utils;
 
 public class Cocos2dxBaiduDialog extends Dialog {
 
@@ -70,7 +69,8 @@ public class Cocos2dxBaiduDialog extends Dialog {
 				}, TIME_DELAY);
 				break;
 			case MESSAGE_GET_ERWEIMA_FAILE:
-				Toast.makeText(getContext(), "获取二维码失败", 100).show();
+				Utils.showToast(getContext(), "获取二维码失败");
+//				Toast.makeText(getContext(), "获取二维码失败", 100).show();
 				break;
 			case MESSAGE_GET_ACCESSTOKEN_SUCESS:
 				//通知登陆成功
@@ -141,7 +141,8 @@ public class Cocos2dxBaiduDialog extends Dialog {
 		oauthClient.startOAuth(getContext(), API_Key, new BaiduOAuth.OAuthListener() {
 			@Override
 			public void onException(String msg) {
-				Toast.makeText(getContext(), "Login failed " + msg, Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getContext(), "Login failed " + msg, Toast.LENGTH_SHORT).show();
+				Utils.showToast(getContext(), "登录失败");
 			}
 			@Override
 			public void onComplete(BaiduOAuthResponse response) {
@@ -154,7 +155,8 @@ public class Cocos2dxBaiduDialog extends Dialog {
 			}
 			@Override
 			public void onCancel() {
-				Toast.makeText(getContext(), "Login cancelled", Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getContext(), "Login cancelled", Toast.LENGTH_SHORT).show();
+				Utils.showToast(getContext(), "登录失败");
 			}
 		});
 	}

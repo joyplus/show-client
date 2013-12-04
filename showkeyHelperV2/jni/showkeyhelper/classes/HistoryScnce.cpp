@@ -109,7 +109,7 @@ bool HistoryScnce::init()
 		addChild(notice_menu);
 
 		m_empty_back = CCSprite::create("null.png");
-		m_empty_back->setPosition(ccp(200+320+m_empty_back->getContentSize().width/2,winSize.height/2-45));
+		m_empty_back->setPosition(ccp(490+m_empty_back->getContentSize().width/2,winSize.height/2-35));
 		m_empty_back->setVisible(false);
 		addChild(m_empty_back);
 		CCString* str = CCString::createWithFormat(getStringResouceByKeyJNI("history_emptey_notice").c_str(),getOnlineWebUrlJNI().c_str());
