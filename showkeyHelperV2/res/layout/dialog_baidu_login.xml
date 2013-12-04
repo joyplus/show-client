@@ -55,7 +55,7 @@
 	                                android:textColor="#ffffff"
 	                                android:textSize="20dp"
 	                                android:layout_marginLeft="20dp"
-	                                android:text="请打开手机内可扫描二维码的应用，将选取框对准二维码扫描，并按提示登录"
+	                                android:text="@string/baidu_login_tip1"
 	                                />
                         </LinearLayout>
                         <Button android:layout_width="200dp"
@@ -65,7 +65,7 @@
 			                android:textColor="#ffffff"
 			                android:textSize="20dp"
 			                android:background="@drawable/bg_btn_baidu_login"
-			                android:text="账号密码登陆"/>
+			                android:text="@string/baidu_button_login"/>
                         </LinearLayout>
                         <TextView android:layout_width="0dp"
                             android:layout_height="fill_parent"
@@ -86,7 +86,7 @@
                             android:padding="30dp"
                             android:textColor="#ffffff"
                             android:textSize="25dp"
-                            android:text="请将视频文件转存到：\n全部文件\\我的应用数据源\\testyunpan"/>
+                            android:text="@string/baidu_login_tip2"/>
                     </LinearLayout>
                     <TextView android:layout_width="fill_parent"
                         android:layout_height="0dp"

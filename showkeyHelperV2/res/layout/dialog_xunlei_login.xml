@@ -55,7 +55,7 @@
 			                    android:layout_height="wrap_content"
 			                    android:id="@+id/account_edit"
 			                    android:singleLine="true"
-			                    android:hint="账      号"
+			                    android:hint="@string/xunlei_login_usrname_hint"
 			                    android:inputType="textEmailAddress"
 			                    android:background="@drawable/bg_edite_login_xunlei_account"
 			                    android:layout_marginLeft="10dp"
@@ -75,7 +75,7 @@
 			                    android:layout_height="wrap_content"
 			                    android:id="@+id/passowrd_edit"
 			                    android:singleLine="true"
-			                    android:hint="密  码"
+			                    android:hint="@string/xunlei_login_passwd_hint"
 			                    android:inputType="textPassword"
 			                    android:background="@drawable/bg_edite_login_xunlei_password"
 			                    android:layout_marginLeft="10dp"
@@ -98,7 +98,7 @@
 			                    android:id="@+id/yanzhengma_edit"
 			                    android:layout_marginLeft="8dp"
 			                    android:singleLine="true"
-			                    android:hint="验 证 码"
+			                    android:hint="@string/xunlei_login_verify_code_hint"
 			                    android:background="@drawable/bg_edite_login_xunlei_vcode"
 			                    android:layout_weight="1"/>
 			                <ImageView android:layout_width="100dp"
@@ -117,7 +117,7 @@
 			                android:textSize="20dp"
 			                android:layout_marginLeft="10dp"
 			                android:background="@drawable/bg_btn_baidu_login"
-			                android:text="登      录"/>
+			                android:text="@string/xunlei_login_button_login"/>
                         </LinearLayout>
                         <TextView android:layout_width="0dp"
                             android:layout_height="fill_parent"
@@ -128,10 +128,17 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
-                    <ImageView android:layout_weight="6"
+                    <LinearLayout android:layout_weight="6"
 	                    android:layout_height="0dp"
 	                    android:background="@drawable/login_baidu_tip"
-	                    android:layout_width="fill_parent"/>
+	                    android:layout_width="fill_parent">
+                        <TextView android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:padding="30dp"
+                            android:textColor="#ffffff"
+                            android:textSize="25dp"
+                            android:text="@string/xunlei_login_tip"/>
+                    </LinearLayout>
                     <TextView android:layout_width="fill_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"/>

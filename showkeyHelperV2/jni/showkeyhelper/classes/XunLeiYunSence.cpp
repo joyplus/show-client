@@ -50,15 +50,20 @@ bool XunLeiYunSence::init()
 				820));
 		addChild(divider);
 
-		CCLabelTTF* navagtor_title = CCLabelTTF::create("迅雷云", "Arial", 32.0);
+		CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("xunlei_title").c_str(), "Arial", 32.0);
 		navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
 				820));
 		addChild(navagtor_title);
 
-		m_empty_back = CCSprite::create("null_baidu.png");
+		m_empty_back = CCSprite::create("null.png");
 		m_empty_back->setPosition(ccp(200+320+m_empty_back->getContentSize().width/2,winSize.height/2-45));
 		m_empty_back->setVisible(false);
 		addChild(m_empty_back);
+
+		m_empty_notice = CCLabelTTF::create(getStringResouceByKeyJNI("xunlei_emptey_notice").c_str(), "Arial", 30.0);
+		m_empty_notice->setPosition(m_empty_back->getPosition());
+		m_empty_notice->setVisible(false);
+		addChild(m_empty_notice);
 
 		bRet = true;
 	} while (0);
@@ -435,13 +440,13 @@ CCTableViewCell* XunLeiYunSence::tableCellAtIndex(CCListView* table,
 		pTimeLabel->setTag(5);
 		pCell->addChild(pTimeLabel);
 
-		pButton = CCButtonView::create("xunlei_button_refresh.png","xunlei_selected_button.png","刷  新",70,0,0,0);
+		pButton = CCButtonView::create("xunlei_button_refresh.png","xunlei_selected_button.png",getStringResouceByKeyJNI("button_refresh").c_str(),70,0,0,0);
 		pButton->setAnchorPoint(ccp(0.5,0.5));
 		pButton->setPosition(ccp(165,178));
 		pButton->setTag(6);
 		pCell->addChild(pButton);
 
-		pRefreshButton = CCButtonView::create("xunlei_button_logout.png","xunlei_selected_button.png","注  销",70,0,0,0);
+		pRefreshButton = CCButtonView::create("xunlei_button_logout.png","xunlei_selected_button.png",getStringResouceByKeyJNI("logout_logout").c_str(),70,0,0,0);
 		pRefreshButton->setAnchorPoint(ccp(0.5,0.5));
 		pRefreshButton->setPosition(ccp(165,89));
 		pRefreshButton->setTag(7);
@@ -550,9 +555,11 @@ void XunLeiYunSence::initTableView() {
 	if(m_dates.size()>0){
 		tableView->setSelection(1);
 		m_empty_back->setVisible(false);
+		m_empty_notice->setVisible(false);
 	}else{
 		tableView->setSelection(0);
 		m_empty_back->setVisible(true);
+		m_empty_notice->setVisible(true);
 	}
 }
 

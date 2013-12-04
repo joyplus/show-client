@@ -1,9 +1,5 @@
 package com.joyplus.tvhelper.utils;
 
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import info.monitorenter.cpdetector.io.JChardetFacade;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +13,6 @@ import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +44,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
-import com.joyplus.mediaplayer.JoyplusMediaPlayerManager;
 import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.entity.URLS_INDEX;
 

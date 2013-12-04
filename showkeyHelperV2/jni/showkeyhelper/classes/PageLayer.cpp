@@ -22,13 +22,13 @@ bool PageLayer::init()
 			pincode->setZOrder(1);
 			this->addChild(pincode);
 
-			CCButtonView * settingButton = CCButtonView::create("button_setting.png","selected6_button.png","设置",50,0,0,0);
+			CCButtonView * settingButton = CCButtonView::create("button_setting.png","selected6_button.png",getStringResouceByKeyJNI("main_pincode_setting").c_str(),50,0,0,0);
 			settingButton->setAnchorPoint(ccp(0.5,0.5));
 			settingButton->setTag(TAG_BUTTON_SETTING);
 			settingButton->setPosition(ccp(PADING_LEFT+settingButton->getContentSize().width/2,pincode->getPositionY()+settingButton->getContentSize().height/2));
 			this->addChild(settingButton);
 
-			CCButtonView * refreshButton = CCButtonView::create("button_refresh.png","selected6_button.png","刷新PIN码",50,0,0,0);
+			CCButtonView * refreshButton = CCButtonView::create("button_refresh.png","selected6_button.png",getStringResouceByKeyJNI("main_pincode_refresh").c_str(),50,0,0,0);
 			refreshButton->setAnchorPoint(ccp(0.5,0.5));
 			refreshButton->setTag(TAG_BUTTON_REFRESH);
 			refreshButton->setPosition(ccp(PADING_LEFT+settingButton->getContentSize().width/2,-14+pincode->getPositionY()+(refreshButton->getContentSize().height+settingButton->getContentSize().height/2)));

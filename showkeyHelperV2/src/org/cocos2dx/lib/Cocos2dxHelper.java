@@ -564,6 +564,10 @@ public class Cocos2dxHelper {
 		}
     }
     
+    public static String getOnlineWebUrl(){
+    	return Cocos2dxHelper.sCocos2dxHelperListener.getDisplayWebUrl();
+    }
+    
     public static String getPlayList(){
     	try{
     		DBServices services = DBServices.getInstance(sContext);
@@ -665,5 +669,7 @@ public class Cocos2dxHelper {
 		public void updateQQ();
 		
 		public void runOnGLThread(final Runnable pRunnable);
+		
+		public String getDisplayWebUrl();
 	}
 }

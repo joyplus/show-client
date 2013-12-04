@@ -187,6 +187,7 @@ private :
 	unsigned int m_selected_id;
 	CCButtonView* m_selectedButton;
 	CCSprite* m_empty_back;
+	CCLabelTTF* m_empty_notice;
 };
 
 #endif /* _JOYPLUS_XUNLEIYUNSENCE_H_ */

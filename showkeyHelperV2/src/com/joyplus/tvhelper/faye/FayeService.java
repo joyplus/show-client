@@ -141,7 +141,6 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 //						}
 					}else{
 						CurrentPlayDetailData playDate = new CurrentPlayDetailData();
-//						final Intent intent_play = new Intent(FayeService.this,VideoPlayerJPActivity.class);
 						final Intent intent_play = Utils.getIntent(FayeService.this);
 						
 						intent_play.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -565,7 +564,7 @@ public class FayeService extends Service implements  Observer, DownLoadListner{
 										}
 										play_info.setId((int)services.insertMoviePlayHistory(play_info));
 									}else{
-										play_info.setDefination(Constant.DEFINATION_HD2);
+										play_info.setDefination(PreferencesUtils.getDefualteDefination(app));
 										play_info.setName(push_name);
 										play_info.setRecivedDonwLoadUrls(push_play_url);
 										play_info.setPlay_type(MoviePlayHistoryInfo.PLAY_TYPE_ONLINE);

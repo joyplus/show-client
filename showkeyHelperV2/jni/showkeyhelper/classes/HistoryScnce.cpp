@@ -58,7 +58,7 @@ bool HistoryScnce::init()
 				820));
 		addChild(divider);
 
-		CCLabelTTF* navagtor_title = CCLabelTTF::create("推送历史", "Arial", 32.0);
+		CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("history_title").c_str(), "Arial", 32.0);
 		navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
 				820));
 		addChild(navagtor_title);
@@ -108,10 +108,15 @@ bool HistoryScnce::init()
 		notice_menu->setVisible(false);
 		addChild(notice_menu);
 
-		m_empty_back = CCSprite::create("null_baidu.png");
+		m_empty_back = CCSprite::create("null.png");
 		m_empty_back->setPosition(ccp(200+320+m_empty_back->getContentSize().width/2,winSize.height/2-45));
 		m_empty_back->setVisible(false);
 		addChild(m_empty_back);
+		CCString* str = CCString::createWithFormat(getStringResouceByKeyJNI("history_emptey_notice").c_str(),getOnlineWebUrlJNI().c_str());
+		m_empty_notice = CCLabelTTF::create(str->getCString(), "Arial", 30.0);
+		m_empty_notice->setPosition(m_empty_back->getPosition());
+		m_empty_notice->setVisible(false);
+		addChild(m_empty_notice);
 
 		bRet = true;
 	} while (0);
@@ -133,6 +138,10 @@ void HistoryScnce::keyEnterClicked()
 				m_dates[i] = info;
 			}
 			tableView->reloadData();
+			CCLabelTTF *pLabel = (CCLabelTTF*)m_selectedCell->getChildByTag(4);
+			pLabel->setDimensions(ccp(270, 150));
+			CCTableCellForHistory * pLabelBack = (CCTableCellForHistory*)m_selectedCell->getChildByTag(3);
+			pLabelBack->setPosition(ccp(0,540));
 		}else if(m_selected_button->getTag()==14){//Delete
 			//delete seleted item;
 			CSJson::Value root;
@@ -184,6 +193,7 @@ void HistoryScnce::keyEnterClicked()
 				notice_back->setVisible(false);
 				notice_edit_back->setVisible(false);
 				m_empty_back->setVisible(true);
+				m_empty_notice->setVisible(true);
 				m_button_select_all->setVisible(false);
 				m_button_delete->setVisible(false);
 				isEditeStatue = false;
@@ -363,7 +373,7 @@ cocos2d::extension::CCTableViewCell* HistoryScnce::tableCellAtIndex(
 		pLabel->setDimensions(ccp(270, 150));
 	}
 	if(info.getDuration()-info.getPlaybackTime()<10&&info.getDuration()>10){
-		pTimeLabel->setString("已看完");
+		pTimeLabel->setString(getStringResouceByKeyJNI("history_finished").c_str());
 	}else{
 		if(info.getDuration()==0&&info.getPlaybackTime()==0){
 			pTimeLabel->setString("");
@@ -569,8 +579,10 @@ void HistoryScnce::onEnterTransitionDidFinish() {
 			notice_menu->setVisible(true);
 			notice_back->setVisible(true);
 			m_empty_back->setVisible(false);
+			m_empty_notice->setVisible(false);
 		}else{
 			m_empty_back->setVisible(true);
+			m_empty_notice->setVisible(true);
 			menu_back->setVisible(false);
 			notice_menu->setVisible(false);
 			notice_back->setVisible(false);

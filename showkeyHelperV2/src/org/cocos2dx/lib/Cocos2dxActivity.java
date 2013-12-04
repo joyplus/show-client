@@ -37,6 +37,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -50,6 +53,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
+import com.joyplus.tvhelper.MainActivity;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.PlayBaiduActivity;
 import com.joyplus.tvhelper.R;
@@ -66,6 +70,7 @@ import com.joyplus.tvhelper.utils.HttpTools;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
+import com.umeng.analytics.MobclickAgent;
 
 public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelperListener {
 	// ===========================================================
@@ -79,6 +84,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	// ===========================================================
 	
 	private Cocos2dxGLSurfaceView mGLSurfaceView;
+	private String umeng_channel;
 	private Cocos2dxHandler mHandler;
 	private static Context sContext = null;
 	
@@ -121,6 +127,20 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		IntentFilter filter = new IntentFilter(Global.ACTION_BAND_SUCCESS);
 		filter.addAction(Global.ACTION_UN_BAND_SUCCESS);
 		registerReceiver(mReceiver, filter);
+		
+		ApplicationInfo info = null;
+		try {
+			info = this.getPackageManager().getApplicationInfo(getPackageName(),
+			        PackageManager.GET_META_DATA);
+			umeng_channel = info.metaData.getString("UMENG_CHANNEL");
+			Log.d(TAG, "key--->" + "URL"+ umeng_channel);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(umeng_channel==null||umeng_channel.length()==0){
+			umeng_channel = "j001";
+		}
 	}
 
 	// ===========================================================
@@ -167,7 +187,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	public void generatePincode() {
 		// TODO Auto-generated method stub
 		if(!HttpUtils.isNetworkAvailable(this)){
-			Utils.showToast(this, "检查网络设置");
+			Utils.showToast(this, getResources().getString(R.string.main_pincode_notice));
 			mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE);
 			return;
 		}
@@ -397,6 +417,19 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	}
 	
 	@Override
+	public String getDisplayWebUrl() {
+		// TODO Auto-generated method stub
+			String online_base_url = MobclickAgent.getConfigParams(this, "URL"+ umeng_channel);
+		Log.d(TAG, "online_base_url----->" + online_base_url);
+		if(online_base_url!=null&&online_base_url.length()>0){
+			PreferencesUtils.setWebUrl(this, online_base_url);
+		}else{
+			online_base_url = "tt.showkey.tv";
+		}
+		return online_base_url;
+	}
+	
+	@Override
 	public void showBaiduDailog() {
 		// TODO Auto-generated method stub
 		Message msg = new Message();
@@ -500,6 +533,8 @@ protected void onDestroy() {
 	 unregisterReceiver(mReceiver);
 	super.onDestroy();
 }
+   
+   
    
 	// ===========================================================
 	// Inner and Anonymous Classes

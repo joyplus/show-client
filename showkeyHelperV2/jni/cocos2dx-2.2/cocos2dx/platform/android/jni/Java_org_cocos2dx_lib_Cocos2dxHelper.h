@@ -77,6 +77,7 @@ extern void setFloatForKeyJNI(const char* pKey, float value);
 extern void setDoubleForKeyJNI(const char* pKey, double value);
 extern void setStringForKeyJNI(const char* pKey, const char* value);
 extern std::string getStringResouceByKeyJNI(const char* pKey);
+extern std::string getOnlineWebUrlJNI();
 extern std::string getDecodeStringFromJNI(const char* pKey);
 
 

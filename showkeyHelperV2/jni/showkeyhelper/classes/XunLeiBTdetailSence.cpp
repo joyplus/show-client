@@ -40,7 +40,7 @@ bool XunLeiBTdetailSence::init() {
 					820));
 			addChild(divider);
 
-			CCLabelTTF* navagtor_title = CCLabelTTF::create("迅雷云", "Arial", 27.0);
+			CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("xunlei_title").c_str(), "Arial", 27.0);
 			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
 					820));
 			addChild(navagtor_title);

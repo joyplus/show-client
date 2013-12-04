@@ -2,48 +2,56 @@
 <resources>
     <string name="app_name">转屏助手</string>
     
-    <string name="login_xunlei_title">迅雷云播</string>
-    <string name="login_xunlei_vipname">白金账户</string>
     
-    <string name="login_xunlei_usrname_hint">输入账户名</string>
-    <string name="login_xunlei_passwd_hint">输入密码</string>
-    <string name="login_xunlei_verify_code_hint">验证码</string>
-    
-    <string name="login_xunlei_login">登陆</string>
-    <string name="login_list_title">云播放列表</string>
-    
-    <string name="logout_welcom">欢迎您 !</string>
-    <string name="logout_nickname">昵称:</string>
-    <string name="logout_userid">账号:</string>
-    <string name="logout_rank">会员等级:</string>
-    <string name="logout_out_date">到期日期:</string>
-    <string name="logout_logout">注销</string>
-    
-    <string name="button_back">返  回</string>
-    <string name="button_refresh">刷  新</string>
-    <string name="button_edit">编  辑</string>
-    <string name="button_canle_edit">取消编辑</string>
-    <string name="button_del">删  除</string>
-    
-    <string name=" networknotwork">你的网络好像有问题，请重试！</string>
-    
-    <string name="setting_about">\n志精科技洞察消费者视频娱乐消费习惯变革的趋势，致力于成为家庭娱乐分享的引擎。
-        \n\n使命：分享生活和爱的乐趣
-        \n\n愿景：成为家庭娱乐分享引擎
-        \n\n宗旨：
-        \n\n嫁接起移动屏幕和大屏幕的娱乐应用桥梁；
-        \n体验极富乐趣的家庭互动娱乐生活；
-        \n实现多屏合一智能化高效监播体系
-        \n\n企业文化：
-        \n\n先行与恒持——行业先导与使命必达
-        \n分享与共荣——高效沟通与利益共享
-        \n激情与守信——阳光心境与信誉为先
-        \n\n口号：Enjoy sharing life</string>
+<!--     <string name="logout_welcom">欢迎您 !</string> -->
+<!--     <string name="logout_nickname">昵称:</string> -->
+<!--     <string name="logout_userid">账号:</string> -->
+<!--     <string name="logout_rank">会员等级:</string> -->
+<!--     <string name="logout_out_date">到期日期:</string> -->
+    <string name="logout_logout">注    销</string>
+    <string name="button_refresh">刷     新</string>
+    <string name="networknotwork">你的网络好像有问题，请重试！</string>
+    <!-- setting -->
+    <string name="setting_title">设置</string>
      <string name="setting_immediately_show_tip">开启后推送的视频将在推送记录中等着您呢</string>
      <string name="setting_decode_mode_tip">使用不同的解码方式可以在不同的设备上得到不同的效果哦</string>
      <string name="setting_default_decrease_tip">如果您经常推送已有字幕的视频，可将其关闭</string>
      <string name="setting_default_resolution_tip">您可以根据自己的带宽水平调整清晰度，当然是推荐超清啦</string>
      <string name="setting_size_decrease_tip">字幕小了，改大点再试试</string>
      <string name="setting_back_tip">可以还原默认的设置</string>
-     <string name="setting_cancel_qq_tip">解绑后，将不能再通过您的QQ账户推送视频至此设备</string>     
+     <string name="setting_cancel_qq_tip">解绑后，将不能再通过您的QQ账户推送视频至此设备</string>  
+     <string name="setting_cancel_qq_success">解除绑定成功</string>  
+     <string name="setting_cancel_qq_faile">解除绑定失败</string>  
+     
+      <string name="setting_notice_immediately_show">稍后观看</string>
+      <string name="setting_notice_decode_mode">播放解码</string>
+      <string name="setting_notice_default_decrease">字幕默认</string>
+      <string name="setting_notice_resolution">默认清晰度</string>
+      <string name="setting_notice_size_decreasee">字幕大小</string>
+      <string name="setting_notice_cancel_qq">解绑QQ账户</string>
+      <string name="setting_notice_set_all_default">恢复默认设置</string>
+     
+     <!-- main -->
+     <string name="main_pincode_refresh">刷新PIN码</string>
+     <string name="main_pincode_setting">设             置</string>
+     <string name="main_pincode_notice">获取PIN码失败</string>
+     
+     <!-- history -->
+     <string name="history_title">推送历史</string>
+     <string name="history_finished">已看完</string>
+     <string name="history_emptey_notice">您尚未推送任何视频资源\n请访问%s\n去发现更多惊喜</string>
+     
+     <!-- xunlei -->
+     <string name="xunlei_title">迅雷云</string>
+     <string name="xunlei_login_usrname_hint">账      号</string>
+     <string name="xunlei_login_passwd_hint">密  码</string>
+     <string name="xunlei_login_verify_code_hint">验 证 码</string>
+      <string name="xunlei_login_button_login">登      录</string>
+     <string name="xunlei_login_tip">只有白金账户才能使用云播放。\n此登陆为模拟登陆，转屏助手不会记录和采集任何账户信息。</string>
+     <string name="xunlei_emptey_notice">您的迅雷云未发现视频资源\n请登录迅雷云并上传视频资源</string>
+     <!-- baidu -->
+     <string name="baidu_title">百度云</string>
+     <string name="baidu_button_login">账号密码登陆</string>
+     <string name="baidu_login_tip1">请打开手机内可扫描二维码的应用，将选取框对准二维码扫描，并按提示登录</string>
+     <string name="baidu_login_tip2">请将视频文件转存到：\n全部文件\\我的应用数据源\\testyunpan</string>
 </resources>

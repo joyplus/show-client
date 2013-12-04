@@ -663,6 +663,20 @@ std::string getQQAvatarJNI() {
 	return ret;
 }
 
+extern std::string getOnlineWebUrlJNI() {
+	JniMethodInfo t;
+	std::string ret("");
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "getOnlineWebUrl", "()Ljava/lang/String;")) {
+
+		jstring str = (jstring)t.env->CallStaticObjectMethod(t.classID, t.methodID);
+		ret = JniHelper::jstring2string(str);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(str);
+	}
+
+	return ret;
+}
+
 std::string getDecodeStringFromJNI(const char* pKey)
 {
 	JniMethodInfo t;
