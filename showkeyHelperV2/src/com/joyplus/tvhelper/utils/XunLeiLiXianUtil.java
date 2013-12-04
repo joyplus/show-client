@@ -759,8 +759,8 @@ public class XunLeiLiXianUtil {
 										.getJSONObject(j).getString("vod_url");
 //								localVideoPlayUrl.playurl = localJSONArray
 //										.getJSONObject(j).getString("vod_url");
-								localVideoPlayUrl.sharp = SharpnessEnum.getSharp(j);
-								localVideoPlayUrl_1.sharp = SharpnessEnum.getSharp(j);
+								localVideoPlayUrl.sharp = SharpnessEnum.getSharp(j+1);
+								localVideoPlayUrl_1.sharp = SharpnessEnum.getSharp(j+1);
 								localVideoPlayUrl.isCanDrag = true;
 								localVideoPlayUrl_1.isCanDrag = true;
 								localArrayList.add(localVideoPlayUrl);
