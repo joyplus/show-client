@@ -296,6 +296,9 @@ void XunLeiYunSence::tableCellClicked(CCListView* table, CCTableViewCell* cell,
 		}else{//注销
 			m_dates.clear();
 			tableView->setVisible(false);
+			m_selectedButton->setSelected(false);
+			m_empty_back->setVisible(false);
+			m_empty_notice->setVisible(false);
 	//		tableView->reloadData();
 			CCSprite* loading = (CCSprite*)getChildByTag(250);
 			loading->setVisible(true);

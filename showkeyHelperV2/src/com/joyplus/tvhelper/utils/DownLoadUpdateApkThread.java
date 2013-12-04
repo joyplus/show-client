@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.cocos2dx.lib.Cocos2dxHandler;
+import org.cocos2dx.lib.Cocos2dxHelper;
+
 import android.content.Context;
 
 import com.joyplus.tvhelper.utils.Log;
@@ -45,7 +48,7 @@ public class DownLoadUpdateApkThread implements Runnable {
 //			if(!dir.exists()){
 //				dir.mkdirs();
 //			}
-			File f = new File(cacheDir, NAME_APK_DOWNLOADING);
+			File f = new File(Cocos2dxHelper.getCocos2dxWritablePath(), NAME_APK_DOWNLOADING);
 			Log.d("TAG", f.getAbsolutePath());
 			if(!f.exists()){
 				f.createNewFile();
@@ -58,7 +61,7 @@ public class DownLoadUpdateApkThread implements Runnable {
 			   out.write(b, 0, len);
 			   out.flush();
 		    }
-		    File f_downloaded = new File(cacheDir, NAME_APK_DOWNLOADED);
+		    File f_downloaded = new File(Cocos2dxHelper.getCocos2dxWritablePath(), NAME_APK_DOWNLOADED);
 		    f.renameTo(f_downloaded);
 		    Utils.chmod("777", f_downloaded.getAbsolutePath());
 		    Log.d("TAG", "---------------download");

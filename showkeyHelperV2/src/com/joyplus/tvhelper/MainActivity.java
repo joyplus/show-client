@@ -27,6 +27,7 @@ import java.io.File;
 import java.net.URLDecoder;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHelper;
 
 import com.joyplus.tvhelper.utils.DownLoadUpdateApkThread;
 import com.joyplus.tvhelper.utils.Log;
@@ -68,9 +69,12 @@ public class MainActivity extends Cocos2dxActivity{
 	            	Log.d(TAG, "path ------>" + updateInfo.path);
 	            	Log.d(TAG, "log---->" + updateInfo.updateLog);
 	            	Log.d(TAG, "version---->" + updateInfo.version);
-	            	final File f = new File(getCacheDir(), DownLoadUpdateApkThread.NAME_APK_DOWNLOADED);
+	            	final File f = new File(Cocos2dxHelper.getCocos2dxWritablePath(), DownLoadUpdateApkThread.NAME_APK_DOWNLOADED);
 	            	if(f.exists()){
 	            		PackageInfo info = PackageUtils.getAppPackageInfo(MainActivity.this, f.getAbsolutePath());
+	            		if(info!=null){
+	            			Log.d(TAG, "info.versionName = " + info.versionName);
+	            		}
 	            		if(info != null&&info.versionName!=null&&info.versionName.equals(updateInfo.version)){
 	            			//Toast.makeText(MainActivity.this, "可以更新啦", Toast.LENGTH_SHORT).show();
 	            			AlertDialog.Builder builder = new Builder(MainActivity.this);
@@ -86,6 +90,7 @@ public class MainActivity extends Cocos2dxActivity{
 		            				   try {
 		            						Uri packageURI =Uri.parse("file://"+f.getAbsolutePath());
 		            						Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE, packageURI);
+		            						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		            						startActivity(intent);
 		            					} catch (Exception e) {
 		            						// TODO: handle exception
