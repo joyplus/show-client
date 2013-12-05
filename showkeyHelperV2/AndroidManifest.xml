@@ -111,8 +111,8 @@
                 <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
             </intent-filter>
         </receiver>
-		<meta-data android:value="529ef4fd56240b83c60f0181" android:name="UMENG_APPKEY"></meta-data>
-		<meta-data android:value="t013001" android:name="UMENG_CHANNEL"/>
+		<meta-data android:value="51e75b5956240ba99502e874" android:name="UMENG_APPKEY"></meta-data>
+		<meta-data android:value="test001" android:name="UMENG_CHANNEL"/>
     </application>
     <supports-screens android:largeScreens="true"
                       android:smallScreens="true"
