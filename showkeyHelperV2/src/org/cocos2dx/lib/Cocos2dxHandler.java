@@ -26,9 +26,11 @@ package org.cocos2dx.lib;
 
 import java.lang.ref.WeakReference;
 
+import com.joyplus.tvhelper.R;
 import com.joyplus.tvhelper.ui.Cocos2dxBaiduDialog;
 import com.joyplus.tvhelper.ui.Cocos2dxXunLeiLoginDialog;
 import com.joyplus.tvhelper.ui.SettingDialog;
+import com.joyplus.tvhelper.utils.Utils;
 
 
 import android.app.AlertDialog;
@@ -48,6 +50,7 @@ public class Cocos2dxHandler extends Handler {
 	public final static int MESSAGE_GETPINCODE_FAILE = 6;
 	public final static int HANDLER_SHOW_SETTING_DIALOG=7;
 	public final static int HANDLER_UPDATE_QQ=8;
+	public final static int HANDLER_NET_NOT_CONNECT=9;
 	
 	// ===========================================================
 	// Fields
@@ -98,6 +101,9 @@ public class Cocos2dxHandler extends Handler {
 			break;
 		case HANDLER_UPDATE_QQ:
 			Cocos2dxHelper.updateQQdisplay();
+			break;
+		case HANDLER_NET_NOT_CONNECT:
+			Utils.showToast(mActivity.get(), mActivity.get().getString(R.string.networknotwork));
 			break;
 		}
 	}

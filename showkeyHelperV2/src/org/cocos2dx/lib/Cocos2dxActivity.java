@@ -24,8 +24,6 @@ THE SOFTWARE.
 package org.cocos2dx.lib;
 
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.cocos2dx.lib.Cocos2dxHelper.Cocos2dxHelperListener;
 import org.json.JSONArray;
@@ -40,20 +38,22 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
-import com.joyplus.tvhelper.MainActivity;
 import com.joyplus.tvhelper.MyApp;
 import com.joyplus.tvhelper.PlayBaiduActivity;
 import com.joyplus.tvhelper.R;
@@ -84,6 +84,10 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	// ===========================================================
 	
 	private Cocos2dxGLSurfaceView mGLSurfaceView;
+	
+	private ImageView icon_net_statue;
+	private TextView text_net_statue;
+	
 	private String umeng_channel;
 	private Cocos2dxHandler mHandler;
 	private static Context sContext = null;
@@ -105,6 +109,10 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 				updateQQ();
 			}else if(Global.ACTION_UN_BAND_SUCCESS.equals(action)){
 				Cocos2dxHelper.updateQQdisplay();
+			}else if(WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())){
+				
+			}else if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)){
+				checkNetStatue();
 			}
 		}
 	};
@@ -126,6 +134,8 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 		
 		IntentFilter filter = new IntentFilter(Global.ACTION_BAND_SUCCESS);
 		filter.addAction(Global.ACTION_UN_BAND_SUCCESS);
+		filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		registerReceiver(mReceiver, filter);
 		
 		ApplicationInfo info = null;
@@ -187,8 +197,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	public void generatePincode() {
 		// TODO Auto-generated method stub
 		if(!HttpUtils.isNetworkAvailable(this)){
-			Utils.showToast(this, getResources().getString(R.string.main_pincode_notice));
-			mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE);
+			mHandler.sendEmptyMessage(Cocos2dxHandler.HANDLER_NET_NOT_CONNECT);
 			return;
 		}
 		MyApp.pool.execute(new Runnable() {
@@ -451,69 +460,102 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         ViewGroup.LayoutParams framelayout_params =
             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
                                        ViewGroup.LayoutParams.FILL_PARENT);
-        FrameLayout framelayout = new FrameLayout(this);
-        framelayout.setLayoutParams(framelayout_params);
-
-        // Cocos2dxEditText layout
-        ViewGroup.LayoutParams edittext_layout_params =
-            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-                                       ViewGroup.LayoutParams.WRAP_CONTENT);
-        ViewGroup.LayoutParams back_params =
-        		new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-        				ViewGroup.LayoutParams.FILL_PARENT);
-        ViewGroup.LayoutParams label_params =
-        		new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-        				ViewGroup.LayoutParams.WRAP_CONTENT);
-        Cocos2dxEditText edittext = new Cocos2dxEditText(this);
-        ImageView back = new ImageView(this);
-        back.setScaleType(ScaleType.FIT_XY);
-        back.setBackgroundResource(R.drawable.back);
-        back.setLayoutParams(back_params);
-        edittext.setLayoutParams(edittext_layout_params);
-
-        TextView tv = new TextView(this);
-        tv.setText("V2内测版");
-        tv.setGravity(Gravity.RIGHT);
-        tv.setTextSize(20);
-        tv.setPadding(0	, Utils.getStandardValue(this, 50), Utils.getStandardValue(this, 40), 0);
-        // ...add to FrameLayout
-        framelayout.addView(edittext);
-        framelayout.addView(back);
-        framelayout.addView(tv);
-        // Cocos2dxGLSurfaceView
+//        FrameLayout framelayout = new FrameLayout(this);
+//        framelayout.setLayoutParams(framelayout_params);
+//
+//        // Cocos2dxEditText layout
+//        ViewGroup.LayoutParams edittext_layout_params =
+//            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+//                                       ViewGroup.LayoutParams.WRAP_CONTENT);
+//        ViewGroup.LayoutParams back_params =
+//        		new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+//        				ViewGroup.LayoutParams.FILL_PARENT);
+//        ViewGroup.LayoutParams label_params =
+//        		new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+//        				ViewGroup.LayoutParams.WRAP_CONTENT);
+//        Cocos2dxEditText edittext = new Cocos2dxEditText(this);
+//        ImageView back = new ImageView(this);
+//        back.setScaleType(ScaleType.FIT_XY);
+//        back.setBackgroundResource(R.drawable.back);
+//        back.setLayoutParams(back_params);
+//        edittext.setLayoutParams(edittext_layout_params);
+//
+//        TextView tv = new TextView(this);
+//        tv.setText("V2内测版");
+//        tv.setGravity(Gravity.RIGHT);
+//        tv.setTextSize(20);
+//        tv.setPadding(0	, Utils.getStandardValue(this, 50), Utils.getStandardValue(this, 40), 0);
+//        // ...add to FrameLayout
+//        framelayout.addView(edittext);
+//        framelayout.addView(back);
+//        framelayout.addView(tv);
+//        // Cocos2dxGLSurfaceView
+        
+        View v = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
+        RelativeLayout framelayout = (RelativeLayout)v.findViewById(R.id.main_fram);
+        text_net_statue = (TextView) v.findViewById(R.id.ssid_text);
+        icon_net_statue = (ImageView) v.findViewById(R.id.net_statue);
         this.mGLSurfaceView = this.onCreateView();
-
         // ...add to FrameLayout
         framelayout.addView(this.mGLSurfaceView);
-
         // Switch to supported OpenGL (ARGB888) mode on emulator
         //if (isAndroidEmulator())
         this.mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         this.mGLSurfaceView.setCocos2dxRenderer(new Cocos2dxRenderer());
-        this.mGLSurfaceView.setCocos2dxEditText(edittext);
+//        this.mGLSurfaceView.setCocos2dxEditText(edittext);
 
-        
         // Set framelayout as the content view
-		setContentView(framelayout);
+		setContentView(v);
+		
+		checkNetStatue();
 	}
 	
-    public Cocos2dxGLSurfaceView onCreateView() {
+    private void checkNetStatue() {
+		// TODO Auto-generated method stub
+        ConnectivityManager cm= (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);  
+        NetworkInfo info = cm.getActiveNetworkInfo();  
+         if (info != null && info.isAvailable() && info.getState() == NetworkInfo.State.CONNECTED){  
+//             if(ConnectivityManager.TYPE_MOBILE==info.getType()){  //3G网络 
+//            	 icon_net_statue.setImageResource(R.drawable.icon_mobile);
+//            	 text_net_statue.setText("");
+//             }else 
+        	 if(ConnectivityManager.TYPE_WIFI==info.getType()){  //wifi  
+	        	 
+	        	 WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+	        	 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+	        	 if(wifiInfo!=null){
+	        		 text_net_statue.setText(wifiInfo.getSSID());
+	        		 int level = wifiInfo.getRssi();
+	        		 Log.d(TAG, "wifi leve ----->"+ level);
+	        		 if(level>-50){
+	        			 icon_net_statue.setImageResource(R.drawable.icon_wifi_3);
+	        		 }else if(level>-75){
+	        			 icon_net_statue.setImageResource(R.drawable.icon_wifi_2);
+	        		 }else{
+	        			 icon_net_statue.setImageResource(R.drawable.icon_wifi_1);
+	        		 }
+	        	 }else{
+	        		 text_net_statue.setText("");
+	        		 icon_net_statue.setImageResource(R.drawable.icon_wifi_1);
+	        	 }
+             }else if(ConnectivityManager.TYPE_ETHERNET==info.getType()){  //有线网络 
+            	 icon_net_statue.setImageResource(R.drawable.icon_ethernet);
+            	 text_net_statue.setText("已连接");
+             }else{ //未知
+            	 icon_net_statue.setImageDrawable(null);
+            	 text_net_statue.setText("");
+             }
+        }else if(info ==null){  //未连接
+        	icon_net_statue.setImageResource(R.drawable.icon_disconect);
+       	 	text_net_statue.setText(R.string.main_net_statue_not_connect);
+        }  
+              
+	}
+
+	public Cocos2dxGLSurfaceView onCreateView() {
     	return new Cocos2dxGLSurfaceView(this);
     }
-
-   private final static boolean isAndroidEmulator() {
-      String model = Build.MODEL;
-      Log.d(TAG, "model=" + model);
-      String product = Build.PRODUCT;
-      Log.d(TAG, "product=" + product);
-      boolean isEmulator = false;
-      if (product != null) {
-         isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_");
-      }
-      Log.d(TAG, "isEmulator=" + isEmulator);
-      return isEmulator;
-   }
-   
+	
    @Override
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	// TODO Auto-generated method stub

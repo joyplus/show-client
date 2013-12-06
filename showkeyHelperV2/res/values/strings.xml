@@ -32,6 +32,7 @@
       <string name="setting_notice_set_all_default">恢复默认设置</string>
      
      <!-- main -->
+     <string name="main_net_statue_not_connect">未连接</string>
      <string name="main_pincode_refresh">刷新PIN码</string>
      <string name="main_pincode_setting">设             置</string>
      <string name="main_pincode_notice">获取PIN码失败</string>

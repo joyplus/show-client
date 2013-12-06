@@ -75,7 +75,7 @@ void BaiduYunSence::keyArrowClicked(int arrow) {
 			case ccKeypadMSGType(kTypeLeftArrowClicked):
 				break;
 			case ccKeypadMSGType(kTypeUpArrowClicked):
-				if(tableView->getSelected()>1){
+				if(tableView->getSelected()>0){
 					if(tableView->getSelected()>5){
 						tableView->setSelection(tableView->getSelected()-5);
 					}else{
