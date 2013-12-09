@@ -39,20 +39,22 @@ bool BaiduYunSence::init() {
 			loading->runAction(CCRepeatForever::create(CCRotateBy::create(0.1f,36.0f)));
 			addChild(loading);
 
-			CCSprite* navagtor_main = CCSprite::create("nav_home.png");
-			navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
-					820));
-			addChild(navagtor_main);
+//			CCSprite* navagtor_main = CCSprite::create("nav_home.png");
+//			navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
+//					820));
+//			addChild(navagtor_main);
+//
+//			CCSprite* divider = CCSprite::create("nav_dot.png");
+//			divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
+//					820));
+//			addChild(divider);
+//
+//			CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("baidu_title").c_str(), "Arial", 32.0);
+//			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
+//					820));
+//			addChild(navagtor_title);
 
-			CCSprite* divider = CCSprite::create("nav_dot.png");
-			divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
-					820));
-			addChild(divider);
-
-			CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("baidu_title").c_str(), "Arial", 32.0);
-			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
-					820));
-			addChild(navagtor_title);
+			showTitleJni(1,getStringResouceByKeyJNI("baidu_title").c_str());
 
 			m_empty_back = CCSprite::create("null_baidu.png");
 			m_empty_back->setPosition(ccp(490+m_empty_back->getContentSize().width/2,winSize.height/2-35));
@@ -114,6 +116,7 @@ void BaiduYunSence::keyEnterClicked() {
 void BaiduYunSence::popSence() {
 	CCScene *prevScene = CCDirector::sharedDirector()->previousScene();
 	CCDirector::sharedDirector()->popScene(CCTransitionSlideInL::create(0.2f, prevScene));
+	hideTitleJni(1);
 }
 
 void BaiduYunSence::loginBaiduSuccess() {

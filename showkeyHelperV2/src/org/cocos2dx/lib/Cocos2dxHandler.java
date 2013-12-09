@@ -103,7 +103,7 @@ public class Cocos2dxHandler extends Handler {
 			Cocos2dxHelper.updateQQdisplay();
 			break;
 		case HANDLER_NET_NOT_CONNECT:
-			Utils.showToast(mActivity.get(), mActivity.get().getString(R.string.networknotwork));
+			Utils.showToast(mActivity.get(), mActivity.get().getString(R.string.networknotwork),mActivity.get().getRootView());
 			break;
 		}
 	}

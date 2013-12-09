@@ -47,6 +47,8 @@ public class Cocos2dxBaiduDialog extends Dialog {
 	private String device_code;
 	private String user_code;
 
+	private View rootView;
+	
 	private static final int MESSAGE_GET_ERWEIMA_SUCESS = 1;
 	private static final int MESSAGE_GET_ACCESSTOKEN_SUCESS = 2;
 	private static final int MESSAGE_GET_ACCESSTOKEN_FAILE = 3;
@@ -69,7 +71,7 @@ public class Cocos2dxBaiduDialog extends Dialog {
 				}, TIME_DELAY);
 				break;
 			case MESSAGE_GET_ERWEIMA_FAILE:
-				Utils.showToast(getContext(), "获取二维码失败");
+				Utils.showToast(getContext(), "获取二维码失败",rootView);
 //				Toast.makeText(getContext(), "获取二维码失败", 100).show();
 				break;
 			case MESSAGE_GET_ACCESSTOKEN_SUCESS:
@@ -104,10 +106,10 @@ public class Cocos2dxBaiduDialog extends Dialog {
 //		this.getWindow().setBackgroundDrawable(new ColorDrawable(0x80000000));
 		
 		this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		View	contetnView  = this.getLayoutInflater().inflate(R.layout.dialog_baidu_login, null);
+		rootView  = this.getLayoutInflater().inflate(R.layout.dialog_baidu_login, null);
 		aq = new AQuery(getOwnerActivity());
-		mErWeima = (ImageView) contetnView.findViewById(R.id.baidu_login_erweima);
-		mLoginButton = (Button) contetnView.findViewById(R.id.baidu_login_button);
+		mErWeima = (ImageView) rootView.findViewById(R.id.baidu_login_erweima);
+		mLoginButton = (Button) rootView.findViewById(R.id.baidu_login_button);
 		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +132,7 @@ public class Cocos2dxBaiduDialog extends Dialog {
 				Cocos2dxHelper.setBaiduLoginDialogResult(true);
 			}
 		});
-		setContentView(contetnView);
+		setContentView(rootView);
 		PreferencesUtils.setBaiduAccessToken(getContext(), null);
 		getErweima();
 	}
@@ -142,7 +144,7 @@ public class Cocos2dxBaiduDialog extends Dialog {
 			@Override
 			public void onException(String msg) {
 //				Toast.makeText(getContext(), "Login failed " + msg, Toast.LENGTH_SHORT).show();
-				Utils.showToast(getContext(), "登录失败");
+				Utils.showToast(getContext(), "登录失败",rootView);
 			}
 			@Override
 			public void onComplete(BaiduOAuthResponse response) {
@@ -156,7 +158,7 @@ public class Cocos2dxBaiduDialog extends Dialog {
 			@Override
 			public void onCancel() {
 //				Toast.makeText(getContext(), "Login cancelled", Toast.LENGTH_SHORT).show();
-				Utils.showToast(getContext(), "登录失败");
+				Utils.showToast(getContext(), "登录失败",rootView);
 			}
 		});
 	}

@@ -3,7 +3,6 @@ package com.joyplus.tvhelper.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -34,7 +33,7 @@ public class AnimationToast {
           
         //LONG��5000ms    SHORT��300ms  
         //显示时间等于动画时间加上不变时间
-        long duration = mDuration== LENGTH_LONG ? 5000 : 1000;  
+        long duration = mDuration== LENGTH_LONG ? 3000 : 1000;  
           
         mParent.postDelayed(new Runnable()  
         {  

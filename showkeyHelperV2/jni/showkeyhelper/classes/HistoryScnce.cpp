@@ -48,20 +48,23 @@ bool HistoryScnce::init()
 		menu_back->setVisible(false);
 		addChild(menu_back);
 
-		CCSprite* navagtor_main = CCSprite::create("nav_home.png");
-		navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
-				820));
-		addChild(navagtor_main);
+//		CCSprite* navagtor_main = CCSprite::create("nav_home.png");
+//		navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
+//				820));
+//		addChild(navagtor_main);
+//
+//		CCSprite* divider = CCSprite::create("nav_dot.png");
+//		divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
+//				820));
+//		addChild(divider);
+//
+//		CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("history_title").c_str(), "Arial", 32.0);
+//		navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
+//				820));
+//		addChild(navagtor_title);
 
-		CCSprite* divider = CCSprite::create("nav_dot.png");
-		divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
-				820));
-		addChild(divider);
+		showTitleJni(1,getStringResouceByKeyJNI("history_title").c_str());
 
-		CCLabelTTF* navagtor_title = CCLabelTTF::create(getStringResouceByKeyJNI("history_title").c_str(), "Arial", 32.0);
-		navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
-				820));
-		addChild(navagtor_title);
 //		CCSprite* menu_selected_all = CCSprite::create("selected_quanxuan.png");
 //		menu_selected_all->setPosition(ccp(160+menu_selected_all->getContentSize().width/2,menu_selected_all->getContentSize().height/2));
 //		addChild(menu_selected_all);
@@ -417,6 +420,7 @@ void HistoryScnce::keyBackClicked() {
 	}else{
 		CCScene *prevScene = CCDirector::sharedDirector()->previousScene();
 		CCDirector::sharedDirector()->popScene(CCTransitionSlideInL::create(0.2f, prevScene));
+		hideTitleJni(1);
 	}
 //	CCDirector::sharedDirector()->popScene();
 }

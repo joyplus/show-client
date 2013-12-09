@@ -633,7 +633,6 @@ public class Cocos2dxHelper {
     }
     
     
-    
     public static void setGeneratePincodeResult(boolean isSuccessed){
     	try {
 			final int successed = isSuccessed?1:0;
@@ -647,6 +646,19 @@ public class Cocos2dxHelper {
 			/* Nothing. */
 		}
     }
+    
+    public static void showAnimationToast(String msg){
+    	Cocos2dxHelper.sCocos2dxHelperListener.showAnimationToast(msg);
+    }
+    
+    public static void showTitleByIndex(int index,String title){
+    	Cocos2dxHelper.sCocos2dxHelperListener.showTitle(index, title);
+    }
+    
+    public static void hideTitleByIndex(int index){
+    	Cocos2dxHelper.sCocos2dxHelperListener.hideTitle(index);
+    }
+    
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
@@ -671,5 +683,11 @@ public class Cocos2dxHelper {
 		public void runOnGLThread(final Runnable pRunnable);
 		
 		public String getDisplayWebUrl();
+		
+		public void showAnimationToast(String msg);
+		
+		public void showTitle(int index, String msg);
+		
+		public void hideTitle(int index);
 	}
 }

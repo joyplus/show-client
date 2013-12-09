@@ -50,7 +50,12 @@ import com.joyplus.tvhelper.entity.URLS_INDEX;
 public class Utils {
 	
 	private static final String TAG = "Utils";
-	
+	/**
+	 * 显示在屏幕中间的Toast
+	 * 
+	 * @param context
+	 * @param str
+	 */
 	public static void showToast(Context context,String str) {
 		
 		Toast toast = new Toast(context);
@@ -62,6 +67,17 @@ public class Utils {
 		toast.setDuration(Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
+	}
+	/**
+	 * 首页比较骚的Toast
+	 * 
+	 * @param context
+	 * @param str
+	 * @param parent
+	 */
+	public static void showToast(Context context,String str,View parent) {
+		
+		AnimationToast.makeText(context, str, AnimationToast.LENGTH_LONG, parent).show();
 	}
 	
 	public static String formatDuration(long duration) {
