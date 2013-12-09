@@ -24,32 +24,35 @@ bool HistoryBtDetailsSence::init() {
 			tableView->setVerticalFillOrder(kCCListViewFillTopDown);
 			tableView->setSelection(0);
 			this->addChild(tableView);
-			CCSprite* navagtor_main = CCSprite::create("nav_home.png");
-			navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
-					820));
-			addChild(navagtor_main);
+//			CCSprite* navagtor_main = CCSprite::create("nav_home.png");
+//			navagtor_main->setPosition(ccp(160+navagtor_main->getContentSize().width/2,
+//					820));
+//			addChild(navagtor_main);
+//
+//			CCSprite* divider = CCSprite::create("nav_dot.png");
+//			divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
+//					820));
+//			addChild(divider);
+//
+//			CCLabelTTF* navagtor_title = CCLabelTTF::create("推送历史", "Arial", 27.0);
+//			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
+//					820));
+//			addChild(navagtor_title);
+//
+//			CCSprite* divider1 = CCSprite::create("nav_dot.png");
+//			divider1->setPosition(ccp(10+ navagtor_title->getPosition().x+navagtor_title->getContentSize().width/2+divider1->getContentSize().width/2,
+//					820));
+//			addChild(divider1);
+//
+//			CCLabelTTF* label = CCLabelTTF::create(m_playHistoryInfo.getName().c_str(), "Arial", 32.0, CCSizeMake(800, 50), CCTextAlignment(kCCTextAlignmentLeft));
+//			label->setAnchorPoint(ccp(0,0.5));
+//			label->setPosition(ccp(10+divider1->getPosition().x+divider1->getContentSize().width/2,
+//					820));
+//			label->setVerticalAlignment(CCVerticalTextAlignment(kCCVerticalTextAlignmentCenter));
+//			addChild(label);
 
-			CCSprite* divider = CCSprite::create("nav_dot.png");
-			divider->setPosition(ccp(navagtor_main->getPosition().x+navagtor_main->getContentSize().width/2+divider->getContentSize().width/2,
-					820));
-			addChild(divider);
+			showTitleJni(2,m_playHistoryInfo.getName().c_str());
 
-			CCLabelTTF* navagtor_title = CCLabelTTF::create("推送历史", "Arial", 27.0);
-			navagtor_title->setPosition(ccp(10+divider->getPosition().x+divider->getContentSize().width/2+navagtor_title->getContentSize().width/2,
-					820));
-			addChild(navagtor_title);
-
-			CCSprite* divider1 = CCSprite::create("nav_dot.png");
-			divider1->setPosition(ccp(10+ navagtor_title->getPosition().x+navagtor_title->getContentSize().width/2+divider1->getContentSize().width/2,
-					820));
-			addChild(divider1);
-
-			CCLabelTTF* label = CCLabelTTF::create(m_playHistoryInfo.getName().c_str(), "Arial", 32.0, CCSizeMake(800, 50), CCTextAlignment(kCCTextAlignmentLeft));
-			label->setAnchorPoint(ccp(0,0.5));
-			label->setPosition(ccp(10+divider1->getPosition().x+divider1->getContentSize().width/2,
-					820));
-			label->setVerticalAlignment(CCVerticalTextAlignment(kCCVerticalTextAlignmentCenter));
-			addChild(label);
 //			this->setKeypadEnabled(true);
 			bRet = true;
 		} while (0);
@@ -59,6 +62,7 @@ bool HistoryBtDetailsSence::init() {
 void HistoryBtDetailsSence::keyBackClicked() {
 	CCScene *prevScene = CCDirector::sharedDirector()->previousScene();
 	CCDirector::sharedDirector()->popScene(CCTransitionSlideInL::create(0.2f, prevScene));
+	hideTitleJni(2);
 }
 
 void HistoryBtDetailsSence::keyArrowClicked(int arrow) {

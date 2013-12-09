@@ -1,23 +1,17 @@
 package com.joyplus.tvhelper.utils;
 
-import com.joyplus.tvhelper.R;
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.RelativeLayout.LayoutParams;
+
+import com.joyplus.tvhelper.R;
 
 public class LevelMore extends RelativeLayout{
 

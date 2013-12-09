@@ -39,6 +39,8 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 	private ImageView mYanzhengMa;
 	private Button mLoginButton;
 	
+	private View rootView;
+	
 //	private LinearLayout mProgressBar;
 	private LinearLayout mLayout;
 	private LinearLayout mYanZhengMaLoyout;
@@ -55,7 +57,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 			switch (msg.what) {
 			case LOGIN_SUCESS:
 				//登陆成功
-				Utils.showToast(getContext(), "登陆成功");
+				Utils.showToast(getContext(), "登陆成功", rootView);
 				saveUserAndPassWord();
 				getUserInfo();
 				break;
@@ -65,34 +67,34 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 				switch (loginErrorFlag) {
 				case 1:
 					if(mYanZhengMaLoyout.getVisibility() == View.VISIBLE){
-						Utils.showToast(getContext(), "输入有误，请重新输入");
+						Utils.showToast(getContext(), "输入有误，请重新输入", rootView);
 					}else {
 						mYanZhengMaLoyout.setVisibility(View.VISIBLE);
-						Utils.showToast(getContext(), "请手动输入验证码");
+						Utils.showToast(getContext(), "请手动输入验证码", rootView);
 					}
 //					}
 //					
 //					verifyLayout.setVisibility(View.VISIBLE);
 					break;
 				case 2:
-					Utils.showToast(getContext(), "密码错误");
+					Utils.showToast(getContext(), "密码错误", rootView);
 					clearPasswdRecord();
 					break;
 				case 4:
 				case 5:
-					Utils.showToast(getContext(), "账户不存在");
+					Utils.showToast(getContext(), "账户不存在", rootView);
 					break;
 				case 6:
-					Utils.showToast(getContext(), "账户被锁定");
+					Utils.showToast(getContext(), "账户被锁定", rootView);
 					break;
 				case 10:
-					Utils.showToast(getContext(), "获取用户信息失败,请重试或者重新登录");
+					Utils.showToast(getContext(), "获取用户信息失败,请重试或者重新登录", rootView);
 					break;
 				case 11:
-					Utils.showToast(getContext(), "获取列表失败");
+					Utils.showToast(getContext(), "获取列表失败", rootView);
 					break;
 				default:
-					Utils.showToast(getContext(), "网络超时，稍后重试");
+					Utils.showToast(getContext(), "网络超时，稍后重试", rootView);
 					break;
 				}
 //				mProgressBar.setVisibility(View.GONE);
@@ -113,11 +115,11 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 				}else{
 					
 					mYanzhengMa.setBackgroundDrawable(null);
-					Utils.showToast(getContext(), "获取验证码图片失败,检查网络是否连接");
+					Utils.showToast(getContext(), "获取验证码图片失败,检查网络是否连接", rootView);
 				}
 				break;
 			case VERIFY_CODE_FAIL:
-				Utils.showToast(getContext(), "获取验证码图片失败,检查网络是否连接");
+				Utils.showToast(getContext(), "获取验证码图片失败,检查网络是否连接", rootView);
 				break;
 			}
 		}
@@ -161,18 +163,18 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 		this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		XunLeiLiXianUtil.clearCookies(getContext());
 		XunLeiLiXianUtil.saveLoginUserPasswd(getContext(), null);
-		View	contetnView  = this.getLayoutInflater().inflate(R.layout.dialog_xunlei_login, null);
+		rootView  = this.getLayoutInflater().inflate(R.layout.dialog_xunlei_login, null);
 		
-		mAccountEditText = (EditText)contetnView.findViewById(R.id.account_edit);
-		mPassWordEditText = (EditText)contetnView.findViewById(R.id.passowrd_edit);
-		mYanzhengMaEditText = (EditText)contetnView.findViewById(R.id.yanzhengma_edit);
+		mAccountEditText = (EditText)rootView.findViewById(R.id.account_edit);
+		mPassWordEditText = (EditText)rootView.findViewById(R.id.passowrd_edit);
+		mYanzhengMaEditText = (EditText)rootView.findViewById(R.id.yanzhengma_edit);
 		
 //		mProgressBar = (LinearLayout)contetnView.findViewById(R.id.layout_xunlei_progress);
-		mYanZhengMaLoyout = (LinearLayout) contetnView.findViewById(R.id.layout_yamzhengma);
-		mLayout = (LinearLayout) contetnView.findViewById(R.id.layout_xunlei_login);
+		mYanZhengMaLoyout = (LinearLayout) rootView.findViewById(R.id.layout_yamzhengma);
+		mLayout = (LinearLayout) rootView.findViewById(R.id.layout_xunlei_login);
 		
-		mYanzhengMa = (ImageView) contetnView.findViewById(R.id.yanzhengm_img);
-		mLoginButton = (Button) contetnView.findViewById(R.id.xunlei_login);
+		mYanzhengMa = (ImageView) rootView.findViewById(R.id.yanzhengm_img);
+		mLoginButton = (Button) rootView.findViewById(R.id.xunlei_login);
 		initView();
 		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
@@ -195,7 +197,7 @@ public class Cocos2dxXunLeiLoginDialog extends Dialog {
 			}
 		});
 		
-		setContentView(contetnView);
+		setContentView(rootView);
 	}
 
 	private void initView(){

@@ -677,6 +677,37 @@ extern std::string getOnlineWebUrlJNI() {
 	return ret;
 }
 
+void showTitleJni(int index, const char* msg) {
+	JniMethodInfo t;
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "showTitleByIndex", "(ILjava/lang/String;)V")) {
+		jstring stringArg = t.env->NewStringUTF(msg);
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, index, stringArg);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(stringArg);
+	}
+}
+
+void hideTitleJni(int index) {
+	JniMethodInfo t;
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "hideTitleByIndex", "(I)V")) {
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+		t.env->DeleteLocalRef(t.classID);
+	}
+}
+
+void showAnimationToastJni(const char* msg) {
+	JniMethodInfo t;
+
+	if (JniHelper::getStaticMethodInfo(t, CLASS_NAME, "showAnimationToast", "(Ljava/lang/String;)V")) {
+		jstring stringArg = t.env->NewStringUTF(msg);
+		t.env->CallStaticVoidMethod(t.classID, t.methodID, stringArg);
+		t.env->DeleteLocalRef(t.classID);
+		t.env->DeleteLocalRef(stringArg);
+	}
+}
+
 std::string getDecodeStringFromJNI(const char* pKey)
 {
 	JniMethodInfo t;

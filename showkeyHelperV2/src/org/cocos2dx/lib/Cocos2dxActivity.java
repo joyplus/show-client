@@ -38,6 +38,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -67,6 +68,7 @@ import com.joyplus.tvhelper.https.HttpUtils;
 import com.joyplus.tvhelper.utils.Constant;
 import com.joyplus.tvhelper.utils.Global;
 import com.joyplus.tvhelper.utils.HttpTools;
+import com.joyplus.tvhelper.utils.LevelMore;
 import com.joyplus.tvhelper.utils.Log;
 import com.joyplus.tvhelper.utils.PreferencesUtils;
 import com.joyplus.tvhelper.utils.Utils;
@@ -87,11 +89,12 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 	
 	private ImageView icon_net_statue;
 	private TextView text_net_statue;
+	private LevelMore navigationBar;
 	
 	private String umeng_channel;
 	private Cocos2dxHandler mHandler;
 	private static Context sContext = null;
-	
+	private View rootView;
 	private static MyApp app;
 	
 	public static Context getContext() {
@@ -229,6 +232,59 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					mHandler.sendEmptyMessage(Cocos2dxHandler.MESSAGE_GETPINCODE_FAILE);
+				}
+			}
+		});
+	}
+	
+	@Override
+	public void showAnimationToast(final String msg) {
+		// TODO Auto-generated method stub
+		mHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Utils.showToast(sContext, msg, rootView);
+			}
+		});
+	}
+	
+	@Override
+	public void showTitle(final int index, final String msg) {
+		// TODO Auto-generated method stub
+		mHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				switch (index) {
+				case 1:
+					navigationBar.getFristLevel(msg);
+					break;
+				case 2:
+					navigationBar.getSecondLevel(msg);
+					break;
+				}
+			}
+		});
+	}
+	
+	@Override
+	public void hideTitle(final int index) {
+		// TODO Auto-generated method stub
+		mHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				switch (index) {
+				case 1:
+					navigationBar.dismissFristLevel();
+					break;
+				case 2:
+					navigationBar.dismissSecondLevel();
+					break;
 				}
 			}
 		});
@@ -491,10 +547,10 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 //        framelayout.addView(tv);
 //        // Cocos2dxGLSurfaceView
         
-        View v = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
-        RelativeLayout framelayout = (RelativeLayout)v.findViewById(R.id.main_fram);
-        text_net_statue = (TextView) v.findViewById(R.id.ssid_text);
-        icon_net_statue = (ImageView) v.findViewById(R.id.net_statue);
+        rootView = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
+        RelativeLayout framelayout = (RelativeLayout)rootView.findViewById(R.id.main_fram);
+        text_net_statue = (TextView) rootView.findViewById(R.id.ssid_text);
+        icon_net_statue = (ImageView) rootView.findViewById(R.id.net_statue);
         this.mGLSurfaceView = this.onCreateView();
         // ...add to FrameLayout
         framelayout.addView(this.mGLSurfaceView);
@@ -502,12 +558,25 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         //if (isAndroidEmulator())
         this.mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         this.mGLSurfaceView.setCocos2dxRenderer(new Cocos2dxRenderer());
-//        this.mGLSurfaceView.setCocos2dxEditText(edittext);
-
+        
+        navigationBar = new LevelMore(this);
+        Point size = new Point(1270, 800);
+        getWindowManager().getDefaultDisplay().getSize(size);
+        int leftMargin = (160*size.x)/1920;
+        int topMargin = ((1080-880)*size.y)/1080;
+        RelativeLayout.LayoutParams navigationBar_params =
+		new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+        Log.d(TAG, "left = " + leftMargin +" and top = " + topMargin);
+		navigationBar_params.setMargins(leftMargin, topMargin, 0, 0);
+        framelayout.addView(navigationBar,navigationBar_params);
         // Set framelayout as the content view
-		setContentView(v);
-		
+		setContentView(rootView);
 		checkNetStatue();
+	}
+	
+	public View getRootView(){
+		return rootView;
 	}
 	
     private void checkNetStatue() {
