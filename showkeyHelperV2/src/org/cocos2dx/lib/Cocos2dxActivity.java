@@ -52,6 +52,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.joyplus.JoyplusMediaPlayerActivity;
@@ -258,6 +259,12 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				int leftMargin = (160*rootView.getWidth())/1920;
+		        int topMargin = ((1080-850)*rootView.getHeight())/1080-Utils.getStandardValue(sContext, 30);
+		        Log.d(TAG, "left = " + leftMargin +" and top = " + topMargin + "height = "+navigationBar.getMeasuredHeight());
+		        RelativeLayout.LayoutParams navigationBar_params = (LayoutParams) navigationBar.getLayoutParams();
+				navigationBar_params.setMargins(leftMargin, topMargin, 0, 0);
+				navigationBar.setLayoutParams(navigationBar_params);
 				switch (index) {
 				case 1:
 					navigationBar.getFristLevel(msg);
@@ -560,15 +567,10 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         this.mGLSurfaceView.setCocos2dxRenderer(new Cocos2dxRenderer());
         
         navigationBar = new LevelMore(this);
-        Point size = new Point(1270, 800);
-        getWindowManager().getDefaultDisplay().getSize(size);
-        int leftMargin = (160*size.x)/1920;
-        int topMargin = ((1080-880)*size.y)/1080;
+        
         RelativeLayout.LayoutParams navigationBar_params =
 		new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
-        Log.d(TAG, "left = " + leftMargin +" and top = " + topMargin);
-		navigationBar_params.setMargins(leftMargin, topMargin, 0, 0);
         framelayout.addView(navigationBar,navigationBar_params);
         // Set framelayout as the content view
 		setContentView(rootView);
