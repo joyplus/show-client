@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".MainActivity" >
+
+<LinearLayout android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:gravity="left">
+   <TextView 
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/level_home"
+       android:background="@drawable/nav_home"
+       android:visibility="gone"
+       android:textSize="25dp"/>
+   <TextView 
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/frist_level_point"
+       android:background="@drawable/nav_dot"
+       android:visibility="gone"
+       android:textSize="25dp"/>
+   <TextView
+        android:id="@+id/level_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="18dp"
+        android:textSize="28dp"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"/>
+   <TextView 
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/second_level_point"
+       android:background="@drawable/nav_dot"
+       android:layout_marginLeft="8dp"
+       android:textSize="25dp"
+       android:visibility="gone"/>
+   <TextView
+        android:id="@+id/level_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="19dp"
+        android:textSize="25dp"
+        android:textColor="#FFFFFF"
+        android:visibility="gone" 
+        />
+   </LinearLayout>
+
+</RelativeLayout>

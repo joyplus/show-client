@@ -1,0 +1,6 @@
+<resources>   
+    <style name="AnimationToast" parent="android:Animation">  
+        <item name="android:windowEnterAnimation">@anim/scale_dialog_enter</item>  
+        <item name="android:windowExitAnimation">@anim/scale_dialog_out</item>  
+    </style>      
+</resources>
