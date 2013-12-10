@@ -2,6 +2,7 @@ package com.joyplus.tvhelper.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -60,15 +61,16 @@ public class LevelMore extends RelativeLayout{
         Log.d(TAG,"INIT");
    }
 
+
 	public void getFristLevel(String getlevel){
 		get_level_string=getlevel;
 		AnimationSet animationSet = new AnimationSet(true);
 		AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
-		alphaAnimation.setDuration(250);
+		alphaAnimation.setDuration(500);
 		animationSet.addAnimation(alphaAnimation);
-		Animation moreAnimationRight = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-2f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f);
-		moreAnimationRight.setDuration(300);
-		animationSet.addAnimation(moreAnimationRight);
+//		Animation moreAnimationRight = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-2f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f);
+//		moreAnimationRight.setDuration(300);
+//		animationSet.addAnimation(moreAnimationRight);
 		homeTextView.startAnimation(animationSet);
 		homeTextView.setVisibility(View.VISIBLE);
 		fristPoint.startAnimation(animationSet);
@@ -91,7 +93,7 @@ public class LevelMore extends RelativeLayout{
 		moreAnimationRight.setDuration(500);
 		animationSet.addAnimation(moreAnimationRight);
 		twoTextView.startAnimation(animationSet);
-		secondPoint.startAnimation(animationSet);
+		secondPoint.startAnimation(alphaAnimation);
 		secondPoint.setVisibility(View.VISIBLE);
 		twoTextView.setVisibility(View.VISIBLE);
 		twoTextView.setText(get_level_string);
@@ -102,9 +104,9 @@ public class LevelMore extends RelativeLayout{
 		AlphaAnimation lalphaAnimation = new AlphaAnimation(1,0);
 		lalphaAnimation.setDuration(500);
 		lanimationSet.addAnimation(lalphaAnimation);
-		Animation lessAnimationRight = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,-10f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f);
-		lessAnimationRight.setDuration(1500);
-		lanimationSet.addAnimation(lessAnimationRight);
+//		Animation lessAnimationRight = new TranslateAnimation(Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,-10f,Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0f);
+//		lessAnimationRight.setDuration(1500);
+//		lanimationSet.addAnimation(lessAnimationRight);
 		lanimationSet.setFillAfter(true);
 		homeTextView.startAnimation(lanimationSet);
 		homeTextView.setVisibility(View.VISIBLE);
@@ -123,7 +125,7 @@ public class LevelMore extends RelativeLayout{
 		lessAnimationRight.setDuration(1500);
 		lanimationSet.addAnimation(lessAnimationRight);
 		lanimationSet.setFillAfter(true);
-		secondPoint.startAnimation(lanimationSet);
+		secondPoint.startAnimation(lalphaAnimation);
 		secondPoint.setVisibility(View.VISIBLE);
 		twoTextView.startAnimation(lanimationSet);
 		twoTextView.setVisibility(View.VISIBLE);

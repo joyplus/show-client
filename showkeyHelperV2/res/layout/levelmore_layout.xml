@@ -38,13 +38,15 @@
        android:layout_marginLeft="8dp"
        android:textSize="25dp"
        android:visibility="gone"/>
-   <TextView
+      <TextView
         android:id="@+id/level_two"
-        android:layout_width="wrap_content"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="19dp"
         android:textSize="25dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="#FFFFFF"
         android:visibility="gone" 
         />

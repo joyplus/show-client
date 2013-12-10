@@ -4,24 +4,27 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.joyplus.tvhelper.utils.AnimationToast;
 import com.joyplus.tvhelper.R;
 
 public class AnimationToast {
 	static final String TAG = "AnimationToast";    
     public static final int LENGTH_SHORT = 0;  // 显示时间长短
     public static final int LENGTH_LONG = 1;  
-    
+    private TextView toasttext;
     final Context mContext;  
     int mDuration;  
     PopupWindow mPopToast;  
     View mParent;  
-    int width = 300;//toast 宽  
-    int height =60;//toast 高  
-      
+    int width = 380;//toast 宽  
+    int height =120;//toast 高  
+	static AnimationToast cacheresult;
     public AnimationToast(Context context)  
     {  
         mContext = context;  
@@ -53,14 +56,24 @@ public class AnimationToast {
     /** 
      * 设置toast 宽高 动画 背景 
      */  
-    public void setView(View view)   
+    public void setView(CharSequence text)   
     {  
     	
-        mPopToast = new PopupWindow(view, width, height);  
+    	LayoutInflater inflater = LayoutInflater.from(mContext);
+        View v = inflater.inflate(R.layout.popup_window, null);
+        toasttext=(TextView)v.findViewById(R.id.toast_text);
+        if(text.length()>30){
+        	toasttext.setTextSize(20);
+        }else if(text.length()>14){
+        	toasttext.setTextSize(22);
+        }
+
+        toasttext.setText(text);
+        mPopToast = new PopupWindow(v, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);  
         mPopToast.setAnimationStyle(R.style.AnimationToast);  
-        mPopToast.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.default_bg));  
         mPopToast.setFocusable(false);  
-        mPopToast.setOutsideTouchable(true);  
+        mPopToast.setOutsideTouchable(true);
+         
     }  
   
     /** 
@@ -101,15 +114,18 @@ public class AnimationToast {
     public static AnimationToast makeText(Context context, CharSequence text, int duration, View parent)   
     {  
     	Log.d(TAG,"makeText"+text+"duration"+duration+"parent"+parent);
-        AnimationToast result = new AnimationToast(context);  
-  
-        TextView tv = new TextView(context);
-        tv.setTextSize(25);
-        tv.setTextColor(Color.WHITE);  
-        tv.setGravity(Gravity.CENTER);  
-        tv.setText(text);  
+    	if(cacheresult!=null){
+    		cacheresult.cancel();
+    	}
+    	AnimationToast result = new AnimationToast(context);  
+    	cacheresult=result;
+//        TextView tv = new TextView(context);
+//        tv.setTextSize(25);
+//        tv.setTextColor(Color.WHITE);  
+//        tv.setGravity(Gravity.CENTER);  
+//        tv.setText(text);  
           
-        result.setView(tv);  
+        result.setView(text);  
         result.setParent(parent);  
         result.setDuration(duration);  
         
