@@ -50,8 +50,8 @@ public class JoyplusPlayerMonitor{
 	    	synchronized (mObject) {
 		    	Flog = false;
 		    	mRunnable = null;
-				if(mHandler != null)
-					mHandler.removeCallbacksAndMessages(null);
+//				if(mHandler != null)
+//					mHandler.removeCallbacksAndMessages(null);
 				mHandler = null;
 	    	}
 	    }
