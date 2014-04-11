@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_discover_newVersion">发现新版本:%1$s</string>
+    <string name="update_oK">确定</string>
+    <string name="update_cancel">取消</string>
+</resources>

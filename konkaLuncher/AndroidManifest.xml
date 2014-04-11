@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.joyplus.konka.luncher"
+    android:versionCode="2"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="14" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>  
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+        <activity
+            android:name="com.joyplus.konka.luncher.MainActivity"
+            android:label="@string/app_name" 
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" /> 
+            </intent-filter>
+        </activity>
+        <activity android:name="com.joyplus.konka.luncher.InstalledApplication">
+            
+        </activity>
+        <service
+            android:name="com.umeng.common.net.DownloadingService"
+            android:exported="true"
+            android:process=":DownloadingService" >
+        </service>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="534614f456240b8475006428" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="j001" />
+    </application>
+
+</manifest>
