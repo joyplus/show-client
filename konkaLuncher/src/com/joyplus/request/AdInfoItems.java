@@ -13,10 +13,10 @@ public class AdInfoItems implements Serializable{
 	public String  description;
 	
 	public String  uri;
+
+	public String  column;
 	
-	public String column;
-	
-	public String zone;
+	public String  zone;
 	
 	public String  picUrl;
 	

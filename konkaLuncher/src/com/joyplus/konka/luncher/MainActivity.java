@@ -19,11 +19,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.text.BoringLayout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -32,7 +32,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.Toast;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.joyplus.adkey.widget.SerializeManager;
@@ -40,8 +39,9 @@ import com.joyplus.konka.update.UmengUpdate;
 import com.joyplus.konka.utils.DensityUtil;
 import com.joyplus.konka.utils.Log;
 import com.joyplus.request.AdInfo;
+import com.joyplus.tvhelper.ui.MyScrollLayout;
 
-public class MainActivity extends Activity implements ViewFactory, OnClickListener, OnFocusChangeListener {
+public class MainActivity extends Activity implements ViewFactory, OnClickListener, OnFocusChangeListener , PageController, OnKeyListener{
 
 	private static final String TAG =  MainActivity.class.getSimpleName();
 	private ImageSwitcher mSwitcher;
@@ -73,6 +73,8 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	private FrameLayout layout;
 	private ImageView whiteBorder;
 	private ImageView bangdan;
+	private MyScrollLayout myScrollLayout;
+	private SkyworthLuncher skyFrament;
 //	private RelativeLayout bangdan_layout;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
@@ -100,6 +102,9 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 		layout = (FrameLayout) findViewById(R.id.fram_items);
 		whiteBorder = (ImageView) findViewById(R.id.white_borad);
 		bangdan = (ImageView) findViewById(R.id.image_bangdan);
+		myScrollLayout = (MyScrollLayout) findViewById(R.id.content_layout);
+		skyFrament = (SkyworthLuncher) getFragmentManager().findFragmentById(R.id.view_skyworth);
+		skyFrament.setPageController(this);
 //		bangdan_layout = (RelativeLayout) findViewById(R.id.layout_bangdan);
 		mSwitcher.setFactory(this);
 		mSwitcher.setOnClickListener(this);
@@ -132,6 +137,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 			view.setFocusable(true);
 			view.setFocusableInTouchMode(true);
 			view.setOnFocusChangeListener(MainActivity.this);
+			view.setOnKeyListener(this);
 			view.setOnClickListener(this);
 		}
 		whiteBorder.setFocusable(false);
@@ -256,7 +262,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 				mSwitcher.setInAnimation(animation_in);  
 				mSwitcher.setOutAnimation(animation_out);  
 		        // 设置当前要看的图片  
-				mSwitcher.setImageDrawable(pictures.get(pictureIndex)); 
+				mSwitcher.setImageDrawable(pictures.get(pictureIndex));  
 			}
 		}else if(pictureIndex>=0){
 			pictureIndex = -1;
@@ -455,9 +461,45 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// TODO Auto-generated method stub
+		if(myScrollLayout.getSelected()== 1 && skyFrament.dispatchKeyEvent(event)){
+			return true;
+		}
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
 			return true;
 		}
 		return super.dispatchKeyEvent(event);
 	}
+
+	@Override
+	public void showSkyworthPage() {
+		// TODO Auto-generated method stub
+		myScrollLayout.showNext();
+		skyFrament.requsetFouces(true);
+	}
+
+	@Override
+	public void showKonkaPage() {
+		// TODO Auto-generated method stub
+		myScrollLayout.showPre();
+		findViewById(R.id.item_more_app).requestFocus();
+	}
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.item_setting:
+		case R.id.item_manager:
+		case R.id.item_more_app:
+			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
+				showSkyworthPage();
+				return true;
+			}else{
+				return false;
+			}
+		default:
+			return false;
+		}
+	}
+
 }

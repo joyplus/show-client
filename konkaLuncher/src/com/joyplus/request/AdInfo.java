@@ -10,25 +10,35 @@ public class AdInfo implements Serializable{
 	
     public final static OPENTYPE DEFAULT_OPENTYPE = OPENTYPE.ANDROID;
 	public enum OPENTYPE{
-		HTML5   (0),
-		ANDROID (1);
-		private int Type;
-		OPENTYPE(int type){
-			Type = type;
+		HTML5   ("002"),
+		ANDROID ("001");
+		private String Type;
+		OPENTYPE(String type){
+            Type = type;
 		}
 		public String toString(){
-			return String.valueOf(Type);
-		}
-		public int toInt(){
 			return Type;
 		}
 	}
+    public static  OPENTYPE GetOPENTYPE(String type){
+        if(type == null || "".equals(type))return DEFAULT_OPENTYPE;
+        if(OPENTYPE.ANDROID.toString().equals(type))return OPENTYPE.ANDROID;
+        else if(OPENTYPE.HTML5.toString().equals(type))return OPENTYPE.HTML5;
+        else return  DEFAULT_OPENTYPE;
+    }
 	
 	public OPENTYPE mOPENTYPE  = DEFAULT_OPENTYPE;
 	public String widgetPicUrl = "";
 	public String creativeUrl  = "";
 	public String trackingUrl  = "";
-	
+	public String trackingUrlMiaozhen = "";
+    public String trackingUrlIresearch= "";
+    public String trackingUrlAdMaster = "";
+    public String trackingUrlNielsen  = "";
+
+
+
+
 	public List<AdInfoItems> items = new ArrayList<AdInfoItems>();
 	
 	
@@ -39,6 +49,10 @@ public class AdInfo implements Serializable{
 		  .append(",widgetPicUrl="+widgetPicUrl)
 		  .append(",creativeUrl="+creativeUrl)
 		  .append(",trackingUrl="+trackingUrl)
+          .append(",trackingUrlMiaozhen="+trackingUrlMiaozhen)
+          .append(",trackingUrlIresearch="+trackingUrlIresearch)
+          .append(",trackingUrlAdMaster="+trackingUrlAdMaster)
+          .append(",trackingUrlNielsen="+trackingUrlNielsen)
 		  .append(","+ItemstoString())
 		  .append("}");
 		return ap.toString();

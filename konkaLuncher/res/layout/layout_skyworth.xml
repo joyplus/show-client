@@ -1,0 +1,237 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context=".SkyworthLuncher" >
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" 
+        android:layout_marginTop="40dp">
+        <FrameLayout
+            android:id="@+id/fram_items_sky"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+			<LinearLayout android:layout_width="586dp"
+                android:layout_height="353dp"
+                android:layout_marginLeft="25dp"
+                android:orientation="vertical"
+                android:layout_marginTop="15dp"
+                android:id="@+id/layout_play"
+                android:background="#71d100">
+			    <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="1"
+			        android:gravity="center_vertical"
+			        android:paddingLeft="15dp"
+			        android:textColor="#ffffff"
+			        android:textSize="35dp"
+			        android:text="@string/title_play"/>
+			    <RelativeLayout android:layout_width="558dp"
+	                android:layout_height="265dp"
+	                android:layout_gravity="center_horizontal"
+	                android:layout_marginBottom="25dp">
+			        <ImageView
+		                android:background="@drawable/b1"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:focusable="true"
+		                android:focusableInTouchMode="false"
+		                android:longClickable="false" />
+			        <TextView android:layout_width="fill_parent"
+			            android:layout_height="50dp"
+			            android:background="#7a000000"
+			            android:gravity="center"
+			            android:textColor="#ffffff"
+			        	android:textSize="30dp"
+			            android:layout_alignParentBottom="true"
+			            android:text="@string/notice_play"/>
+			    </RelativeLayout>
+			    
+			</LinearLayout>
+            <LinearLayout android:layout_width="586dp"
+                android:layout_height="353dp"
+                android:layout_marginLeft="635dp"
+                android:orientation="vertical"
+                android:layout_marginTop="15dp"
+                android:background="#1bd63c">
+			    <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="1"
+			        android:gravity="center_vertical"
+			        android:paddingLeft="15dp"
+			        android:textColor="#ffffff"
+			        android:textSize="35dp"
+			        android:visibility="gone"
+			        android:text="@string/title_ad"/>
+			    <ImageSwitcher
+	                android:id="@+id/switcher_sky"
+	                android:layout_width="558dp"
+	                android:layout_height="fill_parent"
+	                android:layout_gravity="center_horizontal"
+	                android:layout_marginBottom="25dp"
+	                android:layout_marginTop="25dp"
+	                android:focusable="true"
+	                android:focusableInTouchMode="false"
+	                android:longClickable="false" />
+		    </LinearLayout>
+            <LinearLayout android:layout_width="285dp"
+                android:layout_height="173dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="383dp"
+                android:background="#1bd63c"
+                android:id="@+id/layout_bangdan"
+                android:orientation="vertical">
+                <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="1"
+			        android:gravity="center_vertical"
+			        android:paddingLeft="15dp"
+			        android:textColor="#ffffff"
+			        android:textSize="35dp"
+			        android:text="@string/title_hamburger"/>
+			    <RelativeLayout android:layout_width="258dp"
+	                android:layout_height="100dp"
+	                android:layout_gravity="center_horizontal"
+	                android:layout_marginBottom="15dp">
+			        <ImageView
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:focusable="true"
+		                android:focusableInTouchMode="false"
+		                android:longClickable="false"
+		                android:scaleType="fitXY"
+		                android:src="@drawable/item_bangdan"
+		                android:id="@+id/image_bangdan_sky" />
+			        <TextView android:layout_width="fill_parent"
+			            android:layout_height="30dp"
+			            android:background="#7a000000"
+			            android:gravity="center"
+			            android:textColor="#ffffff"
+			        	android:textSize="20dp"
+			            android:layout_alignParentBottom="true"
+			            android:text="@string/notice_hamburger"/>
+			    </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="285dp"
+                android:layout_height="173dp"
+                android:layout_marginLeft="325dp"
+                android:layout_marginTop="383dp"
+                android:background="#71d100"
+                android:orientation="vertical">
+                <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="1"
+			        android:gravity="center_vertical"
+			        android:paddingLeft="15dp"
+			        android:textColor="#ffffff"
+			        android:textSize="35dp"
+			        android:text="@string/title_tv"/>
+			    <RelativeLayout android:layout_width="258dp"
+	                android:layout_height="100dp"
+	                android:layout_gravity="center_horizontal"
+	                android:layout_marginBottom="15dp">
+			        <ImageView
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:focusable="true"
+		                android:focusableInTouchMode="false"
+		                android:longClickable="false"
+		                android:background="@drawable/item_4"
+		                android:scaleType="fitXY"/>
+			        <TextView android:layout_width="fill_parent"
+			            android:layout_height="30dp"
+			            android:background="#7a000000"
+			            android:gravity="center"
+			            android:textColor="#ffffff"
+			        	android:textSize="20dp"
+			            android:layout_alignParentBottom="true"
+			            android:text="@string/notice_tv"/>
+			    </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="285dp"
+                android:layout_height="173dp"
+                android:layout_marginLeft="635dp"
+                android:layout_marginTop="383dp"
+                android:background="#1bd63c"
+                android:orientation="vertical">
+                <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="1"
+			        android:gravity="center_vertical"
+			        android:paddingLeft="15dp"
+			        android:textColor="#ffffff"
+			        android:textSize="35dp"
+			        android:text="@string/title_1080p"/>
+			    <RelativeLayout android:layout_width="258dp"
+	                android:layout_height="100dp"
+	                android:layout_gravity="center_horizontal"
+	                android:layout_marginBottom="15dp">
+			        <ImageView
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:focusable="true"
+		                android:focusableInTouchMode="false"
+		                android:longClickable="false"
+		                android:background="@drawable/item_5"
+		                android:scaleType="fitXY"/>
+			        <TextView android:layout_width="fill_parent"
+			            android:layout_height="30dp"
+			            android:background="#7a000000"
+			            android:gravity="center"
+			            android:textColor="#ffffff"
+			        	android:textSize="20dp"
+			            android:layout_alignParentBottom="true"
+			            android:text="@string/notice_1080p"/>
+			    </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="285dp"
+                android:layout_height="173dp"
+                android:layout_marginLeft="935dp"
+                android:layout_marginTop="383dp"
+                android:background="#71d100"
+                android:orientation="vertical">
+                <TextView android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="1"
+			        android:gravity="center_vertical"
+			        android:paddingLeft="15dp"
+			        android:textColor="#ffffff"
+			        android:textSize="35dp"
+			        android:text="@string/title_free"/>
+			    <RelativeLayout android:layout_width="258dp"
+	                android:layout_height="100dp"
+	                android:layout_gravity="center_horizontal"
+	                android:layout_marginBottom="15dp">
+			        <ImageView
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:focusable="true"
+		                android:focusableInTouchMode="false"
+		                android:longClickable="false"
+		                android:background="@drawable/item_6"
+		                android:scaleType="fitXY"/>
+			        <TextView android:layout_width="fill_parent"
+			            android:layout_height="30dp"
+			            android:background="#7a000000"
+			            android:gravity="center"
+			            android:textColor="#ffffff"
+			        	android:textSize="20dp"
+			            android:layout_alignParentBottom="true"
+			            android:text="@string/notice_free"/>
+			    </RelativeLayout>
+            </LinearLayout>
+		</FrameLayout>
+        <ImageView
+            android:id="@+id/white_borad_sky"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/white_border_sky" />
+    </FrameLayout>
+</LinearLayout>
