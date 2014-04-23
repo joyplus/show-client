@@ -44,11 +44,14 @@
 			    android:focusable="true"
 			    android:longClickable="true"
 			    android:focusableInTouchMode="false"
-			    android:id="@+id/switcher"/>
+			    android:id="@+id/switcher"
+			    android:nextFocusLeft="@id/switcher"
+			    android:nextFocusUp="@id/switcher"/>
         <RelativeLayout android:layout_width="256dp"
             android:layout_height="124dp"
             android:layout_marginLeft="15dp"
             android:id="@+id/layout_bangdan"
+            android:nextFocusDown="@id/layout_bangdan"
 		    android:layout_marginTop="271dp">
             <ImageView android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -72,6 +75,7 @@
 		    android:layout_marginTop="271dp"
 		    android:background="@drawable/item_cloud_controller"
 		    android:id="@+id/item_cloud_controller"
+		    android:nextFocusDown="@id/item_cloud_controller"
             />
         <ImageView android:layout_width="255dp"
             android:layout_height="124dp"
@@ -98,7 +102,8 @@
             android:layout_marginLeft="431dp"
 		    android:layout_marginTop="271dp"
 		    android:background="@drawable/item_appstore"
-		    android:id="@+id/item_appstore"/>
+		    android:id="@+id/item_appstore"
+		    android:nextFocusDown="@id/item_appstore"/>
         
         <ImageView android:layout_width="124dp"
             android:layout_height="124dp"
@@ -166,19 +171,22 @@
             android:layout_marginLeft="715dp"
 		    android:layout_marginTop="271dp"
 		    android:background="@drawable/item_game"
-		    android:id="@+id/item_game"/>
+		    android:id="@+id/item_game"
+		    android:nextFocusDown="@id/item_game"/>
         <ImageView android:layout_width="123dp"
             android:layout_height="123dp"
             android:layout_marginLeft="978dp"
 		    android:layout_marginTop="271dp"
 		    android:background="@drawable/item_browser"
-		    android:id="@+id/item_browser"/>
+		    android:id="@+id/item_browser"
+		    android:nextFocusDown="@id/item_browser"/>
         <ImageView android:layout_width="123dp"
             android:layout_height="123dp"
             android:layout_marginLeft="1108dp"
 		    android:layout_marginTop="271dp"
 		    android:background="@drawable/item_more_app"
-		    android:id="@+id/item_more_app"/>
+		    android:id="@+id/item_more_app"
+		    android:nextFocusDown="@id/item_more_app"/>
         <ImageView android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/white_borad"

@@ -31,6 +31,8 @@
         <activity android:name="com.joyplus.konka.luncher.InstalledApplication">
             
         </activity>
+        <activity android:name="com.joyplus.konka.luncher.SpecialAreaActivity">
+        </activity>
         <service
             android:name="com.umeng.common.net.DownloadingService"
             android:exported="true"

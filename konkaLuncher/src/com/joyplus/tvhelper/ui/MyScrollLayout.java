@@ -139,7 +139,7 @@ public class MyScrollLayout extends ViewGroup{
                 }  
             } 
             
-            updateAlpha();
+//            updateAlpha();
         }     
      
     private void updateAlpha(){

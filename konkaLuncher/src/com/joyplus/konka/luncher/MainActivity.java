@@ -317,7 +317,10 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 					intent.putExtra("data", json.toString());
 				}
 				break;
-			case R.id.item_cloud_controller:// yunzhikong
+			case R.id.item_cloud_controller:// yunzhikong but now use us live tv
+				intent = new Intent();
+				intent.setClassName("tv.wan8.weisp", "tv.huan.epg.live.ui.HuanPlayerActivity");
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				break;
 			case R.id.item_beston: //baishitong
 				break;
@@ -325,7 +328,8 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 				break;
 			case R.id.item_basketball://NBA
 				break;
-			case R.id.item_appstore:// app store
+			case R.id.item_appstore:// app store but now use as  car special area
+				intent = new Intent(this, SpecialAreaActivity.class);
 				break;
 			case R.id.item_app_helper: // yingyong zhushou
 				break;

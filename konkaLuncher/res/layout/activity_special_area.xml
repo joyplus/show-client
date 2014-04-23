@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#898989" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:id="@+id/layout_all">
+
+        <ImageView
+            android:layout_width="393dp"
+            android:layout_height="660dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="fitXY"
+            android:id="@+id/spa_item_1_1"
+            android:src="@drawable/s_1_1" />
+
+        <ImageView
+            android:layout_width="393dp"
+            android:layout_height="220dp"
+            android:layout_marginLeft="443dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/s_1_2" />
+
+        <ImageView
+            android:layout_width="393dp"
+            android:layout_height="220dp"
+            android:layout_marginLeft="443dp"
+            android:layout_marginTop="250dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/s_2_2" />
+
+        <ImageView
+            android:layout_width="393dp"
+            android:layout_height="220dp"
+            android:layout_marginLeft="443dp"
+            android:layout_marginTop="470dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/s_3_2" />
+
+        <ImageView
+            android:layout_width="394dp"
+            android:layout_height="220dp"
+            android:layout_marginLeft="836dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/s_1_3" />
+
+        <ImageView
+            android:layout_width="394dp"
+            android:layout_height="220dp"
+            android:layout_marginLeft="836dp"
+            android:layout_marginTop="250dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/s_2_3" />
+
+        <ImageView
+            android:layout_width="394dp"
+            android:layout_height="220dp" 
+            android:layout_marginLeft="836dp"
+            android:layout_marginTop="470dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/s_3_3" />
+    </RelativeLayout>
+	<ImageView android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/white_borad_spa"
+            android:background="@drawable/white_border_spa"/>
+</FrameLayout>
