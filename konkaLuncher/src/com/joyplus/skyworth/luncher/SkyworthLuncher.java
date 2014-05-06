@@ -515,7 +515,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		case R.id.layout_bangdan:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
 				if(mPageController!=null){
-					mPageController.showKonkaPage();
+					mPageController.showKonkaPage(false);
 					return true;
 				}
 				return false;

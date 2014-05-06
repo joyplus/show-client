@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_haier"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp" >
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" 
+        android:layout_marginTop="40dp">
+        <FrameLayout
+            android:id="@+id/fram_items_haier"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <RelativeLayout
+                android:id="@+id/layout_switcher"
+                android:layout_width="592dp"
+                android:layout_height="335dp"
+                android:layout_marginLeft="36dp"
+                android:layout_marginTop="60dp"
+                android:nextFocusLeft="@id/layout_switcher"
+                android:nextFocusUp="@id/layout_switcher">
+
+                <ImageSwitcher
+	                android:id="@+id/switcher_haier"
+	                android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+	                 />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="主界面推荐位"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp" />
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:id="@+id/layout_bangdan_haier"
+                android:layout_width="285dp"
+                android:layout_height="160dp"
+                android:layout_marginLeft="36dp"
+                android:layout_marginTop="405dp"
+                android:nextFocusDown="@id/layout_bangdan_haier" >
+
+                <ImageView
+                    android:id="@+id/image_bangdan_haier"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/item_bangdan"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:gravity="center"
+                    android:text="视频推荐"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp" />
+            </RelativeLayout>
+            <ImageView
+                android:id="@+id/item_live_haier"
+                android:layout_width="142dp"
+                android:layout_height="160dp"
+                android:layout_marginLeft="336dp"
+                android:layout_marginTop="405dp"
+                android:background="@drawable/item_haier_live"
+                android:nextFocusDown="@id/item_live_haier" />
+
+            <ImageView
+                android:id="@+id/item_spa_haier"
+                android:layout_width="142dp"
+                android:layout_height="160dp"
+                android:layout_marginLeft="488dp"
+                android:layout_marginTop="405dp"
+                android:background="@drawable/item_spa_haier"
+                android:nextFocusDown="@id/item_spa_haier" />
+            <ImageView
+                android:layout_width="282dp"
+                android:layout_height="162dp"
+                android:layout_marginLeft="666dp"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/item_haier_1_1"/>
+            <ImageView
+                android:layout_width="282dp"
+                android:layout_height="162dp"
+                android:layout_marginLeft="961dp"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/item_haier_1_2"/>
+            <ImageView
+                android:layout_width="282dp"
+                android:layout_height="162dp"
+                android:layout_marginLeft="666dp"
+                android:layout_marginTop="232dp"
+                android:background="@drawable/item_haier_2_1"/>
+            <ImageView
+                android:layout_width="282dp"
+                android:layout_height="162dp"
+                android:layout_marginLeft="961dp"
+                android:layout_marginTop="232dp"
+                android:background="@drawable/item_haier_2_2"/>
+            <ImageView
+                android:layout_width="282dp"
+                android:layout_height="162dp"
+                android:layout_marginLeft="666dp"
+                android:layout_marginTop="405dp"
+                android:background="@drawable/item_haier_3_1"/>
+            <ImageView
+                android:layout_width="282dp"
+                android:layout_height="162dp"
+                android:layout_marginLeft="961dp"
+                android:layout_marginTop="405dp"
+                android:background="@drawable/item_haier_3_2"/>
+		</FrameLayout>
+        <ImageView
+            android:id="@+id/white_borad_haier"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/white_border_haier" />
+    </FrameLayout>
+</LinearLayout>

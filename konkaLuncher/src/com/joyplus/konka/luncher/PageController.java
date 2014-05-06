@@ -1,6 +1,7 @@
 package com.joyplus.konka.luncher;
 
 public interface PageController {
-	public void showSkyworthPage();
-	public void showKonkaPage();
+	public void showSkyworthPage(boolean isLeftSideFocus);
+	public void showKonkaPage(boolean isLeftSideFocus);
+	public void showHaierPage(boolean isLeftSideFocus);
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -38,9 +39,9 @@ import com.joyplus.konka.utils.DensityUtil;
 import com.joyplus.konka.utils.Log;
 import com.joyplus.request.AdInfo;
 
-public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickListener, OnFocusChangeListener, OnKeyListener {
+public class HaierLuncher extends Fragment implements ViewFactory, OnClickListener, OnFocusChangeListener, OnKeyListener {
 
-	private static final String TAG =  SkyworthLuncher.class.getSimpleName();
+	private static final String TAG =  HaierLuncher.class.getSimpleName();
 	private ImageSwitcher mSwitcher;
 //	private int[] arrayPictures = {R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4};
 	private List<Drawable> pictures = new ArrayList<Drawable>();
@@ -75,7 +76,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	
 	public View  onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { 
 		super.onCreate(savedInstanceState);
-		return inflater.inflate(R.layout.layout_skyworth, null);
+		return inflater.inflate(R.layout.layout_haier, null);
 		
 	}
 	
@@ -83,15 +84,16 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mSwitcher = (ImageSwitcher) getView().findViewById(R.id.switcher_sky);
-		layout = (FrameLayout) getView().findViewById(R.id.fram_items_sky);
-		whiteBorder = (ImageView) getView().findViewById(R.id.white_borad_sky);
-		bangdan = (ImageView) getView().findViewById(R.id.image_bangdan_sky);
+//		setContentView(R.layout.layout_haier);
+		mSwitcher = (ImageSwitcher) getView().findViewById(R.id.switcher_haier);
+		layout = (FrameLayout) getView().findViewById(R.id.fram_items_haier);
+		whiteBorder = (ImageView) getView().findViewById(R.id.white_borad_haier);
+		bangdan = (ImageView) getView().findViewById(R.id.image_bangdan_haier);
 //		bangdan_layout = (RelativeLayout) findViewById(R.id.layout_bangdan);
 		mSwitcher.setFactory(this);
 		mSwitcher.setOnClickListener(this);
-		animation_in = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_right);
-		animation_out = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_left);
+		animation_in = AnimationUtils.loadAnimation(this.getActivity(), R.anim.slide_in_right);
+		animation_out = AnimationUtils.loadAnimation(this.getActivity(), R.anim.slide_out_left);
 		mHandler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -118,16 +120,16 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			View view = layout.getChildAt(i);
 			view.setFocusable(true);
 			view.setFocusableInTouchMode(true);
-			view.setOnFocusChangeListener(SkyworthLuncher.this);
+			view.setOnFocusChangeListener(HaierLuncher.this);
 			view.setOnClickListener(this);
 			view.setOnKeyListener(this);
 		}
 		whiteBorder.setFocusable(false);
 		whiteBorder.setFocusableInTouchMode(false);
-		FrameLayout.LayoutParams layoutparams = new FrameLayout.LayoutParams(DensityUtil.dip2px(getActivity(), 391), DensityUtil.dip2px(getActivity(), 258));
-		layoutparams.leftMargin = DensityUtil.dip2px(getActivity(), 13);
-		layoutparams.topMargin = DensityUtil.dip2px(getActivity(), 6);
-		whiteBorder.setLayoutParams(layoutparams);
+//		FrameLayout.LayoutParams layoutparams = new FrameLayout.LayoutParams(DensityUtil.dip2px(this, 391), DensityUtil.dip2px(this, 258));
+//		layoutparams.leftMargin = DensityUtil.dip2px(this, 13);
+//		layoutparams.topMargin = DensityUtil.dip2px(this, 6);
+//		whiteBorder.setLayoutParams(layoutparams);
 		File f = new File(BD_PATH + "/ADFILE");
 		if(f.exists()){
 			Drawable d = Drawable.createFromPath(f.getAbsolutePath());
@@ -142,11 +144,11 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PICTURE, INITPICTURE_TIME/3);
 	}
 	
-	public void requsetFouces(boolean isLeftFouces){
-		if(isLeftFouces){
-			getView().findViewById(R.id.layout_play).requestFocus();
+	public void requsetFouces(boolean isLeftSideFocus){
+		if(isLeftSideFocus){
+			getView().findViewById(R.id.layout_switcher).requestFocus();
 		}else{
-			getView().findViewById(R.id.layout_switch_sky).requestFocus();
+//			getView().findViewById(R.id.layout_switcher).requestFocus();
 		}
 		
 	}
@@ -173,7 +175,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	
 	private void updateBangdan(){
 		
-		Animation animation = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out);
+		Animation animation = AnimationUtils.loadAnimation(this.getActivity(), android.R.anim.fade_out);
 		animation.setDuration(100);
 		animation.setAnimationListener(new AnimationListener() {
 			@Override
@@ -204,7 +206,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 				}else{
 					bangdan.setImageResource(R.drawable.item_bangdan);
 				}
-				Animation animation_show = AnimationUtils.loadAnimation(SkyworthLuncher.this.getActivity(), android.R.anim.fade_in);
+				Animation animation_show = AnimationUtils.loadAnimation(HaierLuncher.this.getActivity(), android.R.anim.fade_in);
 				animation_show.setDuration(400);
 				bangdan.startAnimation(animation_show);
 			}
@@ -295,8 +297,9 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		// TODO Auto-generated method stub
 		try{
 			Intent intent = null;
+			Log.d(TAG, "click ------------- ");
 			switch (view.getId()) {
-			case R.id.layout_bangdan:// bangdan
+			case R.id.layout_bangdan_haier:// bangdan
 				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(BD_PATH+"/ad");
 				if(info!=null){
 					JSONObject json = new JSONObject();
@@ -311,10 +314,10 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 					intent.putExtra("data", json.toString());
 				}
 				break;
-			case  R.id.layout_tv: //tv but now use as car special area
+			case  R.id.item_spa_haier: //tv but now use as car special area
 				intent = new Intent(this.getActivity(), SpecialAreaActivity.class);
 				break;
-			case R.id.layout_1080p: //1080p but now use us live tv
+			case R.id.item_live_haier: //1080p but now use us live tv
 				intent = new Intent();
 				intent.setClassName("tv.wan8.weisp", "tv.huan.epg.live.ui.HuanPlayerActivity");
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -337,9 +340,9 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		if(hasFocus){
 			showOnFocusAnimation(view);
 		}else{
-			if(view.getId() != R.id.switcher){
+//			if(view.getId() != R.id.switcher){
 				showLooseFocusAnimation(view);
-			}
+//			}
 		}
 	}
 
@@ -366,10 +369,10 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 //		}else{
 ////			v.startAnimation(localAnimation);
 //		}
-		flyWhiteBorder(v.getMeasuredWidth()+DensityUtil.dip2px(getActivity(), 28), 
-				v.getMeasuredHeight()+DensityUtil.dip2px(getActivity(), 28), 
-				left-DensityUtil.dip2px(getActivity(), 14),
-				top-DensityUtil.dip2px(getActivity(), 14));
+		flyWhiteBorder(v.getMeasuredWidth()+DensityUtil.dip2px(this.getActivity(), 150), 
+				v.getMeasuredHeight()+DensityUtil.dip2px(this.getActivity(), 150), 
+				left-DensityUtil.dip2px(this.getActivity(), 75),
+				top-DensityUtil.dip2px(this.getActivity(), 75));
 	}
 	
 	private void showLooseFocusAnimation(final View v){
@@ -403,14 +406,14 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			int mTop = this.whiteBorder.getTop();
 			int mLeft = this.whiteBorder.getLeft();
 			if (mWidth == 0 || mHeight == 0) {
-				mWidth = 1;
-				mHeight = 1;
+				mWidth = 100;
+				mHeight = 100;
 			}
 			Log.d(TAG, "mWidth = " + mWidth + ", mHeight = " + mHeight + ", mTop = " + mTop + ", mLeft = " +mLeft);
 			Log.d(TAG, "width = " + width + ", height = " + height + ", paramFloat1 = " + paramFloat1 + ", paramFloat2 = " +paramFloat2);
 			
-			float sx = ((float)width)/mWidth;
-			float sy = ((float)height)/mHeight;
+			float sx = (width == mWidth)?1:((float)width-DensityUtil.dip2px(this.getActivity(), 150))/(mWidth-DensityUtil.dip2px(this.getActivity(), 150));
+			float sy = (height == mHeight)?1:((float)height-DensityUtil.dip2px(this.getActivity(), 150))/(mHeight-DensityUtil.dip2px(this.getActivity(), 150));
 			animationSet = new AnimationSet(true);
 			ScaleAnimation scaleAnimation = new ScaleAnimation(1,  sx, 1 , sy, 1, 0.5F, 1, 0.5F);
 //			scaleAnimation.setDuration(1500L);
@@ -474,28 +477,12 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.layout_play:
-		case R.id.layout_bangdan:
+		case R.id.layout_switcher:
+		case R.id.layout_bangdan_haier:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
 				if(mPageController!=null){
-					mPageController.showKonkaPage(false);
+					mPageController.showSkyworthPage(false);
 					return true;
-				}
-				return false;
-			}else{
-				return false;
-			}
-		case R.id.layout_switch_sky:
-		case R.id.item_free:
-			Log.d(TAG, "layout_switch_sky or item_free");
-			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				Log.d(TAG, "layout_switch_sky or item_free right down");
-				if(mPageController!=null){
-					mPageController.showHaierPage(true);
-					Log.d(TAG, "layout_switch_sky or item_free right down showHaierPage");
-					return true;
-				}else{
-					Log.d(TAG, "layout_switch_sky or item_free right down mPageController == null");
 				}
 				return false;
 			}else{

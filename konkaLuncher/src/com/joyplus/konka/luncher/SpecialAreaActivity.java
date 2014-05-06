@@ -98,8 +98,10 @@ public class SpecialAreaActivity extends Activity implements OnFocusChangeListen
 				mWidth = 1;
 				mHeight = 1;
 			}
-			float sx = ((float)width)/mWidth;
-			float sy = ((float)height)/mHeight;
+//			float sx = ((float)width)/mWidth;
+//			float sy = ((float)height)/mHeight;
+			float sx = (width == mWidth)?1:((float)width-DensityUtil.dip2px(this, 290))/(mWidth-DensityUtil.dip2px(this, 290));
+			float sy = (height == mHeight)?1:((float)height-DensityUtil.dip2px(this, 264))/(mHeight-DensityUtil.dip2px(this, 264));
 			animationSet = new AnimationSet(true);
 			ScaleAnimation scaleAnimation = new ScaleAnimation(1,  sx, 1 , sy, 1, 0.5F, 1, 0.5F);
 //			scaleAnimation.setDuration(1500L);

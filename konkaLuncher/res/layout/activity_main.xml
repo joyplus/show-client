@@ -1,200 +1,288 @@
 <com.joyplus.tvhelper.ui.MyScrollLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="horizontal"
-    android:id="@+id/content_layout"
     tools:context=".MainActivity" >
-    <LinearLayout android:layout_width="1280dp"
-	    android:layout_height="match_parent"
-	    android:paddingBottom="16dp"
-	    android:paddingLeft="16dp"
-	    android:paddingRight="16dp"
-	    android:paddingTop="16dp"
-	    android:orientation="vertical"
-	    android:background="@drawable/bg_app">
-    <LinearLayout android:layout_width="fill_parent"
-        android:layout_height="160dp"
-        android:id="@+id/title">
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40dp"
-            android:text="首页"
-            android:layout_marginLeft="20dp"
-            android:layout_gravity="center_vertical"
-            android:textColor="#ffffff"/>
-        <TextView android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
-        <ImageView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/title_bar"
-            />
-    </LinearLayout>
-    <FrameLayout android:layout_width="fill_parent"
+
+    <LinearLayout
+        android:layout_width="1280dp"
         android:layout_height="match_parent"
-        android:id="@+id/fram_items"
-        android:layout_weight="1">
-        <ImageSwitcher android:layout_width="387dp"
-			    android:layout_height="254dp"
-			    android:layout_weight="2"
-			    android:layout_marginLeft="15dp"
-			    android:layout_marginTop="8dp"
-			    android:focusable="true"
-			    android:longClickable="true"
-			    android:focusableInTouchMode="false"
-			    android:id="@+id/switcher"
-			    android:nextFocusLeft="@id/switcher"
-			    android:nextFocusUp="@id/switcher"/>
-        <RelativeLayout android:layout_width="256dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="15dp"
-            android:id="@+id/layout_bangdan"
-            android:nextFocusDown="@id/layout_bangdan"
-		    android:layout_marginTop="271dp">
-            <ImageView android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-		    android:scaleType="fitXY"
-		    android:background="@drawable/item_bangdan"
-		    android:id="@+id/image_bangdan"
-            />
-            <TextView android:layout_width="wrap_content"
+        android:background="@drawable/bg_app"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp" >
+
+        <LinearLayout
+            android:id="@+id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="160dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="首页"
                 android:textColor="#ffffff"
-                android:textSize="18dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_alignParentBottom="true"
-                android:text="视频推荐"/>
-        </RelativeLayout>
-        
-        <ImageView android:layout_width="124dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="280dp"
-		    android:layout_marginTop="271dp"
-		    android:background="@drawable/item_cloud_controller"
-		    android:id="@+id/item_cloud_controller"
-		    android:nextFocusDown="@id/item_cloud_controller"
-            />
-        <ImageView android:layout_width="255dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="431dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_beston"
-		    android:id="@+id/item_beston"/>
-        
-        <ImageView android:layout_width="123dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="431dp"
-		    android:layout_marginTop="140dp"
-		    android:background="@drawable/item_football"
-		    android:id="@+id/item_football"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="562dp"
-		    android:layout_marginTop="140dp"
-		    android:background="@drawable/item_basketball"
-		    android:id="@+id/item_basketball"/>
-        
-        <ImageView android:layout_width="255dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="431dp"
-		    android:layout_marginTop="271dp"
-		    android:background="@drawable/item_appstore"
-		    android:id="@+id/item_appstore"
-		    android:nextFocusDown="@id/item_appstore"/>
-        
-        <ImageView android:layout_width="124dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="715dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_app_helper"
-		    android:id="@+id/item_app_helper"/>
-        <ImageView android:layout_width="253dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="847dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_class_room"
-		    android:id="@+id/item_class_room"/>
-        <ImageView android:layout_width="124dp"
-            android:layout_height="124dp"
-            android:layout_marginLeft="1108dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_setting"
-		    android:id="@+id/item_setting"/>
-        
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="715dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_app_helper"
-		    android:id="@+id/item_app_helper"/>
-        <ImageView android:layout_width="255dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="847dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_class_room"
-		    android:id="@+id/item_class_room"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="1108dp"
-		    android:layout_marginTop="8dp"
-		    android:background="@drawable/item_setting"
-		    android:id="@+id/item_setting"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="715dp"
-		    android:layout_marginTop="140dp"
-		    android:background="@drawable/item_youku"
-		    android:id="@+id/item_youku"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="847dp"
-		    android:layout_marginTop="140dp"
-		    android:background="@drawable/item_letv"
-		    android:id="@+id/item_letv"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="978dp"
-		    android:layout_marginTop="140dp"
-		    android:background="@drawable/item_broadcast"
-		    android:id="@+id/item_broadcast"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="1108dp"
-		    android:layout_marginTop="140dp"
-		    android:background="@drawable/item_manager"
-		    android:id="@+id/item_manager"/>
-        <ImageView android:layout_width="255dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="715dp"
-		    android:layout_marginTop="271dp"
-		    android:background="@drawable/item_game"
-		    android:id="@+id/item_game"
-		    android:nextFocusDown="@id/item_game"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="978dp"
-		    android:layout_marginTop="271dp"
-		    android:background="@drawable/item_browser"
-		    android:id="@+id/item_browser"
-		    android:nextFocusDown="@id/item_browser"/>
-        <ImageView android:layout_width="123dp"
-            android:layout_height="123dp"
-            android:layout_marginLeft="1108dp"
-		    android:layout_marginTop="271dp"
-		    android:background="@drawable/item_more_app"
-		    android:id="@+id/item_more_app"
-		    android:nextFocusDown="@id/item_more_app"/>
-        <ImageView android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/white_borad"
-            android:background="@drawable/white_border"/>
-    </FrameLayout>
-	</LinearLayout>
-	<fragment android:name="com.joyplus.konka.luncher.SkyworthLuncher"
-            android:id="@+id/view_skyworth"
-            android:layout_width="1280dp"
-            android:layout_height="match_parent" />
+                android:textSize="40dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/title_bar" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fram_items"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
+
+            <RelativeLayout
+                android:id="@+id/layout_switcher"
+                android:layout_width="387dp"
+                android:layout_height="254dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:nextFocusLeft="@id/layout_switcher"
+                android:nextFocusUp="@id/layout_switcher">
+
+                <ImageSwitcher
+	                android:id="@+id/switcher"
+	                android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+	                 />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="主界面推荐位"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layout_bangdan"
+                android:layout_width="256dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="271dp"
+                android:nextFocusDown="@id/layout_bangdan" >
+
+                <ImageView
+                    android:id="@+id/image_bangdan"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/item_bangdan"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="视频推荐"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/item_cloud_controller"
+                android:layout_width="124dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="280dp"
+                android:layout_marginTop="271dp"
+                android:background="@drawable/item_cloud_controller"
+                android:nextFocusDown="@id/item_cloud_controller" />
+
+            <ImageView
+                android:id="@+id/item_beston"
+                android:layout_width="255dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="431dp"
+                android:layout_marginTop="8dp"
+                android:nextFocusUp="@id/item_beston"
+                android:background="@drawable/item_beston" />
+
+            <ImageView
+                android:id="@+id/item_football"
+                android:layout_width="123dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="431dp"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/item_football" />
+
+            <ImageView
+                android:id="@+id/item_basketball"
+                android:layout_width="123dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="562dp"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/item_basketball" />
+
+            <!-- <ImageView
+                android:id="@+id/item_appstore"
+                android:layout_width="255dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="431dp"
+                android:layout_marginTop="271dp"
+                android:background="@drawable/item_appstore"
+                android:nextFocusDown="@id/item_appstore" /> -->
+
+            <RelativeLayout
+                android:id="@+id/item_appstore"
+                android:layout_width="255dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="431dp"
+                android:layout_marginTop="271dp"
+                android:nextFocusDown="@id/item_appstore" >
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/item_appstore"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="品牌专区"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp" />
+            </RelativeLayout>
+            
+            <ImageView
+                android:id="@+id/item_app_helper"
+                android:layout_width="124dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="715dp"
+                android:layout_marginTop="8dp"
+                android:nextFocusUp="@id/item_app_helper" 
+                android:background="@drawable/item_app_helper"/>
+
+            <ImageView
+                android:id="@+id/item_class_room"
+                android:layout_width="253dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="847dp"
+                android:layout_marginTop="8dp"
+                android:nextFocusUp="@id/item_class_room"
+                android:background="@drawable/item_class_room" />
+
+            <ImageView
+                android:id="@+id/item_setting"
+                android:layout_width="124dp"
+                android:layout_height="124dp"
+                android:layout_marginLeft="1108dp"
+                android:layout_marginTop="8dp"
+                android:nextFocusUp="@id/item_setting"
+                android:background="@drawable/item_setting" />
+
+
+            <ImageView
+                android:id="@+id/item_youku"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="715dp"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/item_youku" />
+
+            <ImageView
+                android:id="@+id/item_letv"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="847dp"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/item_letv" />
+
+            <ImageView
+                android:id="@+id/item_broadcast"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="978dp"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/item_broadcast" />
+
+            <ImageView
+                android:id="@+id/item_manager"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="1108dp"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/item_manager" />
+
+            <ImageView
+                android:id="@+id/item_game"
+                android:layout_width="255dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="715dp"
+                android:layout_marginTop="271dp"
+                android:background="@drawable/item_game"
+                android:nextFocusDown="@id/item_game" />
+
+            <ImageView
+                android:id="@+id/item_browser"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="978dp"
+                android:layout_marginTop="271dp"
+                android:background="@drawable/item_browser"
+                android:nextFocusDown="@id/item_browser" />
+
+            <ImageView
+                android:id="@+id/item_more_app"
+                android:layout_width="123dp"
+                android:layout_height="123dp"
+                android:layout_marginLeft="1108dp"
+                android:layout_marginTop="271dp"
+                android:background="@drawable/item_more_app"
+                android:nextFocusDown="@id/item_more_app" />
+
+            <ImageView
+                android:id="@+id/white_borad"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/white_border" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/view_skyworth"
+        android:name="com.joyplus.konka.luncher.SkyworthLuncher"
+        android:layout_width="1280dp"
+        android:layout_height="match_parent" />
+     <fragment
+        android:id="@+id/view_haier"
+        android:name="com.joyplus.konka.luncher.HaierLuncher"
+        android:layout_width="1280dp"
+        android:layout_height="match_parent" />
+
 </com.joyplus.tvhelper.ui.MyScrollLayout>

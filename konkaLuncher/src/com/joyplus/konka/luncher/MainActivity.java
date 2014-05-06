@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
 	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
 	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
-	public static final String BaseUrl      = "http://advapi.yue001.com/advapi/v1/topic/get?s="+ID;
+	public static final String BaseUrl      = "http://advapi.joyplus.tv/advapi/v1/topic/get?s="+ID;
 	private Animation animation_in;
 	private Animation animation_out;
 	private ScaleAnimEffect animEffect;
@@ -75,6 +75,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	private ImageView bangdan;
 	private MyScrollLayout myScrollLayout;
 	private SkyworthLuncher skyFrament;
+	private HaierLuncher haierFrament;
 //	private RelativeLayout bangdan_layout;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
@@ -104,10 +105,12 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 		bangdan = (ImageView) findViewById(R.id.image_bangdan);
 		myScrollLayout = (MyScrollLayout) findViewById(R.id.content_layout);
 		skyFrament = (SkyworthLuncher) getFragmentManager().findFragmentById(R.id.view_skyworth);
+		haierFrament = (HaierLuncher) getFragmentManager().findFragmentById(R.id.view_haier);
+		haierFrament.setPageController(this);
 		skyFrament.setPageController(this);
 //		bangdan_layout = (RelativeLayout) findViewById(R.id.layout_bangdan);
 		mSwitcher.setFactory(this);
-		mSwitcher.setOnClickListener(this);
+//		mSwitcher.setOnClickListener(this);
 		animation_in = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
 		animation_out = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
 		mHandler = new Handler(){
@@ -300,7 +303,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 		try{
 			Intent intent = null;
 			switch (view.getId()) {
-			case R.id.switcher:// banner
+			case R.id.layout_switcher:// banner
 				break;
 			case R.id.layout_bangdan:// bangdan
 				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(BD_PATH+"/ad");
@@ -382,14 +385,14 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	public void onFocusChange(View view, boolean hasFocus) {
 		// TODO Auto-generated method stub
 		if(hasFocus){
-			if(view.getId() != R.id.switcher){
+			if(view.getId() != R.id.layout_switcher){
 				showOnFocusAnimation(view);
 			}else{
 				flyWhiteBorder(view.getMeasuredWidth()-DensityUtil.dip2px(this, 8), view.getMeasuredHeight()-DensityUtil.dip2px(this, 8), 
 						view.getLeft()+DensityUtil.dip2px(this, 4), view.getTop()+DensityUtil.dip2px(this, 4));
 			}
 		}else{
-			if(view.getId() != R.id.switcher){
+			if(view.getId() != R.id.layout_switcher){
 				showLooseFocusAnimation(view);
 			}
 		}
@@ -475,17 +478,23 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	}
 
 	@Override
-	public void showSkyworthPage() {
+	public void showSkyworthPage(boolean isLeftSideFocus) {
 		// TODO Auto-generated method stub
-		myScrollLayout.showNext();
-		skyFrament.requsetFouces(true);
+		myScrollLayout.snapToScreen(1);
+		skyFrament.requsetFouces(isLeftSideFocus);
 	}
 
 	@Override
-	public void showKonkaPage() {
+	public void showKonkaPage(boolean isLeftSideFocus) {
 		// TODO Auto-generated method stub
-		myScrollLayout.showPre();
+		myScrollLayout.snapToScreen(0);
 		findViewById(R.id.item_more_app).requestFocus();
+	}
+	@Override
+	public void showHaierPage(boolean isLeftSideFocus) {
+		// TODO Auto-generated method stub
+		myScrollLayout.snapToScreen(2);
+		haierFrament.requsetFouces(isLeftSideFocus);
 	}
 
 	@Override
@@ -496,7 +505,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 		case R.id.item_manager:
 		case R.id.item_more_app:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
-				showSkyworthPage();
+				showSkyworthPage(true);
 				return true;
 			}else{
 				return false;

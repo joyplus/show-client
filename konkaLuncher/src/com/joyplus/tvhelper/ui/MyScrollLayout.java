@@ -124,7 +124,8 @@ public class MyScrollLayout extends ViewGroup{
       
      public void snapToScreen(int whichScreen) {          
             // get the valid layout page      
-	 		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount()-1));      
+	 		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount()-1));
+	 		Log.d(TAG, "*************************snapToScreen----------" + whichScreen);
             if (getScrollX() != (getChildLeft(whichScreen))) {      
                 final int delta = getChildLeft(whichScreen)-getScrollX();      
 //                        mScroller.startScroll(getScrollX(), 0,       

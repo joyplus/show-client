@@ -24,6 +24,7 @@
                 android:orientation="vertical"
                 android:layout_marginTop="15dp"
                 android:id="@+id/layout_play"
+                android:nextFocusUp="@id/layout_play"
                 android:background="#71d100">
 			    <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
@@ -60,6 +61,8 @@
                 android:layout_marginLeft="635dp"
                 android:orientation="vertical"
                 android:layout_marginTop="15dp"
+                android:id="@+id/layout_switch_sky"
+                android:nextFocusUp="@id/layout_switch_sky"
                 android:background="#1bd63c">
 			    <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
@@ -70,16 +73,35 @@
 			        android:textSize="35dp"
 			        android:visibility="gone"
 			        android:text="@string/title_ad"/>
-			    <ImageSwitcher
-	                android:id="@+id/switcher_sky"
-	                android:layout_width="558dp"
+			    <RelativeLayout
+               		android:layout_width="558dp"
 	                android:layout_height="fill_parent"
 	                android:layout_gravity="center_horizontal"
 	                android:layout_marginBottom="25dp"
 	                android:layout_marginTop="25dp"
 	                android:focusable="true"
-	                android:focusableInTouchMode="false"
-	                android:longClickable="false" />
+	                android:focusableInTouchMode="false">
+
+                <ImageSwitcher
+	                android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/switcher_sky"
+	                 />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="主界面推荐位"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp" />
+            </RelativeLayout>
 		    </LinearLayout>
             <LinearLayout android:layout_width="285dp"
                 android:layout_height="173dp"
@@ -87,6 +109,7 @@
                 android:layout_marginTop="383dp"
                 android:background="#1bd63c"
                 android:id="@+id/layout_bangdan"
+                android:nextFocusDown="@id/layout_bangdan"
                 android:orientation="vertical">
                 <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
@@ -124,6 +147,8 @@
                 android:layout_marginLeft="325dp"
                 android:layout_marginTop="383dp"
                 android:background="#71d100"
+                android:id="@+id/layout_tv"
+                android:nextFocusDown="@id/layout_tv"
                 android:orientation="vertical">
                 <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
@@ -160,6 +185,8 @@
                 android:layout_marginLeft="635dp"
                 android:layout_marginTop="383dp"
                 android:background="#1bd63c"
+                android:id="@+id/layout_1080p"
+                android:nextFocusDown="@id/layout_1080p"
                 android:orientation="vertical">
                 <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"
@@ -196,6 +223,8 @@
                 android:layout_marginLeft="935dp"
                 android:layout_marginTop="383dp"
                 android:background="#71d100"
+                android:id="@+id/item_free"
+                android:nextFocusDown="@id/item_free"
                 android:orientation="vertical">
                 <TextView android:layout_width="fill_parent"
 			        android:layout_height="fill_parent"

@@ -4,16 +4,17 @@
     <string name="app_name">康佳桌面</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-
+	<string name="widget_title">品牌专区</string>
+	
     <string name="title_play">正在播放</string>
 	<string name="notice_play">模拟电视</string>
 	<string name="title_ad">广告专区</string>
 	<string name="title_hamburger">榜单推荐</string>
 	<string name="notice_hamburger">汉堡王邀您乐享美食大片</string>
-	<string name="title_tv">电视剧</string>
-	<string name="notice_tv">卫视热播全精彩</string>
-	<string name="title_1080p">1080P</string>
-	<string name="notice_1080p">畅享全高清画质</string>
+	<string name="title_tv">品牌专区</string>
+	<string name="notice_tv">凯迪拉克品牌专区</string>
+	<string name="title_1080p">直播</string>
+	<string name="notice_1080p">电视直播</string>
 	<string name="title_free">免费看</string>
 	<string name="notice_free">精彩免费影视</string>
 </resources>
