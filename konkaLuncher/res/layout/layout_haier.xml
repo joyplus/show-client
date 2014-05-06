@@ -31,18 +31,10 @@
 	                 />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:shadowColor="#000000"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="1"
-                    android:text="主界面推荐位"
-                    android:textColor="#ffffff"
-                    android:textSize="18dp" />
+                    android:background="@drawable/bg_haier_title"/>
             </RelativeLayout>
             
             <RelativeLayout
@@ -64,7 +56,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="10dp"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -72,7 +64,7 @@
                     android:gravity="center"
                     android:text="视频推荐"
                     android:textColor="#ffffff"
-                    android:textSize="18dp" />
+                    android:textSize="22dp" />
             </RelativeLayout>
             <ImageView
                 android:id="@+id/item_live_haier"
