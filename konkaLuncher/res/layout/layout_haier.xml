@@ -21,7 +21,6 @@
                 android:layout_height="335dp"
                 android:layout_marginLeft="36dp"
                 android:layout_marginTop="60dp"
-                android:nextFocusLeft="@id/layout_switcher"
                 android:nextFocusUp="@id/layout_switcher">
 
                 <ImageSwitcher
@@ -34,6 +33,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="-1dp"
                     android:background="@drawable/bg_haier_title"/>
             </RelativeLayout>
             
@@ -88,12 +88,16 @@
                 android:layout_height="162dp"
                 android:layout_marginLeft="666dp"
                 android:layout_marginTop="60dp"
+                android:id="@+id/haier_1_2"
+                android:nextFocusUp="@id/haier_1_2"
                 android:background="@drawable/item_haier_1_1"/>
             <ImageView
                 android:layout_width="282dp"
                 android:layout_height="162dp"
                 android:layout_marginLeft="961dp"
                 android:layout_marginTop="60dp"
+                android:id="@+id/haier_1_3"
+                android:nextFocusUp="@id/haier_1_3"
                 android:background="@drawable/item_haier_1_2"/>
             <ImageView
                 android:layout_width="282dp"
@@ -106,18 +110,23 @@
                 android:layout_height="162dp"
                 android:layout_marginLeft="961dp"
                 android:layout_marginTop="232dp"
+                android:id="@+id/haier_2_3"
                 android:background="@drawable/item_haier_2_2"/>
             <ImageView
                 android:layout_width="282dp"
                 android:layout_height="162dp"
                 android:layout_marginLeft="666dp"
                 android:layout_marginTop="405dp"
+                android:id="@+id/haier_3_2"
+                android:nextFocusDown="@id/haier_3_2"
                 android:background="@drawable/item_haier_3_1"/>
             <ImageView
                 android:layout_width="282dp"
                 android:layout_height="162dp"
                 android:layout_marginLeft="961dp"
                 android:layout_marginTop="405dp"
+                android:id="@+id/haier_3_3"
+                android:nextFocusDown="@id/haier_3_3"
                 android:background="@drawable/item_haier_3_2"/>
 		</FrameLayout>
         <ImageView

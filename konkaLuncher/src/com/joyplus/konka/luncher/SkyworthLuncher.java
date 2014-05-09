@@ -33,9 +33,12 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ViewSwitcher.ViewFactory;
 
+import com.joyplus.Config.ADConfig;
 import com.joyplus.adkey.widget.SerializeManager;
 import com.joyplus.konka.utils.DensityUtil;
 import com.joyplus.konka.utils.Log;
+import com.joyplus.konka_jas.joyplus.konka.ADRequest;
+import com.joyplus.konka_jas.joyplus.konka.KonkaConfig;
 import com.joyplus.request.AdInfo;
 
 public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickListener, OnFocusChangeListener, OnKeyListener {
@@ -55,15 +58,15 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	/**
 	 * 盛辉下载banner的存储路径
 	 */
-	private static final String IMAGE_PATH = "/mnt/sdcard/Jas_1001"; //banner 
-	private static final String IMAGE_PATH_DEBUG = "/mnt/sdcard/Jas"; //banner_debug
+//	private static final String IMAGE_PATH = "/mnt/sdcard/Jas_1001"; //banner 
+//	private static final String IMAGE_PATH_DEBUG = "/mnt/sdcard/Jas"; //banner_debug
 	/**
 	 * 盛辉下载bangdan的存储路径
 	 */
-	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
-	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
-	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
-	public static final String BaseUrl      = "http://advapi.joyplus.tv/advapi/v1/topic/get?s="+ID;
+//	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
+//	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
+//	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
+//	public static final String BaseUrl      = "http://advapi.joyplus.tv/advapi/v1/topic/get?s="+ID;
 	private Animation animation_in;
 	private Animation animation_out;
 	private ScaleAnimEffect animEffect;
@@ -128,7 +131,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		layoutparams.leftMargin = DensityUtil.dip2px(getActivity(), 13);
 		layoutparams.topMargin = DensityUtil.dip2px(getActivity(), 6);
 		whiteBorder.setLayoutParams(layoutparams);
-		File f = new File(BD_PATH + "/ADFILE");
+		File f = new File(ADConfig.BD_PATH + "/ADFILE");
 		if(f.exists()){
 			Drawable d = Drawable.createFromPath(f.getAbsolutePath());
 			if(d != null){
@@ -191,7 +194,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				// TODO Auto-generated method stub
-				File f = new File(BD_PATH + "/ADFILE");
+				File f = new File(ADConfig.BD_PATH + "/ADFILE");
 				if(f.exists()){
 					Log.d(TAG, "file exists");
 					Drawable d = Drawable.createFromPath(f.getAbsolutePath());
@@ -219,27 +222,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	}
 	
 	private void initPicturesDrawble(){
-		File dir_debug = new File(IMAGE_PATH_DEBUG);
-		if(!dir_debug.exists()){
-			dir_debug.mkdirs();
-		}
-		File dir = new File(IMAGE_PATH);
-		if(dir.exists()){
-			File[] pictures = dir.listFiles();
-			if(pictures!=null && pictures.length>0){
-				List<Drawable> drawables = new ArrayList<Drawable>();
-				for(File f : pictures){
-					Drawable d = Drawable.createFromPath(f.getAbsolutePath());
-					if(d!=null){
-						drawables.add(d);
-					}
-				}
-				this.pictures = drawables;
-			}
-		}else{
-			dir.mkdirs();
-			this.pictures = new ArrayList<Drawable>();
-		}
+		this.pictures = ADRequest.getPicturesDrawble(0);
 	}
 	
 	private void showNext(){
@@ -297,16 +280,16 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			Intent intent = null;
 			switch (view.getId()) {
 			case R.id.layout_bangdan:// bangdan
-				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(BD_PATH+"/ad");
+				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(ADConfig.BD_PATH+"/ad");
 				if(info!=null){
 					JSONObject json = new JSONObject();
 					intent = new Intent("com.joyplus.ad.test.view");
 					if(info.mOPENTYPE == null || info.mOPENTYPE==AdInfo.OPENTYPE.ANDROID){
 						json.put("type", 2);
-						json.put("url", BaseUrl);
+						json.put("url", ADConfig.BaseUrl);
 					}else{
 						json.put("type", 0);
-						json.put("url", html5BaseUrl);
+						json.put("url", ADConfig.html5BaseUrl);
 					}
 					intent.putExtra("data", json.toString());
 				}
@@ -373,6 +356,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	}
 	
 	private void showLooseFocusAnimation(final View v){
+		this.whiteBorder.setVisibility(View.INVISIBLE);
 //		float sdx = (v.getMeasuredWidth()+DensityUtil.dip2px(this, 10))/v.getMeasuredWidth();
 //		float sdy = (v.getMeasuredHeight()+DensityUtil.dip2px(this, 10))/v.getMeasuredHeight();
 //		this.animEffect.setAttributs(sdx, 1.0F, sdy, 1.0F, 100L);
@@ -478,7 +462,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		case R.id.layout_bangdan:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
 				if(mPageController!=null){
-					mPageController.showKonkaPage(false);
+					mPageController.showPage(PageController.PAGE_KONKA, false);
 					return true;
 				}
 				return false;
@@ -491,7 +475,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT&&event.getAction() == KeyEvent.ACTION_DOWN){
 				Log.d(TAG, "layout_switch_sky or item_free right down");
 				if(mPageController!=null){
-					mPageController.showHaierPage(true);
+					mPageController.showPage(PageController.PAGE_HAIER, true);
 					Log.d(TAG, "layout_switch_sky or item_free right down showHaierPage");
 					return true;
 				}else{

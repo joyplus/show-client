@@ -34,10 +34,12 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ViewSwitcher.ViewFactory;
 
+import com.joyplus.Config.ADConfig;
 import com.joyplus.adkey.widget.SerializeManager;
 import com.joyplus.konka.update.UmengUpdate;
 import com.joyplus.konka.utils.DensityUtil;
 import com.joyplus.konka.utils.Log;
+import com.joyplus.konka_jas.joyplus.konka.ADRequest;
 import com.joyplus.request.AdInfo;
 import com.joyplus.tvhelper.ui.MyScrollLayout;
 
@@ -58,15 +60,15 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	/**
 	 * 盛辉下载banner的存储路径
 	 */
-	private static final String IMAGE_PATH = "/mnt/sdcard/Jas_1001"; //banner 
-	private static final String IMAGE_PATH_DEBUG = "/mnt/sdcard/Jas"; //banner_debug
+//	private static final String IMAGE_PATH = "/mnt/sdcard/Jas_1001"; //banner 
+//	private static final String IMAGE_PATH_DEBUG = "/mnt/sdcard/Jas"; //banner_debug
 	/**
 	 * 盛辉下载bangdan的存储路径
 	 */
-	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
-	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
-	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
-	public static final String BaseUrl      = "http://advapi.joyplus.tv/advapi/v1/topic/get?s="+ID;
+//	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
+//	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
+//	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
+//	public static final String BaseUrl      = "http://advapi.joyplus.tv/advapi/v1/topic/get?s="+ID;
 	private Animation animation_in;
 	private Animation animation_out;
 	private ScaleAnimEffect animEffect;
@@ -76,6 +78,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	private MyScrollLayout myScrollLayout;
 	private SkyworthLuncher skyFrament;
 	private HaierLuncher haierFrament;
+	private TclLuncher tclFrament;
 //	private RelativeLayout bangdan_layout;
 	
 	private BroadcastReceiver mReceiver = new BroadcastReceiver(){
@@ -106,8 +109,10 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 		myScrollLayout = (MyScrollLayout) findViewById(R.id.content_layout);
 		skyFrament = (SkyworthLuncher) getFragmentManager().findFragmentById(R.id.view_skyworth);
 		haierFrament = (HaierLuncher) getFragmentManager().findFragmentById(R.id.view_haier);
+		tclFrament = (TclLuncher) getFragmentManager().findFragmentById(R.id.view_tcl);
 		haierFrament.setPageController(this);
 		skyFrament.setPageController(this);
+		tclFrament.setPageController(this);
 //		bangdan_layout = (RelativeLayout) findViewById(R.id.layout_bangdan);
 		mSwitcher.setFactory(this);
 //		mSwitcher.setOnClickListener(this);
@@ -145,12 +150,23 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 		}
 		whiteBorder.setFocusable(false);
 		whiteBorder.setFocusableInTouchMode(false);
-		File f = new File(BD_PATH + "/ADFILE");
+		File f = new File(ADConfig.BD_PATH + "/ADFILE");
 		if(f.exists()){
 			Drawable d = Drawable.createFromPath(f.getAbsolutePath());
 			if(d != null){
 				bangdan.setImageDrawable(d);
+			}else{
+				bangdan.setImageResource(R.drawable.item_bangdan);
 			}
+		}else{
+			bangdan.setImageResource(R.drawable.item_bangdan);
+		}
+		
+//		File dir = new File(ADRequest.getPicturesDrawble(1));
+		List<Drawable> bgs = ADRequest.getPicturesDrawble(1);
+		if(bgs.size()>0){
+			findViewById(R.id.bg_konka).setBackgroundDrawable(bgs.get(0)); 
+			layout.setAlpha(0.8f);
 		}
 		UmengUpdate.update(this);
 		
@@ -197,7 +213,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				// TODO Auto-generated method stub
-				File f = new File(BD_PATH + "/ADFILE");
+				File f = new File(ADConfig.BD_PATH + "/ADFILE");
 				if(f.exists()){
 					Log.d(TAG, "file exists");
 					Drawable d = Drawable.createFromPath(f.getAbsolutePath());
@@ -225,27 +241,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	}
 	
 	private void initPicturesDrawble(){
-		File dir_debug = new File(IMAGE_PATH_DEBUG);
-		if(!dir_debug.exists()){
-			dir_debug.mkdirs();
-		}
-		File dir = new File(IMAGE_PATH);
-		if(dir.exists()){
-			File[] pictures = dir.listFiles();
-			if(pictures!=null && pictures.length>0){
-				List<Drawable> drawables = new ArrayList<Drawable>();
-				for(File f : pictures){
-					Drawable d = Drawable.createFromPath(f.getAbsolutePath());
-					if(d!=null){
-						drawables.add(d);
-					}
-				}
-				this.pictures = drawables;
-			}
-		}else{
-			dir.mkdirs();
-			this.pictures = new ArrayList<Drawable>();
-		}
+		this.pictures = ADRequest.getPicturesDrawble(0);
 	}
 	
 	private void showNext(){
@@ -306,16 +302,16 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 			case R.id.layout_switcher:// banner
 				break;
 			case R.id.layout_bangdan:// bangdan
-				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(BD_PATH+"/ad");
+				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(ADConfig.BD_PATH+"/ad");
 				if(info!=null){
 					JSONObject json = new JSONObject();
 					intent = new Intent("com.joyplus.ad.test.view");
 					if(info.mOPENTYPE == null || info.mOPENTYPE==AdInfo.OPENTYPE.ANDROID){
 						json.put("type", 2);
-						json.put("url", BaseUrl);
+						json.put("url", ADConfig.BaseUrl);
 					}else{
 						json.put("type", 0);
-						json.put("url", html5BaseUrl);
+						json.put("url", ADConfig.html5BaseUrl);
 					}
 					intent.putExtra("data", json.toString());
 				}
@@ -399,6 +395,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	}
 
 	private void showOnFocusAnimation(final View v){
+//		this.whiteBorder.setVisibility(View.VISIBLE);
 		v.bringToFront();
 		float sdx = ((float)v.getWidth()+DensityUtil.dip2px(this, 10))/v.getWidth();
 		float sdy = ((float)v.getHeight()+DensityUtil.dip2px(this, 10))/v.getHeight();
@@ -425,6 +422,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	}
 	
 	private void showLooseFocusAnimation(final View v){
+//		whiteBorder.setVisibility(View.GONE);
 		float sdx = (v.getMeasuredWidth()+DensityUtil.dip2px(this, 10))/v.getMeasuredWidth();
 		float sdy = (v.getMeasuredHeight()+DensityUtil.dip2px(this, 10))/v.getMeasuredHeight();
 		this.animEffect.setAttributs(sdx, 1.0F, sdy, 1.0F, 100L);
@@ -449,7 +447,7 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	 * */
 	private void flyWhiteBorder(int width, int height, float paramFloat1, float paramFloat2) {
 		if ((this.whiteBorder != null)) {
-			this.whiteBorder.setVisibility(View.VISIBLE);
+//			this.whiteBorder.setVisibility(View.VISIBLE);
 			whiteBorder.layout((int)paramFloat1, (int)paramFloat2, (int)paramFloat1+width, (int)paramFloat2+height);
 			FrameLayout.LayoutParams layoutparams = new FrameLayout.LayoutParams(width, height);
 			layoutparams.leftMargin = (int)paramFloat1;
@@ -478,23 +476,45 @@ public class MainActivity extends Activity implements ViewFactory, OnClickListen
 	}
 
 	@Override
-	public void showSkyworthPage(boolean isLeftSideFocus) {
+	public void showPage(int page, boolean isLeftSideFocus){
+		// TODO Auto-generated method stub
+		switch (page) {
+		case PageController.PAGE_KONKA:
+			showKonkaPage(isLeftSideFocus);
+			break;
+		case PageController.PAGE_SKYWORTH:
+			showSkyworthPage(isLeftSideFocus);
+			break;
+		case PageController.PAGE_HAIER:
+			showHaierPage(isLeftSideFocus);
+			break;
+		case PageController.PAGE_TCL:
+			showTCL(isLeftSideFocus);
+			break;
+		}
+	}
+	
+	private void showSkyworthPage(boolean isLeftSideFocus) {
 		// TODO Auto-generated method stub
 		myScrollLayout.snapToScreen(1);
 		skyFrament.requsetFouces(isLeftSideFocus);
 	}
 
-	@Override
-	public void showKonkaPage(boolean isLeftSideFocus) {
+	private void showKonkaPage(boolean isLeftSideFocus) {
 		// TODO Auto-generated method stub
 		myScrollLayout.snapToScreen(0);
 		findViewById(R.id.item_more_app).requestFocus();
 	}
-	@Override
-	public void showHaierPage(boolean isLeftSideFocus) {
+	private void showHaierPage(boolean isLeftSideFocus) {
 		// TODO Auto-generated method stub
 		myScrollLayout.snapToScreen(2);
 		haierFrament.requsetFouces(isLeftSideFocus);
+	}
+	
+	private void showTCL(boolean isLeftSideFocus) {
+		// TODO Auto-generated method stub
+		myScrollLayout.snapToScreen(3);
+		tclFrament.requsetFouces(isLeftSideFocus);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.joyplus.skyworth.luncher;
+package com.joyplus.konka.luncher;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -33,17 +34,17 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ViewSwitcher.ViewFactory;
 
+import com.joyplus.Config.ADConfig;
 import com.joyplus.adkey.widget.SerializeManager;
-import com.joyplus.konka.luncher.PageController;
-import com.joyplus.konka.luncher.R;
-import com.joyplus.konka.luncher.ScaleAnimEffect;
 import com.joyplus.konka.utils.DensityUtil;
 import com.joyplus.konka.utils.Log;
+import com.joyplus.konka_jas.joyplus.konka.ADRequest;
+import com.joyplus.konka_jas.joyplus.konka.KonkaConfig;
 import com.joyplus.request.AdInfo;
 
-public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickListener, OnFocusChangeListener, OnKeyListener {
+public class TclLuncher extends Fragment implements ViewFactory, OnClickListener, OnFocusChangeListener, OnKeyListener {
 
-	private static final String TAG =  SkyworthLuncher.class.getSimpleName();
+	private static final String TAG =  TclLuncher.class.getSimpleName();
 	private ImageSwitcher mSwitcher;
 //	private int[] arrayPictures = {R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4};
 	private List<Drawable> pictures = new ArrayList<Drawable>();
@@ -58,15 +59,15 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	/**
 	 * 盛辉下载banner的存储路径
 	 */
-	private static final String IMAGE_PATH = "/mnt/sdcard/Jas_1001"; //banner 
-	private static final String IMAGE_PATH_DEBUG = "/mnt/sdcard/Jas"; //banner_debug
+//	private static final String IMAGE_PATH = "/mnt/sdcard/Jas_1001"; //banner 
+//	private static final String IMAGE_PATH_DEBUG = "/mnt/sdcard/Jas"; //banner_debug
 	/**
 	 * 盛辉下载bangdan的存储路径
 	 */
-	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
-	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
-	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
-	public static final String BaseUrl      = "http://advapi.yue001.com/advapi/v1/topic/get?s="+ID;
+//	private static final String BD_PATH = "/mnt/sdcard/Joyplus_video"; //bangdan
+//	private static final String ID = "9a51d0c16fa83008eba3001aa892b901";
+//	public static final String html5BaseUrl = "http://download.joyplus.tv/app/item.html?s="+ID;
+//	public static final String BaseUrl      = "http://advapi.joyplus.tv/advapi/v1/topic/get?s="+ID;
 	private Animation animation_in;
 	private Animation animation_out;
 	private ScaleAnimEffect animEffect;
@@ -78,7 +79,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	
 	public View  onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { 
 		super.onCreate(savedInstanceState);
-		return inflater.inflate(R.layout.layout_skyworth, null);
+		return inflater.inflate(R.layout.layout_tcl, null);
 		
 	}
 	
@@ -86,15 +87,16 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mSwitcher = (ImageSwitcher) getView().findViewById(R.id.switcher_sky);
-		layout = (FrameLayout) getView().findViewById(R.id.fram_items_sky);
-		whiteBorder = (ImageView) getView().findViewById(R.id.white_borad_sky);
-		bangdan = (ImageView) getView().findViewById(R.id.image_bangdan_sky);
+//		setContentView(R.layout.layout_tcl);
+		mSwitcher = (ImageSwitcher) getView().findViewById(R.id.switcher_tcl);
+		layout = (FrameLayout) getView().findViewById(R.id.fram_items_tcl);
+		whiteBorder = (ImageView) getView().findViewById(R.id.white_borad_tcl);
+		bangdan = (ImageView) getView().findViewById(R.id.image_bangdan_tcl);
 //		bangdan_layout = (RelativeLayout) findViewById(R.id.layout_bangdan);
 		mSwitcher.setFactory(this);
 		mSwitcher.setOnClickListener(this);
-		animation_in = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_right);
-		animation_out = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_left);
+		animation_in = AnimationUtils.loadAnimation(this.getActivity(), R.anim.slide_in_right);
+		animation_out = AnimationUtils.loadAnimation(this.getActivity(), R.anim.slide_out_left);
 		mHandler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -121,17 +123,17 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			View view = layout.getChildAt(i);
 			view.setFocusable(true);
 			view.setFocusableInTouchMode(true);
-			view.setOnFocusChangeListener(SkyworthLuncher.this);
+			view.setOnFocusChangeListener(TclLuncher.this);
 			view.setOnClickListener(this);
 			view.setOnKeyListener(this);
 		}
 		whiteBorder.setFocusable(false);
 		whiteBorder.setFocusableInTouchMode(false);
-		FrameLayout.LayoutParams layoutparams = new FrameLayout.LayoutParams(DensityUtil.dip2px(getActivity(), 391), DensityUtil.dip2px(getActivity(), 258));
-		layoutparams.leftMargin = DensityUtil.dip2px(getActivity(), 13);
-		layoutparams.topMargin = DensityUtil.dip2px(getActivity(), 6);
-		whiteBorder.setLayoutParams(layoutparams);
-		File f = new File(BD_PATH + "/ADFILE");
+//		FrameLayout.LayoutParams layoutparams = new FrameLayout.LayoutParams(DensityUtil.dip2px(this, 391), DensityUtil.dip2px(this, 258));
+//		layoutparams.leftMargin = DensityUtil.dip2px(this, 13);
+//		layoutparams.topMargin = DensityUtil.dip2px(this, 6);
+//		whiteBorder.setLayoutParams(layoutparams);
+		File f = new File(ADConfig.BD_PATH + "/ADFILE");
 		if(f.exists()){
 			Drawable d = Drawable.createFromPath(f.getAbsolutePath());
 			if(d != null){
@@ -145,8 +147,13 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		mHandler.sendEmptyMessageDelayed(MESSAGE_UPDATE_PICTURE, INITPICTURE_TIME/3);
 	}
 	
-	public void requsetFouces(boolean isLeftSide){
-		getView().findViewById(R.id.layout_play).requestFocus();
+	public void requsetFouces(boolean isLeftSideFocus){
+		if(isLeftSideFocus){
+			getView().findViewById(R.id.layout_switcher_tcl).requestFocus();
+		}else{
+//			getView().findViewById(R.id.layout_switcher).requestFocus();
+		}
+		
 	}
 	
 	public void setPageController(PageController controller){
@@ -171,7 +178,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	
 	private void updateBangdan(){
 		
-		Animation animation = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out);
+		Animation animation = AnimationUtils.loadAnimation(this.getActivity(), android.R.anim.fade_out);
 		animation.setDuration(100);
 		animation.setAnimationListener(new AnimationListener() {
 			@Override
@@ -189,7 +196,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				// TODO Auto-generated method stub
-				File f = new File(BD_PATH + "/ADFILE");
+				File f = new File(ADConfig.BD_PATH + "/ADFILE");
 				if(f.exists()){
 					Log.d(TAG, "file exists");
 					Drawable d = Drawable.createFromPath(f.getAbsolutePath());
@@ -202,7 +209,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 				}else{
 					bangdan.setImageResource(R.drawable.item_bangdan);
 				}
-				Animation animation_show = AnimationUtils.loadAnimation(SkyworthLuncher.this.getActivity(), android.R.anim.fade_in);
+				Animation animation_show = AnimationUtils.loadAnimation(TclLuncher.this.getActivity(), android.R.anim.fade_in);
 				animation_show.setDuration(400);
 				bangdan.startAnimation(animation_show);
 			}
@@ -217,27 +224,7 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	}
 	
 	private void initPicturesDrawble(){
-		File dir_debug = new File(IMAGE_PATH_DEBUG);
-		if(!dir_debug.exists()){
-			dir_debug.mkdirs();
-		}
-		File dir = new File(IMAGE_PATH);
-		if(dir.exists()){
-			File[] pictures = dir.listFiles();
-			if(pictures!=null && pictures.length>0){
-				List<Drawable> drawables = new ArrayList<Drawable>();
-				for(File f : pictures){
-					Drawable d = Drawable.createFromPath(f.getAbsolutePath());
-					if(d!=null){
-						drawables.add(d);
-					}
-				}
-				this.pictures = drawables;
-			}
-		}else{
-			dir.mkdirs();
-			this.pictures = new ArrayList<Drawable>();
-		}
+		this.pictures = ADRequest.getPicturesDrawble(0);
 	}
 	
 	private void showNext(){
@@ -293,68 +280,30 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		// TODO Auto-generated method stub
 		try{
 			Intent intent = null;
+			Log.d(TAG, "click ------------- ");
 			switch (view.getId()) {
-			case R.id.switcher:// banner
-				break;
-			case R.id.layout_bangdan:// bangdan
-				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(BD_PATH+"/ad");
+			case R.id.layout_bangdan_tcl:// bangdan
+				AdInfo info  =  (AdInfo) new SerializeManager().readSerializableData(ADConfig.BD_PATH+"/ad");
 				if(info!=null){
 					JSONObject json = new JSONObject();
 					intent = new Intent("com.joyplus.ad.test.view");
 					if(info.mOPENTYPE == null || info.mOPENTYPE==AdInfo.OPENTYPE.ANDROID){
 						json.put("type", 2);
-						json.put("url", BaseUrl);
+						json.put("url", ADConfig.BaseUrl);
 					}else{
 						json.put("type", 0);
-						json.put("url", html5BaseUrl);
+						json.put("url", ADConfig.html5BaseUrl);
 					}
 					intent.putExtra("data", json.toString());
 				}
 				break;
-			case R.id.item_cloud_controller:// yunzhikong
+			case  R.id.item_spa_tcl: //tv but now use as car special area
+				intent = new Intent(this.getActivity(), SpecialAreaActivity.class);
 				break;
-			case R.id.item_beston: //baishitong
-				break;
-			case R.id.item_football://yingchao
-				break;
-			case R.id.item_basketball://NBA
-				break;
-			case R.id.item_appstore:// app store
-				break;
-			case R.id.item_app_helper: // yingyong zhushou
-				break;
-			case R.id.item_class_room:// kuaikan xue tang
-				break;
-			case R.id.item_setting: //setting
-				intent = new Intent(Settings.ACTION_SETTINGS);
-				break;
-			case R.id.item_youku: // youku
+			case R.id.item_live_tcl: //1080p but now use us live tv
 				intent = new Intent();
-				intent.setClassName("com.youku.tv", "com.youku.tv.WelcomeActivity");
+				intent.setClassName("tv.wan8.weisp", "tv.huan.epg.live.ui.HuanPlayerActivity");
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				break;
-			case R.id.item_letv: // letv
-				intent = new Intent();
-				intent.setClassName("com.skyworth.onlinemovie.letv.csapp", "com.letv.tv.activity.WelcomeActivity");
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				break;
-			case R.id.item_broadcast: // duoping
-				break;
-			case R.id.item_manager: // guanjia
-				intent = new Intent();
-				intent.setClassName("com.qihoo360.mobilesafe_tv", "com.qihoo360.mobilesafe.ui.index.AppEnterActivity");
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				break;
-			case R.id.item_game: // game center
-				break;
-			case R.id.item_browser: // browser
-				intent = new Intent();        
-				intent.setAction("android.intent.action.VIEW");    
-				Uri content_url = Uri.parse("http://www.joyplus.tv/");   
-				intent.setData(content_url);  
-				break;
-			case R.id.item_more_app: // more app
-//				intent = new Intent(this, InstalledApplication.class);
 				break;
 			default:
 				break;
@@ -374,9 +323,9 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 		if(hasFocus){
 			showOnFocusAnimation(view);
 		}else{
-			if(view.getId() != R.id.switcher){
+//			if(view.getId() != R.id.switcher){
 				showLooseFocusAnimation(view);
-			}
+//			}
 		}
 	}
 
@@ -403,13 +352,14 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 //		}else{
 ////			v.startAnimation(localAnimation);
 //		}
-		flyWhiteBorder(v.getMeasuredWidth()+DensityUtil.dip2px(getActivity(), 28), 
-				v.getMeasuredHeight()+DensityUtil.dip2px(getActivity(), 28), 
-				left-DensityUtil.dip2px(getActivity(), 14),
-				top-DensityUtil.dip2px(getActivity(), 14));
+		flyWhiteBorder(v.getMeasuredWidth()+DensityUtil.dip2px(this.getActivity(), 100), 
+				v.getMeasuredHeight()+DensityUtil.dip2px(this.getActivity(), 100), 
+				left-DensityUtil.dip2px(this.getActivity(), 50),
+				top-DensityUtil.dip2px(this.getActivity(), 50));
 	}
 	
 	private void showLooseFocusAnimation(final View v){
+		this.whiteBorder.setVisibility(View.INVISIBLE);
 //		float sdx = (v.getMeasuredWidth()+DensityUtil.dip2px(this, 10))/v.getMeasuredWidth();
 //		float sdy = (v.getMeasuredHeight()+DensityUtil.dip2px(this, 10))/v.getMeasuredHeight();
 //		this.animEffect.setAttributs(sdx, 1.0F, sdy, 1.0F, 100L);
@@ -440,14 +390,14 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 			int mTop = this.whiteBorder.getTop();
 			int mLeft = this.whiteBorder.getLeft();
 			if (mWidth == 0 || mHeight == 0) {
-				mWidth = 1;
-				mHeight = 1;
+				mWidth = 100;
+				mHeight = 100;
 			}
 			Log.d(TAG, "mWidth = " + mWidth + ", mHeight = " + mHeight + ", mTop = " + mTop + ", mLeft = " +mLeft);
 			Log.d(TAG, "width = " + width + ", height = " + height + ", paramFloat1 = " + paramFloat1 + ", paramFloat2 = " +paramFloat2);
 			
-			float sx = ((float)width)/mWidth;
-			float sy = ((float)height)/mHeight;
+			float sx = (width == mWidth)?1:((float)width-DensityUtil.dip2px(this.getActivity(), 100))/(mWidth-DensityUtil.dip2px(this.getActivity(), 100));
+			float sy = (height == mHeight)?1:((float)height-DensityUtil.dip2px(this.getActivity(), 100))/(mHeight-DensityUtil.dip2px(this.getActivity(), 100));
 			animationSet = new AnimationSet(true);
 			ScaleAnimation scaleAnimation = new ScaleAnimation(1,  sx, 1 , sy, 1, 0.5F, 1, 0.5F);
 //			scaleAnimation.setDuration(1500L);
@@ -511,11 +461,10 @@ public class SkyworthLuncher extends Fragment implements ViewFactory, OnClickLis
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.layout_play:
-		case R.id.layout_bangdan:
+		case R.id.layout_switcher_tcl:
 			if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT&&event.getAction() == KeyEvent.ACTION_DOWN){
 				if(mPageController!=null){
-					mPageController.showKonkaPage(false);
+					mPageController.showPage(PageController.PAGE_HAIER, false);
 					return true;
 				}
 				return false;

@@ -1,0 +1,132 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tcl"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <FrameLayout
+            android:id="@+id/fram_items_tcl"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <RelativeLayout
+                android:id="@+id/layout_switcher_tcl"
+                android:layout_width="499dp"
+                android:layout_height="353dp"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="34dp"
+                android:nextFocusUp="@id/layout_switcher_tcl">
+
+                <ImageSwitcher
+	                android:id="@+id/switcher_tcl"
+	                android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+	                 />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:text="主界面推荐位"
+                    android:textColor="#ffffff"
+                    android:textSize="22dp" />
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:id="@+id/layout_bangdan_tcl"
+                android:layout_width="215dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="592dp"
+                android:layout_marginTop="427dp"
+                android:nextFocusLeft="@id/layout_switcher_tcl">
+
+                <ImageView
+                    android:id="@+id/image_bangdan_tcl"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/item_bangdan"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/item_tuijian_title_bg"/>
+            </RelativeLayout>
+            <ImageView
+                android:id="@+id/item_live_tcl"
+                android:layout_width="215dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="592dp"
+                android:layout_marginTop="559dp"
+                android:background="@drawable/item_tcl_4_1"
+                android:nextFocusLeft="@id/layout_switcher_tcl"
+                android:nextFocusDown="@id/item_live_tcl" />
+
+            <ImageView
+                android:id="@+id/item_spa_tcl"
+                android:layout_width="215dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="813dp"
+                android:layout_marginTop="559dp"
+                android:background="@drawable/item_tcl_4_2"
+                android:nextFocusDown="@id/item_spa_tcl" />
+            <ImageView
+                android:layout_width="436dp"
+                android:layout_height="260dp"
+                android:layout_marginLeft="592dp"
+                android:layout_marginTop="160dp"
+                android:id="@+id/tcl_1_1"
+                android:nextFocusUp="@id/tcl_1_1"
+                android:background="@drawable/item_tcl_1_1"/>
+            <ImageView
+                android:layout_width="215dp"
+                android:layout_height="127dp"
+                android:layout_marginLeft="1034dp"
+                android:layout_marginTop="160dp"
+                android:id="@+id/tcl_1_3"
+                android:nextFocusUp="@id/tcl_1_3"
+                android:background="@drawable/item_tcl_1_2"/>
+            <ImageView
+                android:layout_width="215dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="813dp"
+                android:layout_marginTop="427dp"
+                android:background="@drawable/item_tcl_3_2"/>
+            <ImageView
+                android:layout_width="215dp"
+                android:layout_height="126dp"
+                android:layout_marginLeft="1034dp"
+                android:layout_marginTop="294dp"
+                android:background="@drawable/item_tcl_2_2"/>
+            <ImageView
+                android:layout_width="215dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="1034dp"
+                android:layout_marginTop="559dp"
+                android:id="@+id/tcl_4_3"
+                android:nextFocusDown="@id/tcl_4_3"
+                android:background="@drawable/item_tcl_4_3"/>
+            <ImageView
+                android:layout_width="215dp"
+                android:layout_height="125dp"
+                android:layout_marginLeft="1034dp"
+                android:layout_marginTop="427dp"
+                android:background="@drawable/item_tcl_3_3"/>
+		</FrameLayout>
+        <ImageView
+            android:id="@+id/white_borad_tcl"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/white_border_tcl" />
+    </FrameLayout>
+</LinearLayout>

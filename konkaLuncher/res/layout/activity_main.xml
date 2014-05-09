@@ -10,6 +10,7 @@
         android:layout_width="1280dp"
         android:layout_height="match_parent"
         android:background="@drawable/bg_app"
+        android:id="@+id/bg_konka"
         android:orientation="vertical"
         android:paddingBottom="16dp"
         android:paddingLeft="16dp"
@@ -39,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:visibility="gone"
                 android:src="@drawable/title_bar" />
         </LinearLayout>
 
@@ -284,5 +286,9 @@
         android:name="com.joyplus.konka.luncher.HaierLuncher"
         android:layout_width="1280dp"
         android:layout_height="match_parent" />
-
+	<fragment
+        android:id="@+id/view_tcl"
+        android:name="com.joyplus.konka.luncher.TclLuncher"
+        android:layout_width="1280dp"
+        android:layout_height="match_parent" />
 </com.joyplus.tvhelper.ui.MyScrollLayout>

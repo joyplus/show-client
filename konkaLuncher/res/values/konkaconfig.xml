@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- for Debug this apk -->
+    <bool    name="DEBUG">true</bool>
+
+
+    <!-- for SDK cache dir -->
+    <string  name="CacheDir" >./data/misc/konka/advert/Jas/</string>
+    <!-- for DEBUG mode SDK cache dir -->
+    <string  name="DebugCacheDir" >./data/data/com.joyplus.konka.luncher/cache1/konka</string>
+    <!-- for Location Resource dir which show to load dir-->
+    <string  name="ResourceDir" >./data/misc/konka/advert/1001/</string>
+    <!-- for DEBUG mode Location Resource dir which show to load dir-->
+    <string  name="DebugResourceDir" >./data/data/com.joyplus.konka.luncher/cache/konka/1001/</string>
+    
+
+    <!-- for AD Id-->
+    <!-- 使能（true使用），ID,请求条形横幅（false）或者多媒体（true）, SDK请求时上报数据（true）,优先级别,
+         是否保存本地（true是）,本地同时保存的张数-->
+    <!-- 小窗口轮播图-->
+    <!-- 全屏背景图 -->
+    <string-array  name="ADMessage" >
+        <item>"true,acf179213cf915a55af057e2b33de19e,false,true,0,true,5"</item>
+        <item>"true,08935df2dfa99098ce624f478641135c,true,true,1,true,1"</item>
+    </string-array>
+
+    <!-- for config frq  ms -->
+    <string  name="requestFrq">30000</string>
+
+
+</resources>
