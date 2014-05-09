@@ -11,6 +11,7 @@ import com.joyplus.adkey.BannerAd;
 import com.joyplus.adkey.downloads.AdFileManager;
 import com.joyplus.adkey.downloads.DownLoadManager;
 import com.joyplus.adkey.downloads.Download;
+import com.joyplus.adkey.downloads.FileUtils;
 import com.joyplus.adkey.request.Report;
 import com.joyplus.adkey.request.Request;
 import com.joyplus.adkey.video.RichMediaAd;
@@ -22,7 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 public class ADRequest {
-
+    public  final static String RESPONCENAME = "AD";
 	private Context mContext;
 	private static ADRequest mADRequest;
 	public  static void Init(Context context){
@@ -84,17 +85,37 @@ public class ADRequest {
         if(ad == null || !ad.EN)return;
         if(!ad.USEBanner){
             BannerAd Bad = (new Request(mContext,ad.PublishID)).getBannerAd(ad.ReportSDK);
-            Log.d("Jas", "Bad-->" + (Bad == null ? "null" : Bad.toString()));
-            if (ad == null || (Bad.GetCreative_res_url() == null || "".equals(Bad.GetCreative_res_url())))
+            //Log.d("Jas", "Bad-->" + (Bad == null ? "null" : Bad.toString()));
+            if (ad == null || (Bad.GetCreative_res_url() == null || "".equals(Bad.GetCreative_res_url()))){
+            	RemoveFile(ad);
                 return;
+            }
             AddDown(ad,Bad);
         }else{
             RichMediaAd Rad = (new Request(mContext,ad.PublishID)).getRichMediaAd(ad.ReportSDK);
-            Log.d("Jas", "Rad-->" + (Rad == null ? "null" : Rad.toString()));
-            if(ad == null || (Rad.GetCreative_res_url() == null || "".equals(Rad.GetCreative_res_url())))
+            //Log.d("Jas", "Rad-->" + (Rad == null ? "null" : Rad.toString()));
+            if(ad == null || (Rad.GetCreative_res_url() == null || "".equals(Rad.GetCreative_res_url()))){
+            	RemoveFile(ad);
                 return;
+            }
             AddDown(ad,Rad);
         }
+    }
+    
+    private void RemoveFile(AD ad){
+    	Log.d("Jas","RemoveFile-->"+ad.PublishID);
+    	if(ad==null || "".equals(ad.PublishID))return;
+    	Ad responce = getResponce(ad);
+    	if(responce == null)return;
+    	Log.d("Jas","RemoveFile-->"+responce.toString());
+    	File resource = null;
+    	if(responce instanceof BannerAd){
+    		resource = new File(KonkaConfig.GetResourceDir()+ad.PublishID+File.separator+GetName(((BannerAd) responce).GetCreative_res_url(),true));
+    	}else if(responce instanceof RichMediaAd){
+    		resource = new File(KonkaConfig.GetResourceDir()+ad.PublishID+File.separator+GetName(((RichMediaAd) responce).GetCreative_res_url(),true));
+    	}
+    	if(resource !=null && resource.exists())resource.delete();
+    	writeResponce(ad,null);//for remove response.
     }
     /*Get file name
     * Param : file     -- file url
@@ -130,11 +151,10 @@ public class ADRequest {
         m.LocalFile  = KonkaConfig.GetCacheDir();
         m.TargetFile = KonkaConfig.GetResourceDir()+mad.PublishID+File.separator+GetName(adURL,true);
 		if(CheckLocation(mad,m))DownLoadManager.getInstance().AddDownload(m);
-        if(!mad.ReportSDK){//save response in cache.
+        //if(!mad.ReportSDK){//save response in cache.//save it all.
             //客户想自己上报数据，所以需要保存返回的广告请求结果，以便上报
-            SerializeManager mSerializeManager = new SerializeManager();
-            mSerializeManager.writeSerializableData(KonkaConfig.GetCacheDir()+GetName(adURL,true),ad);
-        }
+		    writeResponce(mad,ad);
+        //}
     }
 
 
@@ -219,4 +239,30 @@ public class ADRequest {
 		return drawables;
 	}
 	
+    
+    
+    public static Ad getResponce(int index){
+    	AD[] ads = KonkaConfig.GetADList();
+    	if(ads != null && index>=0 && index<ads.length){
+    		return getResponce(ads[index]);
+    	}
+    	return  null;
+    }
+    public static Ad getResponce(AD ad){
+    	if(ad == null || !ad.EN)return null;
+    	SerializeManager mSerializeManager = new SerializeManager();
+    	return (Ad) mSerializeManager.readSerializableData(KonkaConfig.GetCacheDir()+File.separator+ad.PublishID+File.separator+RESPONCENAME);
+    }
+    
+    private void writeResponce(AD ad,Object o){
+    	Log.d("Jas","writeResponce-->"+ad.PublishID);
+    	if(ad ==null || !ad.EN)return;
+    	(new File(KonkaConfig.GetCacheDir()+File.separator+ad.PublishID+File.separator)).mkdirs();
+    	writeResponce(KonkaConfig.GetCacheDir()+File.separator+ad.PublishID+File.separator+RESPONCENAME,o);
+    }
+    
+    private void writeResponce(String path,Object o){
+    	SerializeManager mSerializeManager = new SerializeManager();
+    	mSerializeManager.writeSerializableData(path, o);
+    }
 }

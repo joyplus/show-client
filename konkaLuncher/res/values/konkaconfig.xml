@@ -8,7 +8,7 @@
     <!-- for SDK cache dir -->
     <string  name="CacheDir" >./data/misc/konka/advert/Jas/</string>
     <!-- for DEBUG mode SDK cache dir -->
-    <string  name="DebugCacheDir" >./data/data/com.joyplus.konka.luncher/cache1/konka</string>
+    <string  name="DebugCacheDir" >./data/data/com.joyplus.konka.luncher/cache1/konka/</string>
     <!-- for Location Resource dir which show to load dir-->
     <string  name="ResourceDir" >./data/misc/konka/advert/1001/</string>
     <!-- for DEBUG mode Location Resource dir which show to load dir-->
